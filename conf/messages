@@ -125,24 +125,20 @@ next.action=Select next action:
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
 key.label.simple=Keynote
-conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.label=Conference, 1h, Tuesday til Thursday
 conf.label.simple=Conference
-uni.label=University, 3h, Monday or Tuesday
-uni.label.simple=University
-tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.label=Tools in Action, 30mn, Tuesday til Thursday
 tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.label=Quickie, 15mn, Tuesday til Thursday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.label=Birds of a Feather, 1h, Tuesday and Wednesday evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.label=Hands-on Labs, 3h, Tuesday til Thursday 
 lab.label.simple=Hand''s on Lab
-ignite.label=Ignite Sessions, 5mn, Wednesday or Thursday early afternoon
+ignite.label=Ignite Sessions, 5mn, Tuesday til Thursday during lunch 
 ignite.label.simple=Ignite Sessions
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Thursday
-start.label.simple=Startup
 
 # Bug report
 Issue.report=Report an issue

@@ -31,6 +31,7 @@ object ConferenceRooms {
   // the first column on the HTML Table
   val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
 
+  // TODO Create rooms for San Jose Devoxx US conference
   val ROOM3 = Room("room3", "Room 3", 300, "theatre")
   val ROOM4 = Room("room4", "Room 4", 347, "theatre")
   val ROOM5 = Room("room5", "Room 5", 641, "theatre")
@@ -42,8 +43,6 @@ object ConferenceRooms {
 
   val BOF1 = Room("bof1", "BOF 1", 70, "classroom")
   val BOF2 = Room("bof2", "BOF 2", 70, "classroom")
-
-  val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
 
   val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
 
