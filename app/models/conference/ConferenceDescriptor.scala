@@ -55,16 +55,16 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2017).withMonthOfYear(3).withDayOfMonth(7)
-  val toDay = new DateTime().withYear(2017).withMonthOfYear(3).withDayOfMonth(10)
+  val fromDay = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(21)
+  val toDay = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(23)
 
   def current() = new ConferenceDescriptor(
     eventCode = "DVUS17",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxus2017",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.com"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.us"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.us"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
@@ -75,18 +75,18 @@ object ConferenceDescriptor {
     ),
     timing = ConferenceTiming(
       datesI18nKey = "21st-23rd March",
-      speakersPassDuration = 5,
+      speakersPassDuration = 3,
       preferredDayEnabled = true,
       firstDayFr = "21 March",
       firstDayEn = "march, 21st",
       datesFr = "du 21 au 23 mars 2017",
       datesEn = "from 21st to 23rd of March, 2017",
-      cfpOpenedOn = DateTime.parse("2016-01-09T00:00:00+09:00"),
-      cfpClosedOn = DateTime.parse("2017-02-01T23:59:59+09:00"),
-      scheduleAnnouncedOn = DateTime.parse("2017-02-25T00:00:00+09:00"),
+      cfpOpenedOn = DateTime.parse("2016-09-01T00:00:00+09:00"),
+      cfpClosedOn = DateTime.parse("2016-10-10T23:59:59+09:00"),
+      scheduleAnnouncedOn = DateTime.parse("2016-11-16T00:00:00+09:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxVE",
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUS",
     hashTag = "#DevoxxUS",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
