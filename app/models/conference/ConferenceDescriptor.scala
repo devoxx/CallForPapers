@@ -68,29 +68,29 @@ object ConferenceDescriptor {
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      faq = "http://www.devoxx.be/faq/",
-      registration = "http://reg.devoxx.be",
-      confWebsite = "http://www.devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+      faq = "https://devoxx.us/faq/",
+      registration = "http://reg.devoxx.us", // TODO check the URL
+      confWebsite = "https://devoxx.us/",
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.us")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "7th-11th November",
+      datesI18nKey = "21st-23rd March",
       speakersPassDuration = 5,
       preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
-      firstDayEn = "november 7th",
-      datesFr = "du 7 au 10 Novembre 2016",
-      datesEn = "from 7th to 10th of November, 2016",
-      cfpOpenedOn = DateTime.parse("2016-05-23T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2016-07-06T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2016-09-15T00:00:00+02:00"),
+      firstDayFr = "21 March",
+      firstDayEn = "march, 21st",
+      datesFr = "du 21 au 23 mars 2017",
+      datesEn = "from 21st to 23rd of March, 2017",
+      cfpOpenedOn = DateTime.parse("2016-01-09T00:00:00+09:00"),
+      cfpClosedOn = DateTime.parse("2017-02-01T23:59:59+09:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-02-25T00:00:00+09:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxVE",
-    hashTag = "#DevoxxBE",
+    hashTag = "#DevoxxUS",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
-    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , "San Jose, USA"
     , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200
   )
