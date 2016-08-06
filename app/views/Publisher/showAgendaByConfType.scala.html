@@ -1,7 +1,7 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-    @views.html.Publisher.devoxxBE2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2015 for $day"+Messages("day-" + day))) {
+    @views.html.Publisher.devoxxUS2017(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx US 2017 for $day"+Messages("day-" + day))) {
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
@@ -25,7 +25,7 @@
                             09:30 - 11:30
                         </th>
                         <td class="keynotes" colspan="8">
-                            <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
+                            <a href="https://devoxx.us/keynotes-2017">Keynotes</a>
 
                         </td>
                     </tr>
@@ -45,7 +45,7 @@
 
                          @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("HH:mm")=="16:40"  ){
                                 <td class="room">
-                                    <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                                    <span class="track"><img src="/assets/devoxxus2017/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                                     <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
                                 </td>
                          }
@@ -74,7 +74,7 @@
              19:00 - 19:30
          </th>
          <td class="keynotes" colspan="8">
-             <a href="http://www.devoxx.be/keynotes-2015">Closing Keynote</a>
+             <a href="https://devoxx.us/keynotes-2017">Closing Keynote</a>
 
          </td>
      </tr>
