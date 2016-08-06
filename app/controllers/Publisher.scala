@@ -136,11 +136,6 @@ object Publisher extends Controller {
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
           }
-          case Some(slotConfig) if day == "monday" => {
-            val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == "monday")
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 1))
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "monday"))
-          }
           case Some(slotConfig) if day == "tuesday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "tuesday")
@@ -162,13 +157,6 @@ object Publisher extends Controller {
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "thursday"))
           }
-          case Some(slotConfig) if day == "friday" => {
-            val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == "friday")
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 5)
-            )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "friday"))
-          }
 
           case None => NotFound(views.html.Publisher.agendaNotYetPublished())
         }
@@ -185,11 +173,9 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("test", "mon", "monday", "lundi").contains(d) => _showDay(ConferenceSlots.monday, "monday")
         case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(ConferenceSlots.tuesday, "tuesday")
         case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(ConferenceSlots.wednesday, "wednesday")
         case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(ConferenceSlots.thursday, "thursday")
-        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(ConferenceSlots.friday, "friday")
         case other => NotFound("Day not found")
       }
   }
@@ -248,6 +234,4 @@ object Publisher extends Controller {
       }
 
   }
-
-
 }

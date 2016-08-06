@@ -138,8 +138,6 @@ object ScheduleConfiguration {
         extractSlot(ConferenceSlots.wednesday, "wednesday")
       case "thursday" =>
         extractSlot(ConferenceSlots.thursday, "thursday")
-      case "friday" =>
-        extractSlot(ConferenceSlots.friday, "friday")
       case other =>
         play.Logger.of("ScheduleConfiguration").warn("Could not match " + other + " in getPublishedScheduleByDay")
         Nil
