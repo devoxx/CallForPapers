@@ -28,8 +28,6 @@ import models.ProposalType
 object ConferenceProposalTypes {
   val CONF = ProposalType(id = "conf", label = "conf.label")
 
-  val UNI = ProposalType(id = "uni", label = "uni.label")
-
   val TIA = ProposalType(id = "tia", label = "tia.label")
 
   val LAB = ProposalType(id = "lab", label = "lab.label")
@@ -40,27 +38,18 @@ object ConferenceProposalTypes {
 
   val KEY = ProposalType(id = "key", label = "key.label")
 
-  val START = ProposalType(id = "start", label = "start.label")
-
   val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
 
-  val OTHER = ProposalType(id = "other", label = "other.label")
-
-  val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, IGNITE, OTHER)
+  val ALL = List(CONF, TIA, LAB, QUICK, BOF, KEY, IGNITE)
 
   def valueOf(id: String): ProposalType = id match {
     case "conf" => CONF
-    case "uni" => UNI
     case "tia" => TIA
     case "lab" => LAB
     case "quick" => QUICK
     case "bof" => BOF
     case "key" => KEY
-    case "start" => START
     case "ignite" => IGNITE
-    case "other" => OTHER
-    case other => OTHER
   }
-
 }
 
