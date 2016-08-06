@@ -4,6 +4,7 @@ import library.search.ElasticSearch
 import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
+import models.conference.{ConferenceProposalTypes, ConferenceDescriptor}
 import org.apache.commons.lang3.StringUtils
 import play.api.data.Forms._
 import play.api.data._
@@ -266,7 +267,7 @@ object CFPAdmin extends SecureCFPController {
   def allMyVotes(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
+      ConferenceProposalTypes.ALL.find(_.id == talkType).map {
         pType =>
           val uuid = request.webuser.uuid
           val allMyVotes = Review.allVotesFromUser(uuid)
@@ -461,8 +462,8 @@ object CFPAdmin extends SecureCFPController {
               if(showQuickiesAndBof){
                 p==null
               }else{
-                p.talkType==ConferenceDescriptor.ConferenceProposalTypes.BOF ||
-                p.talkType==ConferenceDescriptor.ConferenceProposalTypes.QUICK
+                p.talkType==ConferenceProposalTypes.BOF ||
+                p.talkType==ConferenceProposalTypes.QUICK
               }
           }
           (company, setOfProposals)

@@ -1,5 +1,5 @@
 @(validationLink:String, conferenceName:String)
-
+@import models.conference.ConferenceDescriptor
 Welcome to @conferenceName!
 
 Thanks for joining @conferenceName CFP Web site. To validate your email address, please copy the following link to your browser address bar:

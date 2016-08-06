@@ -25,6 +25,7 @@ package controllers
 
 import akka.util.Crypt
 import library.search.ElasticSearch
+import models.conference.{ConferenceSlots, ConferenceProposalTypes, ConferenceDescriptor}
 import play.api.libs.Crypto
 import play.api.libs.json.{JsObject, Json}
 import library.{LogURL, SendQuestionToSpeaker, ZapActor}
@@ -113,9 +114,9 @@ object Publisher extends Controller {
   def showByTalkType(talkType: String) = Action {
     implicit request =>
       talkType match {
-        case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
-          Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
-            ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType))
+        case ConferenceProposalTypes.CONF.id =>
+          Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceProposalTypes.CONF.id,
+            ConferenceProposalTypes.CONF.id)), talkType))
         case other =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }
@@ -184,11 +185,11 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("test", "mon", "monday", "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.monday, "monday")
-        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesday, "tuesday")
-        case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
-        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
-        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "friday")
+        case d if Set("test", "mon", "monday", "lundi").contains(d) => _showDay(ConferenceSlots.monday, "monday")
+        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(ConferenceSlots.tuesday, "tuesday")
+        case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(ConferenceSlots.wednesday, "wednesday")
+        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(ConferenceSlots.thursday, "thursday")
+        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(ConferenceSlots.friday, "friday")
         case other => NotFound("Day not found")
       }
   }

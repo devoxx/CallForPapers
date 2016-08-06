@@ -1,7 +1,6 @@
 @(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
+@import models.conference.ConferenceDescriptor
 @import helper.twitterBootstrap._
-@import org.apache.commons.lang3.StringUtils
 
 @main("New proposal") {
 <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
@@ -89,7 +88,7 @@
 $(document).ready(function($){
     $('#sponsorTalkMsg' ).hide();
 
-    setformfieldsize($('#summary'), @models.ConferenceDescriptor.current().maxProposalSummaryCharacters, 'charsremain');
+    setformfieldsize($('#summary'), @ConferenceDescriptor.current().maxProposalSummaryCharacters, 'charsremain');
     setformfieldsize($('#privateMessage'), 3500, 'charsremain2');
 
     // Select current lang

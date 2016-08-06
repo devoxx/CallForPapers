@@ -21,38 +21,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package models
+package models.conference
 
-import models.conference.ConferenceTracks
-import play.api.libs.json.Json
+import models.ProposalType
 
-/**
- * A Track is a general topic (Java, Architecture, Security)
- *
- * Author: nicolas martignole
- * Created: 06/11/2013 01:41
- */
-case class Track(id: String, label: String)
+object ConferenceProposalTypes {
+  val CONF = ProposalType(id = "conf", label = "conf.label")
 
-object Track {
-  implicit val trackFormat = Json.format[Track]
+  val UNI = ProposalType(id = "uni", label = "uni.label")
 
-  val UNKNOWN=Track("unknown", "unknown.label")
+  val TIA = ProposalType(id = "tia", label = "tia.label")
 
-  val all = ConferenceTracks.ALL
+  val LAB = ProposalType(id = "lab", label = "lab.label")
 
-  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
+  val QUICK = ProposalType(id = "quick", label = "quick.label")
 
-  val allIDs=ConferenceTracks.ALL.map(_.id)
+  val BOF = ProposalType(id = "bof", label = "bof.label")
 
+  val KEY = ProposalType(id = "key", label = "key.label")
 
-  // Compute diff between two Set of Track then returns a ready-to-use list of id/label
-  def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
-    val diffSet = ConferenceTracks.ALL.toSet.diff(otherTracks)
-    diffSet.map(a=>(a.id,a.label)).toSeq.sorted
+  val START = ProposalType(id = "start", label = "start.label")
+
+  val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
+
+  val OTHER = ProposalType(id = "other", label = "other.label")
+
+  val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, IGNITE, OTHER)
+
+  def valueOf(id: String): ProposalType = id match {
+    case "conf" => CONF
+    case "uni" => UNI
+    case "tia" => TIA
+    case "lab" => LAB
+    case "quick" => QUICK
+    case "bof" => BOF
+    case "key" => KEY
+    case "start" => START
+    case "ignite" => IGNITE
+    case "other" => OTHER
+    case other => OTHER
   }
-  
-  def parse(session:String):Track={
-    ConferenceTracks.ALL.find(t => t.id == session).getOrElse(UNKNOWN)
-  }
+
 }
+

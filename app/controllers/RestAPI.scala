@@ -25,6 +25,7 @@ package controllers
 
 import library.Benchmark
 import models._
+import models.conference.{ConferenceRooms, ConferenceTracksDescription, ConferenceProposalTypes, ConferenceDescriptor}
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
@@ -110,7 +111,7 @@ object RestAPI extends Controller {
             }
             case other => {
 
-              val allProposalTypesIds = ConferenceDescriptor.ConferenceProposalTypes.ALL.map {
+              val allProposalTypesIds = ConferenceProposalTypes.ALL.map {
                 proposalType =>
                   Json.toJson(proposalType.id)
               }
@@ -501,7 +502,7 @@ object RestAPI extends Controller {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-      val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL.map {
+      val allProposalTypes = ConferenceProposalTypes.ALL.map {
         proposalType =>
           Json.toJson {
             Map(
@@ -532,7 +533,7 @@ object RestAPI extends Controller {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-      val allTracks = ConferenceDescriptor.ConferenceTracksDescription.ALL.map {
+      val allTracks = ConferenceTracksDescription.ALL.map {
         trackDesc =>
           Json.toJson {
             Map(
@@ -564,7 +565,7 @@ object RestAPI extends Controller {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-      val allRooms = ConferenceDescriptor.ConferenceRooms.allRooms.map {
+      val allRooms = ConferenceRooms.allRooms.map {
         room =>
           Json.toJson {
             Map(

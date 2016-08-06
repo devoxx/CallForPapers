@@ -42,7 +42,7 @@
                 }
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite" target="_blank"><i class="icon-arrow-right"></i> @Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") website</a></li>
+                <li><a href="@models.conference.ConferenceDescriptor.current().conferenceUrls.confWebsite" target="_blank"><i class="icon-arrow-right"></i> @Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") website</a></li>
             </ul>
         </div>
     </div>
@@ -63,7 +63,7 @@
             <li><a href="@routes.Application.homeVisitor()"><i class="icon-home"></i> @Messages("login")</a></li>
         }
         <small><i class="icon-bullhorn"></i> @Messages("longName") Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
-        <small><i class="icon-cloud-upload"></i> Hosted on <a href="@ConferenceDescriptor.current().hosterWebsite">@ConferenceDescriptor.current().hosterName</a></small>
+        <small><i class="icon-cloud-upload"></i> Hosted on <a href="@models.conference.ConferenceDescriptor.current().hosterWebsite">@models.conference.ConferenceDescriptor.current().hosterName</a></small>
     </div>
   </div>
 </footer>

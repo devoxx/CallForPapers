@@ -23,6 +23,7 @@
 
 package controllers
 
+import models.conference.{ConferenceProposalTypes, ConferenceDescriptor}
 import models.{Webuser, _}
 import org.apache.commons.lang3.StringUtils
 import play.api.data.Form
@@ -76,7 +77,7 @@ object GoldenTicketController extends SecureCFPController {
 //        .filterNot(_.sponsorTalk)
 
        val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-        .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF)
+        .filter(p => p.talkType == ConferenceProposalTypes.CONF)
         .filterNot(_.sponsorTalk)
 
       val maybeFilteredProposals = track match {
@@ -177,7 +178,7 @@ object GoldenTicketController extends SecureCFPController {
   def allMyGoldenTicketVotes(talkType: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
+      ConferenceProposalTypes.ALL.find(_.id == talkType).map {
         pType =>
           val uuid = request.webuser.uuid
           val allMyVotes = ReviewByGoldenTicket.allVotesFromUser(uuid)

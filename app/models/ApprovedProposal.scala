@@ -24,7 +24,8 @@
 package models
 
 import library.Redis
-import models.ConferenceDescriptor.ConferenceProposalConfigurations
+import models.conference.{ConferenceProposalTypes, ConferenceProposalConfigurations, ConferenceDescriptor}
+
 
 /**
  * Approve or reject a proposal
@@ -101,7 +102,7 @@ object ApprovedProposal {
   // Update Approved or Refused total by conference type
   def changeTalkType(proposalId: String, newTalkType: String) = Redis.pool.withClient {
     client =>
-      ConferenceDescriptor.ConferenceProposalTypes.ALL.foreach {
+      ConferenceProposalTypes.ALL.foreach {
         proposalType =>
           if (client.sismember(s"Approved:${proposalType.id}", proposalId)) {
             val tx = client.multi()
@@ -131,7 +132,7 @@ object ApprovedProposal {
   // The bug was that a conference is approved, but then the speaker changes the
   // format to quickie, then the Approved:conf collection is not updated correctly
   def _loadApprovedCategoriesForTalk(proposal: Proposal): List[String] = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter { pc =>
+    ConferenceProposalConfigurations.ALL.filter { pc =>
       isApproved(proposal.id, pc.id)
     }.map(_.id)
   }
@@ -337,7 +338,7 @@ object ApprovedProposal {
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield {
             (speaker,
-              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(p.talkType))
+              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p => ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(p.talkType))
               )
           }
       }

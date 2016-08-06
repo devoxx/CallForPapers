@@ -1,4 +1,5 @@
 @(track:Track)(implicit lang: Lang)
-@defining(ConferenceDescriptor.ConferenceTracksDescription.findTrackDescFor(track)){trackDesc=>
+@import models.conference._
+@defining(ConferenceTracksDescription.findTrackDescFor(track)){trackDesc=>
 <img src="@trackDesc.imgSrc" class="publisher-icon" alt="@track.id" title="@Messages(trackDesc.i18nTitleProp)">
 }

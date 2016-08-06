@@ -24,10 +24,12 @@
 package models
 
 import library.Redis
+import models.conference.{ConferenceDescriptor, ConferenceProposalTypes}
 
 /**
  * An Entity to represent archived proposal
- * @author created by Nicolas Martignole, on 19/10/2014.
+  *
+  * @author created by Nicolas Martignole, on 19/10/2014.
  */
 
 object ArchiveProposal {
@@ -48,7 +50,7 @@ object ArchiveProposal {
   }
 
   def archiveAll(proposalTypeId: String):Int = {
-    val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
+    val proposalType = ConferenceProposalTypes.valueOf(proposalTypeId)
     val ids=Proposal.allProposalIDsNotArchived
     val proposals = Proposal.loadAndParseProposals(ids).values
 

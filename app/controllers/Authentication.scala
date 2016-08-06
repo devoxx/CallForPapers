@@ -26,6 +26,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 import models._
+import models.conference.ConferenceDescriptor
 import notifiers.Mails
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils

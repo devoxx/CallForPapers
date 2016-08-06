@@ -23,6 +23,7 @@
 
 package models
 
+import models.conference.{ConferenceSlots, ConferenceRooms, ConferenceDescriptor}
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 import play.api.libs.json._
@@ -56,10 +57,10 @@ object Room {
 
   val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
-  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
+  val allAsId = ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
 
   def parse(roomId: String): Room = {
-    ConferenceDescriptor.ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
+    ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
   }
 
 }
@@ -109,6 +110,6 @@ object Slot {
   implicit val slotFormat = Json.format[Slot]
 
   def byType(proposalType: ProposalType): Seq[Slot] = {
-    ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)
+    ConferenceSlots.all.filter(s => s.name == proposalType.id)
   }
 }

@@ -1,4 +1,5 @@
 @(proposals:List[Proposal], track:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@import models.conference._
 
 @main(track + ", All submitted proposals") {
 
@@ -18,7 +19,7 @@
                     <div class="panel-body">
                         <div class="col-md-12">
 
-                            @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
+                            @ConferenceTracks.ALL.map{track=>
                                 <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Messages(track.label)</a>
                             }
 
@@ -32,6 +33,7 @@
                                 <div class="alert alert-success alert-dismissable">
                                 @flash.get("success").get
                                 </div>
+
                             }
                             <br>
                         </div>

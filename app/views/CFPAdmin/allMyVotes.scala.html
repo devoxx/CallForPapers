@@ -1,5 +1,5 @@
 @(allMyVotes:List[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
+@import models.conference.ConferenceProposalTypes
 @main("All my votes") {
     <div class="row">
     <div class="col-md-12">
@@ -22,7 +22,7 @@
                         You haven't voted for any proposal so far.
                     }
 
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                    @ConferenceProposalTypes.ALL.map{confType=>
                         <a href="@routes.CFPAdmin.allMyVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
                     }
 

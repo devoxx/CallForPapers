@@ -1,5 +1,5 @@
 @(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])
-
+@import models.conference.ConferenceDescriptor
 @if(ConferenceDescriptor.current().frLangEnabled) {
 <small>English version below</small>
 <hr>
@@ -12,7 +12,7 @@ Cher(e) @toSpeaker.firstName.getOrElse("speaker")
       conditions de @Messages("longName"). Vous pourrez ensuite indiquer si vous acceptez ou non de présenter
       ce sujet.</p>
   <br>
-  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 
   @if(listOfRefusedProposals.size==1){
   <P>Votre deuxième proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
@@ -22,7 +22,7 @@ Cher(e) @toSpeaker.firstName.getOrElse("speaker")
   }
   <h3>Comment poser une question ?</h3>
   <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+  <a href="@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
 <p>Pensez à vérifier s'il est nécessaire de prendre une place ou non. Les présentations au format BOF et Quickie ne donnent pas
 droits à une entrée. Il est indispensable de prendre une place pour les Quickies. Il n'est pas nécessaire de prendre de places
 pour les BOFs.</p>
@@ -32,7 +32,7 @@ pour les BOFs.</p>
   <p>Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour @Messages("longYearlyName") !</p>
   <h3>Propositions acceptées</h3>
   @listOfApprovedProposals.map{proposal=>
-     <p>- @proposal.title [<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
+     <p>- @proposal.title [<a href="@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
   }
   @if(listOfRefusedProposals.size==1){
   <P>Une proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
@@ -42,10 +42,10 @@ pour les BOFs.</p>
   }
   <p>Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions de @Messages("longName"). Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.</p>
   <br>
-  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
   <h3>Comment poser une question ?</h3>
   <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()</a>
+  <a href="@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()">@models.conference.ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()</a>
     <p>Pensez à vérifier s'il est nécessaire de prendre une place ou non. Les présentations au format BOF et Quickie ne donnent pas
 droits à une entrée. Il est indispensable de prendre une place pour les Quickies. Il n'est pas nécessaire de prendre de places
 pour les BOFs.</p>
@@ -55,7 +55,7 @@ pour les BOFs.</p>
  <p>Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour @Messages("longYearlyName").</p>
  <p>Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 790 propositions de sujets
     pour 220 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s). Au nom de toute
-    l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le @ConferenceDescriptor.current().timing.firstDayFr à @Messages("longName").</p>
+    l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le @models.conference.ConferenceDescriptor.current().timing.firstDayFr à @Messages("longName").</p>
 }
 
 <br>
@@ -105,7 +105,7 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
   <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()</a>
 }
 
-@if(listOfApprovedProposals.size==0){
+@if(listOfApprovedProposals.isEmpty){
  <p>We're sorry to inform you that none of your proposals has been accepted for @Messages("longYearlyName").</p>
  <p>The program committee has received more than 670 proposals for 154 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting propositions for the conference. We would like to thank you for your time and we hope to see you as an attendee on @ConferenceDescriptor.current().timing.firstDayEn, at @Messages("longName").</p>
  <p>Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com</p>

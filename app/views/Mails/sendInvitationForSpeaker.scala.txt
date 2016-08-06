@@ -1,5 +1,5 @@
 @(message:String,requestId:String)
-
+@import models.conference.ConferenceDescriptor
 --------------------------------------------------
                 Devoxx 2015
 --------------------------------------------------

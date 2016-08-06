@@ -1,5 +1,5 @@
 @(email:String, code:String)
-
+@import models.conference.ConferenceDescriptor
 ------------------------------------------------------------------------------
                       Welcome to @Messages("longName") CFP!
 ------------------------------------------------------------------------------

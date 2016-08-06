@@ -1,4 +1,5 @@
 @(fromName:String, proposalId:String, title:String, track:String, talkType:String)
+@import models.conference.ConferenceDescriptor
 Hi
 
 A proposal has been submitted on the CFP by @fromName.

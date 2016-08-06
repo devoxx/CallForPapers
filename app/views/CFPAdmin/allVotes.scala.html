@@ -1,9 +1,8 @@
 @(allVotes:List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@import models.Review.Score
 @import models.Review.TotalVoter
 @import models.Review.TotalAbst
 @import models.Review.AverageNote
-@import models.Review.StandardDev
+@import models.conference._
 
 @main("All votes") {
     <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
@@ -12,11 +11,11 @@
 <div class="row">
     <div class="col-md-12">
                         <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i> All</a>
-                        @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                        @for(proposalType <- ConferenceProposalTypes.ALL) {
                             <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
                         <br>
-                        @for(track <- ConferenceDescriptor.ConferenceTracks.ALL){
+                        @for(track <- ConferenceTracks.ALL){
                             <small><a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Messages(track.label)</a></small>
                         }
                         <br>

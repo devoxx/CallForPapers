@@ -1,5 +1,5 @@
 @(firstName:String, email:String, tempPassword:String)
-
+@import models.conference.ConferenceDescriptor
 Dear @firstName
 
 Welcome to @Messages("longName") CFP (Call For Paper)

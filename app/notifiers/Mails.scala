@@ -25,6 +25,7 @@ package notifiers
 
 import com.typesafe.plugin._
 import models._
+import models.conference.ConferenceDescriptor
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Play.current
 import play.api.i18n.Messages

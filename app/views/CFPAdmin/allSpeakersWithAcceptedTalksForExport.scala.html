@@ -1,5 +1,5 @@
 @(proposals: List[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-
+@import models.conference.ConferenceProposalTypes
 @main("CFP Speakers") {
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
@@ -58,15 +58,15 @@
     <td>@speaker.firstName</td>
     <td>@speaker.email</td>
     <td>@speaker.company</td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.UNI) </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.CONF)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.KEY)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.LAB)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.TIA)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.IGNITE)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.QUICK)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.BOF)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.OTHER)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.UNI) </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.CONF)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.KEY)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.LAB)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.TIA)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.IGNITE)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.QUICK)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.BOF)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.OTHER)  </td>
     </tr>
 }
 

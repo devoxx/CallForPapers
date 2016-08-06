@@ -24,9 +24,11 @@
 package models
 
 import library.Redis
+import models.conference.ConferenceDescriptor
 
 /**
  * Repository for Favorite Talk
+ *
  * @author created by N.Martignole, Innoteria, on 27/10/15.
  */
 

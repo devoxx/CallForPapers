@@ -1,5 +1,5 @@
 @(allMyVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
+@import models.conference.ConferenceProposalTypes
 
 @main("All my votes") {
 
@@ -25,7 +25,7 @@
                     }
 
                     <br>
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                    @ConferenceProposalTypes.ALL.map{confType=>
                         <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
                     }
                 </div>

@@ -24,6 +24,7 @@
 package models
 
 import library.Redis
+import models.conference.{ConferenceProposalTypes, ConferenceSlots}
 import play.api.data.validation.ValidationError
 import play.api.libs.json.{JsPath, Json}
 import org.apache.commons.lang3.RandomStringUtils
@@ -134,11 +135,11 @@ object ScheduleConfiguration {
 
     val listOfSlots = day match {
       case "wednesday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
+        extractSlot(ConferenceSlots.wednesday, "wednesday")
       case "thursday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
+        extractSlot(ConferenceSlots.thursday, "thursday")
       case "friday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.friday, "friday")
+        extractSlot(ConferenceSlots.friday, "friday")
       case other =>
         play.Logger.of("ScheduleConfiguration").warn("Could not match " + other + " in getPublishedScheduleByDay")
         Nil
@@ -148,7 +149,7 @@ object ScheduleConfiguration {
   }
 
   def loadSlots(): List[Slot] = {
-    ConferenceDescriptor.ConferenceProposalTypes.ALL.flatMap {
+    ConferenceProposalTypes.ALL.flatMap {
       t: ProposalType => loadSlotsForConfType(t.id)
     }
   }

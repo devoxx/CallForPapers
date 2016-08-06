@@ -1,6 +1,7 @@
 package models
 
 import library.{Dress, Redis}
+import models.conference.{ConferenceTracks, ConferenceDescriptor, ConferenceProposalTypes}
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import org.joda.time.Instant
 import play.api.data.Forms._
@@ -22,7 +23,7 @@ object ProposalType {
 
   val UNKNOWN = ProposalType(id = "unknown", label = "unknown.label")
 
-  val all = ConferenceDescriptor.ConferenceProposalTypes.ALL
+  val all = ConferenceProposalTypes.ALL
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
   def allForCombos = {
@@ -268,8 +269,6 @@ object Proposal {
                           userGroup: Option[Boolean]): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      // TODO Devoxx FR 2015 and Devoxx BE 2015 used [Messages("longYearlyName" instead of ConferenceDescriptor
-      // So all proposals were created with an invalid event. It should not be a I18N but the real value
       ConferenceDescriptor.current().eventCode,
       lang,
       title,
@@ -678,7 +677,7 @@ object Proposal {
     client =>
       client.hget("Proposals:TrackForProposal", proposalId).flatMap {
         trackId =>
-          ConferenceDescriptor.ConferenceTracks.ALL.find(_.id == trackId)
+          ConferenceTracks.ALL.find(_.id == trackId)
       }
   }
 

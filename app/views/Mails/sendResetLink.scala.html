@@ -1,5 +1,5 @@
 @(resetUrl:String)
-
+@import models.conference.ConferenceDescriptor
 <h3>Did you forget your CFP @Messages("longName") access code?</h3>
 <p>Someone asked to reset your @Messages("longName") access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.</p>
 <p><a href="@Html(resetUrl)">@Html(resetUrl)</a></p>

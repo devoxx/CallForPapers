@@ -1,5 +1,7 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @import library.FormatDate
+@import models.conference.ConferenceDescriptor
+@import models.conference.ConferenceTracksDescription
 
 @main(Messages("cfp.title")){
 <div class="container">
@@ -86,7 +88,7 @@
                 <p>@Messages("theme.track")</p>
                 <table class="table table-bordered table-striped">
                     <tbody>
-                        @for(track <- ConferenceDescriptor.ConferenceTracksDescription.ALL) {
+                        @for(track <- ConferenceTracksDescription.ALL) {
                             <tr>
                                 <td>@Messages(track.i18nTitleProp)</td>
                                 <td>@Messages(track.i18nDescProp)</td>
@@ -94,10 +96,7 @@
                         }
                     </tbody>
                 </table>
-
             </div>
-
-
         </div>
     </div>
 </div>

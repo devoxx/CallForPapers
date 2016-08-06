@@ -1,5 +1,5 @@
 @(loginForm: Form[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
+@import models.conference.ConferenceDescriptor
 @import helper.twitterBootstrap._
 
 @mainVisitor(Messages("home.visitor.header")){

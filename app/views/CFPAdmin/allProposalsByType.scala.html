@@ -1,4 +1,5 @@
 @(proposals:List[Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@import models.conference.ConferenceProposalTypes
 
 @main(confType + ", submitted proposals") {
 
@@ -17,7 +18,7 @@
                 <div class="panel-body">
                     <div class="panel-body">
                         <div class="col-md-12">
-                        @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                        @for(proposalType <- ConferenceProposalTypes.ALL) {
                             <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
 
@@ -68,6 +69,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
 <script type="text/javascript">
 $(document).ready(function() {

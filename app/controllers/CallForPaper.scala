@@ -26,6 +26,7 @@ package controllers
 import library.search.ElasticSearch
 import library.{NotifyProposalSubmitted, SendMessageToCommitte, ZapActor}
 import models._
+import models.conference.ConferenceDescriptor
 import org.apache.commons.lang3.StringUtils
 import play.api.cache.Cache
 import play.api.data.Forms._

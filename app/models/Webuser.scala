@@ -24,6 +24,7 @@
 package models
 
 import library.Redis
+import models.conference.ConferenceDescriptor
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import play.api.libs.Crypto

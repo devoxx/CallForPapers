@@ -23,6 +23,7 @@
 
 package models
 
+import models.conference.ConferenceDescriptor
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._

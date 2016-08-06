@@ -26,6 +26,7 @@ package models
 import java.util.Date
 
 import library.Redis
+import models.conference.ConferenceDescriptor
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.json._
 

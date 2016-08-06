@@ -1,5 +1,5 @@
 @(currentUser: String, proposal: models.Proposal, currentAverageScore: Double, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack: Option[Proposal], nextToBeReviewedSameFormat: Option[Proposal], averageScoreGT: Double, countVotesCastGT: Option[Long])(implicit flash: Flash, lang: Lang, req: RequestHeader)
-
+@import models.conference.ConferenceDescriptor
     @main("Votes for " + proposal.id + "/" + proposal.title) {
         <div class="row">
             <div class="col-md-12">
@@ -118,11 +118,8 @@
 
 
                         }
-
-
                         </div>
                     </div>
-
                 </div>
             }
         </div>

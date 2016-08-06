@@ -1,5 +1,5 @@
 @(fromName:String, toName:String, proposal:models.Proposal, msg:String)
-
+@import models.conference.ConferenceDescriptor
 Hello,
 
 A new message was posted from @fromName to @toName regarding talk "@proposal.title".

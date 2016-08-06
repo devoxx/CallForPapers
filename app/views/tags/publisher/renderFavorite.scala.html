@@ -1,5 +1,5 @@
 @(proposalId: String)(implicit req: RequestHeader)
-
+@import models.conference.ConferenceDescriptor
 @if(ConferenceDescriptor.isFavoritesSystemActive){
 @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
     @maybeUuid.map { uuid:String =>
