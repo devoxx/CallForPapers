@@ -186,7 +186,7 @@ GET           /myagenda                                                         
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
 GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
 
-# This is an AJAX callback triggered from devoxxBE2015.scala (the publisher web pages)
+# This is an AJAX callback triggered from devoxxUS2017.scala (the publisher web pages)
 POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
 
 # REST API

@@ -123,9 +123,9 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Wednesday, Thursday
+key.label=Keynote, 20mn, Tuesday til Thursday
 key.label.simple=Keynote
-conf.label=Conference, 1h, Tuesday til Thursday
+conf.label=Conference, 50mn, Tuesday til Thursday
 conf.label.simple=Conference
 tia.label=Tools in Action, 30mn, Tuesday til Thursday
 tia.label.simple=Tools in Action
