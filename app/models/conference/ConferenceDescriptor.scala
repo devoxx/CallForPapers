@@ -63,7 +63,7 @@ object ConferenceDescriptor {
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxus2017",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.us"),
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.us"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.us"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
@@ -74,13 +74,13 @@ object ConferenceDescriptor {
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.us")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "21st-23rd March",
+      datesI18nKey = "March 21 - 23, 2017",
       speakersPassDuration = 3,
       preferredDayEnabled = true,
       firstDayFr = "21 March",
-      firstDayEn = "march, 21st",
+      firstDayEn = "March, 21st",
       datesFr = "du 21 au 23 mars 2017",
-      datesEn = "from 21st to 23rd of March, 2017",
+      datesEn = "March 21 - 23, 2017",
       cfpOpenedOn = DateTime.parse("2016-09-01T00:00:00+09:00"),
       cfpClosedOn = DateTime.parse("2016-10-11T23:59:59+09:00"),
       scheduleAnnouncedOn = DateTime.parse("2016-11-16T00:00:00+09:00"),
