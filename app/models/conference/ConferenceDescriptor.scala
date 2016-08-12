@@ -69,7 +69,7 @@ object ConferenceDescriptor {
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
       faq = "https://devoxx.us/faq/",
-      registration = "http://reg.devoxx.us", // TODO check the URL
+      registration = "https://www.regonline.com/register/checkin.aspx?MethodId=0&EventId=1845425",
       confWebsite = "https://devoxx.us/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.us")
     ),
@@ -82,7 +82,7 @@ object ConferenceDescriptor {
       datesFr = "du 21 au 23 mars 2017",
       datesEn = "from 21st to 23rd of March, 2017",
       cfpOpenedOn = DateTime.parse("2016-09-01T00:00:00+09:00"),
-      cfpClosedOn = DateTime.parse("2016-10-10T23:59:59+09:00"),
+      cfpClosedOn = DateTime.parse("2016-10-11T23:59:59+09:00"),
       scheduleAnnouncedOn = DateTime.parse("2016-11-16T00:00:00+09:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),

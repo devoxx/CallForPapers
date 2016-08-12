@@ -11,22 +11,22 @@ longName=Devoxx US 2017 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
 longSplittedName_whiteEnd=US 2017
-conference.dates=21st - 23rd March 
+conference.dates=March 21 - 23, 2017
 # -----------------
 cfp.title=Devoxx US 2017 CFP
 login.error=Invalid email or password
 menu.home=Home
-menu.register=Sign-in
+menu.register=Sign in
 email=Email
 firstName=First name
 lastName=Last name
 password=Access code
 CallForPaper=Call for papers
-index.welcome=Already registered as a speaker? Please use this form to sign-in :
-btn.login=Sign-in
-login=Sign-in
-signup=Sign-up
-index.method1=Sign-in
+index.welcome=Already registered as a speaker? Please use this form to sign in :
+btn.login=Sign in
+login=Sign in
+signup=Sign up
+index.method1=Sign in
 index.method2=Authenticate with OpenID
 index.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 company=Your company
@@ -37,9 +37,9 @@ qualifications=Your speaker''s qualifications
 qualifications2=Speaker''s qualifications
 qualifications.label=Speaker qualifications
 index.signupTitle=Sign-up as a speaker
-index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
-index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
-index.signup.btn=Sign-up
+index.signup2=Sign up as speaker for {0} and propose one or more subjects.
+index.signup3=Sign up with one of your social profile in 5 seconds. No password needed.
+index.signup.btn=Sign up
 email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
@@ -149,45 +149,45 @@ appel.conf=Call for Paper
 cfp.opening=CFP opening
 cfp.closing=CFP closing
 cfp.reminder=Reminder
-cfp.reminder.proposals=do not forget to submit your Draft
+cfp.reminder.proposals=do not forget to submit your draft
 cfp.program=Program announced :
-cfp.program.date=from {0}
+cfp.program.date={0}
 video.title=Videos
 video.tag=Review Devoxx BE 2015''s videos on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx US 2017:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx US 2017, 21st-23rd March 
+appel.conf.dates=Devoxx US 2017, March 21 - 23
 
 # Tracks
 
 method_archi.label=Methodology & Architecture
-track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
+track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software, etc.
 
 java.label=Java Language
-track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
+track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc.
 
 cloud.label=Cloud, Containers & Infrastructure
-track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
+track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices, etc.
 
 ssj.label=Server Side Java
-track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs
+track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs, etc.
 
-lang.label=Programming languages
-track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
+lang.label=Programming Languages
+track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices, etc.
 
 bigdata.label=Big Data
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
 web.label=Modern Web
-track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
+track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps, etc.
 
 future.label=Future<Devoxx>
-track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
+track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI, etc.
 
 mobile.label=Mobile & Embedded
-track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
+track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi, etc.
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -198,7 +198,7 @@ avatarUrl.defined=Your photo (recommended width 150px)
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
 created.text2=Your access code is generated and is displayed once you validate your email.
-created.text3=You will then be able to log-in and start to use the {0} CFP web site.
+created.text3=You will then be able to log-in and start to use the {0} web site.
 
 # prepareSignup
 signup.title=Speaker''s registration
@@ -276,10 +276,10 @@ select.secondarySpeaker=Select a speaker
 freepass.forIdiots=Free pass included if, and only if, your talk is selected by the program committee
 
 nav.homeSpeaker=Home
-editWebuser.title=Edit your firstname and lastname
+editWebuser.title=Edit your first and last name
 
 cfp.isOpen=CFP is open
-cfp.open.enter=Create your speaker''s profile or sign-in
+cfp.open.enter=Create your speaker''s profile or sign in
 
 admin.proposals.th.title=Title
 admin.proposals.th.track=Track
