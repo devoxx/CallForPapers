@@ -346,7 +346,7 @@ remove.sponsorFlag=Remove the sponsor''s flag on this talk
 
 cfp.isClosed=The CFP is currently closed
 cfp.isClosed.expl=CFP is closed and does not accept submissions.
-cfp.closed.enter=Sign-in
+cfp.closed.enter=Sign in
 tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
 
@@ -690,9 +690,9 @@ visitor.signup.txt2=A validation email will be sent to the address indicated. Yo
 home.visitor.header=Visitor sign-in or sign-up
 home.visitor.title=Sign-in or register
 home.welcome.txt=Welcome to {0}, please authenticate or create a new visitor profile:
-visitor.signin=Sign-in
-visitor.register=Sign-up as a visitor
-visitor.index.signup2=Sign-up as a visitor and save your Schedule, vote for the best talks, and share your interests with other attendees.
+visitor.signin=Sign in
+visitor.register=Sign up as a visitor
+visitor.index.signup2=Sign up as a visitor and save your Schedule, vote for the best talks, and share your interests with other attendees.
 
 # welcomeVisitor
 visitor.welcome.title=Welcome {0}
