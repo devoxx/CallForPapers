@@ -37,15 +37,15 @@ qualifications=Your speaker''s qualifications
 qualifications2=Speaker''s qualifications
 qualifications.label=Speaker qualifications
 index.signupTitle=Sign-up as a speaker
-index.signup2=Sign up as speaker for {0} and propose one or more subjects.
-index.signup3=Sign up with one of your social profile in 5 seconds. No password needed.
+index.signup2=Sign up as a speaker for {0} and propose one or more subjects.
+index.signup3=Sign up with one of your social profiles in five seconds. No password needed.
 index.signup.btn=Sign up
 email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget access code?
 avatarUrl=URL to your latest profile photo
-home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
+home.txt2=Use one of the following social profiles, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 register.visitor.github=Use Github OAuth, this is simpler and you won''t have to remember another password.
 format.boolean=
 
@@ -198,7 +198,7 @@ avatarUrl.defined=Your photo (recommended width 150px)
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
 created.text2=Your access code is generated and is displayed once you validate your email.
-created.text3=You will then be able to log-in and start to use the {0} web site.
+created.text3=You will then be able to log in and start to use the {0} web site.
 
 # prepareSignup
 signup.title=Speaker''s registration
@@ -295,7 +295,7 @@ admin.btn.speakersInvited=All invited speakers
 admin.btn.draft=All DRAFT
 admin.btn.submitted=All SUBMITTED
 admin.btn.review=Open for review
-admin.cfp.empty=There is no new submitted proposals for the time being...
+admin.cfp.empty=For the time being there are no new proposals...
 admin.cfp.recentEvents=Events
 admin.cfp.date=Date
 admin.cfp.author=Author
