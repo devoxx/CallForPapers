@@ -91,7 +91,8 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "San Jose, USA"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    // Do we want to send an email for each talk submitted
+    , notifyProposalSubmitted = Play.current.configuration.getBoolean("email.on.new.proposal").getOrElse(false)
     , 1200
   )
 

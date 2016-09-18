@@ -202,11 +202,11 @@ object CallForPaper extends SecureCFPController {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
                 Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
-                Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
-                Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
               }
             }
           }
