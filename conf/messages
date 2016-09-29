@@ -102,9 +102,9 @@ privateMessage=Message for the program committee, motivation for your presentati
 privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk for example on Parleys.com.
 sponsorTalk=Is this a sponsor presentation?
 
-sponsorTalk.help.title=Sponsor talk
+sponsorTalk.help.title=Sponsor presentation checkbox
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Diamond, Platinum, and Gold sponsors may submit Conference talks as part of their sponsor benefits. Tick this checkbox only if you are submitting one of these sponsored talks. Do not tick this checkbox if you are submitting a regular proposal, even if your company is a sponsor.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
