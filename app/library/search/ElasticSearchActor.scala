@@ -23,13 +23,12 @@
 
 package library.search
 
-import java.io.{PrintWriter, FileWriter, File}
-
 import play.api.libs.json.Json
 import akka.actor._
 import play.api.libs.concurrent.Execution.Implicits._
 import models._
-import org.joda.time.{DateTimeZone, DateMidnight, DateTime}
+import models.conference.ConferenceDescriptor
+import org.joda.time.{DateMidnight, DateTime, DateTimeZone}
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -578,7 +577,7 @@ class IndexMaster extends ESActor {
       """.stripMargin
 
 
-    // We use a for-comprehension on purporse so that each action is executed sequentially.
+    // We use a for-comprehension on purpose so that each action is executed sequentially.
     // res2 is executed when res1 is done
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
                         res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsFrench)
@@ -586,8 +585,8 @@ class IndexMaster extends ESActor {
       res2
     }
 
-     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2016");
-                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2016", settingsFrench)
+    val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("proposals_" + ConferenceDescriptor.current().confUrlCode);
+                        res2 <- ElasticSearch.createIndexWithSettings("proposals_" + ConferenceDescriptor.current().confUrlCode, settingsFrench)
     ) yield {
       res2
     }
