@@ -25,18 +25,15 @@ package controllers
 
 import akka.util.Crypt
 import library.search.ElasticSearch
-import models.conference.{ConferenceSlots, ConferenceProposalTypes, ConferenceDescriptor}
-import play.api.libs.Crypto
+import models.conference.{ConferenceSlots, ConferenceProposalTypes}
 import play.api.libs.json.{JsObject, Json}
-import library.{LogURL, SendQuestionToSpeaker, ZapActor}
+import library.{LogURL, ZapActor}
 import models._
 import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.mvc._
-
-import scala.util.Random
 
 /**
  * Publisher is the controller responsible for the Web content of your conference Program.
@@ -88,12 +85,11 @@ object Publisher extends Controller {
       }
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
       maybeSpeaker match {
-        case Some(speaker) => {
+        case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
-        }
         case None => NotFound(views.html.Publisher.speakerNotFound())
       }
   }
@@ -102,11 +98,10 @@ object Publisher extends Controller {
     implicit request =>
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
-        case Some(speaker) => {
+        case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
-        }
         case None => NotFound("Speaker not found")
       }
   }
@@ -132,31 +127,27 @@ object Publisher extends Controller {
       } else {
         val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
         maybeScheduledConfiguration match {
-          case Some(slotConfig) if day == null => {
+          case Some(slotConfig) if day == null =>
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
-          }
-          case Some(slotConfig) if day == "tuesday" => {
+          case Some(slotConfig) if day == "tuesday" =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "tuesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "tuesday"))
-          }
-          case Some(slotConfig) if day == "wednesday" => {
+          case Some(slotConfig) if day == "wednesday" =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "wednesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
-          }
-          case Some(slotConfig) if day == "thursday" => {
+          case Some(slotConfig) if day == "thursday" =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "thursday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 4)
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "thursday"))
-          }
 
           case None => NotFound(views.html.Publisher.agendaNotYetPublished())
         }
@@ -220,18 +211,16 @@ object Publisher extends Controller {
           val results = hitContents.map {
             jsvalue =>
               val index = (jsvalue \ "_index").as[String]
-              val source = (jsvalue \ "_source")
-              val id = (source \ "id").as[String]
+              val source = jsvalue \ "_source"
+              val id = source \ "id"
               val proposal = source.as[Proposal]
               proposal
           }
 
           Ok(views.html.Publisher.searchResult(total, results, q, p)).as("text/html")
         }
-        case r if r.isFailure => {
+        case r if r.isFailure =>
           InternalServerError(r.get)
-        }
       }
-
   }
 }

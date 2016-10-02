@@ -499,7 +499,6 @@ class IndexMaster extends ESActor {
         | }
       """.stripMargin
 
-
     def settingsProposalsEnglish =
       s"""
         |{
@@ -593,15 +592,12 @@ class IndexMaster extends ESActor {
 
     val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
                                 res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsFrench)
-
     ) yield {
       res2
     }
 
     resFinal
   }
-
-
 }
 
 // Actor that is in charge of Indexing content
@@ -625,6 +621,6 @@ class Reaper extends ESActor {
       case r if r.isSuccess =>
         play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
       case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn(s"Could not index speaker ${obj} due to ${r}")
+        play.Logger.of("application.Reaper").warn(s"Could not index speaker $obj due to $r")
     }
 }

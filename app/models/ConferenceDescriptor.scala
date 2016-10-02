@@ -1,7 +1,5 @@
 package models
 
-import java.util.Locale
-
 import models.conference.ConferenceProposalConfigurations
 import org.joda.time.DateTime
 import play.api.Play
@@ -74,6 +72,3 @@ object ProposalConfiguration {
     ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.givesSpeakerFreeEntrance).headOption.getOrElse(false)
   }
 }
-
-
-
