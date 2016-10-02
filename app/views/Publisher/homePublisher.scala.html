@@ -25,40 +25,32 @@
         </thead>
         <tbody>
             <tr>
-                <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
+                <td rowspan="8" class="scheduleHeader scheduleRight">What's on?</td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "tuesday", "Conference Sessions")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
+                </td>
             </tr>
             <tr>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "tuesday", "Tools-in-Action Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-               <tr>
-                <td class="scheduleRow"><a href="https://devoxx.us/hackergarten#tuesday" title="Devoxx US Hackergarten on Tuesday">Hackergarten</a></td>
-                <td class="scheduleRow"><a href="https://devoxx.us/hackergarten#wednesday" title="Devoxx US Hackergarten on Wednesday">Hackergarten</a></td>
-                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "wednesday", "Tools-in-Action Sessions")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "thursday", "Tools-in-Action Sessions")</td>
             </tr>
             <tr>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "tuesday", "Hands-on Labs")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
             </tr>
-            <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
-                </td>
-            </tr>
             <!-- ******************************************************************* //-->
             <tr>
-                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "tuesday", "Quickies")
+                </td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("quick", "wednesday", "Quickies")
                 </td>
@@ -68,22 +60,28 @@
             </tr>
             <!-- ******************************************************************* //-->
             <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow"><a href="https://devoxx.us/hackergarten#tuesday" title="Devoxx US Hackergarten on Tuesday">Hackergarten</a></td>
+                <td class="scheduleRow"><a href="https://devoxx.us/hackergarten#wednesday" title="Devoxx US Hackergarten on Wednesday">Hackergarten</a></td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <!-- ******************************************************************* //-->
+            <tr>
                 <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">
                     @tags.publisher.renderShowDay("ignite", "wednesday", "Ignite Sessions")
                 </td>
                 <td class="scheduleRow">
                     @tags.publisher.renderShowDay("ignite", "thursday", "Ignite Sessions")
-                </td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
                 </td>
             </tr>
         </tbody>
