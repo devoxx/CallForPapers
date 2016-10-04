@@ -63,7 +63,7 @@
                         <h3>Top 5 Reviewers</h3>
                         @bestReviewers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
-                            <small>@br._2 talks reviewed.</small>
+                            <small>@br._3 talks reviewed.</small>
                         }
                     </div>
 
