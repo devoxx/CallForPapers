@@ -1,4 +1,4 @@
-@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], lazyOnes: Map[String, String], totalSubmittedByTrack: Map[String, Int], totalSubmittedByType: Map[String, Int], totalAcceptedByTrack: Map[String, Int], totalAcceptedByType: Map[String, Int], totalSlotsToAllocate: Map[String, Int], totalApprovedSpeakers:Long, totalWithTickets:Long, totalRefusedSpeakers:Long, allApprovedByTrack:Map[String,Int], allApprovedByTalkType:Map[String,Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewers: List[(String, Int, Int)], lazyOnes: Map[String, String], totalSubmittedByTrack: Map[String, Int], totalSubmittedByType: Map[String, Int], totalAcceptedByTrack: Map[String, Int], totalAcceptedByType: Map[String, Int], totalSlotsToAllocate: Map[String, Int], totalApprovedSpeakers:Long, totalWithTickets:Long, totalRefusedSpeakers:Long, allApprovedByTrack:Map[String,Int], allApprovedByTalkType:Map[String,Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">
@@ -60,8 +60,8 @@
                     <div class="clearfix"></div>
 
                     <div class="col-md-4">
-                        <h3>Top Reviewer</h3>
-                        @bestReviewer.filter(_._2.toInt>0).map { br =>
+                        <h3>Top 5 Reviewers</h3>
+                        @bestReviewers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             <small>@br._2 talks reviewed.</small>
                         }
