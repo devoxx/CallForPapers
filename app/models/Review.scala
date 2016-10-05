@@ -423,8 +423,6 @@ object Review {
         (uuid, 0, 0)
       )
       allVoted.toList ++ noReviewsAndNote.toList
-
-
   }
 
   def diffReviewBetween(firstUUID: String, secondUUID: String): Set[String] = Redis.pool.withClient {
@@ -435,5 +433,4 @@ object Review {
         "Proposals:ByState:" + ProposalState.ARCHIVED.code,
         "Proposals:ByState:" + ProposalState.DRAFT.code)
   }
-
 }
