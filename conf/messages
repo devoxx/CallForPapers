@@ -307,7 +307,9 @@ next.page=Next page
 
 admin.proposal=Proposal
 admin.proposals.th.lang=Lang
-admin.proposals.th.abstract=Proposal text
+admin.proposals.th.abstract=Abstract
+admin.sp.speaker=Speaker
+admin.sp.speakers=Speakers
 admin.sp.mainSpeaker=Main speaker
 admin.sp.secSpeaker=Secondary speaker
 admin.sp.otherSpeaker=Other speaker(s)
