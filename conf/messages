@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx 2016
-CONF.subtitle=BE
+CONF.title=Devoxx 2017
+CONF.subtitle=PL
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx BE 2016
-longYearlyName=Devoxx Belgium 2016
-shortName=Devoxx BE
-longName=Devoxx BE 2016 CFP
+shortYearlyName=Devoxx PL 2017
+longYearlyName=Devoxx Poland 2017
+shortName=Devoxx PL
+longName=Devoxx PL 2017 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=BE 2016
-conference.dates=7th-11th November
+longSplittedName_whiteEnd=PL 2017
+conference.dates=21st-23rd June 2017
 # -----------------
-cfp.title=Devoxx BE 2016 CFP
+cfp.title=Devoxx PL 2017 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -157,12 +157,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx BE 2015''s videos on
+video.tag=Review Devoxx PL 2016''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx Belgium 2016:
+theme.track=List of tracks for Devoxx Poland 2017:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx Belgium 2016, 7th-11th November
+appel.conf.dates=Devoxx Poland 2017, 21st-23rd June
 
 # Tracks
 
@@ -468,11 +468,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 7th November
-day-tuesday=Tuesday, 8th November
-day-wednesday=Wednesday, 9th November
-day-thursday=Thursday, 10th November
-day-friday=Friday, 11th November
+day-monday=Monday, 19th June
+day-tuesday=Tuesday, 20th June
+day-wednesday=Wednesday, 21st June
+day-thursday=Thursday, 22nd June
+day-friday=Friday, 23rd June
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -501,11 +501,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 7th November 2016
-sw.show.title.tue=Tuesday, 8th November 2016
-sw.show.title.wed=Wednesday, 9th November 2016
-sw.show.title.thu=Thursday, 10th November 2016
-sw.show.title.fri=Friday, 11th November 2016
+sw.show.title.mon=Monday, 19th June 2017
+sw.show.title.tue=Tuesday, 20th June 2017
+sw.show.title.wed=Wednesday, 21st June 2017
+sw.show.title.thu=Thursday, 22nd June 2017
+sw.show.title.fri=Friday, 23rd June 2017
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -636,8 +636,8 @@ error.invalid=Invalid value
 hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
-menu.blog=Site DevoxxFR
-signup.long=Register as a speaker on Devoxx France CFP
+menu.blog=Site DevoxxPL
+signup.long=Register as a speaker on Devoxx Poland CFP
 sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
@@ -727,7 +727,7 @@ gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, b
 gt.intro.2=If needed, you can also
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
-gt.special.need=If you have a specific speaker you would love to see present at Devoxx BE, drop an email to program@devoxx.be and we’ll do our best to get them there.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx PL, drop an email to cfp@devoxx.pl and we’ll do our best to get them there.
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes

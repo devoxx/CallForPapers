@@ -103,9 +103,6 @@ object BucketContentLoader extends AssetsBuilder {
         // Clever-cloud bucket FS system are mounted into /app
         val resourceAsHtml = new File("/app", resourceName + ".html")
 
-        if (resourceAsHtml.exists() && resourceAsHtml.canRead) {
-          MovedPermanently(routes.BucketContentLoader.at(file + ".html").url)
-        } else {
           val resource = new File("/app", resourceName)
           if (resource.exists() && resource.canRead) {
 
@@ -181,7 +178,6 @@ object BucketContentLoader extends AssetsBuilder {
           } else {
             NotFound("This page does not exist anymore or was moved. Please contact us, it's related to the Program.")
           }
-        }
       }.getOrElse(NotFound)
   }
 
