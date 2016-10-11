@@ -36,15 +36,14 @@ import play.api.i18n.Messages
  * Author: nmartignole
  * Created: 04/10/2013 15:56
  */
-
 object Mails {
 
-  lazy val from = ConferenceDescriptor.current().fromEmail
-  lazy val committeeEmail = ConferenceDescriptor.current().committeeEmail
-  lazy val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
-  lazy val bcc = ConferenceDescriptor.current().bccEmail
+  lazy val from: String = ConferenceDescriptor.current().fromEmail
+  lazy val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
+  lazy val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
+  lazy val bcc: String = ConferenceDescriptor.current().bccEmail
   
-  def sendResetPasswordLink(email: String, resetUrl: String) = {
+  def sendResetPasswordLink(email: String, resetUrl: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val timestamp: String = new DateTime().toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("HH:mm dd/MM")
     val subject:String = Messages("mail.reset_password_link.subject",timestamp,Messages("longName"))
@@ -57,7 +56,7 @@ object Mails {
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
   }
 
-  def sendAccessCode(email: String, code: String) = {
+  def sendAccessCode(email: String, code: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject:String = Messages("mail.access_code.subject", Messages("longName"))
     emailer.setSubject(subject)
@@ -71,7 +70,7 @@ object Mails {
     )
   }
 
-  def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
+  def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.account_created.subject", Messages("longName"))
     emailer.setSubject(subject)
@@ -82,7 +81,7 @@ object Mails {
     emailer.send(views.txt.Mails.sendAccountCreated(firstname, email, tempPassword).toString(), views.html.Mails.sendAccountCreated(firstname, email, tempPassword).toString)
   }
 
-  def sendValidateYourEmail(email: String, validationLink: String) = {
+  def sendValidateYourEmail(email: String, validationLink: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val conferenceName=Messages("longName")
     val subject: String = Messages("mail.email_validation.subject", conferenceName)
@@ -97,7 +96,7 @@ object Mails {
     )
   }
 
-  def sendBugReport(bugReport: Issue) = {
+  def sendBugReport(bugReport: Issue): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.issue_reported.subject")
     emailer.setSubject(subject)
@@ -112,7 +111,7 @@ object Mails {
     )
   }
 
-  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.cfp_message_to_speaker.subject", proposal.title, ConferenceDescriptor.current().eventCode)
     emailer.setSubject(subject)
@@ -125,7 +124,7 @@ object Mails {
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+    emailer.addCc(listOfEmails: _*) // magic trick to create a java varargs from a scala List
 
     emailer.setCharset("utf-8")
     emailer.send(
@@ -146,7 +145,7 @@ object Mails {
     )
   }
 
-  def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.speaker_message_to_cfp.subject", proposal.title,fromWebuser.cleanName)
     emailer.setSubject(subject)
@@ -168,7 +167,7 @@ object Mails {
     )
   }
 
-  def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal) = {
+  def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.notify_proposal.subject", fromWebuser.cleanName, proposal.title)
 
@@ -183,7 +182,7 @@ object Mails {
     )
   }
 
-  def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[PRIVATE][${proposal.title}]")
     emailer.addFrom(from)
@@ -197,7 +196,7 @@ object Mails {
     )
   }
 
-  def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]) = {
+  def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     if (proposals.size == 1) {
       val subject: String = Messages("mail.draft_single_reminder.subject", Messages("longYearlyName"))
@@ -218,7 +217,7 @@ object Mails {
     )
   }
 
-  def sendProposalApproved(toWebuser: Webuser, proposal: Proposal) = {
+  def sendProposalApproved(toWebuser: Webuser, proposal: Proposal): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.proposal_approved.subject",proposal.title)
     emailer.setSubject(subject)
@@ -231,7 +230,7 @@ object Mails {
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+    emailer.addCc(listOfEmails: _*) // magic trick to create a java varargs from a scala List
 
     emailer.setCharset("utf-8")
     emailer.send(
@@ -240,7 +239,7 @@ object Mails {
     )
   }
 
-  def sendProposalRefused(toWebuser: Webuser, proposal: Proposal) = {
+  def sendProposalRefused(toWebuser: Webuser, proposal: Proposal): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.proposal_refused.subject",proposal.title)
     emailer.setSubject(subject)
@@ -252,7 +251,7 @@ object Mails {
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+    emailer.addCc(listOfEmails: _*) // magic trick to create a java varargs from a scala List
 
     emailer.setCharset("utf-8")
     emailer.send(
@@ -261,7 +260,7 @@ object Mails {
     )
   }
 
-  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
+  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
     val subject: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
@@ -277,7 +276,7 @@ object Mails {
     )
   }
 
-  def sendInvitationForSpeaker(speakerEmail: String, message: String, requestId: String) = {
+  def sendInvitationForSpeaker(speakerEmail: String, message: String, requestId: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val shortYearlyName = Messages("shortYearlyName")
     emailer.setSubject(s"$shortYearlyName special request")
@@ -292,7 +291,7 @@ object Mails {
     )
   }
 
-  def sendGoldenTicketEmail(invitedWebuser: Webuser, gt: GoldenTicket) = {
+  def sendGoldenTicketEmail(invitedWebuser: Webuser, gt: GoldenTicket): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
     val subject: String = Messages("mail.goldenticket.subject", Messages("shortYearlyName"))
@@ -306,5 +305,4 @@ object Mails {
       views.html.Mails.goldenticket.sendGoldenTicketEmail(invitedWebuser, gt).toString()
     )
   }
-
 }

@@ -145,7 +145,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def sendDraftReminder() {
+  def  sendDraftReminder() {
     val allProposalBySpeaker = Proposal.allDrafts().groupBy(_.mainSpeaker)
     allProposalBySpeaker.foreach {
       case (speaker: String, draftProposals: List[Proposal]) => {

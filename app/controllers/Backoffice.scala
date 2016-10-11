@@ -9,7 +9,7 @@ import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
 import play.api.data._
 import play.api.libs.json.Json
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -19,13 +19,13 @@ import play.api.mvc.Action
  */
 object Backoffice extends SecureCFPController {
 
-  def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
+  def homeBackoffice(): Action[AnyContent] = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.Backoffice.homeBackoffice())
   }
 
   // Add or remove the specified user from "cfp" security group
-  def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
+  def switchCFPAdmin(uuidSpeaker: String): Action[AnyContent] = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Webuser.findByUUID(uuidSpeaker).filterNot(_.uuid == "bd894205a7d579351609f8dcbde49b9ffc0fae13").map {
         webuser =>
@@ -264,7 +264,7 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def sendDraftReminder = SecuredAction(IsMemberOf("admin")) {
+  def sendDraftReminder: Action[AnyContent] = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       ZapActor.actor ! DraftReminder()
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")

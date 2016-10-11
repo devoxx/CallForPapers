@@ -55,8 +55,8 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(21)
-  val toDay = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(23)
+  val fromDay: DateTime = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(21)
+  val toDay: DateTime = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(23)
 
   def current() = new ConferenceDescriptor(
     eventCode = "DVUS17",
@@ -104,5 +104,5 @@ object ConferenceDescriptor {
 
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
-  def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+  def isHTTPSEnabled: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 }

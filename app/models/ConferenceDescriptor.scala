@@ -50,13 +50,13 @@ object ProposalConfiguration {
     ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
   }
 
-  def totalSlotsCount = ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
+  def totalSlotsCount: Int = ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
 
   def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
     ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
   }
 
-  def getProposalsImplyingATrackSelection = {
+  def getProposalsImplyingATrackSelection: List[ProposalConfiguration] = {
     ConferenceProposalConfigurations.ALL.filter(p => p.impliedSelectedTrack.nonEmpty)
   }
 
