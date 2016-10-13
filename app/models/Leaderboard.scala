@@ -60,13 +60,9 @@ object Leaderboard {
       tx.set("Leaderboard:totalNoVotes", totalNoVotes.toString)
 
       val mostReviewed = Review.mostReviewed()
-      mostReviewed.map{
-        mr=>
-        tx.set("Leaderboard:mostReviewed:proposal", mr._1)
-        tx.set("Leaderboard:mostReviewed:score", mr._2.toString)
-      }.getOrElse{
-        tx.del("Leaderboard:mostReviewed:proposal")
-        tx.del("Leaderboard:mostReviewed:score")
+      tx.del("Leaderboard:mostReviewed")
+      mostReviewed.foreach {
+        mr => tx.hset("Leaderboard:mostReviewed", mr._1, mr._2.toString)
       }
 
       Review.bestReviewer().map {
@@ -169,12 +165,12 @@ object Leaderboard {
       }
   }
 
-  def mostReviewed():Option[(String,String)] = {
-    Redis.pool.withClient {
-      implicit client =>
-        for (proposalId <- client.get("Leaderboard:mostReviewed:proposal");
-             score <- client.get("Leaderboard:mostReviewed:score")) yield (proposalId, score)
-    }
+  def mostReviewed():Map[String,Int] = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll("Leaderboard:mostReviewed").map {
+        case (key: String, value: String) =>
+          (key, value.toInt)
+      }
   }
 
   def bestReviewer():Option[(String,String)] = Redis.pool.withClient {

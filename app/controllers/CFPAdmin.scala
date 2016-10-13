@@ -213,7 +213,7 @@ object CFPAdmin extends SecureCFPController {
                                totalSpeakers: Long,
                                totalProposals: Long,
                                totalVotes: Long,
-                               mostVoted: Option[(String, String)],
+                               mostReviewed: List[(String, Int)],
                                bestReviewers: List[(String, Int, Int)],
                                lazyOnes: Map[String, String],
                                generousVoters: List[(String, BigDecimal)],
@@ -241,7 +241,7 @@ object CFPAdmin extends SecureCFPController {
       val totalVotes = Leaderboard.totalVotes()
       val totalWithVotes = Leaderboard.totalWithVotes()
       val totalNoVotes = Leaderboard.totalNoVotes()
-      val mostVoted = Leaderboard.mostReviewed()
+      val mostReviewed = Leaderboard.mostReviewed().map{ case(k,v) => (k.toString, v) } toList
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
 
@@ -272,7 +272,7 @@ object CFPAdmin extends SecureCFPController {
                             .filter( _._2 > 0)
 
       def leaderBoardParams = LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
-                                 mostVoted,
+                                 mostReviewed,
                                  bestReviewers,
                                  lazyOnes, generousVoters,
                                  proposalsBySpeakers,

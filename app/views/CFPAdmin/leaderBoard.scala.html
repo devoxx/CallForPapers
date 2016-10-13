@@ -51,12 +51,13 @@
                         <small><i class="icon-camera-retro"></i> reviews</small>
                     </div>
 
-                    @params.mostVoted.map { mv =>
-                        <div class="col-md-3">
-                            <h3>Most Votes</h3>
-                            <a href="@routes.CFPAdmin.showVotesForProposal(mv._1)">@mv._1</a> with @mv._2 reviews
-                        </div>
-                    }
+                    <div class="col-md-3">
+                        <h3>Most Votes</h3>
+                        @params.mostReviewed.map { mr =>
+                            <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes<br><br>
+                        }
+                    </div>
+
                     <div class="col-md-3">
                         <h3>Eager Speakers</h3>
                         @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
@@ -66,8 +67,8 @@
                     </div>
                     <div class="col-md-3">
                         <h3>Most Debatable</h3>
-                        @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(5).map { tc =>
-                            <a href="@routes.CFPAdmin.showVotesForProposal(tc._1)">@tc._1</a> with @tc._2 comments<br><br>
+                        @params.totalCommentsPerProposal.map { tc =>
+                            <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments<br><br>
                         }
                     </div>
                     <div class="clearfix"></div>

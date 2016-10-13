@@ -209,7 +209,7 @@ object Review {
   }
 
   def mostReviewed(): Option[VotesPerProposal] = {
-    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.headOption
+    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.take(5).headOption
     maybeBestProposal
   }
 
@@ -251,6 +251,8 @@ object Review {
     val proposalsCommentsCount: List[(String, Int)] = {
       allProposalsAndReviews.map(proposal => (proposal._1, Comment.allInternalComments(proposal._1).size))
                               .filter(_._2 > 2) // At least three comments
+                              .sortBy(_._2)
+                              .reverse.take(5)
     }
 
     proposalsCommentsCount
