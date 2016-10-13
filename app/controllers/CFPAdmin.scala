@@ -220,6 +220,7 @@ object CFPAdmin extends SecureCFPController {
                                proposalsBySpeakers: List[(String, Int)],
                                totalSubmittedByTrack: Map[String, Int],
                                totalSubmittedByType: Map[String, Int],
+                               totalCommentsPerProposal: List[(String, Int)],
                                totalAcceptedByTrack: Map[String, Int],
                                totalAcceptedByType: Map[String, Int],
                                totalSlotsToAllocate: Map[String, Int],
@@ -253,6 +254,7 @@ object CFPAdmin extends SecureCFPController {
       val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
       val totalWithTickets = Leaderboard.totalWithTickets()
       val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
+      val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map{ case(k,v) => (k.toString, v) } toList
 
       val allApproved = ApprovedProposal.allApproved()
 
@@ -275,6 +277,7 @@ object CFPAdmin extends SecureCFPController {
                                  lazyOnes, generousVoters,
                                  proposalsBySpeakers,
                                  totalSubmittedByTrack, totalSubmittedByType,
+                                 totalCommentsPerProposal,
                                  totalAcceptedByTrack, totalAcceptedByType,
                                  totalSlotsToAllocate,
                                  totalApprovedSpeakers,

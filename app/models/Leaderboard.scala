@@ -131,6 +131,13 @@ object Leaderboard {
       val totalRefusedSpeakers = refusedSpeakers.size
       tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
 
+      val totalCommentsPerProposal = Review.totalInternalCommentsPerProposal()
+      tx.del("Leaderboard:totalCommentsPerProposal")
+      totalCommentsPerProposal.map {
+        case (proposalId: String, totalComments: Int) =>
+          tx.hset("Leaderboard:totalCommentsPerProposal", proposalId, totalComments.toString)
+      }
+
       tx.exec()
   }
 
@@ -152,6 +159,14 @@ object Leaderboard {
 
   def totalNoVotes():Long = {
     getFromRedis("Leaderboard:totalNoVotes")
+  }
+
+  def totalCommentsPerProposal():Map[String,Int] = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll("Leaderboard:totalCommentsPerProposal").map {
+        case (key: String, value: String) =>
+          (key, value.toInt)
+      }
   }
 
   def mostReviewed():Option[(String,String)] = {
