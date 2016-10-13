@@ -250,7 +250,7 @@ object Review {
   def totalInternalCommentsPerProposal(): List[(String, Int)] = {
     val proposalsCommentsCount: List[(String, Int)] = {
       allProposalsAndReviews.map(proposal => (proposal._1, Comment.allInternalComments(proposal._1).size))
-                              .filter(_._2 > 1) // At least two comments
+                              .filter(_._2 > 2) // At least three comments
     }
 
     proposalsCommentsCount
