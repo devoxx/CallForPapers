@@ -23,6 +23,8 @@
 
 package models
 
+import java.util
+
 import library.Redis
 
 /**
@@ -30,7 +32,8 @@ import library.Redis
  * Created by nicolas on 21/01/2014.
  */
 object Leaderboard {
-  def computeStats() = Redis.pool.withClient {
+
+  def computeStats(): util.List[AnyRef] = Redis.pool.withClient {
     implicit client =>
 
       // First, stats on Proposal, cause Computed:Reviewer:ReviewedOne is used for
@@ -119,16 +122,16 @@ object Leaderboard {
       val totalWithTickets = ApprovedProposal.allApprovedSpeakersWithFreePass().map(_.uuid).diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalWithTickets", totalWithTickets.toString)
 
-    val allCFPWebusers= Webuser.allCFPWebusers().map(w=>w.uuid).toSet
-    val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
-    val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
+      val allCFPWebusers= Webuser.allCFPWebusers().map(w=>w.uuid).toSet
+      val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
+      val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
 
-    val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
+      val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
 
-    val totalRefusedSpeakers = refusedSpeakers.size
-    tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
+      val totalRefusedSpeakers = refusedSpeakers.size
+      tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
 
-    tx.exec()
+      tx.exec()
   }
 
   def totalSpeakers():Long = {

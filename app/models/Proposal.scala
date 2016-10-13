@@ -1,13 +1,13 @@
 package models
 
 import library.{Dress, Redis}
-import models.conference.{ConferenceTracks, ConferenceDescriptor, ConferenceProposalTypes}
+import models.conference.{ConferenceDescriptor, ConferenceProposalTypes, ConferenceTracks}
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import org.joda.time.Instant
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 import play.api.templates.HtmlFormat
 
 /**
@@ -96,7 +96,7 @@ object ProposalState {
     BACKUP
   )
 
-  val allAsCode = all.map(_.code)
+  val allAsCode: List[String] = all.map(_.code)
 
   def parse(state: String): ProposalState = {
     state match {
@@ -170,7 +170,7 @@ case class Proposal(id: String,
 
 object Proposal {
 
-  implicit val proposalFormat = Json.format[Proposal]
+  implicit val proposalFormat: Format[Proposal] = Json.format[Proposal]
 
   val langs = Seq(("en", "English"), ("fr", "Français"))
 
@@ -869,7 +869,9 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
-      proposals.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED) == false && proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
+      !proposals.exists(proposal => proposal.state == ProposalState.APPROVED ||
+                                    proposal.state == ProposalState.ACCEPTED) &&
+                                    proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
@@ -940,7 +942,7 @@ object Proposal {
   private def resetVotesIfProposalTypeIsUpdated(proposalId: String, talkType: ProposalType, oldTalkType: ProposalType, state: ProposalState) {
     if (oldTalkType.id != talkType.id) {
       if (state == ProposalState.DRAFT) {
-        if (ApprovedProposal.isApproved(proposalId, talkType.id) == false) {
+        if (!ApprovedProposal.isApproved(proposalId, talkType.id)) {
           Review.archiveAllVotesOnProposal(proposalId)
           Comment.saveInternalComment(proposalId, Webuser.Internal.uuid, s"All votes deleted for this talk, because it was changed from [${Messages(oldTalkType.id)}] to [${Messages(talkType.id)}]")
         }
@@ -948,5 +950,4 @@ object Proposal {
     }
 
   }
-
 }

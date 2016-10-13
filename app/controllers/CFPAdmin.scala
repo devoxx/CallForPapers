@@ -4,13 +4,14 @@ import library.search.ElasticSearch
 import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
-import models.conference.{ConferenceProposalTypes, ConferenceDescriptor}
+import models.conference.{ConferenceDescriptor, ConferenceProposalTypes}
 import org.apache.commons.lang3.StringUtils
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{Action, AnyContent}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -20,7 +21,7 @@ import play.api.libs.json.{JsObject, Json}
   */
 object CFPAdmin extends SecureCFPController {
 
-  def index(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def index(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       val sorter = proposalSorter(sort)
@@ -208,6 +209,29 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
+  case class LeaderBoardParams(
+                               totalSpeakers: Long,
+                               totalProposals: Long,
+                               totalVotes: Long,
+                               mostVoted: Option[(String, String)],
+                               bestReviewers: List[(String, Int, Int)],
+                               lazyOnes: Map[String, String],
+                               generousVoters: List[(String, BigDecimal)],
+                               proposalsBySpeakers: List[(String, Int)],
+                               totalSubmittedByTrack: Map[String, Int],
+                               totalSubmittedByType: Map[String, Int],
+                               totalAcceptedByTrack: Map[String, Int],
+                               totalAcceptedByType: Map[String, Int],
+                               totalSlotsToAllocate: Map[String, Int],
+                               totalApprovedSpeakers: Long,
+                               totalWithTickets: Long,
+                               totalRefusedSpeakers: Long,
+                               allApprovedByTrack: Map[String, Int],
+                               allApprovedByTalkType: Map[String, Int],
+                               totalWithVotes: Long,
+                               totalNoVotes: Long
+                              )
+
   def leaderBoard = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
@@ -216,7 +240,7 @@ object CFPAdmin extends SecureCFPController {
       val totalVotes = Leaderboard.totalVotes()
       val totalWithVotes = Leaderboard.totalWithVotes()
       val totalNoVotes = Leaderboard.totalNoVotes()
-      val maybeMostVoted = Leaderboard.mostReviewed()
+      val mostVoted = Leaderboard.mostReviewed()
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
 
@@ -235,24 +259,32 @@ object CFPAdmin extends SecureCFPController {
       val allApprovedByTrack:Map[String,Int] = allApproved.groupBy(_.track.label).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
       val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
 
-
+      // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
       def generousVoters:List[(String, BigDecimal)] =
           bestReviewers.filter(_._3 > 0)
                        .map(b=>(b._1 , BigDecimal(b._2.toDouble / b._3.toDouble).round( new java.math.MathContext(3))))
 
-      Ok(
-        views.html.CFPAdmin.leaderBoard(
-          totalSpeakers, totalProposals, totalVotes, totalWithVotes,
-          totalNoVotes, maybeMostVoted, bestReviewers, lazyOnes, generousVoters,
-          totalSubmittedByTrack, totalSubmittedByType,
-          totalAcceptedByTrack, totalAcceptedByType,
-          totalSlotsToAllocate,
-          totalApprovedSpeakers,
-          totalWithTickets,
-          totalRefusedSpeakers,
-          allApprovedByTrack,allApprovedByTalkType
-        )
-      )
+      def proposalsBySpeakers:List[(String, Int)] =
+                     Speaker.allSpeakers()
+                            .map( speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
+                            .filter( _._2 > 0)
+
+      def leaderBoardParams = LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
+                                 mostVoted,
+                                 bestReviewers,
+                                 lazyOnes, generousVoters,
+                                 proposalsBySpeakers,
+                                 totalSubmittedByTrack, totalSubmittedByType,
+                                 totalAcceptedByTrack, totalAcceptedByType,
+                                 totalSlotsToAllocate,
+                                 totalApprovedSpeakers,
+                                 totalWithTickets,
+                                 totalRefusedSpeakers,
+                                 allApprovedByTrack,
+                                 allApprovedByTalkType,
+                                 totalWithVotes, totalNoVotes)
+
+      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
@@ -316,7 +348,7 @@ object CFPAdmin extends SecureCFPController {
           }.map {
             jsvalue =>
               val index = (jsvalue \ "_index").as[String]
-              val source = (jsvalue \ "_source")
+              val source = jsvalue \ "_source"
               index match {
                 case "proposals" => {
                   val id = (source \ "id").as[String]
@@ -342,7 +374,6 @@ object CFPAdmin extends SecureCFPController {
           InternalServerError(r.get)
         }
       }
-
   }
 
   def allSponsorTalks = SecuredAction(IsMemberOf("cfp")) {
@@ -552,9 +583,9 @@ object CFPAdmin extends SecureCFPController {
       req.request.body.asFormUrlEncoded.map {
         mapsByTrack =>
           TrackLeader.updateAllTracks(mapsByTrack)
-          Redirect(routes.CFPAdmin.allCFPWebusers).flashing("success" -> "List of track leaders updated")
+          Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("success" -> "List of track leaders updated")
       }.getOrElse {
-        Redirect(routes.CFPAdmin.allCFPWebusers).flashing("error" -> "No value received")
+        Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("error" -> "No value received")
       }
   }
 
@@ -630,32 +661,29 @@ object CFPAdmin extends SecureCFPController {
       )
   }
 
-  def setPreferredDay(proposalId: String, day: String) = SecuredAction(IsMemberOf("cfp")) {
+  def setPreferredDay(proposalId: String, day: String): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.setPreferredDay(proposalId: String, day: String)
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> ("Preferred day set to " + day))
   }
 
-  def resetPreferredDay(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+  def resetPreferredDay(proposalId: String): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.resetPreferredDay(proposalId: String)
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "No preferences")
   }
 
-  def showProposalsWithNoVotes() = SecuredAction(IsMemberOf("cfp")) {
+  def showProposalsWithNoVotes(): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val proposals = Review.allProposalsWithNoVotes
       Ok(views.html.CFPAdmin.showProposalsWithNoVotes(proposals))
   }
 
-  def history(proposalId:String)=SecuredAction(IsMemberOf("cfp")){
+  def history(proposalId:String): Action[AnyContent] =SecuredAction(IsMemberOf("cfp")){
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map{
         proposal:Proposal=>
           Ok(views.html.CFPAdmin.history(proposal))
       }.getOrElse(NotFound("Proposal not found"))
   }
-
 }
-
-

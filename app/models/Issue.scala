@@ -23,7 +23,6 @@
 
 package models
 
-import models.conference.ConferenceDescriptor
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -31,6 +30,7 @@ import play.api.libs.ws.WS
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import library.GitUtils
+import models.conference.ConferenceDescriptor
 import play.api.Play
 
 

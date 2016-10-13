@@ -58,7 +58,7 @@ object ConferenceDescriptor {
   val fromDay: DateTime = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(21)
   val toDay: DateTime = new DateTime().withYear(2017).withMonthOfYear(2).withDayOfMonth(23)
 
-  def current() = new ConferenceDescriptor(
+  def current(): ConferenceDescriptor = new ConferenceDescriptor(
     eventCode = "DVUS17",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxus2017",

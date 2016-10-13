@@ -11,7 +11,6 @@ package library
 import org.apache.commons.lang3.StringUtils
 import play.api.Play._
 import redis.clients.jedis._
-import redis.clients.jedis.exceptions.JedisConnectionException
 
 import scala.collection.immutable._
 
@@ -288,7 +287,7 @@ trait Dress {
       if (play.Logger.of("library.Zedis").isDebugEnabled) {
         play.Logger.of("library.Zedis").debug(s"srem $key $member")
       }
-      j.srem(key, Seq(member).toSeq: _*).longValue()
+      j.srem(key, Seq(member): _*).longValue()
     }
 
     def srem(key: String, members: Set[String]): Long = {
@@ -342,5 +341,4 @@ class Pool(val underlying: JedisPool) {
       underlying.returnResourceObject(jedis)
     }
   }
-
 }

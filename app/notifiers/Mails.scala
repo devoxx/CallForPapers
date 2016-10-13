@@ -41,7 +41,7 @@ object Mails {
   lazy val from: String = ConferenceDescriptor.current().fromEmail
   lazy val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
   lazy val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
-  lazy val bcc: String = ConferenceDescriptor.current().bccEmail
+  lazy val bcc: Option[String] = ConferenceDescriptor.current().bccEmail
   
   def sendResetPasswordLink(email: String, resetUrl: String): Unit = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
