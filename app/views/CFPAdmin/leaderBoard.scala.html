@@ -61,7 +61,7 @@
                         <h3>Most Proposals</h3>
                         @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
-                            @br._2 proposals
+                            @tags.renderMostProposals(br._2)
                         }
                     </div>
                     <div class="col-md-3">
