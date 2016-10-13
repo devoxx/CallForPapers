@@ -208,8 +208,8 @@ object Review {
     totalPerProposal.size
   }
 
-  def mostReviewed(): Option[VotesPerProposal] = {
-    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.take(5).headOption
+  def mostReviewed(): List[VotesPerProposal] = {
+    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.take(5)
     maybeBestProposal
   }
 
