@@ -90,7 +90,7 @@ object GoldenTicketController extends SecureCFPController {
 
       request.headers.get(IF_NONE_MATCH) match {
         case Some(tag) if tag == etag.toString => NotModified
-        case _ => Ok(views.html.GoldenTicketController.showAllProposals(allProposalsForReview, page, sort, ascdesc)).withHeaders(ETAG -> etag.toString)
+        case _ => Ok(views.html.GoldenTicketController.showAllProposals(allProposalsForReview, page, sort, ascdesc, track)).withHeaders(ETAG -> etag.toString)
       }
 
   }
@@ -152,7 +152,7 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
-          case Some(proposal) => {
+          case Some(proposal) =>
             // The next proposal I should review
             val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
@@ -162,7 +162,6 @@ object GoldenTicketController extends SecureCFPController {
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
             Ok(views.html.GoldenTicketController.showVotesForProposal(uuid, proposal, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
-          }
           case None => NotFound("Proposal not found").as("text/html")
         }
       }
@@ -196,5 +195,4 @@ object GoldenTicketController extends SecureCFPController {
   private def createCookie(webuser: Webuser) = {
     Cookie("cfp_rm", value = Crypto.encryptAES(webuser.uuid), maxAge = Some(588000))
   }
-
 }
