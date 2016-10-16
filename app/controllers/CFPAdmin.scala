@@ -401,7 +401,9 @@ object CFPAdmin extends SecureCFPController {
   def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Review.allVotes()
+      val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = {
+        Review.allVotes()
+      }
       val totalApproved = ApprovedProposal.countApproved(confType)
 
       val allProposals = Proposal.loadAndParseProposals(reviews.keySet)
@@ -412,11 +414,10 @@ object CFPAdmin extends SecureCFPController {
           maybeProposal match {
             case None => play.Logger.of("CFPAdmin").error(s"Unable to load proposal id $proposalId")
               None
-            case Some(p) => {
+            case Some(p) =>
               val goldenTicketScore:Double = ReviewByGoldenTicket.averageScore(p.id)
               val gtVoteCast:Long = ReviewByGoldenTicket.totalVoteCastFor(p.id)
               Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast)
-            }
           }
       }
 
