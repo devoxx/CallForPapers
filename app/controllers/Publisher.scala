@@ -164,9 +164,9 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(ConferenceSlots.tuesday, "tuesday")
-        case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(ConferenceSlots.wednesday, "wednesday")
-        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(ConferenceSlots.thursday, "thursday")
+        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(ConferenceSlots.tuesdaySchedule, "tuesday")
+        case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(ConferenceSlots.wednesdaySchedule, "wednesday")
+        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(ConferenceSlots.thursdaySchedule, "thursday")
         case other => NotFound("Day not found")
       }
   }
