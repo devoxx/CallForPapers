@@ -61,11 +61,9 @@
                                 <th>Abst.</th>
                                 <th>GT & Committee</th>
                                 <th>Title</th>
-                                <th>Proposal id</th>
                                 <th>Speakers</th>
                                 <th>Type</th>
                                 <th>Track</th>
-                                <th>Lang</th>
                                 <th><i class="icon-thumbs-up"></i> / <i class="icon-thumbs-down"></i></th>
                             </tr>
                         </thead>
@@ -98,12 +96,10 @@
                                     </td>
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id"><small>@proposal.title</small></a>
-                                    </td>
-                                    <td><small>@proposal.id
                                         @if(proposal.sponsorTalk){
-                                        &nbsp;<label class="label label-info"><i class="icon-dollar"></i> sponsor</label>
+                                                &nbsp;<label class="label label-info"><i class="icon-dollar"></i> sponsor</label>
                                         }
-                                    </small></td>
+                                    </td>
                                     <td>
                                         @proposal.allSpeakers.map { s: Speaker =>
                                             @if(models.Invitation.isInvited(s.uuid)){
@@ -119,7 +115,6 @@
                                     <td>
                                         <small>@Messages(proposal.track.label)</small>
                                     </td>
-                                    <td>@proposal.lang</td>
                                     <td>
                                         @if(proposal.state==ProposalState.SUBMITTED || proposal.state==ProposalState.BACKUP){
                                             @if(approved){
