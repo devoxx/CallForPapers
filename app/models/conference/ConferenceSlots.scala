@@ -205,23 +205,6 @@ object ConferenceSlots {
     quickiesWednesdayLunch1 ++ quickiesWednesdayLunch2
   }
 
-  val quickiesSlotsThursday: List[Slot] = {
-
-    val quickiesThursdayLunch1 = ConferenceRooms.allRoomsQuick.map {
-      r1 =>
-        SlotBuilder(ConferenceProposalTypes.QUICK.id, THURSDAY,
-          new DateTime(THU_DATE + "13:10" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(THU_DATE + "13:25" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r1)
-    }
-    val quickiesThursdayLunch2 = ConferenceRooms.allRoomsQuick.map {
-      r2 =>
-        SlotBuilder(ConferenceProposalTypes.QUICK.id, THURSDAY,
-          new DateTime(THU_DATE + "13:35" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(THU_DATE + "13:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
-    }
-    quickiesThursdayLunch1 ++ quickiesThursdayLunch2
-  }
-
   // CONFERENCE KEYNOTES
 
   val keynoteSlotsTuesday: List[Slot] = {
@@ -498,7 +481,6 @@ object ConferenceSlots {
       thursdayBreaks ++
       keynoteSlotsThursday ++
       conferenceSlotsThursday ++
-      quickiesSlotsThursday ++
       tiaSlotsThursday ++
       labsSlotsThursday
   }
