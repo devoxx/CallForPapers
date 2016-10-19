@@ -691,7 +691,7 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def allProposalsByCompany() = SecuredAction(IsMemberOf("admin")) {
+  def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
