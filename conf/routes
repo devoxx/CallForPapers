@@ -95,6 +95,7 @@ GET           /cfpadmin/allWebusers                                             
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
+GET           /cfpadmin/allSpeakers/byProposals/byCompany                       controllers.CFPAdmin.allProposalsByCompany()
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()

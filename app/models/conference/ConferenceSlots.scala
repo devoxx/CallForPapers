@@ -444,7 +444,7 @@ object ConferenceSlots {
   )
 
   val thursdayBreaks = List(
-    SlotBuilder(ConferenceSlotBreaks.petitDej, THURSDAY,
+    SlotBuilder(ConferenceSlotBreaks.breakfast, THURSDAY,
       new DateTime(THU_DATE + "08:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
       new DateTime(THU_DATE + "09:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)))
     , SlotBuilder(ConferenceSlotBreaks.coffee, THURSDAY,
