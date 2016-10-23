@@ -1,4 +1,3 @@
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}

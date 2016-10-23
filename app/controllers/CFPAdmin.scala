@@ -230,7 +230,8 @@ object CFPAdmin extends SecureCFPController {
                                allApprovedByTrack: Map[String, Int],
                                allApprovedByTalkType: Map[String, Int],
                                totalWithVotes: Long,
-                               totalNoVotes: Long
+                               totalNoVotes: Long,
+                               totalGTStats: List[(String, Int, Int)]
                               )
 
   def leaderBoard = SecuredAction(IsMemberOf("cfp")) {
@@ -244,6 +245,9 @@ object CFPAdmin extends SecureCFPController {
       val mostReviewed = Leaderboard.mostReviewed().map{ case(k,v) => (k.toString, v) } toList
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
+
+
+      val totalGTStats = ReviewByGoldenTicket.allReviewersAndStats()
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
@@ -285,7 +289,8 @@ object CFPAdmin extends SecureCFPController {
                                  totalRefusedSpeakers,
                                  allApprovedByTrack,
                                  allApprovedByTalkType,
-                                 totalWithVotes, totalNoVotes)
+                                 totalWithVotes, totalNoVotes,
+                                 totalGTStats)
 
       Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams))
   }
