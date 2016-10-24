@@ -1,4 +1,13 @@
-@(currentUser: String, proposal: models.Proposal, currentAverageScore: Double, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack: Option[Proposal], nextToBeReviewedSameFormat: Option[Proposal], averageScoreGT: Double, countVotesCastGT: Option[Long])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(currentUser: String,
+  proposal: models.Proposal,
+  currentAverageScore: Double,
+  totalVotesCast: Long,
+  totalVotes: Long,
+  allVotes: List[(String, Double)],
+  nextToBeReviewedSameTrack: Option[Proposal],
+  nextToBeReviewedSameFormat: Option[Proposal],
+  averageScoreGT: Double,
+  countVotesCastGT: Option[Long])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 @import models.conference.ConferenceDescriptor
     @main("Votes for " + proposal.id + "/" + proposal.title) {
         <div class="row">
@@ -101,21 +110,13 @@
                             @Messages("svp.gt.novotes")
                         } else {
 
-                            <h4>@averageScoreGT <small>@Messages("svp.gt.average", countVotesCastGT.getOrElse(0))</small></h4>
-
-
-
-                            <div class="progress" style="height: 50px">
-                                <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
-                                    <span> @currentAverageScore by @totalVotesCast Commitee</span>
-                                </div>
-                            </div>
                             <div class="progress" style="height: 50px">
                                 <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: @Math.round(averageScoreGT * 10)%">
-                                    <span>@averageScoreGT by @countVotesCastGT.getOrElse(0) GT </span>
+                                    <span>@averageScoreGT by @countVotesCastGT.getOrElse(0) Golden Ticket(s)</span>
                                 </div>
                             </div>
 
+                            <h4>@averageScoreGT <small>@Messages("svp.gt.average", countVotesCastGT.getOrElse(0))</small></h4>
 
                         }
                         </div>
