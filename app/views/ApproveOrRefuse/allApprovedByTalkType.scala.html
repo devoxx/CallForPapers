@@ -33,14 +33,9 @@
 
                 <div class="col-md-12">
                     <h3>@allProposals.size proposals approved</h3>
-                       <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
-                       <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
-
-
                     @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
                         <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
                     }
-
                     <br>
 
                     <table id="allProposals" class="table table-bordered table-hover table-condensed">

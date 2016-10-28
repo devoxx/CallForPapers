@@ -342,7 +342,7 @@ admin.sp.approved=Approved
 admin.sp.refused=Refused
 admin.sp.rejected=Rejected
 admin.sp.approved.txt=This talk has been approved by the Program committee.
-admin.sp.accepted.txt=This talk has been accepted. Either during the final decision, or because it''s a sponsor talk or a speaker on the wishlist.
+admin.sp.accepted.txt=This talk has been accepted. Either during the final decision, or because it''s a sponsor talk or a speaker on the wish list.
 btn.abstention=Vote 0 for this talk
 remove.sponsorFlag=Remove the sponsor''s flag on this talk
 
@@ -412,7 +412,7 @@ amd=Après-midi des Décideurs
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
 
-sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
+sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Universities
