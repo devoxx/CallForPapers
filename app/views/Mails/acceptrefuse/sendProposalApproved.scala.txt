@@ -6,8 +6,8 @@
 --------------------------------------------------------------------
  Hi,
 
- Congratulations – your talk has been accepted by the Devoxx US Program Committee,
- and we wish to invite you to deliver your talk at the conference.
+ Congratulations – your talk has been approved by the Devoxx US Program Committee,
+ and we wish to invite you to deliver your talk at the conference in March, 2017.
 
  Proposition title : @proposal.title, of type [@Messages(proposal.talkType.id)].
 

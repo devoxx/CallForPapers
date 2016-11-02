@@ -30,6 +30,7 @@ import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent}
 
 import scala.concurrent.Future
 
@@ -39,7 +40,7 @@ import scala.concurrent.Future
   */
 object ApproveOrRefuse extends SecureCFPController {
 
-  def doApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
+  def doApprove(proposalId: String): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
@@ -209,8 +210,6 @@ object ApproveOrRefuse extends SecureCFPController {
               }
               case other => Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error" -> "Hmmm not a good idea to try to update someone else proposal... this event has been logged.")
             }
-
-
           }
         }
       )
@@ -260,7 +259,4 @@ object ApproveOrRefuse extends SecureCFPController {
       }
 
   }
-
-
 }
-
