@@ -5,7 +5,7 @@ CONF.subtitle=US
 
 # Equivalent to ConferenceNaming
 shortYearlyName=Devoxx US 2017 
-longYearlyName=Devoxx USA 2017
+longYearlyName=Devoxx US 2017
 shortName=Devoxx US
 longName=Devoxx US 2017 CFP
 longSplittedName_whiteStart=Devox

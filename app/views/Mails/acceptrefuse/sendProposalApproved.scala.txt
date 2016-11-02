@@ -6,7 +6,9 @@
 --------------------------------------------------------------------
  Hi,
 
- We're glad to inform you that your proposal for @Messages("longYearlyName") has been accepted !
+ Congratulations – your talk has been accepted by the Devoxx US Program Committee,
+ and we wish to invite you to deliver your talk at the conference.
+
  Proposition title : @proposal.title, of type [@Messages(proposal.talkType.id)].
 
  Important information
@@ -26,10 +28,12 @@
 
  For any question regarding your talk:
  ------------------------------------
- Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests
+ Please, do not respond to this email. Send any comment through the web interface, and our team will do its best
  to respond quickly.
 
  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 
- The @Messages("longYearlyName") team
+ <Kind regards,
+ Stephan Janssen, Program Committee Chair
+ Paul White, Conference Chair
 

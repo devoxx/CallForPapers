@@ -2,7 +2,7 @@
 @import models.conference.ConferenceDescriptor
 @import models.conference.ConferenceProposalConfigurations
 <p>Hello Devoxxian,</p>
-<p>Congratulations – your talk has been <strong>accepted</strong> by the Program Committee,
+<p>Congratulations – your talk has been <strong>accepted</strong> by the Devoxx US Program Committee,
     and we wish to invite you to deliver your talk at the conference.</p>
 
 <p>Proposal : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
@@ -17,7 +17,7 @@ Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.reg
 }
 
 <h3>For any question regarding your talk</h3>
-<p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
+<p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its best to respond quickly.</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
 <br>
