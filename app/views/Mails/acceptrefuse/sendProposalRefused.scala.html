@@ -1,12 +1,16 @@
 @(proposal:models.Proposal)
 @import models.conference.ConferenceDescriptor
-<p>Hi,</p>
-<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") was <strong>refused</strong>, keep in mind that we received 776 proposals and the available slots are very limited</p>
+<p>Hello,</p>
+<p>Thank you for submitting the proposal @proposal.title for @Messages("longYearlyName") .</p>
+<p>We were thrilled to receive many good proposals, but unfortunately we simply don't have room for all of them in the program.<br>
+We regret that your proposal is one of those we had to leave out.</p>
+
 <p>Proposition title : <strong>@proposal.title</strong>, <strong>@Messages(proposal.talkType.id)</strong>.</p>
-<p>We would like to thank you sincerely for your proposal.</p>
+
 <p>Hopefully we can still welcome you as a Devoxxian, registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
 <br>
 <br>
 <p>Kind regards,</p>
-<p>The @Messages("longYearlyName") team</p>
 <p></p>
+<p>Stephan Janssen, Program Committee Chair</p>
+<p>Paul White, Conference Chair</p>
