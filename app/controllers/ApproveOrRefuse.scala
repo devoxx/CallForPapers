@@ -143,6 +143,13 @@ object ApproveOrRefuse extends SecureCFPController {
       )
   }
 
+  def declineTermsAndConditions() = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+        Speaker.refuseTerms(request.webuser.uuid)
+        Event.storeEvent(Event("speaker", request.webuser.uuid, "has declined Terms and conditions"))
+        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("refused.termsConditions"))
+  }
+
   def showAcceptOrRefuseTalks() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import org.apache.commons.lang3.RandomStringUtils
