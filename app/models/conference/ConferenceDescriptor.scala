@@ -110,4 +110,7 @@ object ConferenceDescriptor {
   // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
   def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
 
+  // Set this to true temporarily
+  // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
+  def notifyProposalSubmitted = true
 }
