@@ -105,4 +105,9 @@ object ConferenceDescriptor {
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
   def isHTTPSEnabled: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+
+  // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
+  // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
+  def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
+
 }
