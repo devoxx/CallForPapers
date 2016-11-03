@@ -38,15 +38,13 @@
             <th>First name</th>
             <th>Email</th>
             <th>Company</th>
-            <th>Uni ?</th>
-            <th>Conf ?</th>
-            <th>Keynote ?</th>
-            <th>Lab ?</th>
-            <th>Tia ?</th>
-            <th>Ignite ?</th>
-            <th>Quickie ?</th>
-            <th>BOF ?</th>
-            <th>Other ?</th>
+            <th>Conf</th>
+            <th>Lab</th>
+            <th>Tia</th>
+            <th>Ignite</th>
+            <th>Quickie</th>
+            <th>BOF</th>
+            <th>Keynote</th>
         </tr>
     </thead>
     <tbody>
@@ -59,12 +57,12 @@
     <td>@speaker.email</td>
     <td>@speaker.company</td>
     <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.CONF)  </td>
-    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.KEY)  </td>
     <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.LAB)  </td>
     <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.TIA)  </td>
     <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.IGNITE)  </td>
     <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.QUICK)  </td>
     <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.BOF)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceProposalTypes.KEY)  </td>
     </tr>
 }
 
