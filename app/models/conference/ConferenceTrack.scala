@@ -41,15 +41,15 @@ object ConferenceTracks {
 }
 
 object ConferenceTracksDescription {
-  val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/devoxxbe2015/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
-  val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2015/images/icon_javase.png", ConferenceTracks.JAVA.label, "track.java.desc")
-  val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxxbe2015/images/icon_cloud.png", ConferenceTracks.CLOUD.label, "track.cloud.desc")
-  val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxbe2015/images/icon_javaee.png", ConferenceTracks.SSJ.label, "track.ssj.desc")
-  val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxbe2015/images/icon_alternative.png", ConferenceTracks.LANG.label, "track.lang.desc")
-  val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxbe2015/images/icon_architecture.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
-  val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxbe2015/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
-  val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2015/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
-  val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2015/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
+  val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/devoxxus2017/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
+  val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxus2017/images/icon_javase.png", ConferenceTracks.JAVA.label, "track.java.desc")
+  val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxxus2017/images/icon_cloud.png", ConferenceTracks.CLOUD.label, "track.cloud.desc")
+  val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxus2017/images/icon_javaee.png", ConferenceTracks.SSJ.label, "track.ssj.desc")
+  val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxus2017/images/icon_alternative.png", ConferenceTracks.LANG.label, "track.lang.desc")
+  val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxus2017/images/icon_architecture.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
+  val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxus2017/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
+  val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxus2017/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
+  val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxus2017/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
 
   val ALL = List(METHOD_ARCHI
     , JAVA

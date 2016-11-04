@@ -123,25 +123,29 @@ object Publisher extends Controller {
         ScheduleConfiguration.getPublishedSchedule(confType)
       }
       if (realSlotId.isEmpty) {
-        NotFound(views.html.Publisher.agendaNotYetPublished())
+        // Show the accepted talks instead
+        Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
       } else {
         val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
         maybeScheduledConfiguration match {
           case Some(slotConfig) if day == null =>
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "tuesday"))
+
           case Some(slotConfig) if day == "tuesday" =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "tuesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "tuesday"))
+
           case Some(slotConfig) if day == "wednesday" =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "wednesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
+
           case Some(slotConfig) if day == "thursday" =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "thursday")
@@ -149,7 +153,7 @@ object Publisher extends Controller {
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "thursday"))
 
-          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
+          case None => Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
         }
       }
   }
