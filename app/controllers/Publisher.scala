@@ -40,34 +40,35 @@ import play.api.mvc._
  * Created by nicolas on 12/02/2014.
  */
 object Publisher extends Controller {
+
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val etag = Crypt.md5(result.toString() + "dvx").toString
+      val eTag = Crypt.md5(result.toString() + "dvx").toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
-        case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(result).withHeaders(ETAG -> etag)
+        case Some(oldEtag) if oldEtag == eTag => NotModified
+        case other => Ok(result).withHeaders(ETAG -> eTag)
       }
   }
 
   def showAllSpeakers = Action {
     implicit request =>
+      // Show all speakers from accepted proposals instead of scheduled!
+      val accepted: List[Proposal] = Proposal.allAccepted()
+      val allSpeakersIDs = accepted.flatMap(_.allSpeakerUUIDs).toSet
 
-      // First load published slots
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-      val etag = allSpeakersIDs.hashCode.toString
+      val eTag = allSpeakersIDs.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag =>
+        case Some(tag) if tag == eTag =>
           NotModified
 
         case other =>
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
           val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
-          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
+          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }
 
@@ -79,8 +80,7 @@ object Publisher extends Controller {
       }
       val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
         speakers.map {
-          speaker =>
-            (speaker.urlName, speaker.uuid)
+          speaker => (speaker.urlName, speaker.uuid)
         }.toMap
       }
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
@@ -90,6 +90,7 @@ object Publisher extends Controller {
           // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
+
         case None => NotFound(views.html.Publisher.speakerNotFound())
       }
   }
@@ -102,6 +103,7 @@ object Publisher extends Controller {
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
+
         case None => NotFound("Speaker not found")
       }
   }
