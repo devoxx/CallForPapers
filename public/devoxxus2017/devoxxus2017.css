@@ -18477,14 +18477,7 @@ Main Top Section - Image Page
     left: 0;
     width: 100%;
     z-index: 99999;
-    /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(3%, #161616), color-stop(49%, #161616), color-stop(50%, rgba(22, 22, 22, 0)), color-stop(100%, rgba(22, 22, 22, 0)));
-    /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left, #161616 3%, #161616 49%, rgba(22, 22, 22, 0) 50%, rgba(22, 22, 22, 0) 100%);
-    /* Chrome10+,Safari5.1+ */
-    /* Opera 11.10+ */
-    /* IE10+ */
-    background: linear-gradient(to right, #161616 3%, #161616 49%, rgba(22, 22, 22, 0) 50%, rgba(22, 22, 22, 0) 100%);
+    background-color: white;
     /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#161616', endColorstr='#00161616', GradientType=1);
     /* IE6-9 */
@@ -18517,15 +18510,8 @@ Main Top Section - Image Page
     padding-top: 14px;
     margin-right: 50px;
     z-index: 5;
-    background-color: #161616;
+    background-color: white;
     position: relative;
-}
-
-#top-header .logo-holder:after {
-    Content: 'X';
-    color: #f5af33;
-    position: relative;
-    left: -12px;
 }
 
 #top-header .logo-holder a {
