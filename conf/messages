@@ -104,7 +104,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -123,25 +123,25 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Wednesday, Thursday
+key.label=Keynote, 1h, Wednesday, Thursday and Friday
 key.label.simple=Keynote
-conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.label=Conference, 1h, Wednesday, Thursday and Friday
 conf.label.simple=Conference
-uni.label=University, 3h, Monday or Tuesday
+uni.label=University, 3h, Wednesday, Thursday and Friday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.label=Tools in Action, 30mn, Wednesday and Thursday
 tia.label.simple=Tools in Action
 quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.label=Bird of a Feather, 1h, Wednesday and Thursday evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.label=Hands-on Labs, 3h, Wednesday and Thursday
 lab.label.simple=Hand''s on Lab
 ignite.label=Ignite Sessions, 5mn, Wednesday or Thursday early afternoon
 ignite.label.simple=Ignite Sessions
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Thursday
+start.label=Startup Talk, 25 min, Wednesday and Thursday
 start.label.simple=Startup
 
 # Bug report
