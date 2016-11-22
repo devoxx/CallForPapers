@@ -29,6 +29,8 @@ import library.Redis
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.json._
 
+import scala.math.BigDecimal.RoundingMode
+
 /**
   * A Rating is a comment and a rating given by an attendee during the conference.
   * Rating are posted to the CFP by Mobile application.
@@ -40,8 +42,21 @@ case class RatingDetail(aspect: String = "default", rating: Int, review: Option[
 
 case class Rating(talkId: String, user: String, conference: String, timestamp: Long, details: List[RatingDetail]) {
   def id(): String = {
-    StringUtils.trimToEmpty((talkId + user + conference + timestamp).toLowerCase()).hashCode.toString
+    StringUtils.trimToEmpty((talkId + user + conference).toLowerCase()).hashCode.toString
   }
+
+  def allVotes: List[Int] = details.map(_.rating)
+
+  def sum: Int = allVotes.sum
+
+  def count: Int = allVotes.length
+
+  def average: Double = if (count == 0) {
+    0
+  } else {
+    sum / count
+  }
+
 }
 
 object Rating {
@@ -65,7 +80,7 @@ object Rating {
           r.user,
           r.details.map(_.rating).headOption,
           Seq.empty[RatingDetail]
-          )
+        )
       )
     } else {
       Some(
@@ -74,7 +89,7 @@ object Rating {
           r.user,
           None,
           r.details
-          )
+        )
       )
     }
   }
@@ -165,6 +180,24 @@ object Rating {
         json =>
           Json.parse(json).as[Rating]
       }
+  }
+
+  def sortByRating(mapOfProposalsAndRating: Map[Proposal, List[Rating]]): List[(Proposal, List[Rating])] = {
+    mapOfProposalsAndRating.toList.sortWith { (left, right) =>
+      calculateScore(left._2) > calculateScore(right._2)
+    }
+  }
+
+  def calculateScore(ratings: List[Rating]): Double = {
+    val allAverages = ratings.map(_.average)
+    val count = allAverages.size
+    val total = allAverages.sum
+    val score = if (count == 0) {
+      0
+    } else {
+      total / count
+    }
+    BigDecimal(score).setScale(2,RoundingMode.HALF_EVEN).toDouble
   }
 
 }
