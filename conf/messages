@@ -166,8 +166,8 @@ appel.conf.dates=Devoxx Poland 2017, 21st-23rd June
 
 # Tracks
 
-method_archi.label=Methodology & Architecture
-track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
+method.label=Methodology & Culture
+track.method.desc=Software development methodologies, developer culture and best practices
 
 java.label=Java Language
 track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
@@ -181,17 +181,20 @@ track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & 
 lang.label=Programming languages
 track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 
-bigdata.label=Big Data
+bigdata.label=Big Data and Machine Learning
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
 web.label=Modern Web
 track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
-future.label=Future<Devoxx>
-track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
+future.label=Future and Robotics
+track.future.desc=Looking Forwards - All stuff we want to know about but don’t (generally) do at work. Robotics, biological computing, cybernetics, AI, new toys, tomorrow’s world...
 
-mobile.label=Mobile & Embedded
-track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
+mobile.label=IoT & Mobile
+track.mobile.desc=Developing for IoT, embedded and mobile devices. Tools, frameworks & libraries, etc
+
+archi.label=Architecture & Security
+track.archi.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right and secure
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile

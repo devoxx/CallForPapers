@@ -178,7 +178,7 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracks {
-    val METHOD_ARCHI = Track("method_archi", "method_archi.label")
+    val METHOD = Track("method", "method.label")
     val JAVA = Track("java", "java.label")
     val CLOUD = Track("cloud", "cloud.label")
     val SSJ = Track("ssj", "ssj.label")
@@ -187,13 +187,14 @@ object ConferenceDescriptor {
     val WEB = Track("web", "web.label")
     val FUTURE = Track("future", "future.label")
     val MOBILE = Track("mobile", "mobile.label")
+    val ARCHI = Track("archi", "archi.label")
 
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, UNKNOWN)
+    val ALL = List(METHOD, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, ARCHI, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
-    val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/devoxxpl2017/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
+    val METHOD = TrackDesc(ConferenceTracks.METHOD.id, "/assets/devoxxpl2017/images/icon_methodology.png", ConferenceTracks.METHOD.label, "track.method.desc")
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxpl2017/images/icon_javase.png", ConferenceTracks.JAVA.label, "track.java.desc")
     val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxxpl2017/images/icon_cloud.png", ConferenceTracks.CLOUD.label, "track.cloud.desc")
     val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxpl2017/images/icon_javaee.png", ConferenceTracks.SSJ.label, "track.ssj.desc")
@@ -202,8 +203,9 @@ object ConferenceDescriptor {
     val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxpl2017/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxpl2017/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
     val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxpl2017/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
+    val ARCHI = TrackDesc(ConferenceTracks.ARCHI.id, "/assets/devoxxpl2017/images/icon_architecture.png", ConferenceTracks.ARCHI.label, "track.archi.desc")
 
-    val ALL = List(METHOD_ARCHI
+    val ALL = List(METHOD
       , JAVA
       , CLOUD
       , SSJ
@@ -212,6 +214,7 @@ object ConferenceDescriptor {
       , WEB
       , FUTURE
       , MOBILE
+      , ARCHI
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
