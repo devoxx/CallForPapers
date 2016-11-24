@@ -70,12 +70,12 @@ object RestAPI extends Controller {
       <rss version="2.0">
         <channel>
           <title>Accepted proposals</title>
-          <link>{ routes.Publisher.homePublisher().absoluteURL(false) }</link>
+          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
           <description>Accepted Proposals</description>
           { Proposal.allAccepted().map { proposal =>
           <item>
-            <title>{ proposal.title }</title>
-            <link>{ routes.Publisher.showDetailsForProposal(proposal.id, proposal.title).absoluteURL(false) }</link>
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}</title>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)print("s")}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}
@@ -249,8 +249,8 @@ object RestAPI extends Controller {
                     uuid => Speaker.findByUUID(uuid)
                   }.map {
                     speaker =>
-                      Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                        routes.RestAPI.profile("speaker").absoluteURL().toString,
+                      Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL(),
+                        routes.RestAPI.profile("speaker").absoluteURL(),
                         speaker.cleanName)
                   }
 
@@ -261,8 +261,8 @@ object RestAPI extends Controller {
                     "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                     "links" -> Json.toJson(
                       List(
-                        Link(routes.RestAPI.showTalk(eventCode, proposal.id).absoluteURL().toString,
-                          routes.RestAPI.profile("talk").absoluteURL().toString, "More details about this talk"
+                        Link(routes.RestAPI.showTalk(eventCode, proposal.id).absoluteURL(),
+                          routes.RestAPI.profile("talk").absoluteURL(), "More details about this talk"
                         )
                       ).++(allSpeakers)
                     )
@@ -321,8 +321,8 @@ object RestAPI extends Controller {
                       Map(
                         "link" -> Json.toJson(
                           Link(
-                            routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                            routes.RestAPI.profile("speaker").absoluteURL().toString,
+                            routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL(),
+                            routes.RestAPI.profile("speaker").absoluteURL(),
                             speaker.cleanName
                           )
                         ),
@@ -391,7 +391,7 @@ object RestAPI extends Controller {
           val jsonObject = Json.toJson(finalJson)
 
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
-            "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL().toString + ">; rel=\"profile\"")
+            "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL() + ">; rel=\"profile\"")
           )
         }
       }
@@ -415,18 +415,18 @@ object RestAPI extends Controller {
           //            Messages("sw.show.title.tue")
           //          ),
           Link(
-            routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL().toString,
-            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
+            routes.RestAPI.profile("schedule").absoluteURL(),
             Messages("sw.show.title.wed")
           ),
           Link(
-            routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL().toString,
-            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL(),
+            routes.RestAPI.profile("schedule").absoluteURL(),
             Messages("sw.show.title.thu")
           ),
           Link(
-            routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL().toString,
-            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL(),
+            routes.RestAPI.profile("schedule").absoluteURL(),
             Messages("sw.show.title.fri")
           )
         ))
