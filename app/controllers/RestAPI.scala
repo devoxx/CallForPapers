@@ -411,15 +411,15 @@ object RestAPI extends Controller {
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
-          //          Link(
+                    Link(
           //            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL().toString,
           //            routes.RestAPI.profile("schedule").absoluteURL().toString,
           //            Messages("sw.show.title.mon")
           //          ), Link(
-          //            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL().toString,
-          //            routes.RestAPI.profile("schedule").absoluteURL().toString,
-          //            Messages("sw.show.title.tue")
-          //          ),
+            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL().toString,
+            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            Messages("sw.show.title.tue")
+          ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),
@@ -429,11 +429,11 @@ object RestAPI extends Controller {
             routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),
             Messages("sw.show.title.thu")
-          ),
-          Link(
-            routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.fri")
+//          ),
+//          Link(
+//            routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL(),
+//            routes.RestAPI.profile("schedule").absoluteURL(),
+//            Messages("sw.show.title.fri")
           )
         ))
       )
