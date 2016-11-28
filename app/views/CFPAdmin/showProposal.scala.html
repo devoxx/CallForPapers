@@ -1,4 +1,5 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int],  maybeMyVote:Option[Review], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
         <div class="col-md-12">
@@ -59,6 +60,14 @@
                                 <tr>
                                     <th>@Messages("admin.sp.sponsorTalk")</th>
                                     <td colspan="2"><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
+                                </tr>
+                            }
+                            @if(proposal.videoLink.nonEmpty) {
+                                <tr>
+                                    <th>Related Video</th>
+                                    <td colspan="2">
+                                        @tags.renderVideoLink(proposal.videoLink.get)
+                                    </td>
                                 </tr>
                             }
                         </tfoot>
@@ -163,8 +172,8 @@
                                 <p>@Messages("admin.draft.warning3") @proposal.state.code</p>
                             </div>
                         } else {
-                            @maybeMyVote.foreach { review: Review =>
-                                <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote)
+                            @maybeMyVote.map { review: Review =>
+                                <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote.toInt)
                                 - @review.date.toString("EEEE d MMM YYYY HH:mm")
                             <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
                             }
@@ -237,7 +246,9 @@
                     @tags.renderComments(internalComments)
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+
 }
