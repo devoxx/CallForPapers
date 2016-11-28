@@ -133,7 +133,7 @@ case class Proposal(id: String,
                     demoLevel: Option[String],
                     userGroup: Option[Boolean],
                     wishlisted: Option[Boolean] = None,
-                    youTubeLink: Option[String]) {
+                    videoLink: Option[String] = None) {
 
   def escapedTitle: String = title match {
     case null => ""
@@ -155,13 +155,15 @@ case class Proposal(id: String,
   }
 
   lazy val summaryAsHtml: String = {
-    val escapedHtml = HtmlFormat.escape(summary).body // escape HTML code and JS
+    val escapedHtml = HtmlFormat.escape(summary).body
+    // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 
   lazy val privateMessageAsHtml: String = {
-    val escapedHtml = HtmlFormat.escape(privateMessage).body // escape HTML code and JS
+    val escapedHtml = HtmlFormat.escape(privateMessage).body
+    // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
@@ -238,7 +240,7 @@ object Proposal {
     , "track" -> nonEmptyText
     , "demoLevel" -> optional(text)
     , "userGroup" -> optional(boolean)
-    , "youTubeLink" -> optional(text)
+    , "videoLink" -> optional(text)
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = Redis.pool.withClient {
@@ -265,7 +267,7 @@ object Proposal {
                           track: String,
                           demoLevel: Option[String],
                           userGroup: Option[Boolean],
-                          youTubeLink: Option[String]): Proposal = {
+                          videoLink: Option[String] = None): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       ConferenceDescriptor.current().eventCode,
@@ -283,8 +285,8 @@ object Proposal {
       Track.parse(track),
       demoLevel,
       userGroup,
-      wishlisted = None,
-      youTubeLink
+      wishlisted = None, //deprecated, keeped for backward compatibiliy
+      videoLink
     )
   }
 
@@ -296,8 +298,21 @@ object Proposal {
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
     Boolean, String, Option[String], Option[Boolean], Option[String])] = {
-    Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, p.privateMessage,
-      p.sponsorTalk, p.track.id, p.demoLevel, p.userGroup, p.youTubeLink))
+    Option((
+      Option(p.id),
+      p.lang,
+      p.title,
+      p.secondarySpeaker,
+      p.otherSpeakers,
+      p.talkType.id,
+      p.audienceLevel,
+      p.summary,
+      p.privateMessage,
+      p.sponsorTalk,
+      p.track.id,
+      p.demoLevel,
+      p.userGroup,
+      p.videoLink))
   }
 
   def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
@@ -854,12 +869,12 @@ object Proposal {
 
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
+      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
+      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
   def hasOnlyRejectedProposals(speakerUUID: String): Boolean = Redis.pool.withClient {
@@ -867,8 +882,8 @@ object Proposal {
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
       !proposals.exists(proposal => proposal.state == ProposalState.APPROVED ||
-                                    proposal.state == ProposalState.ACCEPTED) &&
-                                    proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
+        proposal.state == ProposalState.ACCEPTED) &&
+        proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
