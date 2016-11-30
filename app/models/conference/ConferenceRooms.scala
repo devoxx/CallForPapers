@@ -43,19 +43,20 @@ object ConferenceRooms {
   val ROOM10 = Room("room10", "Room 10", 108, "2/3 classroom")
 
   val allRoomsTIA = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9, ROOM10)
+  val allRoomsTIAThree = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9)
 
   val keynoteRoom = List(ROOM1)
   val eveningKeynoteRoom = List(ROOM1)
 
   val morningConfRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
 
-  val afternoonConfRoomsDayOne = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9, ROOM10)
-  val afternoonConfRoomsDayTwoThree = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9)
+  val afternoonConfRoomsDayOneTwo = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9, ROOM10)
+  val afternoonConfRoomsDayThree = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9)
 
   val allRoomsQuick = List(ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
 
-  val LabsDayOne = List(ROOM5, ROOM6, ROOM8)
-  val LabsDayTwoThree = List(ROOM5, ROOM6, ROOM8, ROOM10)
+  val LabsDayOneTwo = List(ROOM5, ROOM6, ROOM8)
+  val LabsDayThree = List(ROOM5, ROOM6, ROOM8, ROOM10)
 
   val allRoomsBOF = List(ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
 

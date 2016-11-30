@@ -27,7 +27,7 @@ import models.{Slot, SlotBreak, SlotBuilder}
 import org.joda.time.{DateTime, DateTimeZone}
 
 object ConferenceSlotBreaks {
-  val registration = SlotBreak("registration", "Registration, Welcome and Breakfast", "Accueil", ConferenceRooms.ROOM1)
+  val registration = SlotBreak("registration", "Registration", "Accueil", ConferenceRooms.ROOM1)
   val breakfast = SlotBreak("breakfast", "Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.ROOM1)
   val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", ConferenceRooms.ROOM1)
   val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.ROOM1)
@@ -80,19 +80,19 @@ object ConferenceSlots {
 
   val tiaSlotsThursday: List[Slot] = {
 
-    val toolsThursdayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
+    val toolsThursdayAfternoonSlot1 = ConferenceRooms.allRoomsTIAThree.map {
       r1 =>
         SlotBuilder(ConferenceProposalTypes.TIA.id, THURSDAY,
           new DateTime(THU_DATE + "14:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(THU_DATE + "15:20" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r1)
     }
-    val toolsThursdayAfternoonSlot2 = ConferenceRooms.allRoomsTIA.map {
+    val toolsThursdayAfternoonSlot2 = ConferenceRooms.allRoomsTIAThree.map {
       r2 =>
         SlotBuilder(ConferenceProposalTypes.TIA.id, THURSDAY,
           new DateTime(THU_DATE + "15:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(THU_DATE + "16:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
     }
-    val toolsThursdayAfternoonSlot3 = ConferenceRooms.allRoomsTIA.map {
+    val toolsThursdayAfternoonSlot3 = ConferenceRooms.allRoomsTIAThree.map {
       r3 =>
         SlotBuilder(ConferenceProposalTypes.TIA.id, THURSDAY,
           new DateTime(THU_DATE + "16:10" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
@@ -105,7 +105,7 @@ object ConferenceSlots {
 
   // HANDS ON LABS
 
-  val labsSlotsTuesday: List[Slot] = ConferenceRooms.LabsDayOne.map {
+  val labsSlotsTuesday: List[Slot] = ConferenceRooms.LabsDayOneTwo.map {
     r1 => {
       SlotBuilder(ConferenceProposalTypes.LAB.id, TUESDAY,
         new DateTime(TUE_DATE + "14:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
@@ -113,7 +113,7 @@ object ConferenceSlots {
     }
   }
 
-  val labsSlotsWednesday: List[Slot] = ConferenceRooms.LabsDayTwoThree.map {
+  val labsSlotsWednesday: List[Slot] = ConferenceRooms.LabsDayOneTwo.map {
     r1 => {
       SlotBuilder(ConferenceProposalTypes.LAB.id, WEDNESDAY,
         new DateTime(WED_DATE + "14:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
@@ -121,7 +121,7 @@ object ConferenceSlots {
     }
   }
 
-  val labsSlotsThursday: List[Slot] = ConferenceRooms.LabsDayTwoThree.map {
+  val labsSlotsThursday: List[Slot] = ConferenceRooms.LabsDayThree.map {
     r1 => {
       SlotBuilder(ConferenceProposalTypes.LAB.id, THURSDAY,
         new DateTime(THU_DATE + "13:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
@@ -277,19 +277,19 @@ object ConferenceSlots {
 
     // -------------- Lunch
 
-    val conferenceTuesdaySlot3 = ConferenceRooms.afternoonConfRoomsDayOne.map {
+    val conferenceTuesdaySlot3 = ConferenceRooms.afternoonConfRoomsDayOneTwo.map {
       r3 =>
         SlotBuilder(ConferenceProposalTypes.CONF.id, TUESDAY,
           new DateTime(TUE_DATE + "14:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(TUE_DATE + "14:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r3)
     }
-    val conferenceTuesdaySlot4 = ConferenceRooms.afternoonConfRoomsDayOne.map {
+    val conferenceTuesdaySlot4 = ConferenceRooms.afternoonConfRoomsDayOneTwo.map {
       r4 =>
         SlotBuilder(ConferenceProposalTypes.CONF.id, TUESDAY,
           new DateTime(TUE_DATE + "15:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(TUE_DATE + "15:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r4)
     }
-    val conferenceTuesdaySlot5 = ConferenceRooms.afternoonConfRoomsDayOne.map {
+    val conferenceTuesdaySlot5 = ConferenceRooms.afternoonConfRoomsDayOneTwo.map {
       r5 =>
         SlotBuilder(ConferenceProposalTypes.CONF.id, TUESDAY,
           new DateTime(TUE_DATE + "16:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
@@ -326,13 +326,13 @@ object ConferenceSlots {
 
     // -------------- Lunch
 
-    val conferenceWednesdaySlot4 = ConferenceRooms.afternoonConfRoomsDayTwoThree.map {
+    val conferenceWednesdaySlot4 = ConferenceRooms.afternoonConfRoomsDayOneTwo.map {
       r4 =>
         SlotBuilder(ConferenceProposalTypes.CONF.id, WEDNESDAY,
           new DateTime(WED_DATE + "14:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(WED_DATE + "15:20" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r4)
     }
-    val conferenceWednesdaySlot5 = ConferenceRooms.afternoonConfRoomsDayTwoThree.map {
+    val conferenceWednesdaySlot5 = ConferenceRooms.afternoonConfRoomsDayOneTwo.map {
       r5 =>
         SlotBuilder(ConferenceProposalTypes.CONF.id, WEDNESDAY,
           new DateTime(WED_DATE + "16:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
@@ -368,7 +368,7 @@ object ConferenceSlots {
 
     // -------------- Lunch
 
-    val conferenceThursdaySlot4 = ConferenceRooms.afternoonConfRoomsDayTwoThree.map {
+    val conferenceThursdaySlot4 = ConferenceRooms.afternoonConfRoomsDayThree.map {
       r4 =>
         SlotBuilder(ConferenceProposalTypes.CONF.id, THURSDAY,
           new DateTime(THU_DATE + "13:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
