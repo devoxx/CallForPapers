@@ -1,8 +1,7 @@
 <div class="col-lg-12">
     <h3>All slots</h3>
     <button class="btn btn-success" ng-click="saveAllocation()">Save allocation</button>
-    <flash-messages>
-    </flash-messages>
+    <flash-messages/>
     <p>Note : Please, use full-screen for best experience. Slots are also filtered by preferred day.</p>
 </div>
 
@@ -13,25 +12,25 @@
 <div class="col-lg-3 panel_talks">
     <input type="search" ng-model="filterTalk" placeholder="Filter Talks..."/><br>
     <small>Slots: {{approvedTalks.length}}</small>
-    <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
-         class="talk"
-         drag="talk" dragStyle="columnDrag"
-         dropStyle="columnDrop">
-        <span class="proposalTitle">{{talk.title}}</span>
-        <span class="label label-default">{{talk.id}}</span>
 
-        <div class="label label-info">{{talk.lang}}</div>
-        <div class="label label-warning">{{talk.track.id}}</div>
-        <div class="label label-success">{{talk.mainSpeaker}}</div>
-        <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
-        <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
-            {{otherSpeaker}}
-        </div>
-        <div class="label label-danger" ng-show="talk.privateMessage">
-            {{talk.privateMessage}}
-        </div>
+            <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
+                 class="{{talk.state.code}}"
+                 drag="talk" dragStyle="columnDrag"
+                 dropStyle="columnDrop">
+                <span class="proposalTitle">{{talk.title}}</span>
+                <span class="label label-default">{{talk.id}}</span>
 
-    </div>
+                <div class="label label-warning">{{talk.track.id}}</div>
+                <div class="label label-success">{{talk.mainSpeaker}}</div>
+                <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
+                <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
+                    {{otherSpeaker}}
+                </div>
+                <div class="label label-danger" ng-show="talk.privateMessage">
+                    {{talk.privateMessage}}
+                </div>
+            </div>
+        </div>
 </div>
 
 <div class="col-lg-9 panel_slots">
@@ -40,16 +39,20 @@
         <input type="search" ng-model="q" placeholder="Filter Slots..."/>
     </div>
     <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
-        <span class="label label-default">{{slot.room.name}} ({{slot.room.capacity}}/{{slot.room.setup}})</span>
-        <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
+        <div ng-hide="slot.proposal">
+            <span class="label label-default">{{slot.day}} {{slot.from - 28800000 | date:'H:mm'}} {{slot.to -28800000 | date:'H:mm'}}</span>
+            <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
+        </div>
         <div ng-show="slot.proposal">
-            <button class="btn btn-sm btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> remove
-            </button>
+            <span class="label label-default">{{slot.day}} {{slot.from -28800000 | date:'H:mm'}} {{slot.to -28800000 | date:'H:mm'}}</span>
+                <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
+                <button class="btn-remove btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> </button>
+            <br>
             <span class="proposalTitle">{{slot.proposal.title}}</span>
-            <div class="proposalSpeaker">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}}</div>
+            <div class="label label-success">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}} </div>
+            <span class="label label-warning">{{slot.proposal.track.id}}</span>
             <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
-                <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved
-                </div>
+                <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
             </div>
         </div>
     </div>

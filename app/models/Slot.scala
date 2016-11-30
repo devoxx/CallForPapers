@@ -71,8 +71,15 @@ object SlotBreak {
   implicit val slotBreakFormat = Json.format[SlotBreak]
 }
 
-case class Slot(id: String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
-                proposal: Option[Proposal], break: Option[SlotBreak]) {
+case class Slot(id: String,
+                name: String,
+                day: String,
+                from: DateTime,
+                to: DateTime,
+                room: Room,
+                proposal: Option[Proposal],
+                break: Option[SlotBreak]) {
+
   override def toString: String = {
     s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined}"
   }

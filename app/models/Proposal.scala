@@ -7,7 +7,7 @@ import org.joda.time.Instant
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
 /**
@@ -24,11 +24,11 @@ object ProposalType {
   val UNKNOWN = ProposalType(id = "unknown", label = "unknown.label")
 
   val all = ConferenceProposalTypes.ALL
-  val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
+  val allAsId = all.map(a => (a.id, a.label)).sorted
 
   def allForCombos = {
     val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
-    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
+    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).sorted
     finalFormat
   }
 
@@ -45,7 +45,7 @@ object ProposalType {
       , ("l2", "level2.label")
       , ("l3", "level3.label")
     )
-  }.toSeq
+  }
 
   val demoLevels: Seq[(String, String)] = {
     List(
@@ -53,7 +53,7 @@ object ProposalType {
       , ("d2", "demoLevel2.label")
       , ("d3", "demoLevel3.label")
       , ("d4", "demoLevel4.label"))
-  }.toSeq
+  }
 }
 
 case class ProposalState(code: String)
@@ -114,7 +114,6 @@ object ProposalState {
   }
 }
 
-
 import com.github.rjeschke.txtmark._
 
 // A proposal
@@ -173,7 +172,7 @@ case class Proposal(id: String,
 
 object Proposal {
 
-  implicit val proposalFormat: Format[Proposal] = Json.format[Proposal]
+  implicit val proposalFormat = Json.format[Proposal]
 
   val langs = Seq(("en", "English"), ("fr", "Français"))
 
@@ -193,11 +192,9 @@ object Proposal {
       // We enforce the user id, for security reason
       val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
 
-      findById(proposal.id).map {
-        oldProposal =>
-          resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, oldProposal.talkType, proposalState)
+      findById(proposal.id).foreach {
+        oldProposal => resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, oldProposal.talkType, proposalState)
       }
-
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
@@ -297,7 +294,7 @@ object Proposal {
   def isNew(id: String): Boolean = Redis.pool.withClient {
     client =>
       // Important when we create a new proposal
-      client.hexists("Proposals", id) == false
+      !client.hexists("Proposals", id)
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
@@ -873,14 +870,12 @@ object Proposal {
 
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
+      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
+      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
   def hasOnlyRejectedProposals(speakerUUID: String): Boolean = Redis.pool.withClient {

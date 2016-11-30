@@ -250,7 +250,7 @@ object ConferenceSlots {
       r2 =>
         SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
           new DateTime(THU_DATE + "17:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(THU_DATE + "18:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
+          new DateTime(THU_DATE + "17:45" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
     }
 
     keynoteThursdaySlot1 ++
