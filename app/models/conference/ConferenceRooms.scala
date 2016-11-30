@@ -29,7 +29,7 @@ object ConferenceRooms {
 
   // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
   // the first column on the HTML Table
-  val HALL_EXPO = Room("expo", "Exhibition floor", 3000, "exhibition")
+  // val HALL_EXPO = Room("expo", "Exhibition floor", 3000, "exhibition")
 
   val ROOM1 = Room("room1", "Room 1", 1200, "theatre")
   val ROOM2 = Room("room2", "Room 2", 288, "2/3 classroom")
@@ -48,15 +48,18 @@ object ConferenceRooms {
   val eveningKeynoteRoom = List(ROOM1)
 
   val morningConfRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
-  val afternoonConfRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9, ROOM10)
+
+  val afternoonConfRoomsDayOne = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9, ROOM10)
+  val afternoonConfRoomsDayTwoThree = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM7, ROOM9)
 
   val allRoomsQuick = List(ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
 
-  val allRoomsLabs = List(ROOM5, ROOM6, ROOM8)
+  val LabsDayOne = List(ROOM5, ROOM6, ROOM8)
+  val LabsDayTwoThree = List(ROOM5, ROOM6, ROOM8, ROOM10)
 
   val allRoomsBOF = List(ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
 
   val igniteRoom = List(ROOM7)
 
-  val allRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10, HALL_EXPO)
+  val allRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5, ROOM6, ROOM7, ROOM8, ROOM9, ROOM10)
 }

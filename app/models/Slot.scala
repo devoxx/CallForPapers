@@ -57,7 +57,7 @@ object Room {
 
   val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
-  val allAsId = ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
+  val allAsId = ConferenceRooms.allRooms.map(a => (a.id, a.name)).sorted
 
   def parse(roomId: String): Room = {
     ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
