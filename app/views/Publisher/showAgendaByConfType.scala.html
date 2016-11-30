@@ -19,17 +19,19 @@
                     }
                 </tr>
 
-                @if(day.toLowerCase=="wednesday" && talkType.toLowerCase=="conf" ){
-                    <tr>
-                        <th>
-                            09:30 - 11:30
-                        </th>
-                        <td class="keynotes" colspan="8">
-                            <a href="https://devoxx.us/keynotes-2017">Keynotes</a>
-
-                        </td>
-                    </tr>
+                <tr>
+                    <th>
+                @if(day.toLowerCase.startsWith("tue")) {
+                    09:00 - 10:20
                 }
+                @if(day.toLowerCase.startsWith("wed") || day.toLowerCase.startsWith("thu")){
+                    09:00 - 09:50
+                }
+                    </th>
+                    <td class="keynotes" colspan="8">
+                        <a href="https://devoxx.us/keynotes-2017">Keynotes</a>
+                    </td>
+                </tr>
 
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
@@ -39,16 +41,9 @@
                         localdatetime = @time.toLocalDateTime
 
                         -->
-                        @time.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
+                        @time.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
-
-                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("HH:mm")=="16:40"  ){
-                                <td class="room">
-                                    <span class="track"><img src="/assets/devoxxus2017/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                                    <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                                </td>
-                         }
 
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
@@ -71,7 +66,7 @@
  @if(day.toLowerCase.startsWith("thu")) {
      <tr>
          <th>
-             19:00 - 19:30
+             17:00 - 17:45
          </th>
          <td class="keynotes" colspan="8">
              <a href="https://devoxx.us/keynotes-2017">Closing Keynote</a>
