@@ -3,7 +3,7 @@
 
     @views.html.Publisher.devoxxUS2017(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx US 2017 for $day"+Messages("day-" + day))) {
         <div class="large-12 columns">
-            <h3>@Messages(talkType), @Messages("day-" + day)</h3>
+            <h3>@Messages(talkType), @Messages("day-" + day) (Draft schedule)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
                 <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
                 <a href="@routes.Publisher.showByDay(day)">@Messages("day-" + day)</a></p>
