@@ -392,15 +392,15 @@ object RestAPI extends Controller {
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
-          Link(
-            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.mon")
-          ), Link(
-            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.tue")
-          ),
+//          Link(
+//            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL(),
+//            routes.RestAPI.profile("schedule").absoluteURL(),
+//            Messages("sw.show.title.mon")
+//          ), Link(
+//            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL(),
+//            routes.RestAPI.profile("schedule").absoluteURL(),
+//            Messages("sw.show.title.tue")
+//          ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),
