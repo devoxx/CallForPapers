@@ -69,7 +69,7 @@ object ConferenceDescriptor {
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
       faq = "https://devoxx.us/faq/",
-      registration = "https://www.regonline.com/register/checkin.aspx?MethodId=0&EventId=1845425",
+      registration = "https://devoxx.us/registration",
       confWebsite = "https://devoxx.us/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.us")
     ),
