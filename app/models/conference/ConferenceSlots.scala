@@ -177,14 +177,14 @@ object ConferenceSlots {
           new DateTime(TUE_DATE + "12:45" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(TUE_DATE + "13:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r1)
     }
-    val quickiesTuesdayLunch2 = ConferenceRooms.allRoomsQuick.map {
-      r2 =>
-        SlotBuilder(ConferenceProposalTypes.QUICK.id, TUESDAY,
-          new DateTime(TUE_DATE + "13:15" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(TUE_DATE + "13:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
-    }
-    quickiesTuesdayLunch1 ++
-    quickiesTuesdayLunch2
+//    val quickiesTuesdayLunch2 = ConferenceRooms.allRoomsQuick.map {
+//      r2 =>
+//        SlotBuilder(ConferenceProposalTypes.QUICK.id, TUESDAY,
+//          new DateTime(TUE_DATE + "13:15" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
+//          new DateTime(TUE_DATE + "13:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
+//    }
+    quickiesTuesdayLunch1
+//    quickiesTuesdayLunch2
   }
 
   val quickiesSlotsWednesday: List[Slot] = {
@@ -195,14 +195,14 @@ object ConferenceSlots {
           new DateTime(WED_DATE + "13:20" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
           new DateTime(WED_DATE + "13:35" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r1)
     }
-    val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsQuick.map {
-      r2 =>
-        SlotBuilder(ConferenceProposalTypes.QUICK.id, WEDNESDAY,
-          new DateTime(WED_DATE + "13:55" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(WED_DATE + "14:10" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
-    }
-    quickiesWednesdayLunch1 ++
-    quickiesWednesdayLunch2
+//    val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsQuick.map {
+//      r2 =>
+//        SlotBuilder(ConferenceProposalTypes.QUICK.id, WEDNESDAY,
+//          new DateTime(WED_DATE + "13:55" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
+//          new DateTime(WED_DATE + "14:10" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
+//    }
+    quickiesWednesdayLunch1
+//    quickiesWednesdayLunch2
   }
 
   // CONFERENCE KEYNOTES

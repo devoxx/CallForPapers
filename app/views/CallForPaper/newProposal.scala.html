@@ -39,8 +39,8 @@
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->6,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain"></span> <small>@Messages("newProposal.maxLength")</small>
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
-                @helper.inputText(newProposal("videoLink"), 'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
+                @helper.inputText(newProposal("videoLink"), 'class->"form-control")
                 @if(ConferenceDescriptor.current().frLangEnabled) {
                     @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
                 }else{
