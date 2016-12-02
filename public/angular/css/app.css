@@ -11,6 +11,10 @@ body {
     border: 1px solid #eeeeee;
 }
 
+.colorState {
+    width: 150px;
+}
+
 .approved {
     display: block;
     border: 2px solid black;
@@ -39,6 +43,7 @@ body {
     box-shadow: 2px 2px #bbb;
 }
 .submitted {
+    color: white;
     display: block;
     border: 2px solid black;
     padding: 5px;

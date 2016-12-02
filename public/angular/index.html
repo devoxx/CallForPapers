@@ -24,19 +24,31 @@
 
 <!-- ****************************************************************************** //-->
 <div class="container">
- <h3>Devoxx - Planner</h3>
-  <ul class="menu">
-    <li><a href="#/saved">Reload a saved configuration of slots/talks</a></li>
-    <li><a href="#/slots?confType=conf">All Conferences slots</a></li>
-    <li><a href="#/slots?confType=key">All Keynotes slots</a></li>
-    <li><a href="#/slots?confType=tia">All Tools-in-Action slots</a></li>
-    <li><a href="#/slots?confType=lab">All Hands-on Labs slots</a></li>
-    <li><a href="#/slots?confType=bof">All BOF slots</a></li>
-    <li><a href="#/slots?confType=quick">All Quickies slots</a></li>
-    <br>
-    <a href="/admin/sanitycheck "  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
-
-  </ul>
+    <table>
+        <tr>
+            <td width="80%">
+                <h3>Devoxx - Planner</h3>
+                <ul class="menu">
+                    <li><a href="#/saved">Reload a saved configuration of slots/talks</a></li>
+                    <li><a href="#/slots?confType=conf">All Conferences slots</a></li>
+                    <li><a href="#/slots?confType=key">All Keynotes slots</a></li>
+                    <li><a href="#/slots?confType=tia">All Tools-in-Action slots</a></li>
+                    <li><a href="#/slots?confType=lab">All Hands-on Labs slots</a></li>
+                    <li><a href="#/slots?confType=bof">All BOF slots</a></li>
+                    <li><a href="#/slots?confType=quick">All Quickies slots</a></li>
+                    <br>
+                    <a href="/admin/sanitycheck "  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
+                </ul>
+            </td>
+            <td>
+                <h4>Proposals State</h4>
+                <span class="accepted colorState">Accepted</span>
+                <span class="approved colorState">Approved</span>
+                <span class="submitted colorState">Submitted</span>
+                <span class="declined colorState">Declined</span>
+            </td>
+        </tr>
+    </table>
 
   <div ng-view></div>
 
