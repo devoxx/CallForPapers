@@ -4,7 +4,6 @@
 
 # except for .gitignore
 !.gitignore
-!.htaccess
 
 # Ignore Play! working directory #
 # in Dev branch, we do not want to save the application.conf file cause it contains password
@@ -43,10 +42,6 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 
-# My custom scripts to run locally with env variables
-run-fr.sh
-run-be.sh
-
 /public/speakers/
 run.sh
 run-uk.sh
@@ -55,7 +50,7 @@ run-us.sh
 
 env.sh
 run-be.sh
-# run-us.sh
+
 /conf/redis-devoxxlocal.conf
 /conf/dump.rdb
 /conf/application.conf.local
