@@ -257,6 +257,11 @@ object Webuser {
       client.sadd("Webuser:cfp", uuid)
   }
 
+  def addToDevoxxians(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.sadd("Webuser:devoxxian", uuid)
+  }
+
   def addToGoldenTicket(uuid: String) = Redis.pool.withClient {
     client =>
       client.sadd("Webuser:gticket", uuid)
@@ -286,10 +291,19 @@ object Webuser {
       }
   }
 
-  def allWebusers:Map[String, Option[Webuser]]=Redis.pool.withClient {
+  def allDevoxxians(): List[Webuser] = Redis.pool.withClient {
+    client =>
+      val allDevoxxianUUIDs = client.smembers("Webuser:devoxxian").toList
+      client.hmget("Webuser", allDevoxxianUUIDs).flatMap {
+        js: String =>
+          Json.parse(js).asOpt[Webuser]
+      }
+  }
+
+  def allWebusers: Map[String, Option[Webuser]] = Redis.pool.withClient {
     client =>
       client.hgetAll("Webuser").map {
-        case (key:String, valueJson: String) =>
+        case (key: String, valueJson: String) =>
           (key, Json.parse(valueJson).asOpt[Webuser])
       }
   }
@@ -335,13 +349,4 @@ object Webuser {
     client =>
       !client.exists("Webuser:UUID:" + uuid)
   }
-
-
-//  def findByNetworkAndEmail(networkType:NetworkType.value,
-//                            networkId:String,
-//                            email:String): Option[Webuser] = Redis.pool.withClient {
-//    client =>
-//      // TODO
-//      Webuser.findByEmail(email)
-//  }
 }
