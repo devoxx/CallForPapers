@@ -840,7 +840,7 @@ object RestAPI extends Controller {
             // Update users social network credentials
             val foundUser: Webuser = webuser.get
             Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
-            Ok
+            Ok(foundUser.uuid)
 
           } else {
             // User does not exist, lets create
