@@ -815,31 +815,45 @@ object RestAPI extends Controller {
     * Verify a user account.
     * This can also create a new user when the email does not exist!
     *
-    * @param newNetworkType  the social network type (FACEBOOK, TWITTER, ...)
-    * @param newNetworkId    the network account id
-    * @param email        the user id
     * @return
     */
-  def verifyAccount(newNetworkType: String,
-                    newNetworkId: String,
-                    email: String) = UserAgentActionAndAllowOrigin {
+  def verifyAccount() = UserAgentActionAndAllowOrigin {
 
     implicit request =>
-      val webuser = Webuser.findByEmail(email)
-      if (webuser.isDefined) {
 
-        // Update users social network credentials
-        val foundUser :Webuser = webuser.get
-        Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+      val body: AnyContent = request.body
+      val data = body.asMultipartFormData
 
-        Ok
+      if (data.nonEmpty) {
+        // Not 100% sure this is how it should be done in Scala/Play (Stephan)
+        val email = data.get.asFormUrlEncoded("email").mkString("")
+        val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
+        val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
 
+        if (email.nonEmpty &&
+          newNetworkType.nonEmpty &&
+          newNetworkId.nonEmpty) {
+
+          val webuser = Webuser.findByEmail(email)
+          if (webuser.isDefined) {
+
+            // Update users social network credentials
+            val foundUser: Webuser = webuser.get
+            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+            Ok
+
+          } else {
+            // User does not exist, lets create
+            val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+            val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+            Webuser.addToDevoxxians(uuid)
+            Created(uuid)
+          }
+        } else {
+          BadRequest("email not provided")
+        }
       } else {
-        // User does not exist, lets create
-        val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-        val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-        Webuser.addToDevoxxians(uuid)
-        Created(uuid)
+        BadRequest("Not a multipart form")
       }
   }
 }
