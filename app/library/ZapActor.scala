@@ -335,7 +335,7 @@ class ZapActor extends Actor {
   }
 
   /**
-    * Handle email digests.
+    * Handle email digests, including track proposal filters.
     *
     * @param digest the digest to process
     */
@@ -349,19 +349,43 @@ class ZapActor extends Actor {
     if (newProposalsIds.nonEmpty) {
 
       // Filter CFP users on given digest
-      val foundUsers = Webuser.allCFPWebusers()
+      val foundUsersIDs = Webuser.allCFPWebusers()
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
-        .map(userToNotify => userToNotify.email)
+        .map(userToNotify => userToNotify.uuid)
 
-      play.Logger.info(foundUsers.size + " user(s) for digest " + digest.value)
+      play.Logger.info(foundUsersIDs.size + " user(s) for digest " + digest.value)
 
-      if (foundUsers.nonEmpty) {
+      if (foundUsersIDs.nonEmpty) {
 
         play.Logger.debug(newProposalsIds.size + " proposal(s) found for digest " + digest.value)
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
-        Mails.sendDigest(digest, foundUsers, proposals, CFPAdmin.getLeaderBoardParams)
+        // Check which users have digest track filters
+        val trackDigestUsersIDs = foundUsersIDs.filter(uuid => Digest.getTrackFilters(uuid).nonEmpty)
+
+        val noTrackDigestUsersIDs = trackDigestUsersIDs.diff(foundUsersIDs)
+
+        // Mail digest to users who have no track filter set
+        if (noTrackDigestUsersIDs.nonEmpty) {
+
+          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, CFPAdmin.getLeaderBoardParams)
+        }
+
+        // Handle the digest users that have a track filter
+        trackDigestUsersIDs.map{uuid =>
+
+          // Filter the proposals based on digest tracks
+          val trackFilterIDs = Digest.getTrackFilters(uuid)
+
+          val trackFilterProposals =
+            proposals.filter(proposal => trackFilterIDs.contains(proposal.track.id))
+
+          // If proposals exist, then mail digest to user
+          if (trackFilterProposals.nonEmpty) {
+            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, CFPAdmin.getLeaderBoardParams)
+          }
+        }
 
       } else {
         play.Logger.debug("No users found for digest " + digest.value)
