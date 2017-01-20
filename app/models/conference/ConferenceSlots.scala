@@ -243,18 +243,25 @@ object ConferenceSlots {
       r1 =>
         SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
           new DateTime(THU_DATE + "09:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(THU_DATE + "09:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r1)
+          new DateTime(THU_DATE + "09:25" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r1)
     }
-
     val keynoteThursdaySlot2 = ConferenceRooms.eveningKeynoteRoom.map {
       r2 =>
         SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+          new DateTime(THU_DATE + "09:25" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
+          new DateTime(THU_DATE + "09:50" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
+    }
+
+    val keynoteThursdaySlot3 = ConferenceRooms.eveningKeynoteRoom.map {
+      r3 =>
+        SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
           new DateTime(THU_DATE + "17:00" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(THU_DATE + "17:45" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r2)
+          new DateTime(THU_DATE + "17:45" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), r3)
     }
 
     keynoteThursdaySlot1 ++
-    keynoteThursdaySlot2
+    keynoteThursdaySlot2 ++
+    keynoteThursdaySlot3
   }
 
 
