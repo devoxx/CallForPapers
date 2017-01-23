@@ -7,6 +7,11 @@ th.scheduleHeader {
     color: white;
     font-size: 16px;
 }
+.scheduleHeaderDate {
+    font-size: 25px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
 .scheduleRow {
     background-color: #f5f5f5;
     border-color: #CED4BD;
