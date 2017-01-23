@@ -1,6 +1,7 @@
 .scheduleHeader {
     text-align: center;
     background-color: #211c1b;
+    color: white;
 }
 th.scheduleHeader {
     color: white;
@@ -29,7 +30,9 @@ th.scheduleHeader {
 .scheduleRight {
     text-align: center;
     font-size: 23px;
-    width: 150px;}
+    font-weight: bold;
+    width: 150px;
+}
 
 .agendaTable {
     border: 1px solid #ffd297;
