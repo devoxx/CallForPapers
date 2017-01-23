@@ -1,5 +1,5 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
+@import models.conference.ConferenceDescriptor
 @views.html.Publisher.devoxxUS2017("Schedule",Some("Devoxx US agenda")){
 
 <div class="large-12 columns">
@@ -25,9 +25,9 @@
         <tbody>
             <tr>
                 <td rowspan="9" class="scheduleHeader scheduleRight">What's on?</td>
-                <td class="scheduleRow">Keynotes</td>
-                <td class="scheduleRow">Keynotes</td>
-                <td class="scheduleRow">Keynotes</td>
+                <td class="scheduleRow"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/keynotes-2017/">Keynotes</a></td>
+                <td class="scheduleRow"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/keynotes-2017/">Keynotes</a></td>
+                <td class="scheduleRow"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/keynotes-2017/">Keynotes</a></td>
             </tr>
             <tr>
                 <td class="scheduleRow">
