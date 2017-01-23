@@ -17,14 +17,14 @@
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("tue")">@Messages("day-tuesday")<br>click to see full schedule</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("wed")">@Messages("day-wednesday")<br>click to see full schedule</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("thu")">@Messages("day-thursday")<br>click to see full schedule</a></th>
+                <th class="scheduleHeader">@Messages("day-tuesday")<br><a href="@routes.Publisher.showByDay("tue")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader">@Messages("day-wednesday")<br><a href="@routes.Publisher.showByDay("wed")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader">@Messages("day-thursday")<br><a href="@routes.Publisher.showByDay("thu")">Click</a> to see full schedule</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td rowspan="8" class="scheduleHeader scheduleRight">What's on?</td>
+                <td rowspan="9" class="scheduleHeader scheduleRight">What's on?</td>
                 <td class="scheduleRow">Keynotes</td>
                 <td class="scheduleRow">Keynotes</td>
                 <td class="scheduleRow">Keynotes</td>
@@ -83,6 +83,11 @@
                     @tags.publisher.renderShowDay("ignite", "wednesday", "Ignite Sessions")
                 </td>
                 <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="scheduleContentRow ">
+                    <p class="scheduleAllTalks"><a href="@routes.Publisher.showAllTalksByType()">Click</a> to see all the talks grouped by track</p>
+                </td>
             </tr>
         </tbody>
     </table>

@@ -1,7 +1,10 @@
 .scheduleHeader {
     text-align: center;
     background-color: #211c1b;
+}
+th.scheduleHeader {
     color: white;
+    font-size: 16px;
 }
 .scheduleRow {
     background-color: #f5f5f5;
@@ -14,7 +17,15 @@
     padding-top: 20px;
     padding-bottom: 20px;
 }
-
+.scheduleAllTalks {
+    padding-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.scheduleContentRow {
+    background-color: black;
+    color: white;
+}
 .scheduleRight {
     text-align: center;
     font-size: 23px;
