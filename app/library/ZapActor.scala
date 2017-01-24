@@ -26,15 +26,17 @@ package library
 import java.util
 
 import akka.actor._
+import com.amazonaws.{ClientConfiguration, Protocol}
 import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
 import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model._
 import com.amazonaws.{ClientConfiguration, Protocol}
-import controllers.CFPAdmin
+import controllers.{CFPAdmin, LeaderboardController}
 import models._
 import notifiers.Mails
 import org.apache.commons.lang3.StringUtils
 import play.api.Play
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
@@ -42,11 +44,11 @@ import play.libs.Akka
 import scala.Predef._
 
 /**
-  * Akka actor that is in charge to process batch operations and long running queries
-  *
-  * Author: nicolas martignole
-  * Created: 07/11/2013 16:20
-  */
+ * Akka actor that is in charge to process batch operations and long running queries
+ *
+ * Author: nicolas martignole
+ * Created: 07/11/2013 16:20
+ */
 
 // This is a simple Akka event
 case class ReportIssue(issue: Issue)
@@ -55,7 +57,7 @@ case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: S
 
 case class SendQuestionToSpeaker(visitorEmail: String, visitorName: String, proposal: Proposal, msg: String)
 
-case class SendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String)
+case class SendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String)
 
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
@@ -98,7 +100,7 @@ class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
-    case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
+    case SendMessageToCommittee(reporterUUID, proposal, msg) => sendMessageToCommittee(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
     case ComputeLeaderboard() => doComputeLeaderboard()
@@ -112,7 +114,7 @@ class ZapActor extends Actor {
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
-    case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
+    case NotifyGoldenTicket(goldenTicket:GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
@@ -129,24 +131,19 @@ class ZapActor extends Actor {
   }
 
   def sendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String) {
+
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.title}"))
-      val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-      val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
-      // Overwrite the messageID for the next email (to set the In-Reply-To)
-      Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
+      Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
     }
   }
 
-  def sendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String) {
+  def sendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
-        val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-        val newMessageID = Mails.sendMessageToCommittee(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
+        Mails.sendMessageToCommittee(reporterWebuser, proposal, msg)
     }.getOrElse {
       play.Logger.error("User not found with uuid " + reporterUUID)
     }
@@ -160,7 +157,7 @@ class ZapActor extends Actor {
         val maybeMessageID = Comment.lastMessageIDInternal(proposal.id)
         val newMessageID = Mails.postInternalMessage(reporterWebuser, proposal, msg, maybeMessageID)
         // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDInternal(proposal.id, newMessageID)
+        Comment.storeLastMessageIDInternal(proposal.id,newMessageID)
     }.getOrElse {
       play.Logger.error("Cannot post internal message, User not found with uuid " + reporterUUID)
     }
@@ -201,7 +198,7 @@ class ZapActor extends Actor {
   def doProposalApproved(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Approved"))
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Approved"))
       Mails.sendProposalApproved(speaker, proposal)
       Proposal.approve(reporterUUID, proposal.id)
     }
@@ -210,7 +207,7 @@ class ZapActor extends Actor {
   def doProposalRefused(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Refused"))
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Refused"))
       Mails.sendProposalRefused(speaker, proposal)
       Proposal.reject(reporterUUID, proposal.id)
     }
@@ -237,7 +234,9 @@ class ZapActor extends Actor {
     Event.storeEvent(Event(proposal.id, author, s"Submitted a proposal ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(author).map {
       reporterWebuser: Webuser =>
+        play.Logger.info(s"About to send out email to ${author}for ${proposal.id} '${proposal.title}'")
         Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
+        play.Logger.info(s"Email sent out to $author for ${proposal.id} '${proposal.title}'")
     }.getOrElse {
       play.Logger.error("User not found with uuid " + author)
     }
@@ -257,7 +256,7 @@ class ZapActor extends Actor {
         result.status match {
           case 200 =>
             val json = Json.parse(result.body)
-            if (play.Logger.of("library.ZapActor").isDebugEnabled) {
+            if(play.Logger.of("library.ZapActor").isDebugEnabled){
               play.Logger.of("library.ZapActor").debug(s"Got an ACK from OpsGenie $json")
             }
 
@@ -269,15 +268,15 @@ class ZapActor extends Actor {
     }
   }
 
-  def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {
-    play.Logger.debug(s"Notify golden ticket ${gt.ticketId} ${gt.webuserUUID}")
+  def doNotifyGoldenTicket(gt:GoldenTicket):Unit={
+    play.Logger.debug(s"Notify ${Messages("cfp.goldenTicket")} ${gt.ticketId} ${gt.webuserUUID}")
 
     Webuser.findByUUID(gt.webuserUUID).map {
       invitedWebuser: Webuser =>
-        Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
-        Mails.sendGoldenTicketEmail(invitedWebuser, gt)
+         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New ${Messages("cfp.goldenTicket")} for user ${invitedWebuser.cleanName}"))
+        Mails.sendGoldenTicketEmail(invitedWebuser,gt)
     }.getOrElse {
-      play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
+      play.Logger.error(s"${Messages("cfp.goldenTicket")} error : user not found with uuid ${gt.webuserUUID}")
     }
   }
 
@@ -286,7 +285,7 @@ class ZapActor extends Actor {
     *
     * @param confType the event type that has been modified
     */
-  def doNotifyMobileApps(confType: String): Unit = {
+  def doNotifyMobileApps(confType:String):Unit={
 
     play.Logger.debug("Notify mobile apps of a schedule change")
 
@@ -313,7 +312,7 @@ class ZapActor extends Actor {
       //publish to an SNS topic
       val publishRequest: PublishRequest = new PublishRequest()
 
-      publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
+      publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\""+ confType +"\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
 
       val messageAttributeValue: MessageAttributeValue = new MessageAttributeValue()
       messageAttributeValue.setStringValue("wns/raw")
@@ -357,7 +356,7 @@ class ZapActor extends Actor {
 
       if (foundUsersIDs.nonEmpty) {
 
-        play.Logger.debug(newProposalsIds.size + " proposal(s) found for digest " + digest.value)
+        play.Logger.debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
@@ -369,7 +368,7 @@ class ZapActor extends Actor {
         // Mail digest to users who have no track filter set
         if (noTrackDigestUsersIDs.nonEmpty) {
 
-          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, CFPAdmin.getLeaderBoardParams)
+          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
         }
 
         // Handle the digest users that have a track filter
@@ -383,7 +382,7 @@ class ZapActor extends Actor {
 
           // If proposals exist, then mail digest to user
           if (trackFilterProposals.nonEmpty) {
-            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, CFPAdmin.getLeaderBoardParams)
+            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, LeaderboardController.getLeaderBoardParams)
           }
         }
 

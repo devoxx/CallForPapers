@@ -27,6 +27,7 @@ import models._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
+import controllers.LeaderBoardParams
 
 /**
   * Sends all emails
@@ -37,45 +38,47 @@ import play.api.libs.mailer.{Email, MailerPlugin}
 
 object Mails {
 
-  val fromSender: String = ConferenceDescriptor.current().fromEmail
-  val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
-  val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
+  val fromSender = ConferenceDescriptor.current().fromEmail
+  val committeeEmail = ConferenceDescriptor.current().committeeEmail
+  val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
   val bccEmail: Option[String] = ConferenceDescriptor.current().bccEmail
 
   /**
     * Send a message to a set of Speakers.
-    * This function used to send 2 emails in the previous version.
-    * @return the rfc 822 Message-ID
     */
-  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo:Option[String]):String = {
+  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val listOfEmails = extractOtherEmails(proposal)
-
-    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
-      replyId: String =>
-        Seq("In-Reply-To" -> replyId)
-    }.getOrElse(Seq.empty[(String, String)])
 
     val email = Email(
       subject = s"[${proposal.id}] ${proposal.title}",
       from = fromSender,
       to = Seq(toWebuser.email),
-      cc = committeeEmail :: listOfEmails , // Send the email to the speaker and to the committee
+      cc = listOfEmails,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
-      headers = inReplyHeaders
+      headers = Seq()
     )
-    MailerPlugin.send(email) // returns the message-ID
+    MailerPlugin.send(email)
+
+    // For Program committee
+    val emailForCommittee = Email(
+      subject = s"[${proposal.id}] ${proposal.title}",
+      from = fromSender,
+      to = Seq(committeeEmail),
+      cc = listOfEmails,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
+      charset = Some("utf-8"),
+      headers = Seq()
+    )
+    MailerPlugin.send(emailForCommittee)
   }
 
-  def sendMessageToCommittee(fromWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo:Option[String]):String = {
+  def sendMessageToCommittee(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
-
-    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
-      replyId: String =>
-        Seq("In-Reply-To" -> replyId)
-    }.getOrElse(Seq.empty[(String, String)])
 
     val email = Email(
       subject = s"[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
@@ -83,12 +86,12 @@ object Mails {
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyText = Some(views.txt.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
-      headers = inReplyHeaders
+      headers = Seq()
     )
-    MailerPlugin.send(email) // returns the message-ID
+    MailerPlugin.send(email)
   }
 
   def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal) = {
@@ -205,9 +208,9 @@ object Mails {
                  userIDs: List[String],
                  proposals: List[Proposal],
                  isDigestFilterOn: Boolean,
-                 leaderBoardParams: controllers.CFPAdmin.LeaderBoardParams): String = {
+                 leaderBoardParams: LeaderBoardParams): String = {
 
-    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+  val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
     val emails = userIDs.map(uuid => Webuser.findByUUID(uuid).get.email)
 
@@ -218,24 +221,6 @@ object Mails {
       bcc = emails,
       bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
       bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
-      charset = Some("utf-8")
-    )
-
-    MailerPlugin.send(email)
-  }
-
-  def sendResultToSpeaker(speaker: Speaker,
-                          listOfApprovedProposals: Set[Proposal],
-                          listOfRefusedProposals: Set[Proposal]) = {
-    val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
-
-    val email = Email(
-      subject = subjectEmail,
-      from = fromSender,
-      to = Seq(speaker.email),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
       charset = Some("utf-8")
     )
 

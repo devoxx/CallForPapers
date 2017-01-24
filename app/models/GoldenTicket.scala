@@ -39,10 +39,10 @@ object GoldenTicket {
 
   implicit val goldenTicketFormat = Json.format[GoldenTicket]
 
-  def generateId(ticketId:String, email:String): String = {
+  def generateId(ticketId: String, email: String): String = {
     val cleanEmail = StringUtils.trimToEmpty(email).toLowerCase
     val cleanTicketId = StringUtils.trimToEmpty(ticketId).toLowerCase
-    cleanEmail.hashCode().toString+cleanTicketId.hashCode.toString
+    cleanEmail.hashCode().toString + cleanTicketId.hashCode.toString
   }
 
   def importTicket(gti: GoldenTicketImport): GoldenTicket = {
@@ -103,6 +103,16 @@ object GoldenTicket {
       val tx = client.multi()
       tx.hset(GD_TICKET, gd.id, json)
       tx.sadd(GD_TICKET + ":UniqueUser", gd.webuserUUID)
+      tx.exec()
+  }
+
+  // Move to attic the Golden Tickets
+  def attic() = Redis.pool.withClient {
+    implicit client =>
+      val tx = client.multi()
+      tx.del(GD_TICKET)
+      tx.del(GD_TICKET + ":UniqueUser")
+      tx.del("Webuser:gticket")
       tx.exec()
   }
 
