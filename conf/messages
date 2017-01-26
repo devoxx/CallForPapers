@@ -184,13 +184,13 @@ appel.conf.dates=Devoxx Poland 2017, 21st-23rd June
 
 # Tracks
 
-method.label=Methodology &amp; Culture
+method.label=Methodology & Culture
 track.method.desc=Software development methodologies, developer culture and best practices
 
 java.label=Java Language
 track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
 
-cloud.label=Cloud, Containers &amp; Infrastructure
+cloud.label=Cloud, Containers & Infrastructure
 track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
 
 ssj.label=Server Side Java
