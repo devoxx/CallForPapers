@@ -41,10 +41,18 @@ GET           /cfp/profile                                                      
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
 
+# Email Digests
+POST          /cfp/profile/digest                                               controllers.DigestController.update()
+DELETE        /cfp/profile/digestTrack                                          controllers.DigestController.removeFilter()
+POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
+GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
+GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
+
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
 POST          /cfp/proposal/preview                                             controllers.CallForPaper.previewProposal()
 POST          /cfp/proposal/save                                                controllers.CallForPaper.saveProposal()
+GET           /cfp/proposal/tags/autocomplete                                   controllers.CallForPaper.autoCompleteTag(term:String ?= "")
 
 GET           /cfp/proposal/edit/:proposalId                                    controllers.CallForPaper.editProposal(proposalId:String)
 GET           /cfp/proposal/edit/:proposalId/speakers                           controllers.CallForPaper.editOtherSpeakers(proposalId:String)
@@ -53,7 +61,7 @@ GET           /cfp/proposal/delete/:proposalId                                  
 GET           /cfp/proposal/undelete/:proposalId                                controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET           /cfp/proposal/submit/:proposalId                                  controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                                          controllers.CallForPaper.showCommentForProposal(proposalId:String)
-POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
+POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommittee(proposalId:String)
 
 # Password
 GET           /forget                                                           controllers.Authentication.forgetPassword
@@ -81,14 +89,11 @@ GET           /cfpadmin/proposal/:proposalId/score                              
 GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
-
-GET           /cfpadmin/leaderboard                                             controllers.CFPAdmin.leaderBoard
-GET           /cfpadmin/leaderboard/reviewerStats                               controllers.CFPAdmin.allReviewersAndStats
-GET           /cfpadmin/leaderboard/compute                                     controllers.CFPAdmin.doComputeLeaderBoard
+GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
-GET           /cfpadmin/recompute/allvotes                                      controllers.CFPAdmin.doComputeVotesTotal()
+
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                                    controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
@@ -100,13 +105,24 @@ POST          /cfpadmin/cfpWebusers/trackLeaders                                
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
 
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
+GET           /cfpadmin/allDevoxxians                                           controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
-GET           /cfpadmin/allSpeakers/byProposals/byCompany                       controllers.CFPAdmin.allProposalsByCompany()
+
+GET           /cfpadmin/leaderboard                                             controllers.LeaderboardController.leaderBoard
+GET           /cfpadmin/leaderboard/reviewerStats                               controllers.LeaderboardController.allReviewersAndStats
+GET           /cfpadmin/leaderboard/compute                                     controllers.LeaderboardController.doComputeLeaderBoard
+GET           /cfpadmin/leaderboard/reviewerStatsData                           controllers.LeaderboardController.dataForAllReviewersAndStats
+GET           /cfpadmin/leaderboard/proposals/companies                         controllers.LeaderboardController.allProposalsByCompany()
+GET           /cfpadmin/leaderboard/proposals/companies/graph                   controllers.LeaderboardController.allProposalsByCompanyAsGraph()
+GET           /cfpadmin/leaderboard/proposals/companies/data                    controllers.LeaderboardController.dataForAllProposalsByCompany()
+GET           /cfpadmin/recompute/allvotes                                      controllers.LeaderboardController.doComputeVotesTotal()
+
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
+GET           /cfpadmin/allSpeakers/rejectedTalks/all                           controllers.CFPAdmin.allSpeakersWithRejectedTalks()
 GET           /cfpadmin/allSpeakers/acceptedTalks/export                        controllers.CFPAdmin.allSpeakersWithAcceptedTalksForExport()
 GET           /cfpadmin/allSpeakers/invited                                     controllers.InviteController.allInvitations()
 
@@ -139,6 +155,18 @@ GET           /admin/sanitycheck/proposals                                      
 
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
+
+# Tags
+GET           /admin/tags/list                                                  controllers.Backoffice.showAllTags()
+GET           /admin/tags/new                                                   controllers.Backoffice.newTag()
+POST          /admin/tags/edit/:uuid                                            controllers.Backoffice.editTag(uuid : String)
+GET           /admin/tags/import                                                controllers.Backoffice.importTags()
+GET           /admin/tags/export                                                controllers.Backoffice.exportTags()
+POST          /admin/tag/save                                                   controllers.Backoffice.saveTag()
+POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
+POST          /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
+GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
+GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
@@ -173,12 +201,14 @@ GET           /cloudtags                                                        
 GET           /2017/speakers.html                                               controllers.Publisher.showAllSpeakers()
 GET           /2017/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
 GET           /2017/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2017/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2017/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2017/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET           /2017/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2017/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2017/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2017/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+#GET           /2016/sitemap.xml                                                 controllers.Assets.at(path="/public/devoxxbe2016", file="sitemap.xml")
 
 # This is Devoxx BE 2015
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
@@ -215,6 +245,15 @@ GET           /api/conferences/:eventCode/proposalTypes                         
 GET           /api/conferences/:eventCode/tracks                                controllers.RestAPI.showTracks(eventCode:String)
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
+
+# New My Devoxx and PWA REST endpoints
+POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
+GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
+DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
+GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
+DELETE        /api/proposals/:uuid/favored/:proposalId                          controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
 
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)
@@ -255,6 +294,10 @@ POST          /cfpadmin/attic/doArchive                                         
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
+POST          /cfpadmin/attic/deleteGoldenTickets                               controllers.Attic.deleteGoldenTickets()
+POST          /cfpadmin/attic/deleteWishlisted                                  controllers.Attic.deleteWishlist()
+POST          /cfpadmin/attic/deleteFav                                         controllers.Attic.deleteFavoriteTalks()
+POST          /cfpadmin/attic/deleteRatings                                     controllers.Attic.deleteRatings()
 
 # Golden ticket admin
 GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()
@@ -265,37 +308,38 @@ POST          /admin/goldenTickets/newTicket/importGroupOfGT                    
 POST          /admin/goldenTickets/newTicket/bulkImport                         controllers.GoldenTicketAdminController.bulkImport()
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
+GET           /admin/goldenTickets/repairStatsAfterGTArchivingAction            controllers.GoldenTicketAdminController.repairStatsAfterGTArchivingAction()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
 POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
 
 # Golden ticket webuser side
-GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
-GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf")
-GET           /cfp/goldenticket                                                  controllers.GoldenTicketController.authenticate()
-POST          /cfp/goldenticket                                                  controllers.GoldenTicketController.doAuthenticate()
+GET           /cfp/goldenticket/proposals                                       controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
+GET           /cfp/goldenticket/myvotes                                         controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf")
+GET           /cfp/goldenticket                                                 controllers.GoldenTicketController.authenticate()
+POST          /cfp/goldenticket                                                 controllers.GoldenTicketController.doAuthenticate()
 
-GET           /cfp/goldenticket/proposals/:proposalId                            controllers.GoldenTicketController.openForReview(proposalId:String)
-GET           /cfp/goldenticket/proposals/:proposalId/vote                       controllers.GoldenTicketController.voteForProposal(proposalId:String)
-GET           /cfp/goldenticket/proposals/:proposalId/clearVote                  controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
-GET           /cfp/goldenticket/proposals/:proposalId/showvotes                  controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId                           controllers.GoldenTicketController.openForReview(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/vote                      controllers.GoldenTicketController.voteForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/clearVote                 controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/showvotes                 controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
 
 # Rating system for mobile app
-GET           /cfpadmin/rating                                                   controllers.RatingController.homeRating()
-GET           /cfpadmin/postForBackup                                            controllers.RatingController.postForBackup()
-POST          /cfpadmin/rating                                                   controllers.RatingController.acceptVoteForTalk()
-GET           /cfpadmin/allRatings                                               controllers.RatingController.allRatings()
+GET           /cfpadmin/rating                                                  controllers.RatingController.homeRating()
+GET           /cfpadmin/postForBackup                                           controllers.RatingController.postForBackup()
+POST          /cfpadmin/rating                                                  controllers.RatingController.acceptVoteForTalk()
+GET           /cfpadmin/allRatings                                              controllers.RatingController.allRatings()
 
 # Voting API v1 as it has been specified and implemented by Jon Mort
-POST          /api/voting/v1/vote                                                controllers.MobileVotingV1.acceptVoteForTalk()
-GET           /api/voting/v1/talk/:talkId                                        controllers.MobileVotingV1.allVotesForTalk(talkId:String)
-GET           /api/voting/v1/top/talks                                           controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
-GET           /api/voting/v1/categories                                          controllers.MobileVotingV1.categories()
+POST          /api/voting/v1/vote                                               controllers.MobileVotingV1.acceptVoteForTalk()
+GET           /api/voting/v1/talk/:talkId                                       controllers.MobileVotingV1.allVotesForTalk(talkId:String)
+GET           /api/voting/v1/top/talks                                          controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
+GET           /api/voting/v1/categories                                         controllers.MobileVotingV1.categories()
 
 # CFP Admin
-GET           /toptalks                                                          controllers.MobileVotingV1.topTalksAsHtml(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=50, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
+GET           /toptalks                                                         controllers.MobileVotingV1.topTalksAsHtml(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=50, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                                                      controllers.Assets.at(path="/public", file)
+GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
 GET           /bp/fullAgenda                                                     controllers.Backoffice.showAllAgendaForInge()
 

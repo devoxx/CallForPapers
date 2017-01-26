@@ -18045,7 +18045,7 @@ body, html {
 
 body.error404, body.page-template-page-templatescoming-soon-php {
     height: auto !important;
-    
+
     background-position: center center;
     background-size: cover;
     background-attachment: fixed;
@@ -18328,7 +18328,7 @@ Main Top Section - Image Page
     width: 100%;
     height: 100%;
     position: relative;
-    
+
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
@@ -19193,7 +19193,7 @@ Parallax Sections
 }
 
 .parallax.parallax-new-testimonials {
-    
+
 }
 
 .parallax.parallax-new-testimonials .container-overlay {
@@ -19309,7 +19309,7 @@ Parallax Sections
 }
 
 .parallax.parallax-new-facts {
-    
+
     text-align: center;
     padding-top: 20px;
     padding-bottom: 30px;
@@ -19406,7 +19406,7 @@ Parallax Sections
 
 .parallax.parallax-lines {
     box-shadow: 0 -7px 15px rgba(0, 0, 0, 0.2);
-    
+
 }
 
 .parallax.parallax-lines .lines-wrapper {
@@ -19682,7 +19682,7 @@ Parallax Sections
 
 .parallax.parallax-counters {
     padding-top: 90px;
-    
+
     box-shadow: 0 -7px 15px rgba(0, 0, 0, 0.4);
     text-align: center;
 }
@@ -19736,7 +19736,7 @@ Parallax Sections
 }
 
 .parallax.parallax-testimonials {
-    
+
     padding: 110px 0;
     background-repeat: repeat-y;
 }
@@ -19836,7 +19836,7 @@ Parallax Sections
 }
 
 .parallax.parallax-our-services {
-    
+
     color: #fff;
     padding: 70px 0;
 }
@@ -20076,7 +20076,7 @@ Parallax Sections
 
 .parallax.parallax-squares {
     box-shadow: 0 -7px 15px rgba(0, 0, 0, 0.2);
-    
+
     overflow: hidden;
 }
 
@@ -26934,7 +26934,7 @@ div.speakerCard span.twitter {
 }
 
 #speaker .divider {
-      padding-bottom: 25px;
+    padding-bottom: 25px;
     background-image: url("images/team-divider.png");
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -26952,6 +26952,6 @@ img.speakerRound {
 }
 .speakerBio{
     background: white;
-margin-bottom: 1.25rem;
-border: solid 1px #dddddd;
+    margin-bottom: 1.25rem;
+    border: solid 1px #dddddd;
 }

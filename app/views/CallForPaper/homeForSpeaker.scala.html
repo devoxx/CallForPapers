@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]], needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")){
     <div class="row">
@@ -97,15 +97,59 @@
                             }
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
-
 
                 <div class="panel-footer">
                     <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
                 </div>
-
             </div>
+            @if(Webuser.isMember(webuser.uuid, "cfp")){
+                <div class="digestMessage">
+                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>@Messages("email.digest.description")<br>
+                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
+                                <td>
+                                    <select id="digest">
+                                    @Digest.allDigests.map { digest =>
+                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                            <option value='@digest.value' selected>
+                                        }else {
+                                            <option value='@digest.value'>
+                                            }
+                                        @digest.value
+                                    </option>
+                                    }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
+                                    <div class="filterTracks">
+                                    @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
+                                        @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
+                                            @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
+                                                <input type="checkbox" id="@track.id" checked/>
+                                            } else {
+                                                <input type="checkbox" id="@track.id"/>
+                                            }
+                                        } else {
+                                            <input type="checkbox" id="@track.id"/>
+                                        }
+                                        &nbsp;@Html(Messages(track.label))<br>
+                                    }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
 
         </div>
 
@@ -136,6 +180,12 @@
                  }
                  </div>
              }
+            @if(needsToAcceptTermAndCondition){
+                <div class="alert alert-warning alert-dismissable">
+                    <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
+                    <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
+                </div>
+            }
 
             @if(myProposals.isEmpty) {
                 <div class="info">
@@ -289,6 +339,34 @@
         }
 
 </div>
+<script language="JavaScript">
+
+    $('#digest').change(function(){
+        $.ajax({
+            type: "POST",
+            url: "/cfp/profile/digest?value="+$('#digest').val(),
+            success: function(data) {
+                return $('#digestMsg').text(data);
+            }
+        })
+    });
+
+    $('.filterTracks input[type="checkbox"]').on('click', function() {
+
+        if ($(this).is(':checked')) {
+            $.ajax({
+                type: "POST",
+                url: "/cfp/profile/digestTrack?value="+$(this).attr('id')
+            })
+
+        } else {
+            $.ajax({
+                type: "DELETE",
+                url: "/cfp/profile/digestTrack?value="+$(this).attr('id')
+            })
+        }
+    });
+</script>
 <!-- @speaker.uuid -->
 <!-- @webuser.uuid -->
 }

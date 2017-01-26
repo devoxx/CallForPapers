@@ -4,6 +4,7 @@ import java.util.Locale
 
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
+import play.api.i18n.Messages
 
 /**
   * ConferenceDescriptor.
@@ -17,9 +18,9 @@ import play.api.Play
   * @author Frederic Camblor, BDX.IO 2014
   */
 
-case class ConferenceUrls(faq: String, registration: String,confWebsite: String, cfpHostname: String){
-  def cfpURL:String={
-    if(Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)){
+case class ConferenceUrls(info: String, registration: String, confWebsite: String, cfpHostname: String) {
+  def cfpURL(): String = {
+    if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
       s"https://$cfpHostname"
     }else{
       s"http://$cfpHostname"
@@ -102,8 +103,8 @@ case class ConferenceDescriptor(eventCode: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[Locale],
                                 localisation: String,
-                                notifyProposalSubmitted:Boolean,
-                                maxProposalSummaryCharacters:Int=1200
+                                notifyProposalSubmitted: Boolean,
+                                maxProposalSummaryCharacters: Int = 1200
                                )
 
 object ConferenceDescriptor {
@@ -625,7 +626,7 @@ object ConferenceDescriptor {
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("info@devoxx.pl"),
     conferenceUrls = ConferenceUrls(
-      faq = "http://www.devoxx.pl/faq/",
+      info = "http://www.devoxx.pl/faq/",
       registration = "http://reg.devoxx.pl",
       confWebsite = "http://www.devoxx.pl/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.pl")
@@ -661,6 +662,14 @@ object ConferenceDescriptor {
   def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
   def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+
+  // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
+  // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
+  def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
+
+  // Set this to true temporarily
+  // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
+  def notifyProposalSubmitted = true
 
 }
 

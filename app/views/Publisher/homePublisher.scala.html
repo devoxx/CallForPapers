@@ -18,16 +18,16 @@
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader">@Messages("day-monday")</th>
-                <th class="scheduleHeader">@Messages("day-tuesday")</th>
-                <th class="scheduleHeader">@Messages("day-wednesday")</th>
-                <th class="scheduleHeader">@Messages("day-thursday")</th>
-                <th class="scheduleHeader">@Messages("day-friday")</th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("mon")">@Messages("day-monday")</a></th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("tue")">@Messages("day-tuesday")</a></th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("wed")">@Messages("day-wednesday")</a></th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("thu")">@Messages("day-thursday")</a></th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("fri")">@Messages("day-friday")</a></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
+                <td rowspan="10"  class="scheduleHeader scheduleRight">What's on</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
                 <td class="scheduleRow">&nbsp;</td>
@@ -104,6 +104,11 @@
                 </td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <span>You can click on the above dates for full day schedule views.</span>
                 </td>
             </tr>
         </tbody>

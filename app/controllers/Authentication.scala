@@ -26,7 +26,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 import models._
-import notifiers.{Mails, TransactionalEmails}
+import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
@@ -234,11 +234,11 @@ object Authentication extends Controller {
       w =>
         Some(
           (w.uuid,
-            w.email,
-            w.firstName,
-            w.lastName,
-            w.password,
-            w.profile)
+           w.email,
+           w.firstName,
+           w.lastName,
+           w.password,
+           w.profile)
         )
     }
   )
