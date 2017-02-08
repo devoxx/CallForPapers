@@ -1,8 +1,5 @@
 package controllers
 
-import akka.actor.ActorRefFactory
-import controllers.Backoffice.Redirect
-import controllers.Wishlist.{NotFound, Ok}
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
 import models.{Tag, _}
@@ -14,14 +11,13 @@ import play.api.data._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
-import views.html
 
 /**
- * Backoffice actions, for maintenance and validation.
- *
- * Author: nicolas martignole
- * Created: 02/12/2013 21:34
- */
+  * Backoffice actions, for maintenance and validation.
+  *
+  * Author: nicolas martignole
+  * Created: 02/12/2013 21:34
+  */
 object Backoffice extends SecureCFPController {
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
@@ -152,6 +148,7 @@ object Backoffice extends SecureCFPController {
       ElasticSearchActor.masterActor ! DoIndexAllProposals
       ElasticSearchActor.masterActor ! DoIndexAllAccepted
       ElasticSearchActor.masterActor ! DoIndexAllHitViews
+      ElasticSearchActor.masterActor ! DoIndexSchedule
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Elastic search actor started...")
   }
 
@@ -195,7 +192,7 @@ object Backoffice extends SecureCFPController {
         client =>
           val toReturn = client.hgetAll("Proposal:SubmittedDate").map {
             case (proposal, submitted) =>
-              (proposal, new Instant(submitted.toLong).toDateTime.toDateMidnight.toString("dd-MM-yyyy"))
+              (proposal, new Instant(submitted.toLong).toDateTime.toString("dd-MM-yyyy"))
           }.groupBy(_._2).map {
             tuple =>
               (tuple._1, tuple._2.size)
@@ -252,11 +249,11 @@ object Backoffice extends SecureCFPController {
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
         slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {
-          val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
-          val updatedSlot = slot.copy(proposal = Some(updatedProposal))
-          val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
-          newListOfSlots
-        }
+        val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
+        val updatedSlot = slot.copy(proposal = Some(updatedProposal))
+        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
+        newListOfSlots
+      }
 
       maybeUpdated.map {
         newListOfSlots =>
@@ -275,7 +272,7 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
   }
 
-  def showAllDeclined = SecuredAction(IsMemberOf("admin")) {
+  def showAllDeclined() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       val allDeclined = Proposal.allDeclinedProposals()
@@ -322,10 +319,10 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.saved"))
   }
 
-  def editTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
+  def editTag(uuid: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val foundTag = Tag.findById(uuid)
-       foundTag match {
+      foundTag match {
         case None => NotFound("Sorry, this tag does not exit")
         case Some(tag) => {
           Ok(views.html.Backoffice.newTag(Tag.tagForm.fill(tag)))
@@ -358,7 +355,7 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.imported"))
   }
 
-  def deleteTag(id : String) = SecuredAction(IsMemberOf("admin")) {
+  def deleteTag(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       if (Tags.isTagLinkedByProposal(id)) {
         BadRequest("Tag is used by a proposal, unlink tag first.")
@@ -416,4 +413,5 @@ object Backoffice extends SecureCFPController {
 
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
+
 }
