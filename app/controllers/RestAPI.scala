@@ -812,6 +812,8 @@ object RestAPI extends Controller {
         } else {
           BadRequest("email not provided")
         }
+      } else {
+        BadRequest("Not a multipart form")
       }
   }
 }
