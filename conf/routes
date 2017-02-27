@@ -93,6 +93,7 @@ GET           /cfpadmin/proposals/byTrack/:track                                
 GET           /cfpadmin/compareReviewer                                         controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 GET           /cfpadmin/allWebusers                                             controllers.CFPAdmin.allWebusers()
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
+GET           /cfpadmin/allDevoxxians                                           controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
 GET           /cfpadmin/allSpeakers/byProposals/byCompany                       controllers.CFPAdmin.allProposalsByCompany()
