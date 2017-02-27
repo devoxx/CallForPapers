@@ -197,7 +197,7 @@ object MobileVotingV1 extends SecureCFPController {
       }
   }
 
-  // Public call for a simple Web page for Devoxx Belgium 2016
+  // Public call for a simple Web page for Devoxx US 2017
   def topTalksForDevoxx(day: Option[String]) = Action {
     implicit request =>
       val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, None, None)
@@ -209,7 +209,7 @@ object MobileVotingV1 extends SecureCFPController {
       if (onlyXXXResults.isEmpty) {
         NoContent
       } else {
-        Ok(views.html.CFPAdmin.topTalksDevoxxBE2016(onlyXXXResults, day.getOrElse("wed")))
+        Ok(views.html.CFPAdmin.topTalksDevoxx(onlyXXXResults, day.getOrElse("wed")))
       }
   }
 
