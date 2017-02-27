@@ -395,7 +395,16 @@ object ConferenceSlots {
       room => List(
         SlotBuilder(ConferenceProposalTypes.IGNITE.id, WEDNESDAY,
           new DateTime(WED_DATE + "13:20" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
-          new DateTime(WED_DATE + "14:25" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), room)
+          new DateTime(WED_DATE + "13:25" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), room),
+        SlotBuilder(ConferenceProposalTypes.IGNITE.id, WEDNESDAY,
+          new DateTime(WED_DATE + "13:25" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
+          new DateTime(WED_DATE + "13:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), room),
+        SlotBuilder(ConferenceProposalTypes.IGNITE.id, WEDNESDAY,
+          new DateTime(WED_DATE + "13:30" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
+          new DateTime(WED_DATE + "13:35" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), room),
+        SlotBuilder(ConferenceProposalTypes.IGNITE.id, WEDNESDAY,
+          new DateTime(WED_DATE + "13:35" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)),
+          new DateTime(WED_DATE + "13:40" + MINSEC).toDateTime(DateTimeZone.forID(AmericaLosAngeles)), room)
       )
     }
   }
