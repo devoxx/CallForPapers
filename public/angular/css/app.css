@@ -52,7 +52,16 @@ body {
     border-radius: 3px;
     box-shadow: 2px 2px #bbb;
 }
-
+.rejected {
+    color: white;
+    display: block;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: black;
+    border-radius: 3px;
+    box-shadow: 2px 2px #bbb;
+}
 .slot {
 
     border: 2px solid black;
@@ -66,6 +75,10 @@ body {
     color: #000000;
     font-weight: bold;
     font-size: 9px;
+}
+
+.rejected .proposalTitle {
+    color: white;
 }
 
 .proposalTitle {
