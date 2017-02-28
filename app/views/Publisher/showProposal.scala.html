@@ -1,5 +1,6 @@
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
+@import models.conference.ConferenceDescriptor
 
 @views.html.Publisher.devoxxUS2017(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
@@ -46,9 +47,9 @@
                             <h4 style="padding-top:10px;">@slot.map(_.room.name)</h4>
                         </td>
                         <td style="text-align: right">
-                            @slot.get.from.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("EEEE") from
-                            @slot.get.from.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("h:mm a") til
-                            @slot.get.to.toDateTime(DateTimeZone.forID("America/Los_Angeles")).toString("h:mm a")
+                            @slot.get.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("EEEE") from
+                            @slot.get.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm a") til
+                            @slot.get.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm a")
                         </td>
                     </tr>
                 }

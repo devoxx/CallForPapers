@@ -25,6 +25,7 @@ package controllers
 
 import library.{NotifyMobileApps, SaveSlots, ZapActor}
 import models._
+import models.conference.ConferenceDescriptor
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNumber, JsString, Json}
@@ -117,7 +118,7 @@ object SchedullingController extends SecureCFPController {
           case (key, dateAsDouble) =>
             val scheduledSaved = Json.parse(key).as[ScheduleSaved]
             Map("key" -> Json.toJson(scheduledSaved),
-              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("America/Los_Angeles")))
+              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)))
             )
         })
       )

@@ -100,6 +100,10 @@ object ConferenceDescriptor {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
+  // All timezone sensitive methods are using this constant variable.
+  // Defaults to "America/Los_Angeles" if not set in the Clever Cloud env. variables page.
+  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("America/Los_Angeles")
+
   def isGoldenTicketActive: Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)

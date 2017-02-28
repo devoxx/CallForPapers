@@ -441,10 +441,9 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
-        case other => {
+        case other =>
           val jsonObject = Json.toJson(mapOfSchedules)
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedules").absoluteURL().toString + ">; rel=\"profile\""))
-        }
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedules").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -480,8 +479,8 @@ object RestAPI extends Controller {
                           Map(
                             "link" -> Json.toJson(
                               Link(
-                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                                routes.RestAPI.profile("speaker").absoluteURL().toString,
+                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL(),
+                                routes.RestAPI.profile("speaker").absoluteURL(),
                                 speaker.cleanName
                               )
                             ),
@@ -492,8 +491,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("America/Los_Angeles"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("America/Los_Angeles"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -549,7 +548,7 @@ object RestAPI extends Controller {
             )
           )
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("proposalType").absoluteURL().toString + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("proposalType").absoluteURL() + ">; rel=\"profile\""))
         }
       }
   }
@@ -581,7 +580,7 @@ object RestAPI extends Controller {
             )
           )
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL().toString + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL() + ">; rel=\"profile\""))
         }
       }
   }
@@ -653,8 +652,8 @@ object RestAPI extends Controller {
                           Map(
                             "link" -> Json.toJson(
                               Link(
-                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                                routes.RestAPI.profile("speaker").absoluteURL().toString,
+                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL(),
+                                routes.RestAPI.profile("speaker").absoluteURL(),
                                 speaker.cleanName
                               )
                             ),
@@ -665,8 +664,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("America/Los_Angeles"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("America/Los_Angeles"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -689,7 +688,7 @@ object RestAPI extends Controller {
               "slots" -> Json.toJson(toReturn)
             )
           )
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL().toString + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL() + ">; rel=\"profile\""))
         }
       }
   }
@@ -712,8 +711,8 @@ object RestAPI extends Controller {
                   uuid => Speaker.findByUUID(uuid)
                 }.map {
                   speaker =>
-                    Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                      routes.RestAPI.profile("speaker").absoluteURL().toString,
+                    Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL(),
+                      routes.RestAPI.profile("speaker").absoluteURL(),
                       speaker.cleanName)
                 }
 
@@ -724,8 +723,8 @@ object RestAPI extends Controller {
                   "talkTypeId" -> Json.toJson(proposal.talkType.id),
                   "links" -> Json.toJson(
                     List(
-                      Link(routes.RestAPI.showTalk(eventCode, proposal.id).absoluteURL().toString,
-                        routes.RestAPI.profile("talk").absoluteURL().toString, "More details about this talk"
+                      Link(routes.RestAPI.showTalk(eventCode, proposal.id).absoluteURL(),
+                        routes.RestAPI.profile("talk").absoluteURL(), "More details about this talk"
                       )
                     ).++(allSpeakers)
                   )
@@ -735,8 +734,8 @@ object RestAPI extends Controller {
               val maybeSlot = {
                 ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id).map {
                   slot =>
-                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("America/Los_Angeles"))
-                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("America/Los_Angeles"))
+                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
                     Map(
                       "slotId" -> Json.toJson(slot.id)
