@@ -1,14 +1,17 @@
 package controllers
 
+import com.fasterxml.jackson.databind.JsonNode
+import controllers.SchedullingController.BadRequest
 import library.search.{DoIndexProposal, _}
-import library.{DraftReminder, Redis, ZapActor}
+import library.{DraftReminder, NotifyMobileApps, Redis, ZapActor}
 import models._
+import models.conference.ConferenceDescriptor
 import org.joda.time.Instant
 import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
 import play.api.data._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 
 /**
@@ -284,4 +287,30 @@ object Backoffice extends SecureCFPController {
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
       Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
   }
+
+  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      request.body.asJson.map {
+        json =>
+          val message = json.\("stringField").as[String]
+
+          ZapActor.actor ! NotifyMobileApps(message)
+
+          Ok(message)
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
+//
+//          val jsonValue = request.body.asJson.get.toString()
+//
+//      """
+//        |jsonValue
+//      """.stripMargin
+//      val parsed = Json.parse(jsonValue)
+//      val value = parsed.\("stringField").as[String]
+//
+//      Ok(value)
+  }
+
 }
