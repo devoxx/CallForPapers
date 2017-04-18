@@ -1,7 +1,7 @@
 package controllers
 
 import library.search.{DoIndexProposal, _}
-import library.{DraftReminder, Redis, ZapActor}
+import library.{DraftReminder, NotifyMobileApps, Redis, ZapActor}
 import models.{Tag, _}
 import org.joda.time.Instant
 import play.api.Play
@@ -285,6 +285,21 @@ object Backoffice extends SecureCFPController {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
       Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+  }
+
+  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      request.body.asJson.map {
+        json =>
+          val message = json.\("stringField").as[String]
+
+          ZapActor.actor ! NotifyMobileApps(message)
+
+          Ok(message)
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
   }
 
   // Tag related controllers

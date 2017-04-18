@@ -184,32 +184,35 @@ appel.conf.dates=Devoxx Belgium 2017, 6th-10th November
 
 # Tracks
 
-method_archi.label=Methodology &amp; Architecture
-track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
+method_archi.label=Methodology &amp; Culture
+track.method_archi.desc=Software development methodologies, developer culture, DevOps, CI/CD, etc
 
 java.label=Java Language
-track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
+track.java.desc=Java language, Java SE, JDK, performance, tuning, modularity, etc
 
 cloud.label=Cloud, Containers &amp; Infrastructure
-track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
+track.cloud.desc=Docker, Kubernetes, Mesos, Cloud, PaaS, Cloud, Vagrant, etc
 
 ssj.label=Server Side Java
-track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs
+track.ssj.desc=Java EE, App servers, Spring Framework, MOM, Related JSRs, etc
 
 lang.label=Programming languages
-track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
+track.lang.desc=Other languages running on the JVM, functional, emerging languages, tools, libraries, etc
 
-bigdata.label=Big Data
-track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
+bigdata.label=Big Data &amp; Machine Learning
+track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc
 
 web.label=Modern Web
-track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
+track.web.desc=Progressive web apps, Polymer, Web frameworks, Reactive, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
-future.label=Future<Devoxx>
-track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
+future.label=Mind the Geek
+track.future.desc=Developer candy: stuff we want to know about but don't (generally) at work, Robotics, biological computing, cybernetics, AI, new toys, tomorrow's world
 
-mobile.label=Mobile & Embedded
-track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
+mobile.label=Mobile &amp; IoT
+track.mobile.desc=Android, iOS, Xamarin, IOT, Embedded, M2M, smart objects, connectivity, security, etc
+
+security.label=Architecture &amp; Security
+track.security.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right. Anything related to security and development.
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile

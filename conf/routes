@@ -171,6 +171,9 @@ GET           /admin/cloudTag                                                   
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
 
+# Push notification message to "My Devoxx" mobile app
+POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
+
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)
@@ -204,6 +207,7 @@ GET           /2016/talks/:talkType                                             
 GET           /2016/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2016/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2016/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2016/talks                                                       controllers.Publisher.showAllTalksByType()
 GET           /2016/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2016/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)

@@ -187,6 +187,7 @@ object ConferenceDescriptor {
     val WEB = Track("web", "web.label")
     val FUTURE = Track("future", "future.label")
     val MOBILE = Track("mobile", "mobile.label")
+    val SECURITY = Track("security", "security.label")
 
     val UNKNOWN = Track("unknown", "unknown track")
     val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, UNKNOWN)
@@ -202,6 +203,7 @@ object ConferenceDescriptor {
     val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxbe2016/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2016/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
     val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
+    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxbe2016/images/", ConferenceTracks.SECURITY.label, "track.security.desc")
 
     val ALL = List(METHOD_ARCHI
       , JAVA
@@ -212,6 +214,7 @@ object ConferenceDescriptor {
       , WEB
       , FUTURE
       , MOBILE
+      , SECURITY
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
