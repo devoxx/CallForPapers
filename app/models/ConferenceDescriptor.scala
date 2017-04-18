@@ -935,10 +935,47 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay: DateTime = new DateTime().withYear(2016).withMonthOfYear(11).withDayOfMonth(7)
-  val toDay: DateTime = new DateTime().withYear(2016).withMonthOfYear(11).withDayOfMonth(10)
+  val fromDay: DateTime = new DateTime().withYear(2017).withMonthOfYear(11).withDayOfMonth(6)
+  val toDay: DateTime = new DateTime().withYear(2017).withMonthOfYear(11).withDayOfMonth(9)
 
   def current() = ConferenceDescriptor(
+    eventCode = "DVBE17",
+    // You will need to update conf/routes files with this code if modified
+    confUrlCode = "devoxxbe2017",
+    frLangEnabled = false,
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
+    bccEmail = Play.current.configuration.getString("mail.bcc"),
+    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
+    conferenceUrls = ConferenceUrls(
+      info = "https://devoxx.be/faq/",
+      registration = "http://reg.devoxx.be",
+      confWebsite = "https://devoxx.be/",
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+    ),
+    timing = ConferenceTiming(
+      datesI18nKey = "6th-10th November",
+      speakersPassDuration = 5,
+      preferredDayEnabled = true,
+      firstDayFr = "6 novembre",
+      firstDayEn = "november 6th",
+      datesFr = "du 6 au 11 Novembre 2017",
+      datesEn = "from 6th to 11th of November, 2017",
+      cfpOpenedOn = DateTime.parse("2017-05-22T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2017-07-07T23:59:59+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-09-15T00:00:00+02:00"),
+      days=dateRange(fromDay,toDay,new Period().withDays(1))
+    ),
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
+    hashTag = "#Devoxx",
+    conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
+    , List(Locale.ENGLISH)
+    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
+  )
+
+  def conference2016() = ConferenceDescriptor(
     eventCode = "DV16",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxbe2016",
@@ -957,50 +994,13 @@ object ConferenceDescriptor {
       datesI18nKey = "7th-11th November",
       speakersPassDuration = 5,
       preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
+      firstDayFr = "7 novembre",
       firstDayEn = "november 7th",
-      datesFr = "du 7 au 10 Novembre 2016",
-      datesEn = "from 7th to 10th of November, 2016",
+      datesFr = "du 7 au 11 Novembre 2016",
+      datesEn = "from 7th to 11th of November, 2016",
       cfpOpenedOn = DateTime.parse("2016-05-23T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2016-07-06T23:59:59+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2016-09-15T00:00:00+02:00"),
-      days=dateRange(fromDay,toDay,new Period().withDays(1))
-    ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
-    hashTag = "#Devoxx",
-    conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
-    , List(Locale.ENGLISH)
-    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
-    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
-  )
-
-  def conference2015() = ConferenceDescriptor(
-    eventCode = "DV15",
-    // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxbe2015",
-    frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
-    bccEmail = Play.current.configuration.getString("mail.bcc"),
-    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
-    conferenceUrls = ConferenceUrls(
-      info = "https://devoxx.be/faq/",
-      registration = "http://reg.devoxx.be",
-      confWebsite = "https://devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
-    ),
-    timing = ConferenceTiming(
-      datesI18nKey = "9th-13th November",
-      speakersPassDuration = 5,
-      preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
-      firstDayEn = "november 9th",
-      datesFr = "du 9 au 13 Novembre 2015",
-      datesEn = "from 9th to 13th of November, 2015",
-      cfpOpenedOn = DateTime.parse("2015-05-23T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2015-07-06T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2015-09-15T00:00:00+02:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
@@ -1016,6 +1016,10 @@ object ConferenceDescriptor {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
+  // All timezone sensitive methods are using this constant variable.
+  // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
+  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
+
   def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
   def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
@@ -1030,5 +1034,7 @@ object ConferenceDescriptor {
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted = true
 
+  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
+  def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
+  def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 }
-

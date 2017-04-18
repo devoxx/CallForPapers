@@ -28,7 +28,6 @@ object ApplicationBuild extends Build {
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
     ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
 
-    , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
     exclude ("com.fasterxml.jackson.core", "jackson-annotations")
     exclude ("com.fasterxml.jackson.core", "jackson-core")
     exclude ("com.fasterxml.jackson.core", "jackson-databind")
