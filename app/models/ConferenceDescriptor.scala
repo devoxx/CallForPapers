@@ -279,7 +279,7 @@ object ConferenceDescriptor {
 
     // VARIABLE CONSTANTS
 
-    private val europeBrussels: String = "Europe/Brussels"
+    private val europeBrussels: String = ConferenceDescriptor.timeZone
     private val MONDAY: String = "monday"
     private val TUESDAY: String = "tuesday"
     private val WEDNESDAY: String = "wednesday"
