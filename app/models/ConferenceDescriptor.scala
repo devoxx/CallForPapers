@@ -297,7 +297,7 @@ object ConferenceDescriptor {
     
     private val MIN_SEC = ":00.000+01:00"
 
-    // UNIVERSITY
+    // DEEP DIVES
 
     val universitySlotsMonday: List[Slot] = {
 
