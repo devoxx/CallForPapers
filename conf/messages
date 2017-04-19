@@ -203,7 +203,7 @@ bigdata.label=Big Data &amp; Machine Learning
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc
 
 web.label=Modern Web
-track.web.desc=Progressive web apps, Polymer, Web frameworks, Reactive, HTML5, CSS3, JavaScript, libraries & tools to build web apps
+track.web.desc=Progressive web apps, Polymer, Web frameworks, Reactive, libraries, languages and tools to build web apps.
 
 future.label=Mind the Geek
 track.future.desc=Developer candy: stuff we want to know about but don't (generally) at work, Robotics, biological computing, cybernetics, AI, new toys, tomorrow's world
