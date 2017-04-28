@@ -24,10 +24,19 @@
                     }
                 </tr>
 
-                @if(day.toLowerCase=="wednesday" && talkType.toLowerCase=="conf" ){
+                @if(day.toLowerCase.startsWith("fri") && talkType.toLowerCase=="conf" ){
                     <tr>
                         <th>
-                            09:30 - 11:30
+                            09:00 - 09:30
+                        </th>
+                        <td class="keynotes" colspan="8">
+                            <a href="https://devoxx.pl/keynotes-2017">Keynotes</a>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            09:30 - 10:30
                         </th>
                         <td class="keynotes" colspan="8">
                             <a href="https://devoxx.pl/keynotes-2017">Keynotes</a>
@@ -73,10 +82,10 @@
                         <td>@room.name</td>
                     }
                 </tr>
- @if(day.toLowerCase.startsWith("thu")) {
+ @if(day.toLowerCase.startsWith("fri") && talkType.toLowerCase=="conf" ) {
      <tr>
          <th>
-             19:00 - 19:50
+             15:50 - 16:50
          </th>
          <td class="keynotes" colspan="8">
              <a href="https://devoxx.pl/keynotes-2017">Closing Keynote (Room 5)</a>
@@ -85,7 +94,7 @@
      </tr>
      <tr>
          <th>
-             20:00 - 22:00
+             16:50 - 17:20
          </th>
          <td class="keynotes" colspan="8">
              Devoxx Movie (Room 8)
