@@ -184,13 +184,13 @@ appel.conf.dates=Devoxx Poland 2017, 21st-23rd June
 
 # Tracks
 
-method.label=Methodology &amp; Culture
+method.label=Methodology & Culture
 track.method_archi.desc=Software development methodologies, developer culture, DevOps, CI/CD, etc
 
 java.label=Java Language
 track.java.desc=Java language, Java SE, JDK, performance, tuning, modularity, etc
 
-cloud.label=Cloud, Containers &amp; Infrastructure
+cloud.label=Cloud, Containers & Infrastructure
 track.cloud.desc=Docker, Kubernetes, Mesos, Cloud, PaaS, Cloud, Vagrant, etc
 
 ssj.label=Server Side Java
@@ -199,7 +199,7 @@ track.ssj.desc=Java EE, App servers, Spring Framework, MOM, Related JSRs, etc
 lang.label=Programming languages
 track.lang.desc=Other languages running on the JVM, functional, emerging languages, tools, libraries, etc
 
-bigdata.label=Big Data &amp; Machine Learning
+bigdata.label=Big Data & Machine Learning
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
 web.label=Modern Web
@@ -208,10 +208,10 @@ track.web.desc=Progressive web apps, Polymer, Web frameworks, Reactive, librarie
 future.label=Mind the Geek
 track.future.desc=Developer candy: stuff we want to know about but don't (generally) at work, Robotics, biological computing, cybernetics, AI, new toys, tomorrow's world
 
-mobile.label=Mobile &amp; IoT
+mobile.label=Mobile & IoT
 track.mobile.desc=Android, iOS, Xamarin, IOT, Embedded, M2M, smart objects, connectivity, security, etc
 
-archi.label=Architecture &amp; Security
+archi.label=Architecture & Security
 track.archi.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right and secure
 
 # confirm import
