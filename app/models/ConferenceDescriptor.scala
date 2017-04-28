@@ -266,6 +266,23 @@ object ConferenceDescriptor {
 
   object ConferenceSlots {
 
+    // VARIABLE CONSTANTS
+
+    private val europeBrussels: String = ConferenceDescriptor.timeZone
+    private val MONDAY: String = "monday"
+    private val TUESDAY: String = "tuesday"
+    private val WEDNESDAY: String = "wednesday"
+    private val THURSDAY: String = "thursday"
+    private val FRIDAY: String = "friday"
+
+    private val MON_DATE = "2016-11-07T"
+    private val TUE_DATE = "2016-11-08T"
+    private val WED_DATE = "2016-11-09T"
+    private val THU_DATE = "2016-11-10T"
+    private val FRI_DATE = "2016-11-11T"
+
+    private val MIN_SEC = ":00.000+01:00"
+
     // FATJ
     val fatjThursday: List[Slot] = {
       val fatjSlot = ConferenceRooms.FATJRoom.map {
@@ -657,6 +674,10 @@ object ConferenceDescriptor {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
+  // All timezone sensitive methods are using this constant variable.
+  // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
+  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
+
   def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
   def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
@@ -671,5 +692,7 @@ object ConferenceDescriptor {
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted = true
 
+  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
+  def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
+  def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 }
-

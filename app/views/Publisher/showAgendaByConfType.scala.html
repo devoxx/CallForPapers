@@ -42,9 +42,9 @@
                         <!--
                         time = @time
                         localdatetime = @time.toLocalDateTime
-                        to = @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        to = @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
                         -->
-                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        @time.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
 

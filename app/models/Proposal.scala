@@ -783,7 +783,7 @@ object Proposal {
       }.toList
   }
 
-  // How many Conference, University, BOF...
+  // How many Conference, Deep Dive, BOF...
   def totalSubmittedByType(): Map[ProposalType, Int] = {
     allSubmitted().groupBy(_.talkType).map {
       case (pt: ProposalType, listOfProposals: List[Proposal]) =>

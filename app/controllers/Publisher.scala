@@ -27,6 +27,7 @@ import akka.util.Crypt
 import library.search.ElasticSearch
 import play.api.libs.json.{JsObject, Json}
 import library.{LogURL, ZapActor}
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import models._
 import play.api.cache.Cache
 import play.api.data.Form
@@ -117,6 +118,14 @@ object Publisher extends Controller {
         case other =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }
+  }
+
+  def showAllTalksByType = Action {
+    implicit request =>
+      val proposals = ConferenceProposalTypes.ALL.map(proposalType =>
+        (proposalType.id, Proposal.allAcceptedByTalkType(proposalType.id)))
+
+      Ok(views.html.Publisher.showAllTalksByProposalType(proposals))
   }
 
   def showByTag(tagId: String) = Action {

@@ -13,23 +13,27 @@
         </form>
         </div>
     </div>
+    <div class="large-3 columns right">
+        <a href="https://itunes.apple.com/us/app/my-devoxx/id1094805620" target="_blank"><img src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/AppStore.jpg"></a>
+        <a href="https://play.google.com/store/apps/details?id=com.devoxx" target="_blank"><img src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/GooglePlay.jpg"></a>
+    </div>
 
     <table class="mainSchedule">
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("mon")">@Messages("day-monday")</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("tue")">@Messages("day-tuesday")</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("wed")">@Messages("day-wednesday")</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("thu")">@Messages("day-thursday")</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("fri")">@Messages("day-friday")</a></th>
+                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-monday")</div><br><a href="@routes.Publisher.showByDay("mon")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-tuesday")</div><br><a href="@routes.Publisher.showByDay("tue")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-wednesday")</div><br><a href="@routes.Publisher.showByDay("wed")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-thursday")</div><br><a href="@routes.Publisher.showByDay("thu")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-friday")</div><br><a href="@routes.Publisher.showByDay("fri")">Click</a> to see full schedule</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td rowspan="10"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
+                <td rowspan="10" class="scheduleHeader scheduleRight">What's on</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "Deep Dive Sessions")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "Deep Dive Sessions")</td>
                 <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
@@ -45,7 +49,7 @@
                 <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
@@ -107,8 +111,8 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="6">
-                    <span>You can click on the above dates for full day schedule views.</span>
+                <td colspan="5" class="scheduleContentRow ">
+                    <p class="scheduleAllTalks"><a href="@routes.Publisher.showAllTalksByType()">Click</a> to see all the talks grouped by track</p>
                 </td>
             </tr>
         </tbody>
@@ -118,14 +122,19 @@
     <!-- ******************************************************************* //-->
 
 <div class="large-6 columns">
-<h3>University</h3>
-<p>University talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
-<p>University attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
+<h3>The Devoxxians</h3>
+<p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2016/speakers.html">here</a>.</p>
+</div>
+
+<div class="large-6 columns">
+<h3>Deep Dive</h3>
+<p>Deep Dive talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
+<p>Deep Dive attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
 </div>
 
 <div class="large-6 columns">
 <h3>Tools in Action</h3>
-<p>30 minute sessions taking place after the University talks with a focus on technical tools and APIs.</p>
+<p>30 minute sessions taking place after the Deep Dive talks with a focus on technical tools and APIs.</p>
 </div>
 
 <div class="large-6 columns">

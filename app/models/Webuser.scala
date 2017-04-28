@@ -194,7 +194,6 @@ object Webuser {
       maybeUser.exists(_.password == password)
   }
 
-
   def delete(webuser: Webuser) = Redis.pool.withClient {
     implicit client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)

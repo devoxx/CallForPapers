@@ -145,8 +145,8 @@ key.label=Keynote, 1h, Wednesday, Thursday and Friday
 key.label.simple=Keynote
 conf.label=Conference, 1h, Wednesday, Thursday and Friday
 conf.label.simple=Conference
-uni.label=University, 3h, Wednesday, Thursday and Friday
-uni.label.simple=University
+uni.label=Deep Dives, 3h, Wednesday, Thursday and Friday
+uni.label.simple=Deep Dive
 tia.label=Tools in Action, 30mn, Wednesday and Thursday
 tia.label.simple=Tools in Action
 quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
@@ -175,7 +175,7 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx PL 2016''s videos on
+video.tag=Watch Devoxx videos on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx Poland 2017:
 track.title=Title
@@ -184,34 +184,34 @@ appel.conf.dates=Devoxx Poland 2017, 21st-23rd June
 
 # Tracks
 
-method.label=Methodology & Culture
-track.method.desc=Software development methodologies, developer culture and best practices
+method.label=Methodology &amp; Culture
+track.method_archi.desc=Software development methodologies, developer culture, DevOps, CI/CD, etc
 
 java.label=Java Language
-track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
+track.java.desc=Java language, Java SE, JDK, performance, tuning, modularity, etc
 
-cloud.label=Cloud, Containers & Infrastructure
-track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
+cloud.label=Cloud, Containers &amp; Infrastructure
+track.cloud.desc=Docker, Kubernetes, Mesos, Cloud, PaaS, Cloud, Vagrant, etc
 
 ssj.label=Server Side Java
-track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs
+track.ssj.desc=Java EE, App servers, Spring Framework, MOM, Related JSRs, etc
 
 lang.label=Programming languages
-track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
+track.lang.desc=Other languages running on the JVM, functional, emerging languages, tools, libraries, etc
 
-bigdata.label=Big Data and Machine Learning
+bigdata.label=Big Data &amp; Machine Learning
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
 web.label=Modern Web
-track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
+track.web.desc=Progressive web apps, Polymer, Web frameworks, Reactive, libraries, languages and tools to build web apps.
 
-future.label=Future and Robotics
-track.future.desc=Looking Forwards - All stuff we want to know about but don’t (generally) do at work. Robotics, biological computing, cybernetics, AI, new toys, tomorrow’s world...
+future.label=Mind the Geek
+track.future.desc=Developer candy: stuff we want to know about but don't (generally) at work, Robotics, biological computing, cybernetics, AI, new toys, tomorrow's world
 
-mobile.label=IoT & Mobile
-track.mobile.desc=Developing for IoT, embedded and mobile devices. Tools, frameworks & libraries, etc
+mobile.label=Mobile &amp; IoT
+track.mobile.desc=Android, iOS, Xamarin, IOT, Embedded, M2M, smart objects, connectivity, security, etc
 
-archi.label=Architecture & Security
+archi.label=Architecture &amp; Security
 track.archi.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right and secure
 
 # confirm import
@@ -350,6 +350,11 @@ admin.btn.sendMessage=Post your message
 admin.sp.internal=Private discussions
 admin.sp.deleteMyVote=Delete my vote
 admin.btn.allvotes=All votes
+admin.btn.vote_0=Thanks for playing a fair game!
+admin.btn.vote_1=You're basically veto'ing this talk, please add an internal comment to justify the low rating.
+admin.btn.vote_2=Very low vote, please add an internal comment to justify the low rating.
+admin.btn.vote_9=You really like this proposal, please explain to the team members why  :)
+admin.btn.vote_10=Why a 10, are you friends or colleages? :)  Please add internal comment to justify.
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.
 admin.draft.warning=Warning
@@ -423,7 +428,7 @@ sw.talkType=All talks
 sw.details=See details
 
 conf=Conference
-uni=University
+uni=Deep Dive
 tia=Tools-in-Action
 lab=Hands-on Labs
 quick=Quickie
@@ -442,7 +447,7 @@ admin.btn.changeState=Change one proposal state
 sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
-sw.all.uni=All Universities
+sw.all.uni=All Deep Dives
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
@@ -496,6 +501,7 @@ day-tuesday=Tuesday, 20th June
 day-wednesday=Wednesday, 21st June
 day-thursday=Thursday, 22nd June
 day-friday=Friday, 23rd June
+day-saturday=Saturday, 24th June
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -514,6 +520,8 @@ sw.agenda.thu=Thursday
 sw.agenda.thursday=Thursday
 sw.agenda.fri=Friday
 sw.agenda.friday=Friday
+sw.agenda.sat=Saturday
+sw.agenda.saturday=Saturday
 sw.show.mon=Monday
 sw.show.monday=Monday
 sw.show.tue=Tuesday
@@ -524,11 +532,14 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
+sw.show.sat=Saturday
+sw.show.saturday=Saturday
 sw.show.title.mon=Monday, 19th June 2017
 sw.show.title.tue=Tuesday, 20th June 2017
 sw.show.title.wed=Wednesday, 21st June 2017
 sw.show.title.thu=Thursday, 22nd June 2017
 sw.show.title.fri=Friday, 23rd June 2017
+sw.show.title.sat=Saturday, 24th June 2017
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -543,6 +554,7 @@ not.published=The agenda for this conference is not yet published
 day-wed=Wednesday
 day-thu=Thursday
 day-fri=Friday
+day-sat=Saturday
 nav.homeREST=REST API
 acceptedTerms.msg=Terms and Conditions accepted ! Thanks.
 
