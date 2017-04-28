@@ -235,18 +235,21 @@ object ConferenceDescriptor {
     val ROOM3 = Room("room3", "Room 3", 300, "theatre")
     val ROOM4 = Room("room4", "Room 4", 400, "theatre")
     val ROOM5 = Room("room5", "Room 5", 300, "theatre")
+    val ROOM6 = Room("room6", "Room 6", 50, "class")
 
-    val allRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5)
+    val allRooms = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5, ROOM6)
 
-    val allRoomsQuickies = List(ROOM2, ROOM3, ROOM4, ROOM5)
+    val allRoomsQuickies = List(ROOM2, ROOM3, ROOM4)
 
-    val allRoomsBof = List(ROOM1, ROOM2, ROOM3, ROOM4)
+    val allRoomsBof = List(ROOM2, ROOM3, ROOM4, ROOM5)
 
     val allRoomsTia = List(ROOM1, ROOM2, ROOM5)
 
+    val allRoomsLab = List(ROOM6)
+
     val keynoteRoom = List(ROOM1)
 
-    val FATJRoom = List(ROOM4)
+    val FATJRoom = List(ROOM3)
 
     val allRoomsConf = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5)
   }
@@ -259,6 +262,7 @@ object ConferenceDescriptor {
     val shortBreak = SlotBreak("chgt", "Break", "Pause courte", ConferenceRooms.HALL_EXPO)
     val exhibition = SlotBreak("exhib", "Exhibition", "Exhibition", ConferenceRooms.HALL_EXPO)
     val meetAndGreet = SlotBreak("meet", "Meet & Greet (Exhibition)", "Exhibition", ConferenceRooms.HALL_EXPO)
+    val meetAndGreet2 = SlotBreak("meet", "Meet & Greet (Exhibition)", "Exhibition", ConferenceRooms.HALL_EXPO)
     val eveningKeynote = SlotBreak("evKey", "Evening Keynote", "Keynote", ConferenceRooms.ROOM5)
     val closingKeynote = SlotBreak("closeKey", "Closing Keynote (Room 5)", "Keynote", ConferenceRooms.ROOM3)
     val movieSpecial = SlotBreak("movie", "Movie 20:00-22:00 (Room 8)", "Movie", ConferenceRooms.ROOM3)
@@ -268,47 +272,48 @@ object ConferenceDescriptor {
 
     // VARIABLE CONSTANTS
 
-    private val europeBrussels: String = ConferenceDescriptor.timeZone
+    private val europeWarsaw: String = ConferenceDescriptor.timeZone
     private val MONDAY: String = "monday"
     private val TUESDAY: String = "tuesday"
     private val WEDNESDAY: String = "wednesday"
     private val THURSDAY: String = "thursday"
     private val FRIDAY: String = "friday"
+    private val SATURDAY: String = "saturday"
 
-    private val MON_DATE = "2016-11-07T"
-    private val TUE_DATE = "2016-11-08T"
-    private val WED_DATE = "2016-11-09T"
-    private val THU_DATE = "2016-11-10T"
-    private val FRI_DATE = "2016-11-11T"
+    private val MON_DATE = "2017-06-19T"
+    private val TUE_DATE = "2017-06-20T"
+    private val WED_DATE = "2017-06-21T"
+    private val THU_DATE = "2017-06-22T"
+    private val FRI_DATE = "2017-05-23T"
+    private val SAT_DATE = "2017-06-24T"
 
-    private val MIN_SEC = ":00.000+01:00"
+    private val MIN_SEC = ":00.000+02:00"
 
     // FATJ
     val fatjThursday: List[Slot] = {
       val fatjSlot = ConferenceRooms.FATJRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T21:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(THU_DATE+"18:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"21:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       fatjSlot
     }
-
 
     // TOOLS IN ACTION
     val tiaSlotsThursday: List[Slot] = {
       val toolsThursdayAfternoonSlot1 = ConferenceRooms.allRoomsTia.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
-            new DateTime("2017-06-22T18:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T18:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(THU_DATE+"18:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"18:40"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
 
       val toolsThursdayAfternoonSlot2 = ConferenceRooms.allRoomsTia.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
-            new DateTime("2017-06-22T18:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T19:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
+            new DateTime(THU_DATE+"18:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"19:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
       }
 
       toolsThursdayAfternoonSlot1 ++ toolsThursdayAfternoonSlot2
@@ -318,14 +323,62 @@ object ConferenceDescriptor {
 
     // HANDS ON LABS
 
+    val labSlotsWednesday: List[Slot] = {
+      val labWednesdaySlot1 = ConferenceRooms.allRoomsLab.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "wednesday",
+            new DateTime(WED_DATE+"11:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"13:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
+      }
+      val labWednesdaySlot2 = ConferenceRooms.allRoomsLab.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "wednesday",
+            new DateTime(WED_DATE+"14:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"17:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
+      }
+      labWednesdaySlot1 ++ labWednesdaySlot2
+    }
+
+    val labSlotsThursday: List[Slot] = {
+      val labThursdaySlot1 = ConferenceRooms.allRoomsLab.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "thursday",
+            new DateTime(THU_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"12:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
+      }
+      val labThursdaySlot2 = ConferenceRooms.allRoomsLab.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "thursday",
+            new DateTime(THU_DATE+"13:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"16:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
+      }
+      labThursdaySlot1 ++ labThursdaySlot2
+    }
+
+    val labFridayFriday: List[Slot] = {
+      val labFridaySlot1 = ConferenceRooms.allRoomsLab.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "friday",
+            new DateTime(FRI_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"12:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
+      }
+      val labFridaySlot2 = ConferenceRooms.allRoomsLab.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "friday",
+            new DateTime(FRI_DATE+"13:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"15:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
+      }
+      labFridaySlot1 ++ labFridaySlot2
+    }
+
     // BOFS
 
     val bofSlotsWednesday: List[Slot] = {
       val bofWednesdayEveningSlot1 = ConferenceRooms.allRoomsBof.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday",
-            new DateTime("2017-06-21T19:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T20:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(WED_DATE+"19:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"20:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       bofWednesdayEveningSlot1
     }
@@ -335,8 +388,8 @@ object ConferenceDescriptor {
       val quickiesWednesday1 = ConferenceRooms.allRoomsQuickies.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday",
-            new DateTime("2017-06-21T13:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T13:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(WED_DATE+"13:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"13:25"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       quickiesWednesday1
     }
@@ -345,8 +398,8 @@ object ConferenceDescriptor {
       val quickiesThursday1 = ConferenceRooms.allRoomsQuickies.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
-            new DateTime("2017-06-22T12:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T12:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(THU_DATE+"12:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"12:45"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       quickiesThursday1
     }
@@ -355,8 +408,8 @@ object ConferenceDescriptor {
       val quickiesFriday1 = ConferenceRooms.allRoomsQuickies.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
-            new DateTime("2017-06-23T12:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T12:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(FRI_DATE+"12:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"12:45"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       quickiesFriday1
     }
@@ -366,42 +419,31 @@ object ConferenceDescriptor {
       val keynoteWednesdayWelcome = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
-            new DateTime("2017-06-21T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(WED_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"09:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       val keynoteWednesdaySlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
-            new DateTime("2017-06-21T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T10:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(WED_DATE+"09:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"10:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
 
       keynoteWednesdayWelcome ++ keynoteWednesdaySlot1
-    }
-
-    val keynoteSlotsThursday: List[Slot] = {
-      val keynoteThursdaySlot1 = ConferenceRooms.keynoteRoom.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
-            new DateTime("2017-06-22T17:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T18:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
-      }
-
-      keynoteThursdaySlot1
     }
 
     val keynoteSlotsFriday: List[Slot] = {
       val keynoteFridaySlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "friday",
-            new DateTime("2017-06-23T15:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T16:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(FRI_DATE+"15:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"16:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       val keynoteFridayClosing = ConferenceRooms.keynoteRoom.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "friday",
-            new DateTime("2017-06-23T16:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T17:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
+            new DateTime(FRI_DATE+"16:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"17:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
       }
 
       keynoteFridaySlot1 ++ keynoteFridayClosing
@@ -412,38 +454,38 @@ object ConferenceDescriptor {
       val conferenceWednesdaySlot1 = ConferenceRooms.allRoomsConf.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
-            new DateTime("2017-06-21T11:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T11:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(WED_DATE+"11:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"11:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       val conferenceWednesdaySlot2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
-            new DateTime("2017-06-21T12:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T13:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
+            new DateTime(WED_DATE+"12:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"13:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
       }
       val conferenceWednesdaySlot3 = ConferenceRooms.allRoomsConf.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
-            new DateTime("2017-06-21T14:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T14:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r3)
+            new DateTime(WED_DATE+"14:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"14:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r3)
       }
       val conferenceWednesdaySlot4 = ConferenceRooms.allRoomsConf.map {
         r4 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
-            new DateTime("2017-06-21T15:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T16:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r4)
+            new DateTime(WED_DATE+"15:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"16:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r4)
       }
       val conferenceWednesdaySlot5 = ConferenceRooms.allRoomsConf.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
-            new DateTime("2017-06-21T16:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T17:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
+            new DateTime(WED_DATE+"16:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"17:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r5)
       }
       val conferenceWednesdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
-            new DateTime("2017-06-21T17:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-21T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r6)
+            new DateTime(WED_DATE+"17:40"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(WED_DATE+"18:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r6)
       }
       conferenceWednesdaySlot1 ++ conferenceWednesdaySlot2 ++ conferenceWednesdaySlot3 ++ conferenceWednesdaySlot4 ++ conferenceWednesdaySlot5 ++ conferenceWednesdaySlot6
     }
@@ -454,80 +496,87 @@ object ConferenceDescriptor {
         r0 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id,
             "thursday",
-            new DateTime("2017-11-10T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-11-10T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r0)
+            new DateTime("2017-11-10T09:30:00.000+01:00").toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime("2017-11-10T10:30:00.000+01:00").toDateTime(DateTimeZone.forID(europeWarsaw)), r0)
       }
       val conferenceThursdaySlot1 = ConferenceRooms.allRoomsConf.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T09:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(THU_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"09:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       val conferenceThursdaySlot2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T10:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T11:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
+            new DateTime(THU_DATE+"10:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"11:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
       }
       val conferenceThursdaySlot3 = ConferenceRooms.allRoomsConf.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T11:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r3)
+            new DateTime(THU_DATE+"11:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"12:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r3)
       }
       val conferenceThursdaySlot4 = ConferenceRooms.allRoomsConf.map {
         r4 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T13:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T14:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r4)
+            new DateTime(THU_DATE+"13:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"14:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r4)
       }
       val conferenceThursdaySlot5 = ConferenceRooms.allRoomsConf.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T14:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T15:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
+            new DateTime(THU_DATE+"14:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"15:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r5)
       }
 
       val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
-            new DateTime("2017-06-22T15:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-22T16:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r6)
+            new DateTime(THU_DATE+"15:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"16:40"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r6)
       }
 
-      conferenceThursdaySlot1 ++ conferenceThursdaySlot2 ++ conferenceThursdaySlot3 ++ conferenceThursdaySlot4 ++ conferenceThursdaySlot5 ++ conferenceThursdaySlot6
+      val conferenceThursdaySlot7 = ConferenceRooms.allRoomsConf.map {
+        r6 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+            new DateTime(THU_DATE+"17:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(THU_DATE+"17:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r7)
+      }
+
+      conferenceThursdaySlot1 ++ conferenceThursdaySlot2 ++ conferenceThursdaySlot3 ++ conferenceThursdaySlot4 ++ conferenceThursdaySlot5 ++ conferenceThursdaySlot6 ++ conferenceThursdaySlot7
     }
 
     val conferenceSlotsFriday: List[Slot] = {
       val conferenceFridaySlot1 = ConferenceRooms.allRoomsConf.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime("2017-06-23T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T09:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(FRI_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"09:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r1)
       }
       val conferenceFridaySlot2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime("2017-06-23T10:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T11:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
+            new DateTime(FRI_DATE+"10:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"11:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
       }
       val conferenceFridaySlot3 = ConferenceRooms.allRoomsConf.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime("2017-06-23T11:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r3)
+            new DateTime(FRI_DATE+"11:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"12:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r3)
       }
       val conferenceFridaySlot4 = ConferenceRooms.allRoomsConf.map {
         r4 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime("2017-06-23T13:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T14:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r4)
+            new DateTime(FRI_DATE+"13:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"14:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r4)
       }
       val conferenceFridaySlot5 = ConferenceRooms.allRoomsConf.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime("2017-06-23T14:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2017-06-23T15:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
+            new DateTime(FRI_DATE+"14:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"15:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r5)
       }
       conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5
     }
@@ -535,91 +584,94 @@ object ConferenceDescriptor {
     // Registration, coffee break, lunch etc
     val wednesdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
-        new DateTime("2017-06-21T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"08:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
-        new DateTime("2017-06-21T10:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T11:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"10:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"11:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "wednesday",
-        new DateTime("2017-06-21T11:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T12:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"11:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"12:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
-        new DateTime("2017-06-21T13:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T14:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"13:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"14:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "wednesday",
-        new DateTime("2017-06-21T14:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T15:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"14:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"15:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
-        new DateTime("2017-06-21T16:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T16:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"16:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"16:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "wednesday",
-        new DateTime("2017-06-21T17:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T17:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"17:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"17:40"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.meetAndGreet, "wednesday",
-        new DateTime("2017-06-21T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-21T21:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(WED_DATE+"18:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(WED_DATE+"21:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
     )
 
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
-        new DateTime("2017-06-22T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"08:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
-        new DateTime("2017-06-22T09:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T10:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"09:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"10:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
-        new DateTime("2017-06-22T11:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T11:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"11:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"11:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
-        new DateTime("2017-06-22T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T13:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"12:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"13:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
-        new DateTime("2017-06-22T14:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T14:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"14:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"14:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
-        new DateTime("2017-06-22T15:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T15:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"15:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"15:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
-        new DateTime("2017-06-22T16:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T17:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"16:40"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"17:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
-        new DateTime("2017-06-22T17:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-22T18:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(THU_DATE+"17:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"18:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
+      , SlotBuilder(ConferenceSlotBreaks.meetAndGreet2, "thursday",
+        new DateTime(THU_DATE+"18:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(THU_DATE+"21:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
     )
 
     val fridayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "friday",
-        new DateTime("2017-06-23T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-23T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(FRI_DATE+"08:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(FRI_DATE+"09:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
-        new DateTime("2017-06-23T09:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-23T10:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(FRI_DATE+"09:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(FRI_DATE+"10:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "friday",
-        new DateTime("2017-06-23T11:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-23T11:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(FRI_DATE+"11:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(FRI_DATE+"11:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
-        new DateTime("2017-06-23T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-23T13:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(FRI_DATE+"12:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(FRI_DATE+"13:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "friday",
-        new DateTime("2017-06-23T14:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-23T14:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(FRI_DATE+"14:10"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(FRI_DATE+"14:30"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
-        new DateTime("2017-06-23T15:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2017-06-23T15:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(FRI_DATE+"15:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+        new DateTime(FRI_DATE+"15:50"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)))
     )
 
     // DEVOXX DAYS
 
     val wednesdaySchedule: List[Slot] = {
-      wednesdayBreaks ++ keynoteSlotsWednesday ++ conferenceSlotsWednesday ++ quickiesSlotsWednesday ++ bofSlotsWednesday
+      wednesdayBreaks ++ keynoteSlotsWednesday ++ conferenceSlotsWednesday ++ quickiesSlotsWednesday ++ bofSlotsWednesday ++ labSlotsWednesday
     }
 
     val thursdaySchedule: List[Slot] = {
-      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ tiaSlotsThursday ++ fatjThursday
+      thursdayBreaks ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ tiaSlotsThursday ++ fatjThursday ++ labSlotsThursday
     }
 
     val fridaySchedule: List[Slot] = {
-      fridayBreaks ++ keynoteSlotsFriday ++ conferenceSlotsFriday ++ quickiesSlotsFriday //Ignite zamiast quickies podczas lunchu?
+      fridayBreaks ++ keynoteSlotsFriday ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labFridayFriday //Ignite zamiast quickies podczas lunchu?
     }
 
     // COMPLETE DEVOXX
@@ -676,7 +728,7 @@ object ConferenceDescriptor {
 
   // All timezone sensitive methods are using this constant variable.
   // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
-  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
+  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Warsaw")
 
   def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 

@@ -22,8 +22,6 @@
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-monday")</div><br><a href="@routes.Publisher.showByDay("mon")">Click</a> to see full schedule</th>
-                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-tuesday")</div><br><a href="@routes.Publisher.showByDay("tue")">Click</a> to see full schedule</th>
                 <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-wednesday")</div><br><a href="@routes.Publisher.showByDay("wed")">Click</a> to see full schedule</th>
                 <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-thursday")</div><br><a href="@routes.Publisher.showByDay("thu")">Click</a> to see full schedule</th>
                 <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-friday")</div><br><a href="@routes.Publisher.showByDay("fri")">Click</a> to see full schedule</th>
@@ -32,74 +30,6 @@
         <tbody>
             <tr>
                 <td rowspan="10" class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "Deep Dive Sessions")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "Deep Dive Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "monday", "Tools-in-Action Sessions") </td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "tuesday", "Tools-in-Action Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-               <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                    <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "monday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "tuesday", "Hands-on Labs")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "monday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                 <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "wednesday", "Quickies")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("ignite", "thursday", "Ignite Sessions")
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
                 </td>
@@ -109,6 +39,47 @@
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
                 </td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")
+                </td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "wednesday", "Quickies")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "friday", "Quickies")
+                </td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("tia", "thursday", "Tools in Action")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">Hackergarten</td>
+                <td class="scheduleRow">Hackergarten</td>
+                <td class="scheduleRow">Hackergarten</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">Find A Tech Job</td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
                 <td colspan="5" class="scheduleContentRow ">
@@ -122,23 +93,22 @@
     <!-- ******************************************************************* //-->
 
 <div class="large-6 columns">
-<h3>The Devoxxians</h3>
-<p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2016/speakers.html">here</a>.</p>
+    <h3>The Devoxxians</h3>
+<p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2017/speakers.html">here</a>.</p>
 </div>
 
 <div class="large-6 columns">
-<h3>Deep Dive</h3>
-<p>Deep Dive talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
-<p>Deep Dive attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
+    <h3>Hands-on Labs</h3>
+<p>Hands-on Labs are 2 or 3 hours long in-depth, hands-on session.</p>
 </div>
 
 <div class="large-6 columns">
-<h3>Tools in Action</h3>
-<p>30 minute sessions taking place after the Deep Dive talks with a focus on technical tools and APIs.</p>
+    <h3>Tools in Action</h3>
+<p>30 minute sessions with a focus on technical tools and APIs.</p>
 </div>
 
 <div class="large-6 columns">
-<h3>Hackergarten</h3>
+    <h3>Hackergarten</h3>
 <p>Hackergartens are a great place to meet new people, have fun, and improve the lives of developers around the world
     one patch at a time; provided you're willing to bring your laptop and get your hands dirty. Write a plugin,
     a tutorial, a small feature, or a bug fix for a project that interests you alongside several open-source experts
@@ -146,27 +116,16 @@
 </div>
 
 <div class="large-6 columns">
-    <h3>Labs</h3>
-<p>Practical hands-on sessions of 3 hours (in the BOF rooms) with maximum of 60 people per room.</p>
+    <h3>Conference</h3>
+<p>Conference talks are regular 50 minutes sessions.</p>
 </div>
 
-<div class="large-6 columns">
-    <h3>Conference</h3>
-<p>Conference talks (one hour technical presentations) start on Wednesday till Friday.</p>
-<p>Conference attendees can also attend Quickies, BOFs and hands-on Lab sessions from Wednesday til Friday.</p>
-</div>
-<div class="large-6 columns">
-    <h3>Ignite</h3>
-<p>Ignite is the name for a particular type of event that is held throughout the world—organized by volunteers—at which
-    participants speak about their ideas and personal or professional passions according to a specific format.
-    The presentations are meant to “ignite” the audience on a subject, whereby awareness,
-    thought, and action are generated on the subjects presented.</p>
-</div>
 <div class="large-6 columns">
     <h3>Quickies</h3>
 <p>15 minute sessions during the lunch breaks.</p>
 </div>
+
 <div class="large-6 columns">
     <h3>BOFs</h3>
-<p>Informal evening sessions of 1 hour with maximum 70 people per room.</p></div>
+<p>Informal evening sessions of 1 hour. Usually very interactive, full of discussions, kind of Q&A format.</p></div>
 }
