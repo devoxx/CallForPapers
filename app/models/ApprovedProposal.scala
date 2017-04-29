@@ -33,7 +33,7 @@ import models.ConferenceDescriptor.ConferenceProposalConfigurations
 object ApprovedProposal {
 
   def elasticSearchIndex():String={
-    "proposals_"+ConferenceDescriptor.current().confUrlCode
+    "proposals_"+ConferenceDescriptor.current().confUrlCode.toLowerCase()
   }
 
   val getTotal: Map[String, Int] = Map(
@@ -306,6 +306,15 @@ object ApprovedProposal {
       client.keys("ApprovedSpeakers:*").flatMap {
         key =>
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          for (speaker <- Speaker.findByUUID(speakerUUID)) yield speaker
+      }
+  }
+
+  def allRefusedSpeakers() = Redis.pool.withClient {
+    implicit client =>
+      client.keys("RefusedSpeakers:*").flatMap {
+        key =>
+          val speakerUUID = key.substring("RefusedSpeakers:".length)
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield speaker
       }
   }

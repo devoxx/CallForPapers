@@ -19,6 +19,7 @@ import play.api.mvc.Action
   * Created: 02/12/2013 21:34
   */
 object Backoffice extends SecureCFPController {
+  implicit val SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD = "status";
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -287,21 +288,6 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
   }
 
-  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-
-      request.body.asJson.map {
-        json =>
-          val message = json.\("stringField").as[String]
-
-          ZapActor.actor ! NotifyMobileApps(message)
-
-          Ok(message)
-      }.getOrElse {
-        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
-      }
-  }
-
   // Tag related controllers
 
   def showAllTags = SecuredAction(IsMemberOf("admin")) {
@@ -429,4 +415,32 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 
+  def isScheduleInProgressMessageDisplayStatus(): Option[String] = Redis.pool.withClient {
+    implicit client => client.hget("InProgress:Schedule", SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD)
+  }
+
+  def setScheduleInProgressMessage(value: String) = Redis.pool.withClient {
+    implicit client => client.hset("InProgress:Schedule", SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD, value)
+  }
+
+  def setSchedulingInProgressMessageTo(displayStatus: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      controllers.Backoffice.setScheduleInProgressMessage(displayStatus)
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress", displayStatus))
+  }
+
+  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      request.body.asJson.map {
+        json =>
+          val message = json.\("stringField").as[String]
+
+          ZapActor.actor ! NotifyMobileApps(message)
+
+          Ok(message)
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
+  }
 }

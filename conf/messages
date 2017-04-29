@@ -760,7 +760,7 @@ userGroup=Show my proposal to Golden Ticket holder?
 userGroup.checkbox=Yes, I would like my proposal to be reviewed by Attendees with a Golden Ticket
 
 goldenTicket.help.title=Golden Ticket review
-goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
+goldenTicket.help.txt=Devoxx has a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
 
 gt.title=CFP for Golden ticket
 gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
