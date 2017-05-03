@@ -220,7 +220,7 @@ GET           /2016/sitemap.xml                                                 
 # 1) download all web pages with wget
 # 2) upload to Clever cloud the web pages
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
-GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
+# GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 GET           /2015/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 
 # Favorites
