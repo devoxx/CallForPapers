@@ -103,9 +103,11 @@ mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, Hands-on-Labs. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
+speakerQandA=Speaker Q&A
+question=Question
+answer=Answer
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">FAQ</a>.
-videoLink=Related video link
+talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">Info</a>.
 
 audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -444,13 +446,13 @@ amd=Après-midi des Décideurs
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
 
-sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
+sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Deep Dives
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
-sw.all.quick=All Quickies
+sw.all.quick=All Quickie Sessions
 sw.all.bof=All BOFs
 sw.all.start=All Startup''s talks
 sw.all.ignite=All Ignite Sessions
@@ -477,9 +479,8 @@ blog2=Web site or personal blog
 lang2=Will speak in English or French? (en/fr)
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
+sp.deleteSpeaker=Delete this speaker
 sp.editName=Edit name
-sw.hackatons=Hackatons
-sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
 calendar.pref.wednesday=Wednesday
@@ -544,6 +545,7 @@ sw.endOfDay=End of day, exhibition floor closing
 sw.cocktail=Meet and Greet party until 10:30pm in the main exhibition hall
 sw.showAllDay=Show complete agenda for this day
 not.published=The agenda for this conference is not yet published
+scheduling.in.progress=Status has changed to {0} the `Scheduling-in-progress` message.
 
 day-wed=Wednesday
 day-thu=Thursday
@@ -610,16 +612,16 @@ wl_trackCode=Track
 wl_statusCode=Current state
 wl_travel.checkbox=Yes, include T&L
 
-# wl_suggested=Suggested
-# wl_contactedUs=Speaker contacted us
-# wl_discuss=Discussion
-# wl_contactSpeaker=Contact speaker
-# wl_contacted=Contacted
-# wl_accepted=Speaker accepted
-# wl_declined=Speaker declined
-# wl_onhold=On hold
-# wl_deleted=Deleted
-# wl_unknown=Unknown
+wl_suggested=Suggested
+wl_contactedUs=Speaker contacted us
+wl_discuss=Discussion
+wl_contactSpeaker=Contact speaker
+wl_contacted=Contacted
+wl_accepted=Speaker accepted
+wl_declined=Speaker declined
+wl_onhold=On hold
+wl_deleted=Deleted
+wl_unknown=Unknown
 
 wishList.newWishList=Create new Wishlist
 
@@ -643,7 +645,7 @@ mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Titl
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
 mail.proposal_approved.subject=Your proposal has been approved {0}
-mail.proposal_refused.subject=Your proposal has been refused {0}
+mail.proposal_refused.subject=Your proposal has been declined {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
 mail.digest.subject=[CFP] {0} Digest {1}
 
@@ -711,7 +713,6 @@ tag.proposal.title=Title
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
-
 
 speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
@@ -784,7 +785,7 @@ gt.showVotes.review=Review or change your vote
 gt.home=Go back to home
 gt.vote.ok=Your vote has been recorded.
 gt.youcan=You can now:
-gt.nomore=There is no more talk to review, congratulation you did it!
+gt.nomore=There are no more talks to review, congratulation you did it!
 gt.nextTalk=Continue and evaluate next talk
 gt.nextTalkType=Continue and evaluate another {0}
 gt.nextTalkTrack=Continue and evaluate next talk for track {0}
@@ -848,7 +849,7 @@ rating.default=No comment
 refused.termsConditions=Warning : you declined the Devoxx UK Terms & Conditions and thus, you cannot present or talk at Devoxx UK. If needed, please contact our team by email.
 
 cfpadmin.filterOn=Filter on
-admin.cfp.empty.track=There is no new submitted proposals in track {0} for the time being
+admin.cfp.empty.track=There are no new submitted proposals in track {0} for the time being
 
 proposalLang_fr=Proposal in French
 proposalLang_en=Proposal in English
