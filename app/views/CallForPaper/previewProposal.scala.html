@@ -42,9 +42,9 @@
                 <div class="panel-default">
                     <div class="panel-heading">@Messages("summary.preview")</div>
                     <div class="panel-body">
-                        <h3><small>@Messages("sw.proposal.title") :</small> @newProposal("title").value</h3>
-                        <h4><small>@Messages("sw.proposal.talkType") :</small> @Messages(newProposal("talkType").value.getOrElse(""))</h4>
-                        <h4><small>@Messages("sw.proposal.track") :</small> @Messages(newProposal("track").value.getOrElse("") + ".label")</h4>
+                        <h3><small>@Messages("sw.proposal.title") :</small> @Html(newProposal("title").value)</h3>
+                        <h4><small>@Messages("sw.proposal.talkType") :</small> @Html(Messages(newProposal("talkType").value.getOrElse("")))</h4>
+                        <h4><small>@Messages("sw.proposal.track") :</small> @Html(Messages(newProposal("track").value.getOrElse("") + ".label"))</h4>
                         <br>
                         <h4><small>@Messages("admin.proposals.th.abstract") :</small></h4>
                         <div class="proposal_prev">@Html(htmlSummary)</div>
