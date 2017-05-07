@@ -1,4 +1,12 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(proposal: Proposal,
+  proposalsByAuths: Map[String, Map[String, Proposal]],
+  speakerComments: List[Comment],
+  internalComments: List[Comment],
+  msgToSpeakerForm: Form[String],
+  msgInternalForm: Form[String],
+  voteForm: Form[Int],
+  maybeMyVote: Option[Review],
+  currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -7,6 +15,9 @@
                 <div class="panel-heading">
                     <h3><i class="icon-signin"></i> @Messages("admin.proposal")</h3>
                 </div>
+
+                @tags.renderStarProposal(proposal, currentUser)
+
                 <div class="panel-body">
                     <table class="table table-bordered table-stripped">
                         <thead>

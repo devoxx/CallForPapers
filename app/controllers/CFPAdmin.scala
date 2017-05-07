@@ -718,4 +718,24 @@ object CFPAdmin extends SecureCFPController {
           Ok(views.html.CFPAdmin.history(proposal))
       }.getOrElse(NotFound("Proposal not found"))
   }
+
+  def starProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      StarProposal.assign(proposalId, request.webuser.uuid)
+      Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' star'ed by ${request.webuser.cleanName}"))
+      Created
+  }
+
+  def unStarProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      StarProposal.unassign(proposalId, request.webuser.uuid)
+      Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' unstar'ed by ${request.webuser.cleanName}"))
+      Gone
+  }
+
+  def allStarProposals() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val starProposals = StarProposal.all()
+      Ok(views.html.CFPAdmin.starProposals(starProposals))
+  }
 }

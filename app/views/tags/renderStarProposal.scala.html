@@ -1,0 +1,26 @@
+@(proposal:Proposal, currentUser:String)
+
+@if(TrackLeader.isTrackLeader(proposal.track.id, currentUser)) {
+    <div>
+          @if(models.StarProposal.isStarred(proposal.id, currentUser)) {
+              <div class="col-xs-1">
+                  @helper.form(routes.CFPAdmin.unStarProposal(proposal.id)) {
+                      <img class="starProposal" src="/assets/images/starProposal.png">
+                  }
+              </div>
+              <div class="col-xs-9" style="left: -50px; top: 2px;">
+                  <h3>Click icon to remove this proposal from your star list.</h3>
+              </div>
+          } else {
+              <div class="col-xs-1">
+                  @helper.form(routes.CFPAdmin.starProposal(proposal.id)) {
+                      <img class="starProposal" src="/assets/images/unStarProposal.png">
+                  }
+              </div>
+              <div class="col-xs-9" style="left: -50px; top: 2px;">
+                  <h4>As track lead you can star this proposal, adding to your track favorites.</h4>
+              </div>
+
+          }
+    </div>
+}
