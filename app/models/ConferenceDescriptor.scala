@@ -126,13 +126,11 @@ object ConferenceDescriptor {
 
     val KEY = ProposalType(id = "key", label = "key.label")
 
-    val START = ProposalType(id = "start", label = "start.label")
-
     val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
 
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, IGNITE, OTHER)
+    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, IGNITE, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -142,7 +140,6 @@ object ConferenceDescriptor {
       case "quick" => QUICK
       case "bof" => BOF
       case "key" => KEY
-      case "start" => START
       case "ignite" => IGNITE
       case "other" => OTHER
       case other => OTHER
@@ -165,9 +162,9 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
-    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-bolt",
       chosablePreferredDay = false)
-    val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "",
       hiddenInCombo = true, chosablePreferredDay = false)
 
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, IGNITE, OTHER)

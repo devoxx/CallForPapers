@@ -7,18 +7,19 @@
 
         <div class="row">
             <div class="col-md-12">
+                <br>
                 <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i>
                     All</a>
                 @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                     <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
                 }
-                <br>
-                <i class="icon-filter"></i> @Messages("search.showOnly"):
+                <br><br>
+                <i class="icon-filter"></i> @Messages("search.showOnly")
                 @Track.allIDs.map { idTrack =>
-                    <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-default btn-sm">@idTrack
+                    <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack + ".label"))
                         - @confType</a>
                 }
-                <br>
+                <br><br>
                 <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i>
                     Recompute total and votes</a> -
                 <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany(false)" class="btn btn-danger btn-sm"><i class="icon-double-angle-down"></i>
@@ -42,7 +43,6 @@
                         - @declinedTotal declined</span> <span class="label label-warning">
                         = @(totalRemaining + declinedTotal) remaining</span>
                 }
-                <br>
                 <span class="label label-primary">@allVotes.map(_._1).count(_.lang == "fr")
                     FR</span> <span class="label label-default">@allVotes.map(_._1).count(_.lang == "en") EN</span>
 
@@ -54,7 +54,7 @@
             <div class="col-md-12">
                 <small>All proposals with at least one vote, with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
                 <small>If you just created a proposal and it's not listed here : please add a vote.</small>
-
+                <br><br>
                 <table id="allProposals" class="compact cell-border order-column">
                     <thead>
                         <tr>
