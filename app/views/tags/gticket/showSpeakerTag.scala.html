@@ -8,9 +8,18 @@
                     <a href="https://twitter.com/@speaker.twitter">
                 }
                 @if(speaker.avatarUrl.isEmpty) {
-                    <img class="media-object" src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=80" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+                    <img class="media-object"
+                        src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=80"
+                        alt="@speaker.cleanName"
+                        title="@speaker.cleanName"
+                        onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/anonymous.jpg';"/>
                 } else {
-                    <img class="media-object" width="80" src="@speaker.avatarUrl.get" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+                    <img class="media-object"
+                        width="80"
+                        src="@speaker.avatarUrl.get"
+                        alt="@speaker.cleanName"
+                        title="@speaker.cleanName"
+                        onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/anonymous.jpg';"/>
                 }
                 @if(speaker.twitter.isDefined) {
                     </a>
