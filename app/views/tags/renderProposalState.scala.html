@@ -1,7 +1,14 @@
 @(state:ProposalState)
-
-@if(state==ProposalState.DELETED){
-    <i class="icon-trash"></i> @Messages(state.code)
-}else{
-    @Messages(state.code)
+@if(state==ProposalState.DELETED) {
+    <i class="icon-trash"></i>
 }
+@if(state==ProposalState.DECLINED) {
+        <i class="icon-flag"></i>
+}
+@if(state==ProposalState.REJECTED || state==ProposalState.APPROVED || state==ProposalState.ACCEPTED) {
+        <i class="icon-check"></i>
+}
+@if(state==ProposalState.SUBMITTED) {
+    <i class="icon-share"></i>
+}
+@Messages(state.code)

@@ -1,6 +1,5 @@
 @(proposals: Map[String, Proposal], currentUser: String)(implicit req: RequestHeader)
 
-
 @defining(proposals.values.partition(_.state.code==ProposalState.ARCHIVED.code)) { case (archivedProposals, notArchived) =>
 
     @if(notArchived.nonEmpty){
@@ -51,8 +50,7 @@
 
                 <td>
                 @if(approved) {
-                    <span class="label-approved">Approved</span>
-                    <em>(@tags.renderProposalState(proposal.state))</em>
+                    <span class="label-approved">@tags.renderProposalState(proposal.state)</span>
                 } else {
                     @tags.renderProposalState(proposal.state)
                 }
