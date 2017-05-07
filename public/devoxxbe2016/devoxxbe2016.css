@@ -26950,6 +26950,13 @@ img.speakerRound {
     overflow: hidden;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
 }
+img.speakerRoundProposal {
+    max-width: 128px;
+    margin-right: 20px;
+    border-radius: 100px;
+    overflow: hidden;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+}
 .speakerBio{
     background: white;
 margin-bottom: 1.25rem;
