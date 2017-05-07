@@ -37,7 +37,7 @@
             <tbody>
                 <tr>
                     <td colspan="2">
-                        @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
+                        @tags.publisher.renderIconForTrack(proposal.track) @Html(Messages(proposal.track.label))
                     </td>
                 </tr>
                 @if(slot.isDefined) {

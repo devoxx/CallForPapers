@@ -62,7 +62,7 @@
                                         </td>
 
                                         <td>
-                                            <small>@Messages(proposal.track.label)</small>
+                                            <small>@Html(Messages(proposal.track.label))</small>
                                         </td>
                                           <td>
                                             <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
