@@ -24,6 +24,7 @@
 package controllers
 
 import models.{Event, Invitation, Speaker}
+import play.api.mvc.{Action, AnyContent}
 
 /**
  * A controller that is now responsible for the invitation system, introduced for Devoxx BE 2014.
@@ -32,7 +33,7 @@ import models.{Event, Invitation, Speaker}
  */
 object InviteController extends SecureCFPController{
 
-  def allInvitations()=SecuredAction(IsMemberOf("cfp")) {
+  def allInvitations(): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = Invitation.all.flatMap{uuid=>
         Speaker.findByUUID(uuid)
@@ -41,17 +42,27 @@ object InviteController extends SecureCFPController{
       Ok(views.html.InviteController.allInvitations(speakers))
   }
 
-  def invite(speakerUUID:String) = SecuredAction(IsMemberOf("cfp")) {
+  def invite(speakerUUID:String): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Invitation.inviteSpeaker(speakerUUID,request.webuser.uuid)
-      Event.storeEvent(Event(speakerUUID, request.webuser.uuid, s"${Speaker.findByUUID(speakerUUID).foreach(speaker => speaker.cleanName)} invited by ${request.webuser.cleanName}"))
-      Created("{\"status\":\"created\"}").as(JSON)
+      val speaker = Speaker.findByUUID(speakerUUID)
+      if (speaker.isDefined) {
+        Invitation.inviteSpeaker(speakerUUID,request.webuser.uuid)
+        Event.storeEvent(Event(speakerUUID, request.webuser.uuid, s"Speaker ${speaker.get.cleanName} invited by ${request.webuser.cleanName}"))
+        Created("{\"status\":\"created\"}").as(JSON)
+      } else {
+        NotFound("{\"status\":\"speaker not found\"}").as(JSON)
+      }
   }
 
-  def cancelInvite(speakerUUID:String)= SecuredAction(IsMemberOf("cfp")) {
+  def cancelInvite(speakerUUID:String): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Invitation.removeInvitation(speakerUUID)
-      Event.storeEvent(Event(speakerUUID, request.webuser.uuid, s"${Speaker.findByUUID(speakerUUID).foreach(speaker => speaker.cleanName)} invite canceled by ${request.webuser.cleanName}"))
-      Ok("{\"status\":\"deleted\"}").as(JSON)
+      val speaker = Speaker.findByUUID(speakerUUID)
+      if (speaker.isDefined) {
+        Invitation.removeInvitation(speakerUUID)
+        Event.storeEvent(Event(speakerUUID, request.webuser.uuid, s"Speaker ${speaker.get.cleanName} invite canceled by ${request.webuser.cleanName}"))
+        Created("{\"status\":\"deleted\"}").as(JSON)
+      } else {
+        NotFound("{\"status\":\"speaker not found\"}").as(JSON)
+      }
   }
 }
