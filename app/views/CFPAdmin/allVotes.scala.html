@@ -120,7 +120,7 @@
                                         <small>@proposal.talkType.id</small>
                                     </td>
                                     <td>
-                                        <small>@Messages(proposal.track.label)</small>
+                                        <small>@Html(Messages(proposal.track.label))</small>
                                     </td>
                                     <td>
                                         @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
