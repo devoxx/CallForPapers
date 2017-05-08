@@ -728,12 +728,12 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       if (StarProposal.isStarred(proposalId, request.webuser.uuid)) {
         StarProposal.unassign(proposalId, request.webuser.uuid)
-        Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' unstar'ed by ${request.webuser.cleanName}"))
-        Gone("unstar")
+        Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Proposal '${Proposal.findById(proposalId).get.title}' unstar'ed by ${request.webuser.cleanName}"))
+        Ok("unstar")
       } else {
         StarProposal.assign(proposalId, request.webuser.uuid)
-        Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' star'ed by ${request.webuser.cleanName}"))
-        Created("star")
+        Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Proposal '${Proposal.findById(proposalId).get.title}' star'ed by ${request.webuser.cleanName}"))
+        Ok("star")
       }
   }
 
