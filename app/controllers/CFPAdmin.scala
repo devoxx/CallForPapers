@@ -719,18 +719,22 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def starProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+  def isProposalStarred(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      StarProposal.assign(proposalId, request.webuser.uuid)
-      Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' star'ed by ${request.webuser.cleanName}"))
-      Created
+      Ok(StarProposal.isStarred(proposalId, request.webuser.uuid).toString)
   }
 
-  def unStarProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+  def starProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      StarProposal.unassign(proposalId, request.webuser.uuid)
-      Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' unstar'ed by ${request.webuser.cleanName}"))
-      Gone
+      if (StarProposal.isStarred(proposalId, request.webuser.uuid)) {
+        StarProposal.unassign(proposalId, request.webuser.uuid)
+        Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' unstar'ed by ${request.webuser.cleanName}"))
+        Gone("unstar")
+      } else {
+        StarProposal.assign(proposalId, request.webuser.uuid)
+        Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' star'ed by ${request.webuser.cleanName}"))
+        Created("star")
+      }
   }
 
   def allStarProposals() = SecuredAction(IsMemberOf("cfp")) {
