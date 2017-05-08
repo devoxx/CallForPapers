@@ -33,6 +33,11 @@ object StarProposal {
       }
   }
 
+  def isStarred(proposalId: String): Boolean = Redis.pool.withClient {
+    client =>
+      client.hget(s"StarProposals", proposalId).isDefined
+  }
+
   def all(): Map[String, String] = Redis.pool.withClient {
     client => client.hgetAll("StarProposals")
   }

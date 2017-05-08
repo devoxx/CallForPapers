@@ -8,7 +8,11 @@
   <!-- TODO Work in progress -->
   @results.map{case(proposalId, webUserId)=>
   <li>
-    @Proposal.findById(proposalId).get.title - @Webuser.findByUUID(webUserId).get.cleanName
+    @Proposal.findById(proposalId).map( proposal => {
+      "\"" + proposal.title + "\"" + " by " +
+      Webuser.findByUUID(proposal.mainSpeaker).get.cleanName +
+      " (" + Messages(proposal.track.label) + "  track lead " + Webuser.findByUUID(webUserId).get.cleanName + ")"
+    })
   </li>
   }
   </ul>

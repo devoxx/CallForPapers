@@ -739,7 +739,7 @@ object CFPAdmin extends SecureCFPController {
 
   def allStarProposals() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val starProposals = StarProposal.all()
+      val starProposals = StarProposal.all().toSeq.sortBy(_._2).toMap
       Ok(views.html.CFPAdmin.starProposals(starProposals))
   }
 }
