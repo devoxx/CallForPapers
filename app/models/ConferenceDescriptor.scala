@@ -241,7 +241,7 @@ object ConferenceDescriptor {
 
     val allRoomsQuickies = List(ROOM2, ROOM3, ROOM4)
 
-    val allRoomsBof = List(ROOM2, ROOM3, ROOM4, ROOM5)
+    val allRoomsBof = List(ROOM1, ROOM2, ROOM3, ROOM4, ROOM5)
 
     val allRoomsTia = List(ROOM1, ROOM2, ROOM5)
 
