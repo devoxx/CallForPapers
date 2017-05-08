@@ -140,4 +140,4 @@ digest.daily=${DIGEST_DAILY}
 digest.weekly=${DIGEST_WEEKLY}
 
 # Set the maximum number of proposals per speaker (default is 5 when not set)
-max.proposals=5
+max.proposals=${MAX_PROPOSALS}
