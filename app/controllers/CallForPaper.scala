@@ -134,8 +134,14 @@ object CallForPaper extends SecureCFPController {
   // Load a new proposal form
   def newProposal() = SecuredAction {
     implicit request =>
+
       val uuid = request.webuser.uuid
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
+      val allProposals = Proposal.allMyProposals(uuid)
+      if (allProposals.size >= ConferenceDescriptor.maxProposals()) {
+        BadRequest("Exceeded the total number of proposals")
+      } else {
+        Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
+      }
   }
 
   // Load a proposal

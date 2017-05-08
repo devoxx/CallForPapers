@@ -307,6 +307,8 @@ editWebuser.title=Edit your firstname and lastname
 
 cfp.isOpen=CFP is open
 cfp.open.enter=Create your speaker''s profile or sign-in
+cfp.max.proposals=Maximum number of allowed proposals reached!
+cfp.max.proposals.info=We allow a maximum of {0} proposals per speaker.
 
 admin.proposals.th.title=Title
 admin.proposals.th.track=Track

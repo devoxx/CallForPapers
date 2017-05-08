@@ -1037,4 +1037,6 @@ object ConferenceDescriptor {
   def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
+
+  def maxProposals(): Int = Play.current.configuration.getInt("max.proposals").getOrElse(5)
 }

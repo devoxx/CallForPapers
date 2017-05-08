@@ -138,3 +138,6 @@ mobile.vote.isActive=${ACTIVATE_VOTE}
 digest.daily=${DIGEST_DAILY}
 # Day of the week, Monday = 1, etc.
 digest.weekly=${DIGEST_WEEKLY}
+
+# Set the maximum number of proposals per speaker (default is 5 when not set)
+max.proposals=5
