@@ -326,6 +326,7 @@ admin.btn.draft=All DRAFT
 admin.btn.submitted=All SUBMITTED
 admin.btn.review=Open for review
 admin.cfp.empty=There are no new proposals for track "{0}", maybe select another track?
+admin.cfp.events.empty=No events yet.
 admin.cfp.recentEvents=Events
 admin.cfp.date=Date
 admin.cfp.author=Author
