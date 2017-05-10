@@ -1,11 +1,16 @@
-@(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved: Long, totalRemaining: Long, confType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)],
+  totalApproved: Long,
+  totalRemaining: Long,
+  confType: String,
+  currentUser: models.Webuser)(implicit lang: Lang, flash: Flash, req: RequestHeader)
     @import models.Review.{AverageNote, TotalAbst, TotalVoter}
 
     @main("All votes") {
-        <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
 
-        <div class="row">
+    <link href="@routes.Assets.at(path="/public",file="css/jquery.dataTables.min.css")" rel="stylesheet" id="theme">
+    <script src="@routes.Assets.at(path="/public",file="js/jquery.dataTables.min.js")" type="text/javascript"></script>
+
+    <div class="row">
             <div class="col-md-12">
                 <br>
                 <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i>
@@ -43,8 +48,6 @@
                         - @declinedTotal declined</span> <span class="label label-warning">
                         = @(totalRemaining + declinedTotal) remaining</span>
                 }
-                <span class="label label-primary">@allVotes.map(_._1).count(_.lang == "fr")
-                    FR</span> <span class="label label-default">@allVotes.map(_._1).count(_.lang == "en") EN</span>
 
             </div>
 
@@ -68,6 +71,7 @@
                             <th>Speakers</th>
                             <th>Type</th>
                             <th>Track</th>
+                            <th>State</th>
                             <th><i class="icon-thumbs-up"></i> / <i class="icon-thumbs-down"></i></th>
                         </tr>
                     </thead>
@@ -130,37 +134,41 @@
                                         </small>
                                     </td>
                                     <td>
-                                        @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
-                                            @if(approved) {
-                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
-                                                    Cancel approve</a>
-                                            } else {
-                                                @if(refused) {
-                                                    <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
-                                                        Cancel refuse</a>
+                                        <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                                    </td>
+                                    <td>
+                                        @if(TrackLeader.isTrackLeader(proposal.track.id, currentUser.uuid) ||
+                                            Webuser.hasAccessToAdmin(currentUser.uuid)) {
+                                            @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
+                                                @if(approved) {
+                                                    <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                                        Cancel approve</a>
                                                 } else {
-                                                    @if(proposal.state == ProposalState.BACKUP) {
-                                                        <i class="icon-exclamation-sign"></i> Backup
+                                                    @if(refused) {
+                                                        <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                                            Cancel refuse</a>
+                                                    } else {
+                                                        @if(proposal.state == ProposalState.BACKUP) {
+                                                            <i class="icon-exclamation-sign"></i> Backup
+                                                        }
+                                                        <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-sm btn-success"><i class="icon-thumbs-up"></i>
+                                                            Approve</a>
+                                                        <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-sm btn-danger"><i class="icon-thumbs-down"></i>
+                                                            Refuse</a>
                                                     }
-                                                    <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-sm btn-success"><i class="icon-thumbs-up"></i>
-                                                        Approve</a>
-                                                    <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-sm btn-danger"><i class="icon-thumbs-down"></i>
-                                                        Refuse</a>
                                                 }
                                             }
+                                            @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
+                                                <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i>
+                                                    Remove from refused list</a>
+                                            }
+                                            @if(approved && proposal.state.code == ProposalState.REJECTED.code) {
+                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                                    Cancel approve</a>
+                                            }
+                                        } else {
+                                            No Permission
                                         }
-                                        <br>
-                                        <span class="label label-@proposal.state.code">@proposal.state.code</span>
-                                        @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i>
-                                                Remove from refused list</a>
-                                        }
-                                        @if(approved && proposal.state.code == ProposalState.REJECTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
-                                                Cancel approve</a>
-                                        }
-
-
                                     </td>
                                 </tr>
                             }

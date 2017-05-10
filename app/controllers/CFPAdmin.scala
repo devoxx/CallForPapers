@@ -365,7 +365,7 @@ object CFPAdmin extends SecureCFPController {
       }
 
       val totalRemaining = ApprovedProposal.remainingSlots(confType)
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType, request.webuser))
   }
 
   def removeSponsorTalkFlag(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
