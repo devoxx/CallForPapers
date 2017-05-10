@@ -108,13 +108,17 @@
             </div>
         </div>
 
+        <div class="panel-body">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3><i class="icon-stackexchange"></i> @Messages("admin.cfp.recentEvents")</h3>
                 </div>
 
-                <div class="panel-body">
+                @if(events.isEmpty) {
+                    <p>No events yet.</p>
+                } else {
+                    <div class="panel-body">
                     <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                             <tr>
@@ -141,10 +145,10 @@
                         @events.map { event: Event =>
                             <tr>
                                 <td class="text-center">
-                                    <small>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("dd/MM HH:mm"))</small>
+                                    <small>@event.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("dd/MM HH:mm"))</small>
                                 </td>
                                 <td class="text-center">
-                                @tags.renderGravatar(event.uuid,showName = false)
+                                @tags.renderGravatar(event.uuid, showName = false)
                                 </td>
                                 <td class="text-center">
                                 @tags.renderObjRef(event.objRef)
@@ -169,8 +173,10 @@
                             </tr>
                         </tfoot>
                     </table>
-                </div>
+                    </div>
+                }
             </div>
+        </div>
         </div>
     </div>
 }
