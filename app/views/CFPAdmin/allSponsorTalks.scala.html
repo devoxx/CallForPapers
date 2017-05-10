@@ -2,41 +2,41 @@
 @main("All sponsors's talks") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-        <h2>Sponsors talks</h2>
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
 
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
-                @proposals.size talks
+                <h3>Sponsored Talks</h3>
+                <span class="label label-info">@proposals.size talks</span>
+            </div>
+            <div class="panel-body">
+    @if(proposals.nonEmpty) {
+        @proposals.map { proposal =>
+            <h3>@proposal.title</h3>
+            <h4>@Html(Messages(proposal.track.label)) - @Messages(proposal.talkType.id)</h4>
+            <p><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a> </p>
+            @tags.renderGravatar(proposal.mainSpeaker)
+            @proposal.secondarySpeaker.map { sc =>
+                @tags.renderGravatar(sc)
+            }
+            @proposal.otherSpeakers.map { s =>
+                @tags.renderGravatar(s)
+            }
+            <h4>Private message</h4>
+            <small>
+            @Html(proposal.privateMessageAsHtml)
+            </small>
+
+            <a href="@routes.CFPAdmin.removeSponsorTalkFlag(proposal.id)" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("remove.sponsorFlag")</a>
+        }
+    } else {
+        <P>There are no sponsored talks.</P>
+    }
             </div>
         </div>
     </div>
-    @proposals.map { proposal =>
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                <div class="panel-body">
-                    <h3>@proposal.title</h3>
-                    <h4>@Html(Messages(proposal.track.label)) - @Messages(proposal.talkType.id)</h4>
-                    <p><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a> </p>
-                    @tags.renderGravatar(proposal.mainSpeaker)
-                    @proposal.secondarySpeaker.map { sc =>
-                        @tags.renderGravatar(sc)
-                    }
-                    @proposal.otherSpeakers.map { s =>
-                        @tags.renderGravatar(s)
-                    }
-                    <h4>Private message</h4>
-                    <small>
-                        @Html(proposal.privateMessageAsHtml)
-                    </small>
-
-                    <a href="@routes.CFPAdmin.removeSponsorTalkFlag(proposal.id)" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("remove.sponsorFlag")</a>
-                </div>
-                </div>
-            </div>
-    }
 </div>
 }
