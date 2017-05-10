@@ -1,9 +1,13 @@
 @(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @main("Create a new speaker") {
 <div class="row">
-    <div class="col-md-12 page-header">
-        <h3>@Messages("newSpeaker.title")</h3>
+
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
     </div>
+    <div class="clearfix"></div>
+
+
     <div class="col-md-12">
         @if(flash.get("error").isDefined){
           <div class="alert alert-danger alert-dismissable">
@@ -24,6 +28,15 @@
               }
           </div>
         }
+
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>@Messages("newSpeaker.title")</h3>
+                </div>
+                <div class="panel-body">
+
         @if(speakerForm.hasGlobalErrors){
             has global errors
         }
@@ -39,10 +52,12 @@
             @helper.textarea(speakerForm("qualifications2"), 'cols -> 70, 'rows -> 3)
             @helper.inputText(speakerForm("twitter2"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog2"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
-            @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "en")
             @helper.checkbox(speakerForm("acceptTermsConditions"))
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
