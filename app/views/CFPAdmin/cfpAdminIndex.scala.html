@@ -16,17 +16,14 @@
 
             <div class="panel-body">
                 <div class="button-group">
-                    <a href="@routes.LeaderboardController.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
-                    <a href="@routes.GoldenTicketAdminController.showStats()" class="btn btn-sm btn-success">@Messages("cfp.goldenTickets") Stats</a>
+                    <a href="@routes.LeaderboardController.leaderBoard()" class="btn btn-sm btn-success"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
+                    <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i class="icon-large"></i><i class="icon-adjust"></i> @Messages("admin.btn.allvotes")</a>
                     <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> @Messages("admin.btn.myvotes")</a>
                     <a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(None)" class="btn btn-sm btn-primary"><i class="icon-circle-arrow-right"></i> @Messages("admin.btn.otherReviewer")</a>
+                    <a href="@routes.GoldenTicketAdminController.showStats()" class="btn btn-sm btn-primary"><i class="icon-ticket"></i> @Messages("cfp.goldenTickets") Stats</a>
                     <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
-                    <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i class="icon-large"></i><i class="icon-adjust"></i> @Messages("admin.btn.allvotes")</a>
                     <a href="@routes.InviteController.allInvitations()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakersInvited")</a>
-                    <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-primary"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
-                    @if(SecureCFPController.hasAccessToAdmin(req)){
-                        <a href="@routes.Backoffice.allProposals()" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a>
-                    }
+                    <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-info"><i class="icon-user"></i> @Messages("admin.btn.createNewspeaker")</a>
                 </div>
             </div>
 

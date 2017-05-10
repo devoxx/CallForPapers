@@ -42,6 +42,7 @@
             <h4><i class="icon-road"></i> Proposals</h4>
             <a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Proposals by Company</a>
             <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-warning btn-sm"><i class="icon-ticket"></i> Approved by Company</a>
+            <a href="@routes.Backoffice.allProposals()" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a>
 
             <h4><i class="icon-ticket"></i> @Messages("cfp.goldenTickets")</h4>
             <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All @Messages("cfp.goldenTickets")</a>
