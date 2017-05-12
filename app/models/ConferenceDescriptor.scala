@@ -365,8 +365,8 @@ object ConferenceDescriptor {
       val labFridaySlot2 = ConferenceRooms.allRoomsLab.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.LAB.id, "friday",
-            new DateTime(FRI_DATE+"13:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
-            new DateTime(FRI_DATE+"15:00"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
+            new DateTime(FRI_DATE+"13:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)),
+            new DateTime(FRI_DATE+"15:20"+MIN_SEC).toDateTime(DateTimeZone.forID(europeWarsaw)), r2)
       }
       labFridaySlot1 ++ labFridaySlot2
     }
