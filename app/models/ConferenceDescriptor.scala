@@ -284,7 +284,7 @@ object ConferenceDescriptor {
     private val TUE_DATE = "2017-06-20T"
     private val WED_DATE = "2017-06-21T"
     private val THU_DATE = "2017-06-22T"
-    private val FRI_DATE = "2017-05-23T"
+    private val FRI_DATE = "2017-06-23T"
     private val SAT_DATE = "2017-06-24T"
 
     private val MIN_SEC = ":00.000+02:00"
