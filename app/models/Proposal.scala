@@ -716,7 +716,8 @@ object Proposal {
   def allApprovedAndAcceptedProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
     implicit client =>
       val allApproved = client.sinter(s"Proposals:ByAuthor:$author", "ApprovedById:")
-      loadAndParseProposals(allApproved)
+      val approvedAndNotDeclined = allApproved.diff(client.smembers("Proposals:ByState:" + ProposalState.DECLINED.code))
+      loadAndParseProposals(approvedAndNotDeclined)
   }
 
   def allThatForgetToAccept(author: String): Map[String, Proposal] = Redis.pool.withClient {
