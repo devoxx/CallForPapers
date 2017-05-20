@@ -146,7 +146,7 @@ next.action=Select next action:
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
 key.label.simple=Keynote
-conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.label=Conference, 50mn, Wednesday, Thursday and Friday morning
 conf.label.simple=Conference
 uni.label=Deep Dives, 3h, Monday or Tuesday
 uni.label.simple=Deep Dive
