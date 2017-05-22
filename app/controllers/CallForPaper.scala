@@ -204,11 +204,11 @@ object CallForPaper extends SecureCFPController {
                   Review.archiveAllVotesOnProposal(proposal.id)
                   Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                 }
-                Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
               } else {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
-                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code + "]"))
+                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
               }
             case other =>
@@ -216,7 +216,7 @@ object CallForPaper extends SecureCFPController {
               if (Proposal.isNew(proposal.id)) {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
-                Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
