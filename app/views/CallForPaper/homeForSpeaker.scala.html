@@ -216,13 +216,13 @@
                             </td>
                             <td>
                                 <div style="max-width: 114px">
-                                    @tags.renderGravatar(prop.mainSpeaker, showName = false)
+                                    @tags.renderGravatar(prop.mainSpeaker)
                                     @prop.secondarySpeaker.map { secondarySpeakerUUID =>
-                                        @tags.renderGravatar(secondarySpeakerUUID, showName = false)
+                                        @tags.renderGravatar(secondarySpeakerUUID)
                                     }
                                     @prop.otherSpeakers.map { listOfUUID =>
                                         @listOfUUID.split(",").map { suid =>
-                                            @tags.renderGravatar(suid, showName = false)
+                                            @tags.renderGravatar(suid)
                                         }
                                     }
                                 </div>
