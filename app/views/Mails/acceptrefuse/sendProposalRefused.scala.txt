@@ -18,11 +18,11 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 }
 Hi,
 We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused,  keep in mind that
-The program committee has received more than 400+ proposals for 100 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting proposals for the conference.
+The program committee has received more than 400 proposals for 100 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting proposals for the conference.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
-We would like to thank you for your time and we hope to see you as an attendee on @ConferenceDescriptor.current().timing.firstDayEn, at @Messages("longName").
+We would like to thank you for your time and we hope to see you as an attendee on @ConferenceDescriptor.current().timing.firstDayEn, at @Messages("longYearlyName").
 Registration details: @ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration.
 
 Kind regards,
