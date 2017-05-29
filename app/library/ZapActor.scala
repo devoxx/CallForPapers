@@ -317,7 +317,7 @@ class ZapActor extends Actor {
     play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
     val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=utf-8")
+    post.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8")
     post.addHeader(HttpHeaders.AUTHORIZATION, ConferenceDescriptor.gluonAuthorization())
 
     val urlParameters = new util.ArrayList[BasicNameValuePair]()
@@ -334,7 +334,12 @@ class ZapActor extends Actor {
     urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
     urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
     urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
-    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
+
+    // urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
+    // Testing Push Msg to test device and encoding
+    urlParameters.add(new BasicNameValuePair("targetType", "SINGLE_DEVICE"))
+    urlParameters.add(new BasicNameValuePair("targetDeviceToken", "6A1669A0-C320-45FC-ADA9-A8BC3E8B03CB"))
+
     urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
 
     post.setEntity(new UrlEncodedFormEntity(urlParameters))
