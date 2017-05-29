@@ -1,6 +1,6 @@
 @(params: controllers.LeaderBoardParams,
   golden: controllers.GoldenTicketsParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
-
+@import scala.util.Random
 @main("Leaderboard") {
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
@@ -85,30 +85,35 @@
                             @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
                         }
                     </div>
-                    <div class="col-md-4">
-                        <h3><i class="icon-comments"></i> Most Debatable</h3>
-                        @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
-                            @tags.renderGravatarByProposal(tc._1)
+                    @if(params.totalCommentsPerProposal.size > 0) {
+                        <div class="col-md-4">
+                            <h3><i class="icon-comments"></i> Most Debatable</h3>
+                            @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
+                                @tags.renderGravatarByProposal(tc._1)
                             <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
-                        }
-                    </div>
+                            }
+                        </div>
+                    }
                     <div class="clearfix"></div>
 
                     <div class="col-md-4">
                         <h3><i class="icon-trophy"></i> Top Reviewers</h3>
                         @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
-                            @tags.renderGravatar(br._1)
-                            @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+                            @if(br._3 > 0) {
+                                @tags.renderGravatar(br._1)
+                                @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+                            }
                         }
                         <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small>
                     </div>
 
                     <div class="col-md-4">
                         <h3><i class="icon-ambulance"></i> The Lazy One's</h3>
-                        @params.lazyOnes.filter(_._2.toInt < 5).map { wr =>
+                        @Random.shuffle(params.lazyOnes.filter(_._2.toInt < 5)).take(5).map { wr =>
                             @tags.renderGravatar(wr._1)
                             @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
                         }
+                        <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all</a></small>
                     </div>
                     <div class="col-md-4">
                         <h3><i class="icon-heart"></i> Generous One's</h3>
@@ -145,34 +150,35 @@
                             </div>
                             <div class="clearfix"></div>
 
-                            @if(golden.stats.size > 4) {
-                                <br>
-                                <div class="col-md-4">
-                                    @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
-                                        @tags.renderTotalWithLabel(gt._3, "review", "reviews")
-                                        by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
-                                    }
-                            </div>
-
-                                @if(golden.stats.size > 9) {
+                            @if(golden.stats.map(st => st._3).sum > 0) {
+                                @if(golden.stats.size > 4) {
+                                    <br>
                                     <div class="col-md-4">
-                                        @golden.stats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
+                                        @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
                                             @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                             by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                         }
-                                    </div>
+                                </div>
 
-                                    @if(golden.stats.size > 14) {
+                                    @if(golden.stats.size > 9) {
                                         <div class="col-md-4">
-                                            @golden.stats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
+                                            @golden.stats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
                                                 @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                                 by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                             }
                                         </div>
+
+                                        @if(golden.stats.size > 14) {
+                                            <div class="col-md-4">
+                                                @golden.stats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
+                                                    @tags.renderTotalWithLabel(gt._3, "review", "reviews")
+                                                    by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
+                                                }
+                                            </div>
+                                        }
                                     }
                                 }
                             }
-
                             <div class="clearfix"></div>
 
                             <div class="col-md-4">
@@ -195,7 +201,7 @@
                         <h3>Submitted by Track</h3>
                             @defining(params.totalSubmittedByTrack.values.max){maxValue=>
                             @params.totalSubmittedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
+                                <span class="label label-info">@total</span> @Html(Messages(track+".label")) <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -242,7 +248,7 @@
                         <h3>Approved by Track (total @params.allApprovedByTrack.size)</h3>
                         @defining(params.allApprovedByTrack.values.max){maxValue=>
                             @params.allApprovedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track)
+                                <span class="label label-info">@total</span> @Html(Messages(track))
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -271,7 +277,7 @@
                         <h3>Accepted by Track</h3>
                             @defining(params.totalAcceptedByTrack.values.max){maxValue=>
                             @params.totalAcceptedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track)
+                                <span class="label label-info">@total</span> @Html(Messages(track))
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
