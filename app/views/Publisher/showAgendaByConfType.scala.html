@@ -7,11 +7,15 @@
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
                 <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
                 <a href="@routes.Publisher.showByDay(day)">@Messages("day-" + day)</a></p>
-            @if(talkType!="bof" && talkType!="lab" && talkType!="ignite") {
+            @if(day.toLowerCase.startsWith("sat")) {
+                <h5>This is Community Day</h5>
+                <p>Please note that Devoxx Community Day is separate from main Devoxx Conference. If you want to attend you need to register separately <a href="http://reg.community.devoxx.pl">here</a>.</p>
+            } else {
                 <h5>Help Us With The Schedule</h5>
                 <p>Please mark your favorite talks by clicking on the beer icons.  This feedback will be used to reschedule popular talks in bigger rooms, but in the same timeslot!<br>
                 A <a href="/myagenda">'My Schedule'</a> is also created on the fly listing your favorite talks.</p>
             }
+
         </div>
 
         <div class="large-12 columns woocommerce">
@@ -23,27 +27,6 @@
                         <td>@room.name</td>
                     }
                 </tr>
-
-                @if(day.toLowerCase.startsWith("fri") && talkType.toLowerCase=="conf" ){
-                    <tr>
-                        <th>
-                            09:00 - 09:30
-                        </th>
-                        <td class="keynotes" colspan="8">
-                            <a href="https://devoxx.pl/keynotes-2017">Keynotes</a>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            09:30 - 10:30
-                        </th>
-                        <td class="keynotes" colspan="8">
-                            <a href="https://devoxx.pl/keynotes-2017">Keynotes</a>
-
-                        </td>
-                    </tr>
-                }
 
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
@@ -82,25 +65,6 @@
                         <td>@room.name</td>
                     }
                 </tr>
- @if(day.toLowerCase.startsWith("fri") && talkType.toLowerCase=="conf" ) {
-     <tr>
-         <th>
-             15:50 - 16:50
-         </th>
-         <td class="keynotes" colspan="8">
-             <a href="https://devoxx.pl/keynotes-2017">Closing Keynote (Room 5)</a>
-
-         </td>
-     </tr>
-     <tr>
-         <th>
-             16:50 - 17:20
-         </th>
-         <td class="keynotes" colspan="8">
-             Devoxx Movie (Room 8)
-         </td>
-     </tr>
- }
             </table>
 
         </div>
