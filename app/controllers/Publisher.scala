@@ -144,6 +144,7 @@ object Publisher extends Controller {
   private val wednesday: String = "wednesday"
   private val thursday: String = "thursday"
   private val friday: String = "friday"
+  private val saturday: String = "saturday"
 
   def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
     implicit request =>
@@ -193,6 +194,13 @@ object Publisher extends Controller {
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, friday))
 
+          case Some(slotConfig) if day == saturday =>
+            val updatedConf = slotConfig.copy(
+              slots = slotConfig.slots.filter(_.day == saturday)
+              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 6)
+            )
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, saturday))
+
           case None => Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
             // NotFound(views.html.Publisher.agendaNotYetPublished())
         }
@@ -212,6 +220,7 @@ object Publisher extends Controller {
         case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
         case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
         case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
+        case d if Set("set", saturday, "samedi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.saturdaySchedule, saturday)
         case other => NotFound("Day not found")
       }
   }
