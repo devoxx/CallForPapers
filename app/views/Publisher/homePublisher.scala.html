@@ -25,6 +25,7 @@
                 <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-wednesday")</div><br><a href="@routes.Publisher.showByDay("wed")">Click</a> to see full schedule</th>
                 <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-thursday")</div><br><a href="@routes.Publisher.showByDay("thu")">Click</a> to see full schedule</th>
                 <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-friday")</div><br><a href="@routes.Publisher.showByDay("fri")">Click</a> to see full schedule</th>
+                <th class="scheduleHeader"><div class="scheduleHeaderDate">@Messages("day-saturday")</div><br><a href="@routes.Publisher.showByDay("sat")">Click</a> to see full schedule</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +40,9 @@
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
                 </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "saturday", "Community Day")
+                </td>
             </tr>
             <tr>
                 <td class="scheduleRow">
@@ -50,6 +54,7 @@
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")
                 </td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
                 <td class="scheduleRow">
@@ -61,6 +66,7 @@
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("quick", "friday", "Quickies")
                 </td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
                 <td class="scheduleRow">
@@ -70,19 +76,22 @@
                 @tags.publisher.renderShowDay("tia", "thursday", "Tools in Action")
                 </td>
                 <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
                 <td class="scheduleRow"><a href="http://cfp.devoxx.pl/2017/talk/BUR-6513/Hackergarten">Hackergarten</a></td>
                 <td class="scheduleRow"><a href="http://cfp.devoxx.pl/2017/talk/BUR-6513/Hackergarten">Hackergarten</a></td>
+                <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
                 <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow"><a href="http://fatj-krakow-2017.eventbrite.com">Find A Tech Job</a></td>
                 <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="5" class="scheduleContentRow ">
+                <td colspan="6" class="scheduleContentRow ">
                     <p class="scheduleAllTalks"><a href="@routes.Publisher.showAllTalksByType()">Click</a> to see all the talks grouped by track</p>
                 </td>
             </tr>
