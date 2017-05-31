@@ -186,8 +186,7 @@ object ConferenceDescriptor {
     val MOBILE = Track("mobile", "mobile.label")
     val SECURITY = Track("security", "security.label")
 
-    val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, UNKNOWN)
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, SECURITY)
   }
 
   object ConferenceTracksDescription {
