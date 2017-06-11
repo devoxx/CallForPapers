@@ -21,6 +21,8 @@
 
     @if(proposal.videoLink.nonEmpty) {
         <div class="columns large-offset-1 large-10" style="padding-bottom: 10px">
+            <h1>@proposal.title</h1>
+            <h3><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></h3>
             @tags.renderVideoLink(proposal.videoLink.get)
         </div>
 
