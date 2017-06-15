@@ -194,7 +194,7 @@ java.label=Java Language
 track.java.desc=Java language, Java SE, JDK, performance, tuning, modularity, etc
 
 cloud.label=Cloud, Containers &amp; Infrastructure
-track.cloud.desc=Docker, Kubernetes, Mesos, Cloud, PaaS, Cloud, Vagrant, etc
+track.cloud.desc=Serverless, Docker, Kubernetes, Mesos, Cloud, PaaS, Cloud, Vagrant, etc
 
 ssj.label=Server Side Java
 track.ssj.desc=Java EE, App servers, Spring Framework, MOM, Related JSRs, etc
