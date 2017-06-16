@@ -15,11 +15,12 @@
         </div>
         <div class="panel-body">
         @companiesAndProposals.map {case (company, props) =>
-        <h3>@company.capitalize @props.size talk(s)</h3>
+        <h3>@company.capitalize @props.size @if(props.size>1){talks}else{talk}</h3><UL id="tree">
           @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
-            @Messages(proposal.talkType.id) - <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a> by @proposal.allSpeakers.map(_.cleanName).mkString(", ")
-          <span class="label label-success">@Messages(proposal.state.code)</span> <br>
+            <LI>@Messages(proposal.talkType.id) - <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a> by @proposal.allSpeakers.map(_.cleanName).mkString(", ")
+          <span class="label label-success">@Messages(proposal.state.code)</span></LI>
           }
+        </UL>
         }
 
         </div>
