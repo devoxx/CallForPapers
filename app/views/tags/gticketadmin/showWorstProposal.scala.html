@@ -8,6 +8,7 @@
             <tr>
                 <th>Score</th>
                 <th>Voters</th>
+                <th>Speaker</th>
                 <th>Title</th>
                 <th>Track</th>
             </tr>
@@ -21,6 +22,10 @@
             <td>
                 @stats._2.i
             </td>
+            <td>
+                @tags.renderGravatar(p.mainSpeaker)
+            </td>
+
             <td>
                 <a href="@routes.CFPAdmin.openForReview(p.id)">
                     <small>@Html(p.title)</small>
