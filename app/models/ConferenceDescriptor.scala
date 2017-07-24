@@ -237,18 +237,18 @@ object ConferenceDescriptor {
     val BOF1 = Room("bof1", "BOF 1", 70, "classroom")
     val BOF2 = Room("bof2", "BOF 2", 70, "classroom")
 
-    val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
+    val allRoomsUni = List(ROOM4, ROOM5, ROOM6, ROOM8, ROOM9)
 
-    val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9)
+    val allRoomsTIA = List(ROOM4, ROOM5, ROOM6, ROOM8, ROOM9)
 
     val keynoteRoom = List(ROOM8, ROOM4, ROOM5, ROOM9)
 
     val eveningKeynoteRoom = List(ROOM5)
 
     val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10)
-    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9)
+    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM6, ROOM8, ROOM9)
 
-    val allRoomsQuick = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
+    val allRoomsQuick = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10)
 
     val allRoomsLabs = List(BOF1, BOF2)
     val oneRoomLabs = List(BOF1)
@@ -360,17 +360,17 @@ object ConferenceDescriptor {
                       new DateTime(MON_DATE + "18:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(MON_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r3)
       }
-      val toolsMondayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
-        r4 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
-                      new DateTime(MON_DATE + "19:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r4)
-      }
+//      val toolsMondayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
+//        r4 =>
+//          SlotBuilder(ConferenceProposalTypes.TIA.id,
+//                      MONDAY,
+//                      new DateTime(MON_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
+//                      new DateTime(MON_DATE + "19:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r4)
+//      }
       toolsMondayAfternoonSlot1 ++ 
       toolsMondayAfternoonSlot2 ++ 
-      toolsMondayAfternoonSlot3 ++ 
-      toolsMondayAfternoonSlot4
+      toolsMondayAfternoonSlot3
+//      toolsMondayAfternoonSlot4
     }
 
     val tiaSlotsTuesday: List[Slot] = {
@@ -396,17 +396,17 @@ object ConferenceDescriptor {
                       new DateTime(TUE_DATE + "18:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(TUE_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r3)
       }
-      val toolsTuesdayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
-        r4 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
-                      new DateTime(TUE_DATE + "19:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r4)
-      }
+//      val toolsTuesdayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
+//        r4 =>
+//          SlotBuilder(ConferenceProposalTypes.TIA.id,
+//                      TUESDAY,
+//                      new DateTime(TUE_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
+//                      new DateTime(TUE_DATE + "19:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r4)
+//      }
       toolsTuesdayAfternoonSlot1 ++ 
       toolsTuesdayAfternoonSlot2 ++ 
-      toolsTuesdayAfternoonSlot3 ++ 
-      toolsTuesdayAfternoonSlot4
+      toolsTuesdayAfternoonSlot3
+//      toolsTuesdayAfternoonSlot4
     }
 
     // HANDS ON LABS
