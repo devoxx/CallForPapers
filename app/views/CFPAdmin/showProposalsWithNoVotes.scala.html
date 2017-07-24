@@ -11,7 +11,7 @@
                 @defining(proposals.filter(_._2.state==ProposalState.SUBMITTED)) { submittedProps =>
                   <h3>@submittedProps.size Proposals Submitted</h3>
                   @submittedProps.values.groupBy(_.track).map { byTracks =>
-                    <h4>@Messages(byTracks._1.label)</h4>
+                    <h4>@Html(Messages(byTracks._1.label))</h4>
                     @byTracks._2.map{props=>
                       <a href="@routes.CFPAdmin.openForReview(props.id)">@props.title</a> by @props.allSpeakers.map(_.cleanShortName).mkString(", ")<br>
                     }
@@ -21,7 +21,7 @@
                     <h3>@submittedProps.size Proposals with status Draft</h3>
                     <em>A proposal with status Draft cannot be reviewed.</em>
                     @submittedProps.values.groupBy(_.track).map { byTracks =>
-                   <h4>@Messages(byTracks._1.label)</h4>
+                   <h4>@Html(Messages(byTracks._1.label))</h4>
                     @byTracks._2.map{props=>
                       @props.title  by @props.allSpeakers.map(_.cleanShortName).mkString(", ")<br>
                     }
