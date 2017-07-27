@@ -41,17 +41,17 @@
                                     @tags.renderGravatar(uuidAndTotal._1)
                                 </td>
                                 <td>
-                                @uuidAndTotal._3
+                                    @uuidAndTotal._3
                                 </td>
                                 <td>
-                                @uuidAndTotal._2
+                                    @uuidAndTotal._2
                                 </td>
                                 <td>
-                                @if(uuidAndTotal._3 > 0) {
-                                    @BigDecimal(uuidAndTotal._2.toDouble./(uuidAndTotal._3.toDouble)).round(new java.math.MathContext(3))
-                                }else{
-                                    0
-                                }
+                                    @if(uuidAndTotal._3 > 0) {
+                                        @BigDecimal(uuidAndTotal._2.toDouble./(uuidAndTotal._3.toDouble)).round(new java.math.MathContext(3))
+                                    }else{
+                                        0
+                                    }
                                 </td>
                             </tr>
                         }
