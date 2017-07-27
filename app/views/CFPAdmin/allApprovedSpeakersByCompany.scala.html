@@ -27,20 +27,13 @@
         </div>
         <div class="panel-body">
 
-            @proposals.map { case (company, props) =>
-            <h3>@company.capitalize @props.size talk(s)</h3>
-                @props.toList.sortBy(_.talkType.id).map {proposal=>
-                    @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") <br>
-                }
+            @proposals.map {case (company, props) =>
+            <h3>@company.capitalize @props.size @if(props.size>1){talks}else{talk}</h3><UL id="tree">
+            @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
+                <LI>@Messages(proposal.talkType.id) - <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a> by @proposal.allSpeakers.map(_.cleanName).mkString(", ")
+                <span class="label label-success">@Messages(proposal.state.code)</span></LI>
             }
-
-            <hr>
-
-            @proposals.map { case (company, props) =>
-            @*<h3>@company.capitalize @props.size talk(s)</h3>*@
-                @props.toList.sortBy(_.talkType.id).map {proposal=>
-                    @proposal.state.code;@Messages(proposal.talkType.id);@Html(Messages(proposal.track.label));@proposal.title;@company.capitalize;@proposal.allSpeakers.map(_.cleanName).mkString(";");@proposal.allSpeakers.map(_.email).mkString(";")<br>
-                }
+            </UL>
             }
 
             <hr>
@@ -61,7 +54,7 @@
                 <tbody>
                 @speakersByCompany.map{ case(company:String, speakers: Set[Speaker]) =>
                    <tr>
-                       <th colspan="5">@company - @speakers.size</th>
+                       <th colspan="5">@company - @speakers.size @if(speakers.size>1){speakers}else{speaker}</th>
                    </tr>
                        @speakers.map{speaker=>
                         <tr>
@@ -88,7 +81,16 @@
                 </tbody>
             </table>
             }else{
-                <P>There is no approved speaker.</P>
+                <P>There is no approved speakers.</P>
+            }
+
+            <hr>
+
+            <h3>CSV Export</h3>
+            @proposals.map { case (company, props) =>
+                @props.toList.sortBy(_.talkType.id).map {proposal=>
+                    @proposal.state.code;@Messages(proposal.talkType.id);@Html(Messages(proposal.track.label));@proposal.title;@company.capitalize;@proposal.allSpeakers.map(_.cleanName).mkString(";");@proposal.allSpeakers.map(_.email).mkString(";")<br>
+                }
             }
         </div>
         </div>
