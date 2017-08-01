@@ -22,25 +22,79 @@
     <hr>
 }
 <h3>Welcome to @Messages("longYearlyName")</h3>
-<p>Hi,</p>
-<p>We're glad to inform you that your proposal for @Messages("longYearlyName") has been <strong>accepted</strong></p>
-<p>Proposal <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
+<p>Dear Devoxxian,</p>
+<p>We're excited to inform you that your @Messages(proposal.talkType.id) proposal "<strong>@proposal.title</strong>" for @Messages("longYearlyName") has been <strong>accepted</strong></p>
 <hr>
-<h3>What's next?</h3>
-<p>You must now validate or decline the general terms and conditions, and confirm that you are still available to do this presentation :</p>
+<h3>What you need to do right now:</h3>
+<p>1) If you are still available to do this presentation then accept our terms & conditions :</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
-
+<br><br>
+<p>2) Please read and follow our <a href="https://devoxx.be/code-of-conduct">Devoxx code of conduct</a>.</p>
+<br><br>
 @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-    <p>This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
-    Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
+    <p>3) This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
+        Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
 } else {
-    <p>As a confirmed speaker you'll receive, a couple of weeks before the event takes place, a discount code for a Devoxx Combi pass (full week).</p>
-    <p>You'll also receive an invite for the exclusive speakers reception on Tuesday evening.</p>
+    <p>3) Confirmed speakers will receive (one week before the event) a 5-day Devoxx Combi eTicket.  Please show the eTicket at the Devoxx registration desks to receive your badge.</p>
+    <p>You'll also receive an email invite for the exclusive speakers reception which takes place on Tuesday evening.</p>
 }
+<br><br>
+<p>You have until August 31st, 2017 at 5pm CET to accept the terms.</p>
+<p>If we do not hear from you by then, we will regrettably need to decline this offer and invite an alternate speaker.</p>
 
-<h3>For any question regarding your talk</h3>
-<p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
+<hr>
+
+<h3>Online Schedule</h3>
+<p>We'll schedule the accepted talks from September onwards, this is online available @ <a href="https://cfp.devoxx.be/2017/index.html">https://cfp.devoxx.be/2017/index.html</a></p>
+
+<hr>
+
+<h3>Presentation Guidelines</h3>
+
+<h5>Hardware</h5>
+<p>All speakers can use their own machine, using any operating system. Signal output should be 60 Hz.</p>
+<p>The audio/video crew will provide a VGA, HDMI and Thunderbolt connector for your portable.</p>
+<p>Don't do a presentation on batteries as this will result in a 'weak' video signal.</p>
+
+<h5>Screen Resolution</h5>
+<p>The ideal (16:9) resolution for your portable is 1280 x 720.</p>
+
+<h5>Internet</h5>
+<p>We provide a wired internet connection in each room for the speaker, never rely on shared conference wifi for a demo!
+   Devoxx champions have a backup plan just in case internet access isn't working, for example making a screen recording video of your online demo (if possible).</p>
+
+<h5>Presentation Template</h5>
+<p>Devoxx Belgium has an optional <a href="http://bejug.us2.list-manage.com/track/click?u=d777b04a23f45f06379a1e710&id=f264232ee2&e=1ad755560b">presentation template></a>.</p>
+<p>If you use your own then please add your twitter handle in the footer and also mention the "#Devoxx" hashtag and another unique tag which defines your talk.   This will help you identifying related tweets to your talk.</p>
+<p>Make sure you also have a copy of your slide deck somewhere somewhere on the cloud, you never know!</p>
+
+<h5>Speaker Preparation Room</h5>
+<p>During conference days (Wednesday and Thursday) one of the BOF rooms near the reception serves as a speaker preparation room.</p>
+
+<h5>Testing Equipment</h5>
+<p>Every Devoxx cinema room has an A/V specialist who can help you with equipment questions or can arrange some hardware testing during longer breaks.</p>
+
+<h5>Recordings</h5>
+<p>Your presentation will be recorded (except if it's a Hands On labs, Ignite or BOF session). These will be made available on our <a href="https://www.youtube.com/c/devoxx2015">YouTube channel</a> the next day.</p>
+
+<h5>Pictures on Flickr</h5>
+<p>The majority of the speakers are being photographed by our team and these are made available on our <a href="https://www.flickr.com/photos/bejug/albums">Flickr channel</a>, royalty free.</p>
+
+<h5>Q&A</h5>
+<p>Make sure you repeat the questions if the second mic is not used during Q&A. If not, the Q&A will not be included in the 'online' recorded version.</p>
+
+<h5>Presentation Timing</h5>
+<p>We use digital clocks to count the number of minutes that each speaker has available in his/her talk.</p>
+<p>Please note that this year the conference talks are 50 minutes.</p>
+
+<hr>
+
+<h3>FAQ</h3>
+
+<p>If you still have questions then have a quick look at our <a href="https://devoxx.be/faq/">FAQ page</a>.</p>
+
+<h3>Questions regarding your talk</h3>
+<p>Please, do not respond to this email. Send presentation related comments through the CFP web interface or mail us via <a href="mailto:info@devoxx.com?subject=Speaker Question">info@devoxx.com</a>, our team will do its bests to respond quickly.</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
 <p>The @Messages("longYearlyName") team</p>
-
