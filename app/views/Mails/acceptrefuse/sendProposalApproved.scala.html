@@ -26,24 +26,31 @@
 <p>We're excited to inform you that your @Messages(proposal.talkType.id) proposal "<strong>@proposal.title</strong>" for @Messages("longYearlyName") has been accepted.</p>
 <hr>
 <h3>What you need to do right now:</h3>
-<p>1) Please accept our terms & conditions by following this link : <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a></p>
+<p>1) Please accept the approved presentation(s) : <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a></p>
 
 <p>2) Please read and follow our <a href="https://devoxx.be/code-of-conduct">Devoxx code of conduct</a>.</p>
 
 @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
     <p>3) This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
         Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
-} else {
-    <p>3) Confirmed speakers will receive (one week before the event) a 5-day Devoxx Combi eTicket.  Show your eTicket at the Devoxx registration desks to receive your badge.</p>
-    <p>You'll also receive an email invite for the exclusive speakers reception which takes place on Tuesday evening.</p>
 }
-<p>You have until August 31st, 2017 at 5pm CET to accept the terms.</p>
+
+<p>You have until August 31st, 2017 at 5pm CET to accept the terms and approved presentation(s).</p>
 <p>If we do not hear from you by then, we will regrettably need to decline this offer and invite an alternate speaker.</p>
 
 <hr>
 
+@if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+    <h3>Speaker Ticket</h3>
+        <p>Confirmed speakers will receive (one week before the event) a 5-day Devoxx Combi eTicket.  Show your eTicket at the Devoxx registration desks to receive your badge.</p>
+        <p>You'll also receive an email invite for the exclusive speakers reception which takes place on Tuesday evening.</p>
+}
+
+
+<hr>
+
 <h3>Online Schedule</h3>
-<p>We'll schedule the accepted talks from September onwards, online available at <a href="https://cfp.devoxx.be/2017/index.html">https://cfp.devoxx.be/2017/index.html</a></p>
+<p>We'll schedule the accepted talks from September onwards, available online at <a href="https://cfp.devoxx.be/2017/index.html">https://cfp.devoxx.be/2017/index.html</a></p>
 <p>A confirmation email with your scheduled presentation(s) will get emailed a couple of weeks before Devoxx takes place.</p>
 
 <hr>
@@ -51,8 +58,9 @@
 <h3>Presentation Guidelines</h3>
 
 <h4>Hardware</h4>
-<p>All speakers can use their own machine, using any operating system. Signal output should be 60 Hz.</p>
-<p>The audio/video crew will provide a VGA, HDMI and Thunderbolt connector for your portable.</p>
+<p>All speakers can use their own machine, using any operating system.</p>
+<p>Laptop video signal output should be 60 Hz.</p>
+<p>The A/V team will provide a VGA, HDMI and Thunderbolt connector for your portable.</p>
 <p>Don't do a presentation on batteries as this will result in a 'weak' video signal.</p>
 
 <h4>Screen Resolution</h4>
@@ -63,15 +71,15 @@
    Devoxx champions have a backup plan just in case internet access isn't working, for example making a screen recording video of your online demo (if possible).</p>
 
 <h4>Presentation Template</h4>
-<p>Devoxx Belgium has an optional <a href="http://bejug.us2.list-manage.com/track/click?u=d777b04a23f45f06379a1e710&id=f264232ee2&e=1ad755560b">presentation template></a>.</p>
+<p>Devoxx Belgium has an <strong>optional</strong> <a href="http://bejug.us2.list-manage.com/track/click?u=d777b04a23f45f06379a1e710&id=f264232ee2&e=1ad755560b">presentation template</a>.</p>
 <p>If you use your own then please add your twitter handle in the footer and also mention the "#Devoxx" hashtag and another unique tag which defines your talk.   This will help you identifying related tweets to your talk.</p>
-<p>Make sure you also have a copy of your slide deck somewhere somewhere on the cloud, you never know!</p>
+<p>Make sure you also have a copy of your slide deck somewhere in the cloud, you never know!  :)</p>
 
 <h4>Speaker Preparation Room</h4>
 <p>During conference days (Wednesday and Thursday) one of the BOF rooms near the reception serves as a speaker preparation room.</p>
 
 <h4>Testing Equipment</h4>
-<p>Every Devoxx cinema room has an A/V specialist who can help you with equipment questions or can arrange some hardware testing during longer breaks.</p>
+<p>Every Devoxx cinema room has an A/V team member who can help you with equipment questions or can arrange some hardware testing during longer breaks.</p>
 
 <h4>Recordings</h4>
 <p>Your presentation will be recorded (except if it's a Hands On labs, Ignite or BOF session). These will be made available on our <a href="https://www.youtube.com/c/devoxx2015">YouTube channel</a> the next day.</p>
@@ -90,7 +98,8 @@
 
 <h3>Questions regarding your talk</h3>
 <p>Please, do not respond to this email.</p>
-<p>Send presentation related comments through the <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">CFP web interface </a> or mail us via <a href="mailto:info@@devoxx.com?subject=Devoxx Speaker Question">info@@devoxx.com</a>.</p>
+<p>Send presentation related questions through the <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">CFP web interface</a> or mail us via <a href="mailto:info@@devoxx.com?subject=Devoxx Speaker Question">info@@devoxx.com</a>.</p>
 
 <br>
+<p>Looking forward to welcome you at Devoxx Belgium!</p>
 <p>The @Messages("longYearlyName") team</p>

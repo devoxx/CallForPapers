@@ -410,7 +410,7 @@ acceptedProposals.title=List of accepted/refused proposals for {0}
 ar.approved=Approved proposals
 ar.rejected=Refused proposals
 ar.noneApproved=We are very sorry to inform you that none of your proposals have been accepted.
-ar.pleaseAccept=Please confirm for each accepted proposal, that you accept to present this talk. If you co-present a talk with another speaker, it''s also possible that your co-speaker has already accepted to present.
+ar.pleaseAccept=Please accept each approved proposal. If you co-present a talk with another speaker, it''s also possible that your co-speaker has already accepted to present.
 ar.IAccept=I accept to present this talk
 ar.IDecline=I decline and I will not present this talk
 ar.IBackup=As a Backup
@@ -648,8 +648,8 @@ mail.notify_proposal.subject={0} submitted a proposal [{1}]
 mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
-mail.proposal_approved.subject=Your proposal has been approved {0}
-mail.proposal_refused.subject=Your proposal has been declined {0}
+mail.proposal_approved.subject=Your proposal '{0}' has been approved
+mail.proposal_refused.subject=Your proposal '{0}' has been declined
 mail.speaker_cfp_results.subject=Call for Paper {0}
 mail.digest.subject=[CFP] {0} Digest {1}
 
@@ -710,7 +710,7 @@ wl_keynote=Keynote
 wl_keynote.checkbox=Yes, this could be a keynote speaker
 
 showProposal.comment.ar=Ask a question about this talk to the team
-ar.proposalType=Proposal type:
+ar.proposalType=Proposal type
 ar.proposalId=Proposal ID:
 
 tag.proposal.title=Title
