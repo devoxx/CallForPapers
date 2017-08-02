@@ -167,7 +167,7 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = "noreply@devoxx.com",
       to = Seq(speaker.email),
       cc = otherSpeakers,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
