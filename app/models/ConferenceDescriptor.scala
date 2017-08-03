@@ -272,6 +272,8 @@ object ConferenceDescriptor {
     val eveningKeynote = SlotBreak("evKey", "Evening Keynote", "Keynote", ConferenceRooms.ROOM5)
     val closingKeynote = SlotBreak("closeKey", "Closing Keynote (Room 5)", "Keynote", ConferenceRooms.ROOM3)
     val movieSpecial = SlotBreak("movie", "Movie 20:00-22:00 (Room 8)", "Movie", ConferenceRooms.ROOM3)
+
+    val allBreaks = List(registration, petitDej, coffee, lunch, shortBreak, exhibition, meetAndGreet, eveningKeynote, closingKeynote, movieSpecial)
   }
 
   object ConferenceSlots {
