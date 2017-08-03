@@ -159,6 +159,9 @@ GET           /admin/sanitycheck                                                
 GET           /admin/sanitycheck/fix                                            controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
 GET           /admin/sanitycheck/proposals                                      controllers.Backoffice.sanityCheckProposals()
 
+
+GET           /admin/configuration                                              controllers.Configuration.showConfig()
+
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
 

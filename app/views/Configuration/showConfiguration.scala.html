@@ -1,0 +1,143 @@
+@(current:ConferenceDescriptor)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Configuration") {
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @flash.get("success").get
+      </div>
+    }
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Configuration</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-6">
+            <h4>General Settings</h4>
+            <p>CFP Open: @ConferenceDescriptor.isCFPOpen</p>
+            <p>Favorites System active: @ConferenceDescriptor.isFavoritesSystemActive</p>
+            <p>HTTP Enabled: @ConferenceDescriptor.isHTTPSEnabled</p>
+            <p>Reset votes for submitted: @ConferenceDescriptor.isResetVotesForSubmitted</p>
+            <p>Timezone: @ConferenceDescriptor.timeZone</p>
+            <p>Golden Ticket Active: @ConferenceDescriptor.isGoldenTicketActive</p>
+            <p>Max proposals: @ConferenceDescriptor.maxProposals()</p>
+            <p>Notify proposal submitted: @ConferenceDescriptor.notifyProposalSubmitted</p>
+
+            <hr>
+            <h4>Current</h4>
+            <p><strong>Event code:</strong> @current.eventCode</p>
+            <p>Conf URL code: @current.confUrlCode</p>
+            <p>Hash tag: @current.hashTag</p>
+            <p>Localisation: @current.localisation</p>
+            <p>Locale: @current.locale</p>
+            <p>Notify proposal submitted : @current.notifyProposalSubmitted</p>
+            <p>BCC Email: @current.bccEmail</p>
+            <p>From Email: @current.fromEmail</p>
+            <p>Committee Email: @current.committeeEmail</p>
+            <p>FR lang enabled: @current.frLangEnabled</p>
+            <p>Bug report recipient: @current.bugReportRecipient</p>
+            <p>Hoster name: @current.hosterName</p>
+            <p>Hoster website: @current.hosterWebsite</p>
+            <p>Max summary chars: @current.maxProposalSummaryCharacters</p>
+          </div>
+
+          <div class="col-xs-6">
+            <h4>Conference URL</h4>
+            <p>hostname: @current.conferenceUrls.cfpHostname</p>
+            <p>website: @current.conferenceUrls.confWebsite</p>
+            <p>info: @current.conferenceUrls.info</p>
+            <p>registration: @current.conferenceUrls.registration</p>
+            <p>CFP URL: @current.conferenceUrls.cfpURL()</p>
+
+            <hr>
+            <h4>Conference Timing</h4>
+            <p>CFP Open on: @current.timing.cfpOpenedOn</p>
+            <p>CFP Closed on: @current.timing.cfpClosedOn</p>
+            <p>Schedule announced on: @current.timing.scheduleAnnouncedOn</p>
+            <p>Dates EN: @current.timing.datesEn</p>
+            <p>Dates FR: @current.timing.datesFr</p>
+            <p>I18N key: @current.timing.datesI18nKey</p>
+            <p>First Day EN: @current.timing.firstDayEn</p>
+            <p>First Day FR: @current.timing.firstDayFr</p>
+            <p>Speakers pass duration: @current.timing.speakersPassDuration</p>
+            <p>Preferred day enabled: @current.timing.preferredDayEnabled</p>
+            <p>Days: @current.timing.days.map(d => d.dayOfWeek().get() + ", ")</p>
+
+            <hr>
+            <h4>Show Sponsor Proposal Checkbox</h4>
+            <p>Show checkbox: @current.conferenceSponsor.showSponsorProposalCheckbox</p>
+            <p>Sponsor proposal type: @current.conferenceSponsor.sponsorProposalType</p>
+          </div>
+          <div class="clearfix"></div>
+
+          <hr>
+
+          <div class="col-xs-6">
+
+            <h4>Conference Rooms</h4>
+            <OL>
+            @ConferenceDescriptor.ConferenceRooms.allRooms.map(entry => Html("<LI>" + Messages(entry.name) + " ( capacity = " + entry.capacity + " / " + entry.setup + " setup)</LI>") )
+            </OL>
+
+            <hr>
+            <h4>Proposal Types</h4>
+            <UL>
+            @ConferenceDescriptor.ConferenceProposalTypes.ALL.map(entry => Html("<LI>" + Messages(entry.label) + "</LI>") )
+            </UL>
+
+          </div>
+
+          <div class="col-xs-6">
+            <h4>Conference Breaks</h4>
+            <UL>
+            @ConferenceDescriptor.ConferenceSlotBreaks.allBreaks.map(entry => Html("<LI>" + Messages(entry.nameEN) + " (" + entry.id+ " @ " + entry.room.name+ ")</LI>") )
+            </UL>
+
+            <hr>
+            <h4>Conference Tracks</h4>
+            <OL>
+            @ConferenceDescriptor.ConferenceTracks.ALL.map(entry => Html("<LI>" + Messages(entry.label) + " (" + entry.id + ")</LI>") )
+            </OL>
+          </div>
+          <div class="clearfix"></div>
+
+          <hr>
+          <h4>Schedule Slots</h4>
+          <table>
+            <thead>
+              <tr>
+                <td>From</td>
+                <td>To</td>
+                <td>Day</td>
+                <td>Type</td>
+                <td>Room</td>
+                <td>Proposal?</td>
+                <td>Allocated?</td>
+              </tr>
+            </thead>
+          @ConferenceDescriptor.ConferenceSlots.all.map(slot => Html("<tr><td>" + slot.from + "</td> " +
+                                                                "<td>" + slot.to + "</td> " +
+                                                                "<td>" + slot.day + "</td>" +
+                                                                "<td>" + slot.name + "</td>" +
+                                                                "<td>" + slot.room.name + "</td>" +
+                                                                "<td>" + slot.proposal.isDefined + "</td>" +
+                                                                "<td>" + slot.notAllocated+ "</td></tr>") )
+          </table>
+
+        </div>
+    </div>
+  </div>
+  </div>
+}
