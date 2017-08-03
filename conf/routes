@@ -161,6 +161,8 @@ GET           /admin/sanitycheck/proposals                                      
 
 
 GET           /admin/configuration                                              controllers.Configuration.showConfig()
+GET           /admin/configuration/import                                       controllers.Configuration.showImportConfig
+POST          /admin/configuration/doImport                                     controllers.Configuration.doImportConfig
 
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
