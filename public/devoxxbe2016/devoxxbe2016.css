@@ -7495,7 +7495,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 300;
-    src: local('Lato Light'), local('Lato-Light'), url(http://fonts.gstatic.com/s/lato/v10/IY9HZVvI1cMoAHxvl0w9LQLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v10/IY9HZVvI1cMoAHxvl0w9LQLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -7504,7 +7504,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 300;
-    src: local('Lato Light'), local('Lato-Light'), url(http://fonts.gstatic.com/s/lato/v10/22JRxvfANxSmnAhzbFH8PgLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v10/22JRxvfANxSmnAhzbFH8PgLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -7513,7 +7513,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v10/8qcEw_nrk_5HEcCpYdJu8PesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v10/8qcEw_nrk_5HEcCpYdJu8PesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -7522,7 +7522,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v10/MDadn8DQ_3oT6kvnUq_2r_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v10/MDadn8DQ_3oT6kvnUq_2r_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -7531,7 +7531,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(http://fonts.gstatic.com/s/lato/v10/rZPI2gHXi8zxUjnybc2ZQALUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v10/rZPI2gHXi8zxUjnybc2ZQALUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -7540,7 +7540,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(http://fonts.gstatic.com/s/lato/v10/MgNNr5y1C_tIEuLEmicLmwLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v10/MgNNr5y1C_tIEuLEmicLmwLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -7721,7 +7721,7 @@ p#mc4wp-checkbox label {
 }
 
 #top-image .top-main-content h1:before {
-    background-image: url(http://www.devoxx.be/wp-content/uploads/2014/05/DevoxxLogo.png) !important;
+    background-image: url(https://devoxx.be/wp-content/uploads/2014/05/DevoxxLogo.png) !important;
 }
 
 
@@ -7730,16 +7730,16 @@ p#mc4wp-checkbox label {
 }
 
 .intro-text h2:before, .parallax .parallax-slides li h4:before, .parallax.parallax-slider-blogs h4:before, .parallax.parallax-slider-shop h4:before, .parallax.parallax-new-facts h4:before, #contact-section .large-12 h4:before, .parallax.parallax-counters h4:before, #top-image.blog-page .page-title-section h4:before {
-    background-image: url('http://www.devoxx.be/wp-content/themes/athletica-child/img/divider.png');
+    background-image: url('https://devoxx.be/wp-content/themes/athletica-child/img/divider.png');
 }
 
 #section-two .bx-wrapper .bx-next {
-    background-image: url('http://www.devoxx.be/wp-content/themes/athletica-child/img/arrow-right.png');
+    background-image: url('https://devoxx.be/wp-content/themes/athletica-child/img/arrow-right.png');
 }
 
 
 .parallax .bx-wrapper .bx-pager.bx-default-pager a {
-    background-image: url('http://www.devoxx.be/wp-content/uploads/2014/05/bullets.png');
+    background-image: url('https://www.devoxx.be/wp-content/uploads/2014/05/bullets.png');
 }
 
 #top-header .logo-holder a:hover, #blog-posts .blog-holder .blog-main-content h1 a:hover, #blog-posts .blog-holder .blog-side .sharings-and-tags .tags a:hover, a, a:hover, a:focus, #socials li a:hover, .parallax.parallax-slider-blogs .blog-slides li a:hover h1, .parallax.parallax-slider-blogs .blog-slides li a:hover span, .parallax.parallax-slider-shop .products-slider-shop li a:hover h1, .parallax.parallax-slider-shop .products-slider-shop li a:hover span, .product-holder > a:hover h2, .product-holder a p, .parallax.parallax-new-facts .facts-container ul li:hover p, #section-seven .blog-section .large-3.blog-holder:hover .post-title h1 a, #section-seven .blog-section .large-3.blog-holder:hover .post-title > a, #mockups-container h4 span, #mockups-container h4 span, .parallax.parallax-counters .count-holder div, .parallax.parallax-our-services #service-description ul a:hover, .masonry-blog-container .element .content-section h6, .widget-area aside a:hover, #top-header .logo-holder a:hover, #blog-posts .blog-holder .blog-main-content h1 a:hover, #blog-posts .blog-holder .blog-side .sharings-and-tags .tags a:hover, a, a:hover, a:focus, #socials li a:hover, .parallax.parallax-slider-blogs .blog-slides li a:hover h1, .parallax.parallax-slider-blogs .blog-slides li a:hover span, .parallax.parallax-slider-shop .products-slider-shop li a:hover h1, .parallax.parallax-slider-shop .products-slider-shop li a:hover span, .product-holder > a:hover h2, .product-holder a p, .parallax.parallax-new-facts .facts-container ul li:hover p, #section-seven .blog-section .large-3.blog-holder:hover .post-title h1 a, #section-seven .blog-section .large-3.blog-holder:hover .post-title > a, #mockups-container h4 span, #mockups-container h4 span, .parallax.parallax-counters .count-holder div, .parallax.parallax-our-services #service-description ul a:hover, .masonry-blog-container .element .content-section h6, .woocommerce #content table.cart a.remove, .woocommerce table.cart a.remove, .woocommerce-page #content table.cart a.remove, .woocommerce-page table.cart a.remove, #comments input[type="submit"]:hover, #comments article a, #comments code, #section-seven .blog-section .large-3.blog-posts-info .top-holder span, #section-seven .blog-section .large-3.blog-posts-info .sharings a, #masonry-latest-posts #masonry-wrapp .latest-entry a:hover h1, .woocommerce ul.cart_list li a:hover, .woocommerce ul.product_list_widget li a:hover, .woocommerce-page ul.cart_list li a:hover, .woocommerce-page ul.product_list_widget li a:hover, .woocommerce ul.products li.product .price, .woocommerce-page ul.products li.product .price, .woocommerce #content div.product p.price, .woocommerce #content div.product span.price, .woocommerce div.product p.price, .woocommerce div.product span.price, .woocommerce-page #content div.product p.price, .woocommerce-page #content div.product span.price, .woocommerce-page div.product p.price, .woocommerce-page div.product span.price, .woocommerce #content input.button:hover, .woocommerce #respond input#submit:hover, .woocommerce a.button:hover, .woocommerce button.button:hover, .woocommerce input.button:hover, .woocommerce-page #content input.button:hover, .woocommerce-page #respond input#submit:hover, .woocommerce-page a.button:hover, .woocommerce-page button.button:hover, .woocommerce-page input.button:hover, .company-facts .large-3 h6 span {
