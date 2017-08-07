@@ -4,7 +4,6 @@ import java.util.Locale
 
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
-import play.api.i18n.Messages
 
 /**
   * ConferenceDescriptor.
@@ -18,7 +17,7 @@ import play.api.i18n.Messages
   * @author Frederic Camblor, BDX.IO 2014
   */
 
-case class ConferenceUrls(info: String, registration: String, confWebsite: String, cfpHostname: String) {
+case class ConferenceUrls(info: String, registration: String, confWebsite: String, cfpHostname: String, sponsors: String) {
   def cfpURL(): String = {
     if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
       s"https://$cfpHostname"
@@ -952,7 +951,8 @@ object ConferenceDescriptor {
       info = "https://devoxx.be/faq/",
       registration = "https://reg.devoxx.be",
       confWebsite = "https://devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be"),
+      sponsors = "https://devoxx.be/sponsors-2017"
     ),
     timing = ConferenceTiming(
       datesI18nKey = "6th-10th November",
@@ -989,7 +989,8 @@ object ConferenceDescriptor {
       info = "https://devoxx.be/faq/",
       registration = "http://reg.devoxx.be",
       confWebsite = "https://devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be"),
+      sponsors = "https://devoxx.be/sponsors-2016"
     ),
     timing = ConferenceTiming(
       datesI18nKey = "7th-11th November",

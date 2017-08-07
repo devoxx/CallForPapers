@@ -26,9 +26,8 @@ body {
 }
 
 .brainBackground{
-    background-image: url("https://s3-eu-west-1.amazonaws.com/devoxxbelgium/wp-content/uploads/2016/05/23082339/DevoxxBelgium2016v3.jpg");
-    background-repeat: no-repeat ;
-
+    /*background-image: url("https://s3-eu-west-1.amazonaws.com/devoxxbelgium/wp-content/uploads/2016/05/23082339/DevoxxBelgium2016v3.jpg");*/
+    /*background-repeat: no-repeat ;*/
 }
 
 a {

@@ -220,21 +220,21 @@ GET           /2017/tag/:tagId                                                  
 GET           /2017/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2017/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET           /2017/talks                                                       controllers.Publisher.showAllTalksByType()
-GET           /2017/index.html                                                  controllers.Publisher.homePublisher()
-GET           /2017/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2017/byday/:day                                                  controllers.Publisher.showByDay(day:String)
-GET           /2017/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
-GET           /2017/sitemap.xml                                                 controllers.Assets.at(path="/public/devoxxbe2016", file="sitemap.xml")
+GET        /2017/index.html                   controllers.Publisher.homePublisher()
+GET        /2017/agenda/:confType/:day        controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
+GET        /2017/byday/:day                   controllers.Publisher.showByDay(day:String)
+GET        /2017/search                       controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET        /2017/sitemap.xml                  controllers.Assets.at(path="/public/devoxx", file="sitemap.xml")
 
 # Archive folder
 # 1) download all web pages with wget
 # 2) upload to Clever cloud the web pages
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
-GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2016", file)
+GET        /2016/*file                        controllers.BucketContentLoader.at(path="/devoxx_content/2016", file)
 # GET           /2015/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 
 # Favorites
-GET           /myagenda                                                         controllers.Favorites.home
+GET        /myagenda                          controllers.Favorites.home
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
 GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
 
