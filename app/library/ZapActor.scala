@@ -196,7 +196,7 @@ class ZapActor extends Actor {
   def doProposalApproved(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Approved"))
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Approved : '${proposal.title}'"))
       Mails.sendProposalApproved(speaker, proposal)
       Proposal.approve(reporterUUID, proposal.id)
     }

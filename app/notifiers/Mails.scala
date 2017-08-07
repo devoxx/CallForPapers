@@ -177,6 +177,9 @@ object Mails {
     )
 
     MailerPlugin.send(email)
+
+    play.Logger.of("notifiers.Mails").debug("Proposal approved send " + speaker.email + " and other: " + otherSpeakers)
+
   }
 
   def sendProposalRefused(speaker: Webuser, proposal: Proposal) = {
@@ -195,6 +198,8 @@ object Mails {
     )
 
     MailerPlugin.send(email)
+
+    play.Logger.of("notifiers.Mails").debug("Proposal refused send " + speaker.email + " and other: " + otherSpeakers)
   }
 
   /**
