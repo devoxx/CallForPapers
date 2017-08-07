@@ -32,32 +32,91 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 
 ----------------------------------------------------------------------------------------------------------------------
 }
- Hi,
+Dear Devoxxian,
 
- We're glad to inform you that your proposal for @Messages("longYearlyName") has been accepted !
- Proposition title : @proposal.title, of type [@Messages(proposal.talkType.id)].
+We're excited to inform you that your @Messages(proposal.talkType.id) proposal "@proposal.title" for @Messages("longYearlyName") has been accepted.
 
- Important information
- ---------------------
- You must now validate or decline the general terms and conditions, and confirm that you are still ok to do
- this presentation :
+-----------
 
-  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
+* What you need to do right now:
+1) Read Terms & Conditions and accept your approved presentation @@ @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
+
+2) Also make sure to read and follow our at https://devoxx.be/code-of-conduct
 
 @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
- This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
-
- See below for registration
-
- @ConferenceDescriptor.current().conferenceUrls.registration
+    3) This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
+        Registration details @ConferenceDescriptor.current().conferenceUrls.registration
 }
 
- For any question regarding your talk:
- ------------------------------------
- Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests
- to respond quickly.
+You have until August 31st, 2017 at 5pm CET to accept the possibility to speak.
+If we do not hear from you by then, we will regrettably need to decline this offer and invite an alternate speaker.
 
-  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
+-----------
 
- The @Messages("longYearlyName") team
+@if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+    * Speaker Ticket
+    Confirmed speakers will receive (one week before the event) a 5-day Devoxx Combi eTicket.
+    Just show your eTicket at the Devoxx registration desks to receive your badge.
+    You'll also receive an email invite for the exclusive speakers reception which takes place on Tuesday evening.
+}
+
+
+-----------
+
+* Online Schedule
+We'll schedule the accepted talks from October onwards, available online at https://cfp.devoxx.be/2017/index.html
+A confirmation email with the final schedule will arrive a couple of weeks before Devoxx takes place.
+
+-----------
+
+* Presentation Guidelines
+
+- Hardware
+All speakers can use their own machine, using any operating system.
+Laptop video signal output should be 60 Hz.
+The A/V team will provide a VGA, HDMI and Thunderbolt connector for your portable.
+Don't do a presentation on batteries as this will result in a 'weak' video signal.
+
+- Screen Resolution
+The ideal (16:9) resolution for your portable is 1280 x 720.
+
+- Internet
+We provide a wired internet connection in each room for the speaker, never rely on shared conference wifi for a demo!
+Devoxx champions have a backup plan just in case internet access isn't working, for example making a screen recording video of your online demo (if possible).
+
+- Presentation Template
+Devoxx Belgium has an optional at http://bejug.us2.list-manage.com/track/click?u=d777b04a23f45f06379a1e710&id=f264232ee2&e=1ad755560b
+The Devoxx cinema screens are huge and wide screen, so please build your slide deck for 16x9 !!
+If you use your own then please add your twitter handle in the footer and also mention the "#Devoxx" hash tag and another unique tag which defines your talk.   This will help you identifying related tweets to your talk.
+Make sure you also have a copy of your slide deck somewhere in the cloud, you never know!  :)
+
+- Speaker Preparation Room
+During conference days (Wednesday and Thursday) one of the BOF rooms near the reception serves as a speaker preparation room.
+
+- Testing Equipment
+Every Devoxx cinema room has an A/V team member who can help you with equipment questions or can arrange some hardware testing during longer breaks.
+
+- Recordings
+Your presentation will be recorded (except if it's a Hands On labs, Ignite or BOF session). These will be made available on our <a href="https://www.youtube.com/c/devoxx2015">YouTube channel</a> the next day.
+
+- Pictures on Flickr
+The majority of the speakers are being photographed by our team and these are made available on our https://www.flickr.com/photos/bejug/albums, royalty free.
+
+- Q&A
+Make sure you repeat the questions if the second mic is not used during Q&A. If not, the Q&A will not be included in the 'online' recorded version.
+
+- Presentation Timing
+We use digital clocks to count the number of minutes that each speaker has available in his/her talk.
+Please note that this year the conference talks are 50 minutes.
+
+-----------
+
+Questions regarding your talk
+Please, do not respond to this email.
+Send presentation related questions through the @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id) or mail us via mailto:info@@devoxx.com?subject=Devoxx Speaker Question
+
+
+Looking forward to welcome you at Devoxx Belgium!
+The @Messages("longYearlyName") team
+
 
