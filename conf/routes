@@ -205,7 +205,7 @@ GET           /ar/prepareMassRefuse                                             
 GET           /ar/doMassRefuseAndRedirect                                       controllers.ApproveOrRefuse.doRefuseAndRedirectToMass(proposalId:String, confType:String)
 
 # For Fun, it works only if you have Elastic Search
-GET         /cloudtags                                   controllers.CallForPaper.cloudTags()
+GET         /cloudtags                                                          controllers.CallForPaper.cloudTags()
 
 # Content Publisher
 # If you plan to use the CFP for your program, you can adapt the URLs below
@@ -213,57 +213,57 @@ GET         /cloudtags                                   controllers.CallForPape
 # Keep the .html in each URL if you want to save your program (with wget for instance)
 # Each year I do a backup with wget wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2014
 
-GET         /2017/speakers.html                          controllers.Publisher.showAllSpeakers()
-GET         /2017/speaker/:cleanName                     controllers.Publisher.showSpeakerByName(cleanName:String)
-GET         /2017/talks/:talkType                        controllers.Publisher.showByTalkType(talkType:String)
-GET         /2017/tag/:tagId                             controllers.Publisher.showByTag(tagId:String)
-GET         /2017/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
-GET         /2017/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET         /2017/talks                                  controllers.Publisher.showAllTalksByType()
-GET         /2017/index.html                             controllers.Publisher.homePublisher()
-GET         /2017/agenda/:confType/:day                  controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET         /2017/byday/:day                             controllers.Publisher.showByDay(day:String)
-GET         /2017/search                                 controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
-GET         /2017/sitemap.xml                            controllers.Assets.at(path="/public/devoxx", file="sitemap.xml")
+GET         /2017/speakers.html                                                 controllers.Publisher.showAllSpeakers()
+GET         /2017/speaker/:cleanName                                            controllers.Publisher.showSpeakerByName(cleanName:String)
+GET         /2017/talks/:talkType                                               controllers.Publisher.showByTalkType(talkType:String)
+GET         /2017/tag/:tagId                                                    controllers.Publisher.showByTag(tagId:String)
+GET         /2017/talk/:proposalId                                              controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET         /2017/talk/:proposalId/:proposalTitle                               controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET         /2017/talks                                                         controllers.Publisher.showAllTalksByType()
+GET         /2017/index.html                                                    controllers.Publisher.homePublisher()
+GET         /2017/agenda/:confType/:day                                         controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
+GET         /2017/byday/:day                                                    controllers.Publisher.showByDay(day:String)
+GET         /2017/search                                                        controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET         /2017/sitemap.xml                                                   controllers.Assets.at(path="/public/devoxx", file="sitemap.xml")
 
 # Archive folder
 # 1) download all web pages with wget
 # 2) upload to Clever cloud the web pages
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
-GET         /2016/*file                                  controllers.BucketContentLoader.at(path="/devoxx_content/2016", file)
+GET         /2016/*file                                                         controllers.BucketContentLoader.at(path="/devoxx_content/2016", file)
 # GET           /2015/*file                                                     controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 
 # Favorites
-GET         /myagenda                                    controllers.Favorites.home
-GET         /newvisitor/welcome                          controllers.Favorites.welcomeVisitor()
-GET         /favorites/:proposalId                       controllers.Favorites.isFav(proposalId:String)
+GET         /myagenda                                                           controllers.Favorites.home
+GET         /newvisitor/welcome                                                 controllers.Favorites.welcomeVisitor()
+GET         /favorites/:proposalId                                              controllers.Favorites.isFav(proposalId:String)
 
 # This is an AJAX callback triggered from devoxxBE2016.scala (the publisher web pages)
-POST        /favorites/likeOrUnlink                      controllers.Favorites.likeOrUnlike()
+POST        /favorites/likeOrUnlink                                             controllers.Favorites.likeOrUnlike()
 
 # REST API
-GET         /api                                         controllers.RestAPI.index()
-GET         /api/conferences/                            controllers.RestAPI.redirectToConferences()
-GET         /api/conferences                             controllers.RestAPI.showAllConferences()
-GET         /api/conferences/:eventCode                  controllers.RestAPI.showConference(eventCode:String)
-GET         /api/conferences/:eventCode/speakers/        controllers.RestAPI.redirectToSpeakers(eventCode:String)
-GET           /api/conferences/:eventCode/speakers                              controllers.RestAPI.showSpeakers(eventCode:String)
-GET           /api/conferences/:eventCode/speakers/:uuid                        controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
-GET           /api/conferences/:eventCode/rooms/:room/:day                      controllers.RestAPI.showScheduleForRoom(eventCode: String, room:String, day: String)
-GET           /api/conferences/:eventCode/rooms/                                controllers.RestAPI.showRooms(eventCode:String)
-GET           /api/conferences/:eventCode/topFavedTalks                         controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
-GET           /api/conferences/:eventCode/talks/                                controllers.RestAPI.redirectToTalks(eventCode:String)
-GET           /api/conferences/:eventCode/talks                                 controllers.RestAPI.showApprovedTalks(eventCode:String)
-GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
-GET           /api/conferences/:eventCode/schedules/                            controllers.RestAPI.showAllSchedules(eventCode:String)
+GET         /api                                                                controllers.RestAPI.index()
+GET         /api/conferences/                                                   controllers.RestAPI.redirectToConferences()
+GET         /api/conferences                                                    controllers.RestAPI.showAllConferences()
+GET         /api/conferences/:eventCode                                         controllers.RestAPI.showConference(eventCode:String)
+GET         /api/conferences/:eventCode/speakers/                               controllers.RestAPI.redirectToSpeakers(eventCode:String)
+GET         /api/conferences/:eventCode/speakers                                controllers.RestAPI.showSpeakers(eventCode:String)
+GET         /api/conferences/:eventCode/speakers/:uuid                          controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
+GET         /api/conferences/:eventCode/rooms/:room/:day                        controllers.RestAPI.showScheduleForRoom(eventCode: String, room:String, day: String)
+GET         /api/conferences/:eventCode/rooms/                                  controllers.RestAPI.showRooms(eventCode:String)
+GET         /api/conferences/:eventCode/topFavedTalks                           controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
+GET         /api/conferences/:eventCode/talks/                                  controllers.RestAPI.redirectToTalks(eventCode:String)
+GET         /api/conferences/:eventCode/talks                                   controllers.RestAPI.showApprovedTalks(eventCode:String)
+GET         /api/conferences/:eventCode/talks/:id                               controllers.RestAPI.showTalk(eventCode:String,id:String)
+GET         /api/conferences/:eventCode/schedules/                              controllers.RestAPI.showAllSchedules(eventCode:String)
 # Both entries /:day and /:day/ are needed!
-GET           /api/conferences/:eventCode/schedules/:day                        controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
-GET           /api/conferences/:eventCode/schedules/:day/                       controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
-GET           /api/conferences/:eventCode/scheduleTypes/:confType               controllers.RestAPI.showScheduleForConfType(eventCode:String, confType:String)
-GET           /api/conferences/:eventCode/proposalTypes                         controllers.RestAPI.showProposalTypes(eventCode:String)
-GET           /api/conferences/:eventCode/tracks                                controllers.RestAPI.showTracks(eventCode:String)
+GET         /api/conferences/:eventCode/schedules/:day                          controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET         /api/conferences/:eventCode/schedules/:day/                         controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET         /api/conferences/:eventCode/scheduleTypes/:confType                 controllers.RestAPI.showScheduleForConfType(eventCode:String, confType:String)
+GET         /api/conferences/:eventCode/proposalTypes                           controllers.RestAPI.showProposalTypes(eventCode:String)
+GET         /api/conferences/:eventCode/tracks                                  controllers.RestAPI.showTracks(eventCode:String)
 
-GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
+GET         /api/profile/:docName                                               controllers.RestAPI.profile(docName:String)
 
 # New My Devoxx and PWA REST endpoints
 POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
