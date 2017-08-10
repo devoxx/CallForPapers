@@ -148,6 +148,11 @@ object Webuser {
       client.exists("Webuser:Email:" + email.toLowerCase.trim)
   }
 
+  def setMissingEmail(uuid:String, email:String) : String = Redis.pool.withClient {
+    client =>
+      client.set("Webuser:Email:"+ email, uuid)
+  }
+
   def findByEmail(email: String): Option[Webuser] = email match {
     case null => None
     case "" => None

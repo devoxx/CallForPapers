@@ -459,4 +459,10 @@ object Backoffice extends SecureCFPController {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
   }
+
+  def addMissingEmail(uuid:String, email:String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Webuser.setMissingEmail(uuid, email)
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Missing email added")
+  }
 }

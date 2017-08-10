@@ -158,6 +158,7 @@ GET           /admin/elastic/index                                              
 GET           /admin/sanitycheck                                                controllers.Backoffice.sanityCheckSchedule()
 GET           /admin/sanitycheck/fix                                            controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
 GET           /admin/sanitycheck/proposals                                      controllers.Backoffice.sanityCheckProposals()
+GET           /admin/webusers/email                                             controllers.Backoffice.addMissingEmail(uuid:String, email:String)
 
 
 GET           /admin/configuration                                              controllers.Configuration.showConfig()
