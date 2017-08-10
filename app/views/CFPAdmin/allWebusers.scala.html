@@ -45,6 +45,9 @@
                         </td>
                          <td>
                              <small>@webuser.email</small>
+                             @if(Webuser.isEmailRegistered(webuser.email)) {
+                                     &nbsp;<i class="icon-exclamation-sign" style="color:red"></i>
+                             }
                         </td>
                         <td>
                         @if(Webuser.isMember(webuser.uuid, "cfp")) {
