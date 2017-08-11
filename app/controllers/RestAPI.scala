@@ -28,7 +28,7 @@ import models.Speaker._
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
-import play.api.libs.json.{JsNull, Json}
+import play.api.libs.json.{Format, JsNull, JsValue, Json}
 import play.api.mvc.{SimpleResult, _}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -306,6 +306,7 @@ object RestAPI extends Controller {
                   "title" -> Json.toJson(proposal.title),
                   "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                   "lang" -> Json.toJson(proposal.lang),
+                  "audienceLevel" -> Json.toJson(proposal.audienceLevel),
                   "summary" -> Json.toJson(proposal.summary),
                   "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                   "track" -> Json.toJson(Messages(proposal.track.label)),
@@ -452,6 +453,7 @@ object RestAPI extends Controller {
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
                       "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "audienceLevel" -> Json.toJson(proposal.audienceLevel),
                       "trackId" -> Json.toJson(proposal.track.id),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                       "speakers" -> Json.toJson(allSpeakers.map {
@@ -471,24 +473,7 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-
-              Map(
-                "slotId" -> Json.toJson(slot.id)
-                , "day" -> Json.toJson(slot.day)
-                , "roomId" -> Json.toJson(slot.room.id)
-                , "roomName" -> Json.toJson(slot.room.name)
-                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
-                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
-                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
-                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
-                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
-                , "break" -> Json.toJson(slot.break)
-                , "roomSetup" -> Json.toJson(slot.room.setup)
-                , "roomCapacity" -> Json.toJson(slot.room.capacity)
-                , "notAllocated" -> Json.toJson(slot.notAllocated)
-              )
+              getJsonSlot(slot, upProposal)
           }
           val jsonObject = Json.toJson(
             Map(
@@ -497,6 +482,27 @@ object RestAPI extends Controller {
           )
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL() + ">; rel=\"profile\""))
       }
+  }
+
+  private def getJsonSlot(slot: Slot, proposal: Option[Map[String, JsValue]]) = {
+    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+
+    Map(
+      "slotId" -> Json.toJson(slot.id)
+      , "day" -> Json.toJson(slot.day)
+      , "roomId" -> Json.toJson(slot.room.id)
+      , "roomName" -> Json.toJson(slot.room.name)
+      , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+      , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+      , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+      , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
+      , "talk" -> proposal.map(Json.toJson(_)).getOrElse(JsNull)
+      , "break" -> Json.toJson(slot.break)
+      , "roomSetup" -> Json.toJson(slot.room.setup)
+      , "roomCapacity" -> Json.toJson(slot.room.capacity)
+      , "notAllocated" -> Json.toJson(slot.notAllocated)
+    )
   }
 
   def showScheduleFor(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
@@ -519,6 +525,7 @@ object RestAPI extends Controller {
                       "id" -> Json.toJson(proposal.id),
                       "title" -> Json.toJson(proposal.title),
                       "lang" -> Json.toJson(proposal.lang),
+                      "audienceLevel" -> Json.toJson(proposal.audienceLevel),
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
                       "track" -> Json.toJson(Messages(proposal.track.label)),
@@ -541,24 +548,7 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-
-              Map(
-                "slotId" -> Json.toJson(slot.id)
-                , "day" -> Json.toJson(slot.day)
-                , "roomId" -> Json.toJson(slot.room.id)
-                , "roomName" -> Json.toJson(slot.room.name)
-                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
-                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
-                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
-                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
-                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
-                , "break" -> Json.toJson(slot.break)
-                , "roomSetup" -> Json.toJson(slot.room.setup)
-                , "roomCapacity" -> Json.toJson(slot.room.capacity)
-                , "notAllocated" -> Json.toJson(slot.notAllocated)
-              )
+              getJsonSlot(slot, upProposal)
           }
           val jsonObject = Json.toJson(
             Map(
@@ -708,24 +698,7 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-
-              Map(
-                "slotId" -> Json.toJson(slot.id)
-                , "day" -> Json.toJson(slot.day)
-                , "roomId" -> Json.toJson(slot.room.id)
-                , "roomName" -> Json.toJson(slot.room.name)
-                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
-                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
-                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
-                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
-                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
-                , "break" -> Json.toJson(slot.break)
-                , "roomSetup" -> Json.toJson(slot.room.setup)
-                , "roomCapacity" -> Json.toJson(slot.room.capacity)
-                , "notAllocated" -> Json.toJson(slot.notAllocated)
-              )
+              getJsonSlot(slot, upProposal)
           }
           val jsonObject = Json.toJson(
             Map(
@@ -774,25 +747,7 @@ object RestAPI extends Controller {
 
               val maybeSlot = {
                 ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id).map {
-                  slot =>
-                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
-
-                    Map(
-                      "slotId" -> Json.toJson(slot.id)
-                      , "day" -> Json.toJson(slot.day)
-                      , "roomId" -> Json.toJson(slot.room.id)
-                      , "roomName" -> Json.toJson(slot.room.name)
-                      , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
-                      , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
-                      , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
-                      , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
-                      , "talk" -> Json.toJson(updatedProposalWithLink)
-                      , "break" -> Json.toJson(slot.break)
-                      , "roomSetup" -> Json.toJson(slot.room.setup)
-                      , "roomCapacity" -> Json.toJson(slot.room.capacity)
-                      , "notAllocated" -> Json.toJson(slot.notAllocated)
-                    )
+                  slot => getJsonSlot(slot, Option(updatedProposalWithLink))
                 }
               }
 
@@ -882,14 +837,14 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
 case class Link(href: String, rel: String, title: String)
 
 object Link {
-  implicit val linkFormat = Json.format[Link]
+  implicit val linkFormat: Format[Link] = Json.format[Link]
 }
 
 case class Conference(eventCode: String, label: String, locale: List[String], localisation: String, link: Link)
 
 object Conference {
 
-  implicit val confFormat = Json.format[Conference]
+  implicit val confFormat: Format[Conference] = Json.format[Conference]
 
   def all(implicit req: RequestHeader) = {
     List(currentConference, conference2016)
