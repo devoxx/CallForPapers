@@ -306,11 +306,14 @@ object RestAPI extends Controller {
                   "title" -> Json.toJson(proposal.title),
                   "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                   "lang" -> Json.toJson(proposal.lang),
-                  "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+                  "audienceLevel" -> Json.toJson(Messages(proposal.audienceLevel + ".label")),
                   "summary" -> Json.toJson(proposal.summary),
                   "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                   "track" -> Json.toJson(Messages(proposal.track.label)),
                   "trackId" -> Json.toJson(proposal.track.id),
+                  "tags" -> Json.toJson(proposal.tags.get.map {
+                    tag => Map("value" -> Json.toJson(tag.value))
+                  }),
                   "speakers" -> Json.toJson(allSpeakers.map {
                     speaker =>
                       Map(
@@ -330,6 +333,8 @@ object RestAPI extends Controller {
           }
       }.getOrElse(NotFound("Proposal not found"))
   }
+
+  
 
   def redirectToTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
@@ -445,6 +450,7 @@ object RestAPI extends Controller {
               val upProposal = slot.proposal.map {
                 proposal =>
                   val allSpeakers = proposal.allSpeakerUUIDs.flatMap(uuid => findByUUID(uuid))
+
                   val updatedProposal =
                     Map(
                       "id" -> Json.toJson(proposal.id),
@@ -453,9 +459,12 @@ object RestAPI extends Controller {
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
                       "track" -> Json.toJson(Messages(proposal.track.label)),
-                      "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+                      "audienceLevel" -> Json.toJson(Messages(proposal.audienceLevel + ".label")),
                       "trackId" -> Json.toJson(proposal.track.id),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                      "tags" -> Json.toJson(proposal.tags.get.map {
+                        tag => Map("value" -> Json.toJson(tag.value))
+                      }),
                       "speakers" -> Json.toJson(allSpeakers.map {
                         speaker =>
                           Map(
@@ -520,17 +529,21 @@ object RestAPI extends Controller {
               val upProposal = slot.proposal.map {
                 proposal =>
                   val allSpeakers = proposal.allSpeakerUUIDs.flatMap(uuid => findByUUID(uuid))
+
                   val updatedProposal =
                     Map(
                       "id" -> Json.toJson(proposal.id),
                       "title" -> Json.toJson(proposal.title),
                       "lang" -> Json.toJson(proposal.lang),
-                      "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+                      "audienceLevel" -> Json.toJson(Messages(proposal.audienceLevel + ".label")),
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
                       "track" -> Json.toJson(Messages(proposal.track.label)),
                       "trackId" -> Json.toJson(proposal.track.id),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                      "tags" -> Json.toJson(proposal.tags.get.map {
+                        tag => Map("value" -> Json.toJson(tag.value))
+                      }),
                       "speakers" -> Json.toJson(allSpeakers.map {
                         speaker =>
                           Map(
@@ -671,6 +684,7 @@ object RestAPI extends Controller {
                   val allSpeakers = proposal.allSpeakerUUIDs.flatMap {
                     uuid => findByUUID(uuid)
                   }
+
                   val updatedProposal =
                     Map(
                       "id" -> Json.toJson(proposal.id),
