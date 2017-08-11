@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="col-md-12">
-                        <h3>@allProposals.size proposals approved</h3>
+                        <h3>@allProposals.size proposals approved / @allProposals.count(p => p.state == ProposalState.ACCEPTED) accepted by speakers</h3>
                         @if(ConferenceDescriptor.current().frLangEnabled) {
                             <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
                             <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
