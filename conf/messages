@@ -655,9 +655,9 @@ mail.digest.subject=[CFP] {0} Digest {1}
 
 proposal.audienceLevel=Audience level
 proposal.demoLevel=Type of presentation
-l1.label=level 1 : beginner/novice
+l1.label=Beginner/novice
 l2.label=Intermediate
-l3.label=Expert and senior
+l3.label=Expert/senior
 d1.label=Slides only
 d2.label=Slides and code
 d3.label=Code only
