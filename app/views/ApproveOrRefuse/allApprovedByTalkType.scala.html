@@ -30,7 +30,10 @@
                     </div>
 
                     <div class="col-md-12">
-                        <h3>@allProposals.size proposals approved / @allProposals.count(p => p.state == ProposalState.ACCEPTED) accepted by speakers</h3>
+                        <h3>@allProposals.size approved /
+                            @allProposals.count(p => p.state == ProposalState.ACCEPTED) accepted /
+                            @allProposals.count(p => p.state == ProposalState.DECLINED) declined /
+                        @allProposals.count(p => p.state == ProposalState.REJECTED) rejected</h3>
                         @if(ConferenceDescriptor.current().frLangEnabled) {
                             <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
                             <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
@@ -46,7 +49,7 @@
                             <thead>
                                 <tr>
                                     <th>Proposal title</th>
-                                    <th>Proposal id</th>
+                                    <th>ID</th>
                                     <th>Main speaker</th>
                                     <th>Track</th>
                                     <th>Status</th>
@@ -73,11 +76,11 @@
                                             @Html(Messages(proposal.track.label))
                                         </td>
                                         <td>
-                                            @proposal.state.code
+                                            @proposal.state.code.capitalize
                                         </td>
                                         <td>
                                             @if(proposal.state.code=="accepted"){
-                                                <small>Speaker has accepted</small>
+                                                OK
                                             }else {
                                                 <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="label label-success"><i class="icon-envelope"></i>
                                                 @if(proposal.state.code=="approved"){
@@ -85,7 +88,7 @@
                                                 } else{
                                                  Notify
                                                 }
-                                                 </a>
+                                                </a>
                                             }
                                             </td>
                                     </tr>

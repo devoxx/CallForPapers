@@ -258,8 +258,10 @@ object ApprovedProposal {
       // Include Approved talks but exclude Archived, Declined and Rejected sessions
       val allProposalIDs = client.smembers("Approved:" + talkType)
         .diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
-        .diff(client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}"))
-        .diff(client.smembers(s"Proposals:ByState:${ProposalState.REJECTED.code}"))
+
+        // We need to return proposals that have been declined by the speaker or rejected by PC team
+        // .diff(client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}"))
+        // .diff(client.smembers(s"Proposals:ByState:${ProposalState.REJECTED.code}"))
 
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs)
       allProposalWithVotes.values.toList

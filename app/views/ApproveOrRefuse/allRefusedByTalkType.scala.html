@@ -50,7 +50,7 @@
                         <thead>
                             <tr>
                                 <th>Proposal title</th>
-                                <th>Proposal id</th>
+                                <th>ID</th>
                                 <th>All speakers</th>
                                 <th>Track</th>
                                 <th>Status</th>
@@ -77,7 +77,7 @@
                                         @Html(Messages(proposal.track.label))
                                     </td>
                                     <td>
-                                        @Messages(proposal.state.code)
+                                        @proposal.state.code.capitalize
                                     </td>
                                     <td>
                                         <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="label label-danger"><i class="icon-warning-sign"></i> Notify refused</a>
