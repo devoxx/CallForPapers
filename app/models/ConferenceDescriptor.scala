@@ -2,6 +2,7 @@ package models
 
 import java.util.Locale
 
+import controllers.Configuration
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
 
@@ -952,7 +953,7 @@ object ConferenceDescriptor {
       registration = "https://reg.devoxx.be",
       confWebsite = "https://devoxx.be/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be"),
-      sponsors = "https://devoxx.be/sponsors-2017"
+      sponsors = Configuration.getKeyValue(Configuration.CONFIG_URL_SPONSORS).getOrElse("https://devoxx.be/sponsors-2017")
     ),
     timing = ConferenceTiming(
       datesI18nKey = "6th-10th November",

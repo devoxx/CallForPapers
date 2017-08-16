@@ -1,5 +1,6 @@
 package controllers
 
+import library.Redis
 import models.ConferenceDescriptor
 import play.api.Play
 import play.api.i18n.Messages
@@ -45,12 +46,45 @@ object Configuration extends SecureCFPController {
       )
   }
 
+  private val CONFIG_REDIS_KEY = "config."
+
+  val CONFIG_URL_SPONSORS : String = CONFIG_REDIS_KEY + "url.sponsors"
+
+  /**
+    * Get a key value from Redis, if not available from Configuration and otherwise default value
+    *
+    * @param keyName the key name
+    * @return the key value
+    */
+  def getKeyValue(keyName: String): Option[String] = Redis.pool.withClient {
+    implicit client =>
+
+      if (client.exists(keyName)) {
+        client.get(keyName)
+      } else if (Play.current.configuration.getString(keyName).isDefined) {
+        Play.current.configuration.getString(keyName)
+      }
+      Option(null)
+  }
+
+  /**
+    * Store the key & value into Redis.
+    *
+    * @param keyName  key name
+    * @param keyValue key value
+    * @return
+    */
+  def setKeyValue(keyName: String, keyValue: String) = Redis.pool.withClient {
+    implicit client =>
+      client.set(keyName, keyValue)
+  }
+
   def processJson(jsonObject:JsObject): Unit = {
 
-    if ((jsonObject \\ "cfpOpen").nonEmpty) {
-      val value = (jsonObject \ "cfpOpen").as[Boolean]
+    if ((jsonObject \\ CONFIG_URL_SPONSORS).nonEmpty) {
+      val value = (jsonObject \ CONFIG_URL_SPONSORS).as[String]
 
-      // TODO Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
+      setKeyValue(CONFIG_URL_SPONSORS, value)
       System.out.println(value)
     }
 
