@@ -49,6 +49,10 @@ object Configuration extends SecureCFPController {
   private val CONFIG_REDIS_KEY = "config."
 
   val CONFIG_URL_SPONSORS : String = CONFIG_REDIS_KEY + "url.sponsors"
+  val CONFIG_URL_WEBSITE : String = CONFIG_REDIS_KEY + "url.website"
+  val CONFIG_URL_INFO : String = CONFIG_REDIS_KEY + "url.info"
+  val CONFIG_URL_REGISTRATION : String = CONFIG_REDIS_KEY + "url.registration"
+  val CONFIG_URL_CFP_HOSTNAME : String = CONFIG_REDIS_KEY + "cfp.hostname"
 
   /**
     * Get a key value from Redis, if not available from Configuration and otherwise default value

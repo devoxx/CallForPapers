@@ -949,10 +949,10 @@ object ConferenceDescriptor {
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      info = "https://devoxx.be/faq/",
-      registration = "https://reg.devoxx.be",
-      confWebsite = "https://devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be"),
+      info = Configuration.getKeyValue(Configuration.CONFIG_URL_INFO).getOrElse("https://devoxx.be/faq/"),
+      registration = Configuration.getKeyValue(Configuration.CONFIG_URL_REGISTRATION).getOrElse("https://reg.devoxx.be"),
+      confWebsite = Configuration.getKeyValue(Configuration.CONFIG_URL_WEBSITE).getOrElse("https://devoxx.be/"),
+      cfpHostname = Configuration.getKeyValue(Configuration.CONFIG_URL_CFP_HOSTNAME).getOrElse("cfp.devoxx.be"),
       sponsors = Configuration.getKeyValue(Configuration.CONFIG_URL_SPONSORS).getOrElse("https://devoxx.be/sponsors-2017")
     ),
     timing = ConferenceTiming(
@@ -968,7 +968,8 @@ object ConferenceDescriptor {
       scheduleAnnouncedOn = DateTime.parse("2017-09-15T00:00:00+02:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
+    hosterName = "Clever-cloud",
+    hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
     hashTag = "#Devoxx",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
