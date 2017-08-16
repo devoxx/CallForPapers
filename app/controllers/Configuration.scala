@@ -63,8 +63,9 @@ object Configuration extends SecureCFPController {
         client.get(keyName)
       } else if (Play.current.configuration.getString(keyName).isDefined) {
         Play.current.configuration.getString(keyName)
+      } else {
+        Option(null)
       }
-      Option(null)
   }
 
   /**
