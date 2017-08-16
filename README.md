@@ -25,7 +25,7 @@ Original author: Nicolas Martignole [@nmartignole](http://www.twitter.com/nmarti
 - Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) pour la conférence Scala.IO
 - Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor) pour la conférence BDX.IO
 - Nicolas de Loof [@ndeloof](http://www.twitter.com/ndeloof)
-- Stephan Janssen [@stephan007](https://www.twitter.com/stephan007) Mobile push notifications and IDEA scala warnings cleanup
+- Stephan Janssen [@stephan007](https://www.twitter.com/stephan007) 
 - Mani Sarkar [theNeomatrix369](http://www.twitter.com/theNeomatrix369)
 
 ## License
