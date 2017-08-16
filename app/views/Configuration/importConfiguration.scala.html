@@ -24,9 +24,20 @@
           <h3>Import Config</h3>
         </div>
         <div class="panel-body">
-
-        @helper.form(action = routes.Configuration.doImportConfig()) {
-          @helper.textarea(configForm("json"))
+          Supported JSON values :
+          <br>
+          <UL>
+            <LI>@controllers.Configuration.CONFIG_URL_CFP_HOSTNAME</LI>
+            <LI>@controllers.Configuration.CONFIG_URL_WEBSITE</LI>
+            <LI>@controllers.Configuration.CONFIG_URL_INFO</LI>
+            <LI>@controllers.Configuration.CONFIG_URL_REGISTRATION</LI>
+            <LI>@controllers.Configuration.CONFIG_URL_SPONSORS</LI>
+          </UL>
+            <p>For example :</p>
+            {"config.url.info" : "https://devoxx.be/faq"}
+          <br><br>
+          @helper.form(action = routes.Configuration.doImportConfig()) {
+          @helper.textarea(configForm("json"), 'cols -> 80, 'rows -> 10)
           <button class="btn btn-default" type="submit">Import</button>
         }
         </div>

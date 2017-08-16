@@ -88,30 +88,23 @@ object Configuration extends SecureCFPController {
 
     if ((jsonObject \\ CONFIG_URL_SPONSORS).nonEmpty) {
       val value = (jsonObject \ CONFIG_URL_SPONSORS).as[String]
-
       setKeyValue(CONFIG_URL_SPONSORS, value)
-      System.out.println(value)
     }
-
-    if ((jsonObject \\ "timezone").nonEmpty) {
-      val value = (jsonObject \ "timezone").as[String]
-
-      // TODO Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
-      System.out.println(value)
+    else if ((jsonObject \\ CONFIG_URL_REGISTRATION).nonEmpty) {
+      val value = (jsonObject \ CONFIG_URL_REGISTRATION).as[String]
+      setKeyValue(CONFIG_URL_REGISTRATION, value)
     }
-
-    if ((jsonObject \\ "fromEmail").nonEmpty) {
-      val value = (jsonObject \ "fromEmail").as[String]
-
-      // TODO Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
-      System.out.println(value)
+    else if ((jsonObject \\ CONFIG_URL_INFO).nonEmpty) {
+      val value = (jsonObject \ CONFIG_URL_INFO).as[String]
+      setKeyValue(CONFIG_URL_INFO, value)
     }
-
-    if ((jsonObject \\ "hashtag").nonEmpty) {
-      val value = (jsonObject \ "hashtag").as[String]
-      
-      System.out.println(value)
-
+    else if ((jsonObject \\ CONFIG_URL_WEBSITE).nonEmpty) {
+      val value = (jsonObject \ CONFIG_URL_WEBSITE).as[String]
+      setKeyValue(CONFIG_URL_WEBSITE, value)
+    }
+    else if ((jsonObject \\ CONFIG_URL_CFP_HOSTNAME).nonEmpty) {
+      val value = (jsonObject \ CONFIG_URL_CFP_HOSTNAME).as[String]
+      setKeyValue(CONFIG_URL_CFP_HOSTNAME, value)
     }
 
   }
