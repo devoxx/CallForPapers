@@ -972,7 +972,10 @@ object ConferenceDescriptor {
     hosterName = Configuration.getKeyValue(Configuration.CONFIG_HOST_NAME).getOrElse("Clever-cloud"),
     hosterWebsite = Configuration.getKeyValue(Configuration.CONFIG_HOST_WEBSITE).getOrElse("http://www.clever-cloud.com/#DevoxxBE"),
     hashTag = "#Devoxx",
-    conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
+    conferenceSponsor = ConferenceSponsor(
+      showSponsorProposalCheckbox = true,
+      sponsorProposalType = ConferenceProposalTypes.CONF
+    )
     , List(Locale.ENGLISH)
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
     // Do not send an email for each talk submitted for France
@@ -1018,31 +1021,27 @@ object ConferenceDescriptor {
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
-  def isCFPOpen: Boolean = {
-    Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
-  }
+  def isCFPOpen: Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_CFP_OPEN)
 
   // All timezone sensitive methods are using this constant variable.
   // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
-  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
+  def timeZone: String = Configuration.getKeyValue(Configuration.CONFIG_SETTINGS_TIMEZONE).getOrElse("Europe/Brussels")
 
-  def isGoldenTicketActive:Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_GOLDENTICKET_ACTIVE)
+  def isGoldenTicketActive:Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_GOLDEN_TICKET_ACTIVE)
 
-  def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
+  def isFavoritesSystemActive:Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_ACTIVATE_FAVORITES)
 
-  def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+  def isHTTPSEnabled:Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_HTTPS_ENABLE)
 
   // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
   // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
-  def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
+  def isResetVotesForSubmitted:Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_RESET_VOTES_FOR_SUBMITTED)
 
-  // Set this to true temporarily
-  // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
-  def notifyProposalSubmitted = true
-
+  // The Gluon Push notification credentials
   def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 
+  // Define the maximum number of proposals a speaker can submit
   def maxProposals(): Int = Play.current.configuration.getInt("max.proposals").getOrElse(5)
 }

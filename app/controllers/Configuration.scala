@@ -79,10 +79,15 @@ object Configuration extends SecureCFPController {
   val CONFIG_LOCALE_FR_ENABLED : String = "locale.enableFR"
 
   // General Settings
+  val CONFIG_SETTINGS_CFP_OPEN : String = "cfp.isOpen"
   val CONFIG_SETTINGS_PREFERRED_DAY_ENABLED : String = "settings.preferredDayEnabled"
   val CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL : String = "settings.notifyNewProposal"
-  val CONFIG_SETTINGS_GOLDENTICKET_ACTIVE : String = "goldenTicket.active"
-  
+  val CONFIG_SETTINGS_GOLDEN_TICKET_ACTIVE : String = "goldenTicket.active"
+  val CONFIG_SETTINGS_HTTPS_ENABLE : String = "cfp.activateHTTPS"
+  val CONFIG_SETTINGS_ACTIVATE_FAVORITES : String = "cfp.activateFavorites"
+  val CONFIG_SETTINGS_TIMEZONE : String = "conference.timezone"
+  val CONFIG_SETTINGS_RESET_VOTES_FOR_SUBMITTED : String = "cfp.resetVotesForSubmitted"
+
   /**
     * Get a key value from Redis, if not available from Configuration and otherwise default value
     *
@@ -105,7 +110,7 @@ object Configuration extends SecureCFPController {
     implicit client =>
 
       if (client.exists(CONFIG_REDIS_KEY + keyName)) {
-        client.get(CONFIG_REDIS_KEY + keyName).asInstanceOf[Boolean]
+        client.get(CONFIG_REDIS_KEY + keyName).get.toBoolean
       } else if (Play.current.configuration.getString(keyName).isDefined) {
         Play.current.configuration.getBoolean(keyName).get
       } else {
@@ -140,8 +145,14 @@ object Configuration extends SecureCFPController {
 
       CONFIG_LOCALE_FR_ENABLED,
 
+      CONFIG_SETTINGS_CFP_OPEN,
       CONFIG_SETTINGS_PREFERRED_DAY_ENABLED,
-      CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL
+      CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL,
+      CONFIG_SETTINGS_HTTPS_ENABLE,
+      CONFIG_SETTINGS_ACTIVATE_FAVORITES,
+      CONFIG_SETTINGS_GOLDEN_TICKET_ACTIVE,
+      CONFIG_SETTINGS_TIMEZONE,
+      CONFIG_SETTINGS_RESET_VOTES_FOR_SUBMITTED
     )
 
   def processJson(jsonObject:JsObject): Unit = {
