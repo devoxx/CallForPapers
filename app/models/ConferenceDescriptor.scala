@@ -19,6 +19,7 @@ import play.api.Play
   */
 
 case class ConferenceUrls(info: String, registration: String, confWebsite: String, cfpHostname: String, sponsors: String) {
+
   def cfpURL(): String = {
     if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
       s"https://$cfpHostname"
@@ -944,10 +945,10 @@ object ConferenceDescriptor {
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxbe2017",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
-    bccEmail = Play.current.configuration.getString("mail.bcc"),
-    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
+    fromEmail = Configuration.getKeyValue(Configuration.CONFIG_MAIL_FROM).getOrElse("info@devoxx.com"),
+    committeeEmail = Configuration.getKeyValue(Configuration.CONFIG_MAIL_COMMITTEE).getOrElse("program@devoxx.com"),
+    bccEmail = Configuration.getKeyValue(Configuration.CONFIG_MAIL_BCC),
+    bugReportRecipient = Configuration.getKeyValue(Configuration.CONFIG_MAIL_BUGREPORT).getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
       info = Configuration.getKeyValue(Configuration.CONFIG_URL_INFO).getOrElse("https://devoxx.be/faq/"),
       registration = Configuration.getKeyValue(Configuration.CONFIG_URL_REGISTRATION).getOrElse("https://reg.devoxx.be"),
@@ -956,20 +957,20 @@ object ConferenceDescriptor {
       sponsors = Configuration.getKeyValue(Configuration.CONFIG_URL_SPONSORS).getOrElse("https://devoxx.be/sponsors-2017")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "6th-10th November",
+      datesI18nKey = Configuration.getKeyValue(Configuration.CONFIG_TIMING_DATES).getOrElse("6th-10th November"),
       speakersPassDuration = 5,
       preferredDayEnabled = true,
-      firstDayFr = "6 novembre",
-      firstDayEn = "november 6th",
-      datesFr = "du 6 au 11 Novembre 2017",
-      datesEn = "from 6th to 11th of November, 2017",
-      cfpOpenedOn = DateTime.parse("2017-05-22T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2017-07-07T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2017-09-15T00:00:00+02:00"),
-      days=dateRange(fromDay,toDay,new Period().withDays(1))
+      firstDayFr = Configuration.getKeyValue(Configuration.CONFIG_TIMING_FIRST_DAY_FR).getOrElse("6 novembre"),
+      firstDayEn = Configuration.getKeyValue(Configuration.CONFIG_TIMING_FIRST_DAY_EN).getOrElse("november 6th"),
+      datesFr = Configuration.getKeyValue(Configuration.CONFIG_TIMING_DATES_FR).getOrElse("du 6 au 11 Novembre 2017"),
+      datesEn = Configuration.getKeyValue(Configuration.CONFIG_TIMING_DATES_EN).getOrElse("from 6th to 11th of November, 2017"),
+      cfpOpenedOn = DateTime.parse(Configuration.getKeyValue(Configuration.CONFIG_TIMING_CFP_OPEN).getOrElse("2017-05-22T00:00:00+02:00")),
+      cfpClosedOn = DateTime.parse(Configuration.getKeyValue(Configuration.CONFIG_TIMING_CFP_CLOSED).getOrElse("2017-07-07T23:59:59+02:00")),
+      scheduleAnnouncedOn = DateTime.parse(Configuration.getKeyValue(Configuration.CONFIG_TIMING_SCHEDULE_DATE).getOrElse("2017-09-15T00:00:00+02:00")),
+      days=dateRange(fromDay, toDay, new Period().withDays(1))
     ),
-    hosterName = "Clever-cloud",
-    hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
+    hosterName = Configuration.getKeyValue(Configuration.CONFIG_HOST_NAME).getOrElse("Clever-cloud"),
+    hosterWebsite = Configuration.getKeyValue(Configuration.CONFIG_HOST_WEBSITE).getOrElse("http://www.clever-cloud.com/#DevoxxBE"),
     hashTag = "#Devoxx",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)

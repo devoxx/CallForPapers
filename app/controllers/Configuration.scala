@@ -48,11 +48,32 @@ object Configuration extends SecureCFPController {
 
   private val CONFIG_REDIS_KEY = "config."
 
+  // Conference URLs
   val CONFIG_URL_SPONSORS : String = CONFIG_REDIS_KEY + "url.sponsors"
   val CONFIG_URL_WEBSITE : String = CONFIG_REDIS_KEY + "url.website"
   val CONFIG_URL_INFO : String = CONFIG_REDIS_KEY + "url.info"
   val CONFIG_URL_REGISTRATION : String = CONFIG_REDIS_KEY + "url.registration"
   val CONFIG_URL_CFP_HOSTNAME : String = CONFIG_REDIS_KEY + "cfp.hostname"
+
+  // Conference Dates
+  val CONFIG_TIMING_DATES : String = CONFIG_REDIS_KEY + "timing.dates"
+  val CONFIG_TIMING_FIRST_DAY_FR : String = CONFIG_REDIS_KEY + "timing.firstDayFR"
+  val CONFIG_TIMING_FIRST_DAY_EN : String = CONFIG_REDIS_KEY + "timing.firstDayEN"
+  val CONFIG_TIMING_DATES_FR : String = CONFIG_REDIS_KEY + "timing.datesFR"
+  val CONFIG_TIMING_DATES_EN : String = CONFIG_REDIS_KEY + "timing.datesEN"
+  val CONFIG_TIMING_CFP_OPEN : String = CONFIG_REDIS_KEY + "timing.cfpOpen"
+  val CONFIG_TIMING_CFP_CLOSED : String = CONFIG_REDIS_KEY + "timing.cfpClosed"
+  val CONFIG_TIMING_SCHEDULE_DATE : String = CONFIG_REDIS_KEY + "timing.cfpSchedule"
+
+  // Mail
+  val CONFIG_MAIL_FROM : String = CONFIG_REDIS_KEY + "mail.from"
+  val CONFIG_MAIL_COMMITTEE : String = CONFIG_REDIS_KEY + "mail.committee"
+  val CONFIG_MAIL_BCC : String = CONFIG_REDIS_KEY + "mail.bcc"
+  val CONFIG_MAIL_BUGREPORT : String = CONFIG_REDIS_KEY + "mail.bugreport"
+
+  // Host
+  val CONFIG_HOST_NAME : String = CONFIG_REDIS_KEY + "host.name"
+  val CONFIG_HOST_WEBSITE : String = CONFIG_REDIS_KEY + "host.website"
 
   /**
     * Get a key value from Redis, if not available from Configuration and otherwise default value
@@ -84,28 +105,39 @@ object Configuration extends SecureCFPController {
       client.set(keyName, keyValue)
   }
 
+  val allConfigurationKeys =
+    List(
+      CONFIG_URL_SPONSORS,
+      CONFIG_URL_REGISTRATION,
+      CONFIG_URL_INFO,
+      CONFIG_URL_WEBSITE,
+      CONFIG_URL_CFP_HOSTNAME,
+
+      CONFIG_TIMING_DATES,
+      CONFIG_TIMING_FIRST_DAY_FR,
+      CONFIG_TIMING_FIRST_DAY_EN,
+      CONFIG_TIMING_DATES_FR,
+      CONFIG_TIMING_DATES_EN,
+      CONFIG_TIMING_CFP_OPEN,
+      CONFIG_TIMING_CFP_CLOSED,
+      CONFIG_TIMING_SCHEDULE_DATE,
+
+      CONFIG_MAIL_FROM,
+      CONFIG_MAIL_COMMITTEE,
+      CONFIG_MAIL_BCC,
+      CONFIG_MAIL_BUGREPORT,
+
+      CONFIG_HOST_NAME,
+      CONFIG_HOST_WEBSITE
+    )
+
   def processJson(jsonObject:JsObject): Unit = {
 
-    if ((jsonObject \\ CONFIG_URL_SPONSORS).nonEmpty) {
-      val value = (jsonObject \ CONFIG_URL_SPONSORS).as[String]
-      setKeyValue(CONFIG_URL_SPONSORS, value)
-    }
-    else if ((jsonObject \\ CONFIG_URL_REGISTRATION).nonEmpty) {
-      val value = (jsonObject \ CONFIG_URL_REGISTRATION).as[String]
-      setKeyValue(CONFIG_URL_REGISTRATION, value)
-    }
-    else if ((jsonObject \\ CONFIG_URL_INFO).nonEmpty) {
-      val value = (jsonObject \ CONFIG_URL_INFO).as[String]
-      setKeyValue(CONFIG_URL_INFO, value)
-    }
-    else if ((jsonObject \\ CONFIG_URL_WEBSITE).nonEmpty) {
-      val value = (jsonObject \ CONFIG_URL_WEBSITE).as[String]
-      setKeyValue(CONFIG_URL_WEBSITE, value)
-    }
-    else if ((jsonObject \\ CONFIG_URL_CFP_HOSTNAME).nonEmpty) {
-      val value = (jsonObject \ CONFIG_URL_CFP_HOSTNAME).as[String]
-      setKeyValue(CONFIG_URL_CFP_HOSTNAME, value)
-    }
-
+    allConfigurationKeys.foreach(key => {
+      if ((jsonObject \\ key).nonEmpty) {
+        val value = (jsonObject \ key).as[String]
+        setKeyValue(key, value)
+      }
+    })
   }
 }

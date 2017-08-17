@@ -42,13 +42,13 @@
             <p>Localisation: @current.localisation</p>
             <p>Locale: @current.locale</p>
             <p>Notify proposal submitted : @current.notifyProposalSubmitted</p>
-            <p>BCC Email: @current.bccEmail</p>
-            <p>From Email: @current.fromEmail</p>
-            <p>Committee Email: @current.committeeEmail</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_BCC</b> : @current.bccEmail</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_FROM</b> : @current.fromEmail</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_COMMITTEE</b> : @current.committeeEmail</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_BUGREPORT</b> : @current.bugReportRecipient</p>
             <p>FR lang enabled: @current.frLangEnabled</p>
-            <p>Bug report recipient: @current.bugReportRecipient</p>
-            <p>Hoster name: @current.hosterName</p>
-            <p>Hoster website: @current.hosterWebsite</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_HOST_NAME</b> : @current.hosterName</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_HOST_WEBSITE</b> : @current.hosterWebsite</p>
             <p>Max summary chars: @current.maxProposalSummaryCharacters</p>
           </div>
 
@@ -63,14 +63,14 @@
 
             <hr>
             <h4>Conference Timing</h4>
-            <p>CFP Open on: @current.timing.cfpOpenedOn</p>
-            <p>CFP Closed on: @current.timing.cfpClosedOn</p>
-            <p>Schedule announced on: @current.timing.scheduleAnnouncedOn</p>
-            <p>Dates EN: @current.timing.datesEn</p>
-            <p>Dates FR: @current.timing.datesFr</p>
-            <p>I18N key: @current.timing.datesI18nKey</p>
-            <p>First Day EN: @current.timing.firstDayEn</p>
-            <p>First Day FR: @current.timing.firstDayFr</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_CFP_OPEN</b> : @current.timing.cfpOpenedOn</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_CFP_CLOSED</b> : @current.timing.cfpClosedOn</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_SCHEDULE_DATE</b> : @current.timing.scheduleAnnouncedOn</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_DATES_EN</b> : @current.timing.datesEn</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_DATES_FR</b> : @current.timing.datesFr</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_DATES</b> : @current.timing.datesI18nKey</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_FIRST_DAY_EN</b> : @current.timing.firstDayEn</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_FIRST_DAY_FR</b> : @current.timing.firstDayFr</p>
             <p>Speakers pass duration: @current.timing.speakersPassDuration</p>
             <p>Preferred day enabled: @current.timing.preferredDayEnabled</p>
             <p>Days: @current.timing.days.map(d => d.dayOfWeek().get() + ", ")</p>
