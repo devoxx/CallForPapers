@@ -93,7 +93,7 @@ object Configuration extends SecureCFPController {
     implicit client =>
 
       if (client.exists(CONFIG_REDIS_KEY + keyName)) {
-        client.get(keyName)
+        client.get(CONFIG_REDIS_KEY + keyName)
       } else if (Play.current.configuration.getString(keyName).isDefined) {
         Play.current.configuration.getString(keyName)
       } else {
@@ -105,7 +105,7 @@ object Configuration extends SecureCFPController {
     implicit client =>
 
       if (client.exists(CONFIG_REDIS_KEY + keyName)) {
-        client.get(keyName).asInstanceOf[Boolean]
+        client.get(CONFIG_REDIS_KEY + keyName).asInstanceOf[Boolean]
       } else if (Play.current.configuration.getString(keyName).isDefined) {
         Play.current.configuration.getBoolean(keyName).get
       } else {
