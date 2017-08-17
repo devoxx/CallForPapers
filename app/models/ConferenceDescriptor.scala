@@ -944,7 +944,7 @@ object ConferenceDescriptor {
     eventCode = "DVBE17",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxbe2017",
-    frLangEnabled = false,
+    frLangEnabled = Configuration.getKeyBoolean(Configuration.CONFIG_LOCALE_FR_ENABLED),
     fromEmail = Configuration.getKeyValue(Configuration.CONFIG_MAIL_FROM).getOrElse("info@devoxx.com"),
     committeeEmail = Configuration.getKeyValue(Configuration.CONFIG_MAIL_COMMITTEE).getOrElse("program@devoxx.com"),
     bccEmail = Configuration.getKeyValue(Configuration.CONFIG_MAIL_BCC),
@@ -959,7 +959,7 @@ object ConferenceDescriptor {
     timing = ConferenceTiming(
       datesI18nKey = Configuration.getKeyValue(Configuration.CONFIG_TIMING_DATES).getOrElse("6th-10th November"),
       speakersPassDuration = 5,
-      preferredDayEnabled = true,
+      preferredDayEnabled = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_PREFERRED_DAY_ENABLED),
       firstDayFr = Configuration.getKeyValue(Configuration.CONFIG_TIMING_FIRST_DAY_FR).getOrElse("6 novembre"),
       firstDayEn = Configuration.getKeyValue(Configuration.CONFIG_TIMING_FIRST_DAY_EN).getOrElse("november 6th"),
       datesFr = Configuration.getKeyValue(Configuration.CONFIG_TIMING_DATES_FR).getOrElse("du 6 au 11 Novembre 2017"),
@@ -975,7 +975,8 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    // Do not send an email for each talk submitted for France
+    , notifyProposalSubmitted = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL)
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
@@ -1025,7 +1026,7 @@ object ConferenceDescriptor {
   // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
   def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
 
-  def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
+  def isGoldenTicketActive:Boolean = Configuration.getKeyBoolean(Configuration.CONFIG_SETTINGS_GOLDENTICKET_ACTIVE)
 
   def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 

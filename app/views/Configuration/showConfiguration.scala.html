@@ -31,7 +31,7 @@
             <p>HTTP Enabled: @ConferenceDescriptor.isHTTPSEnabled</p>
             <p>Reset votes for submitted: @ConferenceDescriptor.isResetVotesForSubmitted</p>
             <p>Timezone: @ConferenceDescriptor.timeZone</p>
-            <p>Golden Ticket Active: @ConferenceDescriptor.isGoldenTicketActive</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_SETTINGS_GOLDENTICKET_ACTIVE</b> : @ConferenceDescriptor.isGoldenTicketActive</p>
             <p>Max proposals: @ConferenceDescriptor.maxProposals()</p>
 
             <hr>
@@ -41,12 +41,12 @@
             <p>Hash tag: @current.hashTag</p>
             <p>Localisation: @current.localisation</p>
             <p>Locale: @current.locale</p>
-            <p>Notify proposal submitted : @current.notifyProposalSubmitted</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_LOCALE_FR_ENABLED</b> : @current.frLangEnabled</p>
+            <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL</b> : @current.notifyProposalSubmitted</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_BCC</b> : @current.bccEmail</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_FROM</b> : @current.fromEmail</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_COMMITTEE</b> : @current.committeeEmail</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_MAIL_BUGREPORT</b> : @current.bugReportRecipient</p>
-            <p>FR lang enabled: @current.frLangEnabled</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_HOST_NAME</b> : @current.hosterName</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_HOST_WEBSITE</b> : @current.hosterWebsite</p>
             <p>Max summary chars: @current.maxProposalSummaryCharacters</p>
@@ -72,7 +72,7 @@
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_FIRST_DAY_EN</b> : @current.timing.firstDayEn</p>
             <p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_TIMING_FIRST_DAY_FR</b> : @current.timing.firstDayFr</p>
             <p>Speakers pass duration: @current.timing.speakersPassDuration</p>
-            <p>Preferred day enabled: @current.timing.preferredDayEnabled</p>
+            <p><p><b><i class="icon-pencil"> </i>@controllers.Configuration.CONFIG_SETTINGS_PREFERRED_DAY_ENABLED</b> : @current.timing.preferredDayEnabled</p>
             <p>Days: @current.timing.days.map(d => d.dayOfWeek().get() + ", ")</p>
 
             <hr>

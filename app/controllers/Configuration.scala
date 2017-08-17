@@ -49,32 +49,40 @@ object Configuration extends SecureCFPController {
   private val CONFIG_REDIS_KEY = "config."
 
   // Conference URLs
-  val CONFIG_URL_SPONSORS : String = CONFIG_REDIS_KEY + "url.sponsors"
-  val CONFIG_URL_WEBSITE : String = CONFIG_REDIS_KEY + "url.website"
-  val CONFIG_URL_INFO : String = CONFIG_REDIS_KEY + "url.info"
-  val CONFIG_URL_REGISTRATION : String = CONFIG_REDIS_KEY + "url.registration"
-  val CONFIG_URL_CFP_HOSTNAME : String = CONFIG_REDIS_KEY + "cfp.hostname"
+  val CONFIG_URL_SPONSORS : String = "url.sponsors"
+  val CONFIG_URL_WEBSITE : String = "url.website"
+  val CONFIG_URL_INFO : String = "url.info"
+  val CONFIG_URL_REGISTRATION : String = "url.registration"
+  val CONFIG_URL_CFP_HOSTNAME : String = "cfp.hostname"
 
   // Conference Dates
-  val CONFIG_TIMING_DATES : String = CONFIG_REDIS_KEY + "timing.dates"
-  val CONFIG_TIMING_FIRST_DAY_FR : String = CONFIG_REDIS_KEY + "timing.firstDayFR"
-  val CONFIG_TIMING_FIRST_DAY_EN : String = CONFIG_REDIS_KEY + "timing.firstDayEN"
-  val CONFIG_TIMING_DATES_FR : String = CONFIG_REDIS_KEY + "timing.datesFR"
-  val CONFIG_TIMING_DATES_EN : String = CONFIG_REDIS_KEY + "timing.datesEN"
-  val CONFIG_TIMING_CFP_OPEN : String = CONFIG_REDIS_KEY + "timing.cfpOpen"
-  val CONFIG_TIMING_CFP_CLOSED : String = CONFIG_REDIS_KEY + "timing.cfpClosed"
-  val CONFIG_TIMING_SCHEDULE_DATE : String = CONFIG_REDIS_KEY + "timing.cfpSchedule"
+  val CONFIG_TIMING_DATES : String = "timing.dates"
+  val CONFIG_TIMING_FIRST_DAY_FR : String = "timing.firstDayFR"
+  val CONFIG_TIMING_FIRST_DAY_EN : String = "timing.firstDayEN"
+  val CONFIG_TIMING_DATES_FR : String = "timing.datesFR"
+  val CONFIG_TIMING_DATES_EN : String = "timing.datesEN"
+  val CONFIG_TIMING_CFP_OPEN : String = "timing.cfpOpen"
+  val CONFIG_TIMING_CFP_CLOSED : String = "timing.cfpClosed"
+  val CONFIG_TIMING_SCHEDULE_DATE : String = "timing.cfpSchedule"
 
   // Mail
-  val CONFIG_MAIL_FROM : String = CONFIG_REDIS_KEY + "mail.from"
-  val CONFIG_MAIL_COMMITTEE : String = CONFIG_REDIS_KEY + "mail.committee"
-  val CONFIG_MAIL_BCC : String = CONFIG_REDIS_KEY + "mail.bcc"
-  val CONFIG_MAIL_BUGREPORT : String = CONFIG_REDIS_KEY + "mail.bugreport"
+  val CONFIG_MAIL_FROM : String = "mail.from"
+  val CONFIG_MAIL_COMMITTEE : String = "mail.committee.email"
+  val CONFIG_MAIL_BCC : String = "mail.bcc"
+  val CONFIG_MAIL_BUGREPORT : String = "mail.bugreport.recipient"
 
   // Host
-  val CONFIG_HOST_NAME : String = CONFIG_REDIS_KEY + "host.name"
-  val CONFIG_HOST_WEBSITE : String = CONFIG_REDIS_KEY + "host.website"
+  val CONFIG_HOST_NAME : String = "host.name"
+  val CONFIG_HOST_WEBSITE : String = "host.website"
 
+  // I18N
+  val CONFIG_LOCALE_FR_ENABLED : String = "locale.enableFR"
+
+  // General Settings
+  val CONFIG_SETTINGS_PREFERRED_DAY_ENABLED : String = "settings.preferredDayEnabled"
+  val CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL : String = "settings.notifyNewProposal"
+  val CONFIG_SETTINGS_GOLDENTICKET_ACTIVE : String = "goldenTicket.active"
+  
   /**
     * Get a key value from Redis, if not available from Configuration and otherwise default value
     *
@@ -84,7 +92,7 @@ object Configuration extends SecureCFPController {
   def getKeyValue(keyName: String): Option[String] = Redis.pool.withClient {
     implicit client =>
 
-      if (client.exists(keyName)) {
+      if (client.exists(CONFIG_REDIS_KEY + keyName)) {
         client.get(keyName)
       } else if (Play.current.configuration.getString(keyName).isDefined) {
         Play.current.configuration.getString(keyName)
@@ -93,16 +101,16 @@ object Configuration extends SecureCFPController {
       }
   }
 
-  /**
-    * Store the key & value into Redis.
-    *
-    * @param keyName  key name
-    * @param keyValue key value
-    * @return
-    */
-  def setKeyValue(keyName: String, keyValue: String) = Redis.pool.withClient {
+  def getKeyBoolean(keyName: String) : Boolean = Redis.pool.withClient {
     implicit client =>
-      client.set(keyName, keyValue)
+
+      if (client.exists(CONFIG_REDIS_KEY + keyName)) {
+        client.get(keyName).asInstanceOf[Boolean]
+      } else if (Play.current.configuration.getString(keyName).isDefined) {
+        Play.current.configuration.getBoolean(keyName).get
+      } else {
+        false
+      }
   }
 
   val allConfigurationKeys =
@@ -128,7 +136,12 @@ object Configuration extends SecureCFPController {
       CONFIG_MAIL_BUGREPORT,
 
       CONFIG_HOST_NAME,
-      CONFIG_HOST_WEBSITE
+      CONFIG_HOST_WEBSITE,
+
+      CONFIG_LOCALE_FR_ENABLED,
+
+      CONFIG_SETTINGS_PREFERRED_DAY_ENABLED,
+      CONFIG_SETTINGS_NOTIFY_NEW_PROPOSAL
     )
 
   def processJson(jsonObject:JsObject): Unit = {
@@ -139,5 +152,17 @@ object Configuration extends SecureCFPController {
         setKeyValue(key, value)
       }
     })
+  }
+
+  /**
+    * Store the key & value into Redis.
+    *
+    * @param keyName  key name
+    * @param keyValue key value
+    * @return
+    */
+  def setKeyValue(keyName: String, keyValue: String) : String = Redis.pool.withClient {
+    implicit client =>
+      client.set(CONFIG_REDIS_KEY + keyName, keyValue)
   }
 }

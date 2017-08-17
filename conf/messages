@@ -176,7 +176,6 @@ cfp.closing=CFP closing
 cfp.reminder=Reminder
 cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
-cfp.program.date=from {0}
 video.title=Videos
 video.tag=Watch Devoxx videos on
 theme.title=Tracks

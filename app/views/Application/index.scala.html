@@ -35,7 +35,7 @@
                 }else{
                     <p><strong>@Messages("cfp.reminder") :</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
                 }
-                <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang))</p>
+                <p><strong>@Messages("cfp.program")</strong> @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang)</p>
             </div>
 
             <div class="col-md-5">
