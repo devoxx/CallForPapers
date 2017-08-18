@@ -29,7 +29,7 @@
                 <tr>
                     <td class="room">
                         <span class="track">
-                            @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
+                            @tags.publisher.renderIconForTrack(p.track) @Html(Messages(p.track.label))
                         </span>
                         <br>
                         <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a> (@Messages(p.talkType.id))</span>
