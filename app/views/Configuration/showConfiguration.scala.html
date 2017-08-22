@@ -108,7 +108,13 @@
             <hr>
             <h4>Conference Tracks</h4>
             <OL>
-            @ConferenceDescriptor.ConferenceTracks.ALL.map(entry => Html("<LI>" + Messages(entry.label) + " (" + entry.id + ")</LI>") )
+            @ConferenceDescriptor.ConferenceTracksDescription.ALL.map { entry =>
+              <LI>
+                <b><i class="icon-globe"> </i> @Html(entry.id + ".label")</b> : @Html(Messages(entry.i18nTitleProp))<br>
+                <b><i class="icon-pencil"> </i> @Html(entry.id+".img")</b> : <a href="@entry.imgSrc">@entry.imgSrc</a><br>
+                <b><i class="icon-globe"> </i> @Html(entry.id + ".desc")</b> : @Html(Messages(entry.i18nDescProp))
+              </LI>
+            }
             </OL>
           </div>
           <div class="clearfix"></div>

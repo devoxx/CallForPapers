@@ -58,8 +58,14 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
 
 object ProposalConfiguration {
 
-  val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
-    htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false)
+  val UNKNOWN = ProposalConfiguration(
+    id = "unknown",
+    slotsCount = 0,
+    givesSpeakerFreeEntrance = false,
+    freeEntranceDisplayed = false,
+    htmlClass = "",
+    hiddenInCombo = true
+  )
 
   def parse(propConf: String): ProposalConfiguration = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
@@ -114,24 +120,26 @@ object ConferenceDescriptor {
     */
   object ConferenceProposalTypes {
     val CONF = ProposalType(id = "conf", label = "conf.label")
-
     val UNI = ProposalType(id = "uni", label = "uni.label")
-
     val TIA = ProposalType(id = "tia", label = "tia.label")
-
     val LAB = ProposalType(id = "lab", label = "lab.label")
-
     val QUICK = ProposalType(id = "quick", label = "quick.label")
-
     val BOF = ProposalType(id = "bof", label = "bof.label")
-
     val KEY = ProposalType(id = "key", label = "key.label")
-
     val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
-
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, IGNITE, OTHER)
+    val ALL = List(
+      CONF,
+      UNI,
+      TIA,
+      LAB,
+      QUICK,
+      BOF,
+      KEY,
+      IGNITE,
+      OTHER
+    )
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -143,24 +151,57 @@ object ConferenceDescriptor {
       case "key" => KEY
       case "ignite" => IGNITE
       case "other" => OTHER
-      case other => OTHER
     }
-
   }
 
   object ConferenceProposalConfigurations {
-    val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
+    val CONF = ProposalConfiguration(
+      id = "conf",
+      slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)),
+      givesSpeakerFreeEntrance = true,
+      freeEntranceDisplayed = true,
+      htmlClass = "icon-microphone",
       chosablePreferredDay = true)
-    val UNI = ProposalConfiguration(id = "uni", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.UNI.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
+
+    val UNI = ProposalConfiguration(
+      id = "uni",
+      slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.UNI.id)),
+      givesSpeakerFreeEntrance = true,
+      freeEntranceDisplayed = true,
+      htmlClass = "icon-laptop",
       chosablePreferredDay = true)
-    val TIA = ProposalConfiguration(id = "tia", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.TIA.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-legal",
+
+    val TIA = ProposalConfiguration(
+      id = "tia",
+      slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.TIA.id)),
+      givesSpeakerFreeEntrance = true,
+      freeEntranceDisplayed = true,
+      htmlClass = "icon-legal",
       chosablePreferredDay = true)
-    val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
+
+    val LAB = ProposalConfiguration(
+      id = "lab",
+      slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)),
+      givesSpeakerFreeEntrance = true,
+      freeEntranceDisplayed = true,
+      htmlClass = "icon-beaker",
       chosablePreferredDay = true)
-    val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
+
+    val QUICK = ProposalConfiguration(
+      id = "quick",
+      slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)),
+      givesSpeakerFreeEntrance = false,
+      freeEntranceDisplayed = false,
+      htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
-    val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
-      chosablePreferredDay = false)
+
+    val BOF = ProposalConfiguration(
+      id = "bof",
+      slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)),
+      givesSpeakerFreeEntrance = true,
+      freeEntranceDisplayed = true,
+      htmlClass = "icon-group")
+
     val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-bolt",
@@ -176,42 +217,165 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracks {
-    val METHOD_ARCHI = Track("method_archi", "method_archi.label")
-    val JAVA = Track("java", "java.label")
-    val CLOUD = Track("cloud", "cloud.label")
-    val SSJ = Track("ssj", "ssj.label")
-    val LANG = Track("lang", "lang.label")
-    val BIGDATA = Track("bigdata", "bigdata.label")
-    val WEB = Track("web", "web.label")
-    val FUTURE = Track("future", "future.label")
-    val MOBILE = Track("mobile", "mobile.label")
-    val SECURITY = Track("security", "security.label")
+    // val totalTracks : Int = Configuration.getKeyValue("total.tracks").get.toInt
 
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, SECURITY)
+    val TRACK1 = Track("track.1", "track.1.label")
+    val TRACK2 = Track("track.2", "track.2.label")
+    val TRACK3 = Track("track.3", "track.3.label")
+    val TRACK4 = Track("track.4", "track.4.label")
+    val TRACK5 = Track("track.5", "track.5.label")
+    val TRACK6 = Track("track.6", "track.6.label")
+    val TRACK7 = Track("track.7", "track.7.label")
+    val TRACK8 = Track("track.8", "track.8.label")
+    val TRACK9 = Track("track.9", "track.9.label")
+    val TRACK10 = Track("track.10", "track.10.label")
+
+    val ALL = List(
+      TRACK1,
+      TRACK2,
+      TRACK3,
+      TRACK4,
+      TRACK5,
+      TRACK6,
+      TRACK7,
+      TRACK8,
+      TRACK9,
+      TRACK10
+    )
   }
 
   object ConferenceTracksDescription {
-    val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/devoxx/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
-    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxx/images/icon_javase.png", ConferenceTracks.JAVA.label, "track.java.desc")
-    val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxx/images/icon_cloud.png", ConferenceTracks.CLOUD.label, "track.cloud.desc")
-    val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxx/images/icon_javaee.png", ConferenceTracks.SSJ.label, "track.ssj.desc")
-    val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxx/images/icon_alternative.png", ConferenceTracks.LANG.label, "track.lang.desc")
-    val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxx/images/icon_architecture.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
-    val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxx/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
-    val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxx/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
-    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxx/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
-    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxx/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
+    val TRACK1 : TrackDesc = if (Configuration.getKeyValue("track.1.img").isDefined) {
+        TrackDesc(ConferenceTracks.TRACK1.id,
+                  Configuration.getKeyValue("track.1.img").get,
+                  ConferenceTracks.TRACK1.label,
+                  "track.1.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK1.id,
+                "/assets/devoxx/images/icon_javase.png",
+                ConferenceTracks.TRACK1.label,
+                "track.1.desc")
+    }
 
-    val ALL = List(METHOD_ARCHI
-      , JAVA
-      , CLOUD
-      , SSJ
-      , LANG
-      , BIGDATA
-      , WEB
-      , FUTURE
-      , MOBILE
-      , SECURITY
+    val TRACK2 : TrackDesc = if (Configuration.getKeyValue("track.2.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK2.id,
+                Configuration.getKeyValue("track.2.img").get,
+                ConferenceTracks.TRACK2.label,
+                "track.2.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK2.id,
+                "/assets/devoxx/images/icon_javase.png",
+                ConferenceTracks.TRACK2.label,
+                "track.2.desc")
+    }
+
+    val TRACK3 : TrackDesc = if (Configuration.getKeyValue("track.3.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK3.id,
+                Configuration.getKeyValue("track.3.img").get,
+                ConferenceTracks.TRACK3.label,
+                "track.3.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK3.id,
+                "/assets/devoxx/images/icon_cloud.png",
+                ConferenceTracks.TRACK3.label,
+                "track.3.desc")
+    }
+
+    val TRACK4 : TrackDesc = if (Configuration.getKeyValue("track.4.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK4.id,
+                Configuration.getKeyValue("track.4.img").get,
+                ConferenceTracks.TRACK4.label,
+                "track.4.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK4.id,
+                "/assets/devoxx/images/icon_javaee.png",
+                ConferenceTracks.TRACK4.label,
+                "track.4.desc")
+    }
+
+    val TRACK5 : TrackDesc = if (Configuration.getKeyValue("track.5.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK5.id,
+                Configuration.getKeyValue("track.5.img").get,
+                ConferenceTracks.TRACK5.label,
+                "track.5.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK5.id,
+                "/assets/devoxx/images/icon_alternative.png",
+                ConferenceTracks.TRACK5.label,
+                "track.5.desc")
+    }
+
+    val TRACK6 : TrackDesc = if (Configuration.getKeyValue("track.6.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK6.id,
+                Configuration.getKeyValue("track.6.img").get,
+                ConferenceTracks.TRACK6.label,
+                "track.6.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK6.id,
+                "/assets/devoxx/images/icon_architecture.png",
+                ConferenceTracks.TRACK6.label,
+                "track.6.desc")
+    }
+
+    val TRACK7 : TrackDesc = if (Configuration.getKeyValue("track.7.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK7.id,
+                Configuration.getKeyValue("track.7.img").get,
+                ConferenceTracks.TRACK7.label,
+                "track.7.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK7.id,
+                "/assets/devoxx/images/icon_web.png",
+                ConferenceTracks.TRACK7.label,
+                "track.7.desc")
+    }
+
+    val TRACK8 : TrackDesc = if (Configuration.getKeyValue("track.8.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK8.id,
+                Configuration.getKeyValue("track.8.img").get,
+                ConferenceTracks.TRACK8.label,
+                "track.8.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK8.id,
+                "/assets/devoxx/images/icon_future.png",
+                ConferenceTracks.TRACK8.label,
+                "track.8.desc")
+    }
+
+    val TRACK9 : TrackDesc = if (Configuration.getKeyValue("track.9.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK9.id,
+                Configuration.getKeyValue("track.9.img").get,
+                ConferenceTracks.TRACK9.label,
+                "track.9.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK9.id,
+                "/assets/devoxx/images/icon_mobile.png",
+                ConferenceTracks.TRACK9.label,
+                "track.9.desc")
+    }
+
+    val TRACK10 : TrackDesc = if (Configuration.getKeyValue("track.10.img").isDefined) {
+      TrackDesc(ConferenceTracks.TRACK10.id,
+                Configuration.getKeyValue("track.10.img").get,
+                ConferenceTracks.TRACK10.label,
+                "track.10.desc")
+    } else {
+      TrackDesc(ConferenceTracks.TRACK10.id,
+                "/assets/devoxx/images/icon_security.png",
+                ConferenceTracks.TRACK10.label,
+                "track.10.desc")
+    }
+
+    val ALL = List(
+      TRACK1,
+      TRACK2,
+      TRACK3,
+      TRACK4,
+      TRACK5,
+      TRACK6,
+      TRACK7,
+      TRACK8,
+      TRACK9,
+      TRACK10
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {

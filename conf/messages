@@ -184,8 +184,7 @@ track.title=Title
 track.description=Description
 appel.conf.dates=Devoxx Belgium 2017, 6th-10th November
 
-# Tracks
-
+# Old track values
 method_archi.label=Methodology &amp; Culture
 track.method_archi.desc=Software development methodologies, developer culture, DevOps, CI/CD, etc
 
@@ -215,6 +214,38 @@ track.mobile.desc=Android, iOS, Xamarin, IOT, Embedded, M2M, smart objects, conn
 
 security.label=Architecture &amp; Security
 track.security.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right. Anything related to security and development.
+        
+# New track values
+
+track.1.label=Methodology &amp; Culture
+track.1.desc=Software development methodologies, developer culture, DevOps, CI/CD, etc
+
+track.2.label=Java Language
+track.2.desc=Java language, Java SE, JDK, performance, tuning, modularity, etc
+
+track.3.label=Cloud, Containers &amp; Infrastructure
+track.3.desc=Serverless, Docker, Kubernetes, Mesos, Cloud, PaaS, Cloud, Vagrant, etc
+
+track.4.label=Server Side Java
+track.4.desc=Java EE, App servers, Spring Framework, MOM, Related JSRs, etc
+
+track.5.label=Programming languages
+track.5.desc=Other languages running on the JVM, functional, emerging languages, tools, libraries, etc
+
+track.6.label=Big Data &amp; Machine Learning
+track.6.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc
+
+track.7.label=Modern Web
+track.7.desc=Progressive web apps, Polymer, Web frameworks, Reactive, libraries, languages and tools to build web apps.
+
+track.8.label=Mind the Geek
+track.8.desc=Developer candy: stuff we want to know about but don't (generally) at work, Robotics, biological computing, cybernetics, AI, new toys, tomorrow's world
+
+track.9.label=Mobile &amp; IoT
+track.9.desc=Android, iOS, Xamarin, IOT, Embedded, M2M, smart objects, connectivity, security, etc
+
+track.10.label=Architecture &amp; Security
+track.10.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right. Anything related to security and development.
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile

@@ -35,19 +35,20 @@ case class Track(id: String, label: String) {
 }
 
 object Track {
+
   implicit val trackFormat: Format[Track] = Json.format[Track]
 
-  val UNKNOWN=Track("unknown", "unknown.label")
+  val UNKNOWN: Track = Track("unknown", "unknown.label")
 
-  val all = ConferenceDescriptor.ConferenceTracks.ALL
+  val all: List[Track] = ConferenceDescriptor.ConferenceTracks.ALL
 
-  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).sorted
+  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id, a.label)).sorted
 
-  val allIDs=ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
+  val allIDs: List[String] = ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
 
 
   // Compute diff between two Set of Track then returns a ready-to-use list of id/label
-  def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
+  def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] = {
     val diffSet = ConferenceDescriptor.ConferenceTracks.ALL.toSet.diff(otherTracks)
     diffSet.map(a=>(a.id,a.label)).toSeq.sorted
   }
