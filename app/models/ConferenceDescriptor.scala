@@ -46,7 +46,7 @@ case class ConferenceTiming(
 
 case class ConferenceSponsor(showSponsorProposalCheckbox: Boolean, sponsorProposalType: ProposalType = ProposalType.UNKNOWN)
 
-case class TrackDesc(id: String, imgSrc: String, i18nTitleProp: String, i18nDescProp: String)
+case class TrackDesc(id: String, imgSrc: String, i18nTitleProp: String, i18nDescProp: String, oldId: String)
 
 case class ProposalConfiguration(id: String, slotsCount: Int,
                                  givesSpeakerFreeEntrance: Boolean,
@@ -244,125 +244,136 @@ object ConferenceDescriptor {
     )
   }
 
+  val METHOD_ARCHI = Track("method_archi", "method_archi.label")
+  val JAVA = Track("java", "java.label")
+  val CLOUD = Track("cloud", "cloud.label")
+  val SSJ = Track("ssj", "ssj.label")
+  val LANG = Track("lang", "lang.label")
+  val BIGDATA = Track("bigdata", "bigdata.label")
+  val WEB = Track("web", "web.label")
+  val FUTURE = Track("future", "future.label")
+  val MOBILE = Track("mobile", "mobile.label")
+  val SECURITY = Track("security", "security.label")
+
   object ConferenceTracksDescription {
     val TRACK1 : TrackDesc = if (Configuration.getKeyValue("track.1.img").isDefined) {
         TrackDesc(ConferenceTracks.TRACK1.id,
                   Configuration.getKeyValue("track.1.img").get,
                   ConferenceTracks.TRACK1.label,
-                  "track.1.desc")
+                  "track.1.desc", "method_archi")
     } else {
       TrackDesc(ConferenceTracks.TRACK1.id,
-                "/assets/devoxx/images/icon_javase.png",
+                "/assets/devoxx/images/icon_methodology.png",
                 ConferenceTracks.TRACK1.label,
-                "track.1.desc")
+                "track.1.desc", "method_archi")
     }
 
     val TRACK2 : TrackDesc = if (Configuration.getKeyValue("track.2.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK2.id,
                 Configuration.getKeyValue("track.2.img").get,
                 ConferenceTracks.TRACK2.label,
-                "track.2.desc")
+                "track.2.desc", "java")
     } else {
       TrackDesc(ConferenceTracks.TRACK2.id,
                 "/assets/devoxx/images/icon_javase.png",
                 ConferenceTracks.TRACK2.label,
-                "track.2.desc")
+                "track.2.desc", "java")
     }
 
     val TRACK3 : TrackDesc = if (Configuration.getKeyValue("track.3.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK3.id,
                 Configuration.getKeyValue("track.3.img").get,
                 ConferenceTracks.TRACK3.label,
-                "track.3.desc")
+                "track.3.desc", "cloud")
     } else {
       TrackDesc(ConferenceTracks.TRACK3.id,
                 "/assets/devoxx/images/icon_cloud.png",
                 ConferenceTracks.TRACK3.label,
-                "track.3.desc")
+                "track.3.desc", "cloud")
     }
 
     val TRACK4 : TrackDesc = if (Configuration.getKeyValue("track.4.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK4.id,
                 Configuration.getKeyValue("track.4.img").get,
                 ConferenceTracks.TRACK4.label,
-                "track.4.desc")
+                "track.4.desc", "ssj")
     } else {
       TrackDesc(ConferenceTracks.TRACK4.id,
                 "/assets/devoxx/images/icon_javaee.png",
                 ConferenceTracks.TRACK4.label,
-                "track.4.desc")
+                "track.4.desc", "ssj")
     }
 
     val TRACK5 : TrackDesc = if (Configuration.getKeyValue("track.5.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK5.id,
                 Configuration.getKeyValue("track.5.img").get,
                 ConferenceTracks.TRACK5.label,
-                "track.5.desc")
+                "track.5.desc", "lang")
     } else {
       TrackDesc(ConferenceTracks.TRACK5.id,
                 "/assets/devoxx/images/icon_alternative.png",
                 ConferenceTracks.TRACK5.label,
-                "track.5.desc")
+                "track.5.desc", "lang")
     }
 
     val TRACK6 : TrackDesc = if (Configuration.getKeyValue("track.6.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK6.id,
                 Configuration.getKeyValue("track.6.img").get,
                 ConferenceTracks.TRACK6.label,
-                "track.6.desc")
+                "track.6.desc", "bigdata")
     } else {
       TrackDesc(ConferenceTracks.TRACK6.id,
                 "/assets/devoxx/images/icon_architecture.png",
                 ConferenceTracks.TRACK6.label,
-                "track.6.desc")
+                "track.6.desc", "bigdata")
     }
 
     val TRACK7 : TrackDesc = if (Configuration.getKeyValue("track.7.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK7.id,
                 Configuration.getKeyValue("track.7.img").get,
                 ConferenceTracks.TRACK7.label,
-                "track.7.desc")
+                "track.7.desc", "web")
     } else {
       TrackDesc(ConferenceTracks.TRACK7.id,
                 "/assets/devoxx/images/icon_web.png",
                 ConferenceTracks.TRACK7.label,
-                "track.7.desc")
+                "track.7.desc", "web")
     }
 
     val TRACK8 : TrackDesc = if (Configuration.getKeyValue("track.8.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK8.id,
                 Configuration.getKeyValue("track.8.img").get,
                 ConferenceTracks.TRACK8.label,
-                "track.8.desc")
+                "track.8.desc", "future")
     } else {
       TrackDesc(ConferenceTracks.TRACK8.id,
                 "/assets/devoxx/images/icon_future.png",
                 ConferenceTracks.TRACK8.label,
-                "track.8.desc")
+                "track.8.desc", "future")
     }
 
     val TRACK9 : TrackDesc = if (Configuration.getKeyValue("track.9.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK9.id,
                 Configuration.getKeyValue("track.9.img").get,
                 ConferenceTracks.TRACK9.label,
-                "track.9.desc")
+                "track.9.desc", "mobile")
     } else {
       TrackDesc(ConferenceTracks.TRACK9.id,
                 "/assets/devoxx/images/icon_mobile.png",
                 ConferenceTracks.TRACK9.label,
-                "track.9.desc")
+                "track.9.desc", "mobile")
     }
 
     val TRACK10 : TrackDesc = if (Configuration.getKeyValue("track.10.img").isDefined) {
       TrackDesc(ConferenceTracks.TRACK10.id,
                 Configuration.getKeyValue("track.10.img").get,
                 ConferenceTracks.TRACK10.label,
-                "track.10.desc")
+                "track.10.desc", "security")
     } else {
       TrackDesc(ConferenceTracks.TRACK10.id,
                 "/assets/devoxx/images/icon_security.png",
                 ConferenceTracks.TRACK10.label,
-                "track.10.desc")
+                "track.10.desc", "security")
     }
 
     val ALL = List(
@@ -379,7 +390,11 @@ object ConferenceDescriptor {
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
-      ALL.find(_.id == t.id).head
+      if (ALL.exists(_.id == t.id)) {
+        ALL.find(_.id == t.id).head
+      } else {
+        ALL.find(_.oldId == t.id).head
+      }
     }
   }
 
