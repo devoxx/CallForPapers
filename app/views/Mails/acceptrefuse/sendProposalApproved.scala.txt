@@ -48,9 +48,6 @@ We're excited to inform you that your @Messages(proposal.talkType.id) proposal "
         Registration details @ConferenceDescriptor.current().conferenceUrls.registration
 }
 
-You have until August 31st, 2017 at 5pm CET to accept the possibility to speak.
-If we do not hear from you by then, we will regrettably need to decline this offer and invite an alternate speaker.
-
 -----------
 
 @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
