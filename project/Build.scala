@@ -15,7 +15,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName = "cfp-devoxx"
-  val appVersion = "1.3-SNAPSHOT"
+  val appVersion = "1.4-SNAPSHOT"
 
   val appDependencies = Seq(
     filters, // protection against CSRF
@@ -29,6 +29,7 @@ object ApplicationBuild extends Build {
     , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
     , "org.apache.httpcomponents" % "httpclient" % "4.1.1"
     , "org.apache.httpcomponents" % "httpcore" % "4.1.1"
+    , "org.scalaz" %% "scalaz-core" % "7.1.0"
     , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
   )
 

@@ -439,6 +439,8 @@ object ConferenceDescriptor {
     val igniteRoom = List(BOF1)
 
     val allRooms = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10, BOF1, BOF2, HALL_EXPO)
+
+    val allRoomsAsIdsAndLabels:Seq[(String,String)] = allRooms.map(a=>(a.id,a.name)).sorted
   }
 
   object ConferenceSlotBreaks {
