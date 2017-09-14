@@ -19,8 +19,7 @@
                  dropStyle="columnDrop">
                 <span class="proposalTitle">{{talk.title}}</span>
                 <span class="label label-default">{{talk.id}}</span>
-
-                <div class="label label-warning">{{talk.track.id}}</div>
+                <div class="label label-warning">{{talk.track.label}}</div>
                 <div class="label label-success">{{talk.mainSpeaker}}</div>
                 <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
                 <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
@@ -50,7 +49,7 @@
             <br>
             <span class="proposalTitle">{{slot.proposal.title}}</span>
             <div class="label label-success">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}} </div>
-            <span class="label label-warning">{{slot.proposal.track.id}}</span>
+            <span class="label label-warning">{{slot.proposal.track.label}}</span>
             <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
                 <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
             </div>

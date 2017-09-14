@@ -57,12 +57,15 @@ object SchedullingController extends SecureCFPController {
           val preferredDay = Proposal.getPreferredDay(p.id)
           val newTitleWithStars: String = s"[${FavoriteTalk.countForProposal(p.id)}★] ${p.title}"
 
+          val newTrack = Track(p.track.id, Messages(p.track.label).replace("&amp;", "&"))
+
           // Transform speakerUUID to Speaker name, this simplify Angular Code
           // Add the number of stars to the title so that we don't break the AngularJS application before Devoxx BE 2015
           // A better solution would be to return a new JSON Map with the proposal and the stars
           // but this introduced too many bugs on the Angular JS app.
           p.copy(
             title = newTitleWithStars
+            , track = newTrack
             , mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
             , secondarySpeaker = secWebuser.map(_.cleanName)
             , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
@@ -145,10 +148,12 @@ object SchedullingController extends SecureCFPController {
 
                     val newTitleWithStars: String = s"[${FavoriteTalk.countForProposal(definedProposal.id)}★] ${definedProposal.title}"
 
+                    val newTrack = Track(definedProposal.track.id, Messages(definedProposal.track.label).replace("&amp;", "&"))
 
                     // Transform speakerUUID to Speaker name, this simplify Angular Code
                     val copiedProposal = definedProposal.copy(
                       title = newTitleWithStars
+                      , track = newTrack
                       , mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
                       , secondarySpeaker = secWebuser.map(_.cleanName)
                       , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
