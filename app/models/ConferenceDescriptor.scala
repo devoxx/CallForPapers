@@ -469,11 +469,11 @@ object ConferenceDescriptor {
     private val THURSDAY: String = "thursday"
     private val FRIDAY: String = "friday"
 
-    private val MON_DATE = "2016-11-06T"
-    private val TUE_DATE = "2016-11-07T"
-    private val WED_DATE = "2016-11-08T"
-    private val THU_DATE = "2016-11-09T"
-    private val FRI_DATE = "2016-11-10T"
+    private val MON_DATE = "2017-11-06T"
+    private val TUE_DATE = "2017-11-07T"
+    private val WED_DATE = "2017-11-08T"
+    private val THU_DATE = "2017-11-09T"
+    private val FRI_DATE = "2017-11-10T"
     
     private val MIN_SEC = ":00.000+01:00"
 
