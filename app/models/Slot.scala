@@ -24,7 +24,7 @@
 package models
 
 import org.joda.time.DateTime
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
 /**
   * Time slots and Room are defined as static file.
@@ -50,11 +50,11 @@ case class Room(id: String, name: String, capacity: Int, setup: String) extends 
 }
 
 object Room {
-  implicit val roomFormat = Json.format[Room]
+  implicit val roomFormat: Format[Room] = Json.format[Room]
 
   val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
-  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).sorted
+  val allAsId: List[(String, String)] = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).sorted
 
   def parse(roomId: String): Room = {
     ConferenceDescriptor.ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
@@ -65,17 +65,20 @@ object Room {
 case class SlotBreak(id: String, nameEN: String, nameFR: String, room: Room)
 
 object SlotBreak {
-  implicit val slotBreakFormat = Json.format[SlotBreak]
+  implicit val slotBreakFormat: Format[SlotBreak] = Json.format[SlotBreak]
 }
 
-case class Slot(id: String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
-                proposal: Option[Proposal], break: Option[SlotBreak]) {
+case class Slot(id: String,
+                name: String,
+                day: String,
+                from: DateTime,
+                to: DateTime,
+                room: Room,
+                proposal: Option[Proposal],
+                break: Option[SlotBreak]) {
+
   override def toString: String = {
     s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined}"
-  }
-
-  def parleysId: String = {
-    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd") + "_" + room.id + "_" + from.toString("HHmm")
   }
 
   def notAllocated: Boolean = {
@@ -86,12 +89,21 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
 
 object SlotBuilder {
 
-  def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room): Slot = {
+  def apply(name: String,
+            day: String,
+            from: DateTime,
+            to: DateTime,
+            room: Room): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
     Slot(id, name, day, from, to, room, None, None)
   }
 
-  def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room, proposal: Option[Proposal]): Slot = {
+  def apply(name: String,
+            day: String,
+            from: DateTime,
+            to: DateTime,
+            room: Room,
+            proposal: Option[Proposal]): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
     Slot(id, name, day, from, to, room, proposal, None)
   }
@@ -104,7 +116,7 @@ object SlotBuilder {
 
 // See https://groups.google.com/forum/#!topic/play-framework/ENlcpDzLZo8
 object Slot {
-  implicit val slotFormat = Json.format[Slot]
+  implicit val slotFormat: Format[Slot] = Json.format[Slot]
 
   def byType(proposalType: ProposalType): Seq[Slot] = {
     ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)

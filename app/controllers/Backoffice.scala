@@ -465,4 +465,11 @@ object Backoffice extends SecureCFPController {
       Webuser.setMissingEmail(uuid, email)
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Missing email added")
   }
+
+
+  def topFavoritedTalks() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val topFavedTalks = FavoriteTalk.all().toList.sortBy(_._2).reverse.take(50)
+      Ok(views.html.Backoffice.showTopFavoritedTalks(topFavedTalks))
+  }
 }

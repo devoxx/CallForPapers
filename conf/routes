@@ -48,6 +48,7 @@ POST          /cfp/profile/digestTrack                                          
 GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
 GET           /cfp/backoffice/triggerDigest                                     controllers.Backoffice.doWeeklyDigests()
+GET           /cfp/backoffice/topFavorites                                      controllers.Backoffice.topFavoritedTalks()
 
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()

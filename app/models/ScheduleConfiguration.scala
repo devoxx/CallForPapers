@@ -23,8 +23,11 @@
 
 package models
 
+import java.{lang, util}
+
 import library.Redis
-import play.api.libs.json.Json
+import models.ConferenceDescriptor.ConferenceProposalTypes
+import play.api.libs.json.{Format, Json}
 import org.apache.commons.lang3.RandomStringUtils
 
 import scala.util.Random
@@ -55,9 +58,9 @@ case class ScheduleConfiguration(confType: String, slots: List[Slot], timeSlots:
 case class ScheduleSaved(id: String, confType: String, createdBy: String, hashCodeSlots: Int)
 
 object ScheduleConfiguration {
-  implicit val timeSlotFormat = Json.format[TimeSlot]
-  implicit val scheduleConfFormat = Json.format[ScheduleConfiguration]
-  implicit val scheduleSavedFormat = Json.format[ScheduleSaved]
+  implicit val timeSlotFormat: Format[TimeSlot] = Json.format[TimeSlot]
+  implicit val scheduleConfFormat: Format[ScheduleConfiguration] = Json.format[ScheduleConfiguration]
+  implicit val scheduleSavedFormat: Format[ScheduleSaved] = Json.format[ScheduleSaved]
 
   def persist(confType: String, slots: List[Slot], createdBy: Webuser):String = Redis.pool.withClient {
     implicit client =>
@@ -77,7 +80,7 @@ object ScheduleConfiguration {
       id
   }
 
-  def delete(id: String) = Redis.pool.withClient {
+  def delete(id: String): util.List[AnyRef] = Redis.pool.withClient {
     implicit client =>
       val scheduledSlotsKey = client.zrevrangeWithScores("ScheduleConfiguration", 0, -1)
       val tx = client.multi()
@@ -113,7 +116,7 @@ object ScheduleConfiguration {
       }
   }
 
-  def publishConf(id: String, confType: String) = Redis.pool.withClient {
+  def publishConf(id: String, confType: String): lang.Long = Redis.pool.withClient {
     implicit client => client.hset("Published:Schedule", confType, id)
   }
 
@@ -169,7 +172,22 @@ object ScheduleConfiguration {
     loadSlotsForConfType(confType).filter(_.proposal.isDefined).find(_.proposal.get.id == proposalId)
   }
 
-  def loadAllConfigurations() = {
+  def findRoomForProposal(confType: String, proposalId: String): String = {
+    val maybeSlot = loadSlotsForConfType(confType).filter(_.proposal.isDefined).find(_.proposal.get.id == proposalId)
+    if (maybeSlot.isDefined) {
+      maybeSlot.get.room.name + " (" + maybeSlot.get.room.capacity + ")"
+    } else {
+      null
+    }
+  }
+
+  def findSlotForProposal(proposalId: String): List[String] = {
+    ConferenceProposalTypes.ALL.map(
+      eventType => findRoomForProposal(eventType.id, proposalId)
+    )
+  }
+
+  def loadAllConfigurations(): List[ScheduleConfiguration] = {
     val allConfs = for (confType <- ProposalType.allIDsOnly;
                         slotId <- ScheduleConfiguration.getPublishedSchedule(confType);
                         configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
@@ -184,13 +202,13 @@ object ScheduleConfiguration {
     }
   }
 
-  def loadNextTalks() = {
+  def loadNextTalks(): Option[List[Slot]] = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)
     Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Paris")))).sortBy(_.from.toDate.getTime).take(10))
   }
 
-  def loadRandomTalks() = {
+  def loadRandomTalks(): Option[List[Slot]] = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)
     Option(Random.shuffle(slots).take(10))

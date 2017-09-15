@@ -1,0 +1,82 @@
+@(proposals:List[(Proposal, Long)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - all talks") {
+
+  <link href="@routes.Assets.at(path="/public",file="css/jquery.dataTables.min.css")" rel="stylesheet" id="theme">
+  <script src="@routes.Assets.at(path="/public",file="js/jquery.dataTables.min.js")" type="text/javascript"></script>
+
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @Html(flash.get("success").get)
+      </div>
+    }
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Top Favorited Proposals</h3>
+        </div>
+
+        <div class="panel-body">
+
+        @if(proposals.nonEmpty){
+          <table id="allProposals" class="table table-bordered table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Favs</th>
+                <th>Title</th>
+                <th>Speaker(s)</th>
+                <th>Event Type</th>
+                <th>Room</th>
+              </tr>
+            </thead>
+            <tbody>
+            @proposals.map{ proposal =>
+              <tr>
+                <td>@proposal._2.toString</td>
+                <td>@proposal._1.title</td>
+                <td>@proposal._1.allSpeakers.map(_.cleanName).mkString(", ")</td>
+                <td>@Messages(proposal._1.talkType.simpleLabel)</td>
+                <td>@ScheduleConfiguration.findSlotForProposal(proposal._1.id)</td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There are no favorited proposals yet.</P>
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+          $(document).ready(function() {
+
+            $('#allProposals').dataTable({
+              "aaSorting": [[ 0, 'asc' ]],
+              "iDisplayLength": -1,
+              "aLengthMenu": [[20, 10, 5, 5, 5], [5, 10, 25, 50, "All"]],
+              "bStateSave": true,
+              "aoColumns": [
+                { "sType": "numeric"},
+                { "sType": "string"},
+                { "sType": "string"},
+                { "sType": "string"},
+                { "sType": "string"}
+              ]
+            });
+          } );
+  </script>
+}

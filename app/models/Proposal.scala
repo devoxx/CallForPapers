@@ -6,7 +6,7 @@ import org.joda.time.Instant
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 import play.api.templates.HtmlFormat
 
 /**
@@ -24,21 +24,20 @@ case class ProposalType(id: String, label: String) {
 }
 
 object ProposalType {
-  implicit val proposalTypeFormat = Json.format[ProposalType]
+  implicit val proposalTypeFormat: Format[ProposalType] = Json.format[ProposalType]
 
   val UNKNOWN = ProposalType(id = "unknown", label = "unknown.label")
 
-  val all = ConferenceDescriptor.ConferenceProposalTypes.ALL
-  val allAsId = all.map(a => (a.id, a.label)).sorted
+  val all: List[ProposalType] = ConferenceDescriptor.ConferenceProposalTypes.ALL
+  val allAsId: List[(String, String)] = all.map(a => (a.id, a.label)).sorted
 
-  def allForCombos = {
+  def allForCombos: List[(String, String)] = {
     val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
     val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).sorted
     finalFormat
   }
 
-  def allIDsOnly = allAsId.map(_._1)
-
+  def allIDsOnly: List[String] = allAsId.map(_._1)
 
   def parse(proposalType: String): ProposalType = {
     all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
@@ -65,7 +64,7 @@ case class ProposalState(code: String)
 
 object ProposalState {
 
-  implicit val proposalStateFormat = Json.format[ProposalState]
+  implicit val proposalStateFormat: Format[ProposalState] = Json.format[ProposalState]
 
   val DRAFT = ProposalState("draft")
   val SUBMITTED = ProposalState("submitted")
@@ -101,7 +100,7 @@ object ProposalState {
     BACKUP
   )
 
-  val allAsCode = all.map(_.code)
+  val allAsCode: List[String] = all.map(_.code)
 
   def parse(state: String): ProposalState = {
     state match {
