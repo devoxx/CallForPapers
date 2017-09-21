@@ -45,8 +45,8 @@
             <tbody>
             @proposals.map{ proposal =>
               <tr>
-                <td>@proposal._2.toString</td>
-                <td>@proposal._1.title</td>
+                <td>@proposal._2.toInt</td>
+                <td><a href="@routes.CFPAdmin.openForReview(proposal._1.id)">@proposal._1.title</a></td>
                 <td>@proposal._1.allSpeakers.map(_.cleanName).mkString(", ")</td>
                 <td>@Messages(proposal._1.talkType.simpleLabel)</td>
                 <td>@ScheduleConfiguration.findSlotForProposal(proposal._1.id)</td>
@@ -65,17 +65,14 @@
           $(document).ready(function() {
 
             $('#allProposals').dataTable({
-              "aaSorting": [[ 0, 'asc' ]],
-              "iDisplayLength": -1,
-              "aLengthMenu": [[20, 10, 5, 5, 5], [5, 10, 25, 50, "All"]],
-              "bStateSave": true,
-              "aoColumns": [
-                { "sType": "numeric"},
-                { "sType": "string"},
-                { "sType": "string"},
-                { "sType": "string"},
-                { "sType": "string"}
-              ]
+              columns: [
+                { title: "favs"},
+                { title: "title"},
+                { title: "speakers"},
+                { title: "event type"},
+                { title: "room"}
+              ],
+              "order" : [[0, "desc"]]
             });
           } );
   </script>
