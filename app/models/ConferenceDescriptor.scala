@@ -703,14 +703,16 @@ object ConferenceDescriptor {
                       new DateTime(WED_DATE + "20:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(WED_DATE + "21:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r2)
       }
-      val bofWednesdayEveningSlot3 = ConferenceRooms.oneRoomBOF.map {
+      val bofWednesdayEveningSlot3 = ConferenceRooms.allRoomsBOF.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.BOF.id,
                       WEDNESDAY,
                       new DateTime(WED_DATE + "21:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(WED_DATE + "22:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r3)
       }
-      bofWednesdayEveningSlot1 ++ bofWednesdayEveningSlot2 ++ bofWednesdayEveningSlot3
+      bofWednesdayEveningSlot1 ++
+      bofWednesdayEveningSlot2 ++
+      bofWednesdayEveningSlot3
     }
 
     val bofSlotsThursday: List[Slot] = {
@@ -730,7 +732,8 @@ object ConferenceDescriptor {
                       new DateTime(THU_DATE + "21:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r2)
       }
       
-      bofThursdayEveningSlot1 ++ bofThursdayEveningSlot2
+      bofThursdayEveningSlot1 ++
+      bofThursdayEveningSlot2
     }
 
     // QUICKIES
