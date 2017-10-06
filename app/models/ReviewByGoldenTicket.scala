@@ -23,6 +23,8 @@
 
 package models
 
+import java.util
+
 import library.{ComputeVotesAndScore, Redis, Stats, ZapActor}
 import models.Review._
 import org.joda.time.{DateTime, Instant}
@@ -30,6 +32,7 @@ import play.api.i18n.Messages
 
 import scala.collection.immutable.Set
 import scala.math.BigDecimal.RoundingMode
+import scala.util.matching.Regex
 
 /**
   * Represents a ReviewByGoldenTicket with a vote by a webuser with a Golden Ticket
@@ -41,7 +44,7 @@ case class ReviewByGoldenTicket(reviewer: String, proposalId: String, vote: Int,
 
 object ReviewByGoldenTicket {
 
-  def voteForProposal(proposalId: String, reviewerUUID: String, vote: Int) = Redis.pool.withClient {
+  def voteForProposal(proposalId: String, reviewerUUID: String, vote: Int): Unit = Redis.pool.withClient {
     implicit client =>
       val secureMaxVote = Math.min(vote, 10)
       val tx = client.multi()
@@ -75,7 +78,7 @@ object ReviewByGoldenTicket {
       votesPerReviewers
   }
 
-  def removeVoteForProposal(proposalId: String, reviewerUUID: String) = Redis.pool.withClient {
+  def removeVoteForProposal(proposalId: String, reviewerUUID: String): util.List[AnyRef] = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
       tx.srem(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID", proposalId)
@@ -86,7 +89,7 @@ object ReviewByGoldenTicket {
   }
 
 
-  def archiveAllVotesOnProposal(proposalId: String) = Redis.pool.withClient {
+  def archiveAllVotesOnProposal(proposalId: String): Any = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
       allVotesFor(proposalId).map {
@@ -112,7 +115,7 @@ object ReviewByGoldenTicket {
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
-  def deleteVoteForProposal(proposalId: String) = Redis.pool.withClient {
+  def deleteVoteForProposal(proposalId: String): Unit = Redis.pool.withClient {
     implicit client =>
       val votesOnThisProposal = totalVoteFor(proposalId)
 
@@ -130,7 +133,7 @@ object ReviewByGoldenTicket {
       play.Logger.info(s"${Messages("cfp.goldenTicket")} review details for proposal $proposalId has been deleted, the proposal had $votesOnThisProposal vote(s) before deletion.")
   }
 
-  val ReviewerAndVote = "(\\w+)__(\\d+)".r
+  val ReviewerAndVote: Regex = "(\\w+)__(\\d+)".r
 
   def allHistoryOfVotes(proposalId: String): List[ReviewByGoldenTicket] = Redis.pool.withClient {
     implicit client =>
@@ -357,7 +360,7 @@ object ReviewByGoldenTicket {
       sha1script
   }
 
-  def computeAndGenerateVotes() = Redis.pool.withClient {
+  def computeAndGenerateVotes(): Any = Redis.pool.withClient {
     implicit client =>
       if (client.scriptExists(loadLUAScript)) {
         client.evalsha(loadLUAScript, 0)
@@ -425,7 +428,7 @@ object ReviewByGoldenTicket {
 
 
   // Delete all Golgen Ticket's reviews
-  def attic() = Redis.pool.withClient {
+  def attic(): util.List[AnyRef] = Redis.pool.withClient {
     client =>
       val tx = client.multi()
       // Stats
