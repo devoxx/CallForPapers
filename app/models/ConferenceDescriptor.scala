@@ -597,7 +597,7 @@ object ConferenceDescriptor {
 
     val labsSlotsMonday: List[Slot] = {
 
-      val labsMondayMorning = ConferenceRooms.allRoomsLabs.map {
+      val labsMondayMorning = ConferenceRooms.oneRoomLabs.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.LAB.id,
                       MONDAY,
@@ -631,8 +631,18 @@ object ConferenceDescriptor {
                       new DateTime(TUE_DATE + "13:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(TUE_DATE + "16:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r2)
       }
+
+      val labsWednesdayAfternoon = ConferenceRooms.oneRoomLabs.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            WEDNESDAY,
+            new DateTime(TUE_DATE + "13:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime(TUE_DATE + "16:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r1)
+      }
+
       labsTuesdayMorning ++ 
-      labsTuesdayAfternoon
+      labsTuesdayAfternoon ++
+      labsWednesdayAfternoon
     }
 
     // BOFS
@@ -693,7 +703,7 @@ object ConferenceDescriptor {
                       new DateTime(WED_DATE + "20:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(WED_DATE + "21:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r2)
       }
-      val bofWednesdayEveningSlot3 = ConferenceRooms.allRoomsBOF.map {
+      val bofWednesdayEveningSlot3 = ConferenceRooms.oneRoomBOF.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.BOF.id,
                       WEDNESDAY,
@@ -719,6 +729,7 @@ object ConferenceDescriptor {
                       new DateTime(THU_DATE + "20:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
                       new DateTime(THU_DATE + "21:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r2)
       }
+      
       bofThursdayEveningSlot1 ++ bofThursdayEveningSlot2
     }
 

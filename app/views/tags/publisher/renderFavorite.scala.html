@@ -9,8 +9,13 @@
             } else {
                 <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId">
             }
-            <label title="@FavoriteTalk.countForProposal(proposalId)★" class="cfp-lab" for="checkbox_@proposalId"></label>
-
+            @defining(FavoriteTalk.countForProposal(proposalId)) { total:Long =>
+                <label title="@total★" class="cfp-lab" for="checkbox_@proposalId">
+                @if(total > 10) {
+                    <span style="position: absolute;right: 22px;">@total</span>
+                }
+                </label>
+            }
         }.getOrElse {
                 <a href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda"><img src="@routes.Assets.at(path="/public", file="images/fav/not_fav.png")" alt="Click here to save this talk in your agenda"></a>
         }
