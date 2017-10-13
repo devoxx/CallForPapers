@@ -1,30 +1,10 @@
-/**
-  * The MIT License (MIT)
-  *
-  * Copyright (c) 2013 Association du Paris Java User Group.
-  *
-  * Permission is hereby granted, free of charge, to any person obtaining a copy of
-  * this software and associated documentation files (the "Software"), to deal in
-  * the Software without restriction, including without limitation the rights to
-  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-  * the Software, and to permit persons to whom the Software is furnished to do so,
-  * subject to the following conditions:
-  *
-  * The above copyright notice and this permission notice shall be included in all
-  * copies or substantial portions of the Software.
-  *
-  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  */
 package controllers
 
 import java.math.BigInteger
 import java.security.SecureRandom
 
+import controllers.CallForPaper.Redirect
+import models.Webuser._
 import models._
 import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
@@ -68,9 +48,11 @@ object Authentication extends Controller {
       emailForm.bindFromRequest.fold(
         errorForm => BadRequest(views.html.Authentication.forgetPassword(errorForm)),
         validEmail => {
+
           if (Webuser.isEmailRegistered(validEmail)) {
             val resetURL = routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL()
             TransactionalEmails.sendResetPasswordLink(validEmail, resetURL)
+            TransactionalEmails.verifyResetUrl(Crypto.sign(validEmail.toLowerCase.trim),resetURL)
             Redirect(routes.Application.index()).flashing("success" -> Messages("forget.password.confirm"))
           } else {
             Redirect(routes.Authentication.forgetPassword()).flashing("error" -> Messages("forget.password.notfound"))
@@ -80,20 +62,27 @@ object Authentication extends Controller {
 
   def resetPassword(t: String, a: String) = Action {
     implicit request =>
-      val email = new String(Base64.decodeBase64(a), "UTF-8")
-      if (Crypto.sign(email) == t) {
-        val futureMaybeWebuser = Webuser.findByEmail(email)
-        futureMaybeWebuser.map {
-          w =>
-            val newPassword = Webuser.changePassword(w) // it is generated
-            Ok(views.html.Authentication.resetPassword(loginForm.fill((w.email, newPassword)), newPassword))
-        }.getOrElse {
-          Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
+      val expireUrl =TransactionalEmails.getvalidResetUrl(t)
+      expireUrl.map{url=>
+        val email = new String(Base64.decodeBase64(a), "UTF-8")
+        if (Crypto.sign(email) == t) {
+          val futureMaybeWebuser = Webuser.findByEmail(email)
+          futureMaybeWebuser.map {
+            w =>
+              val newPassword = Webuser.changePassword(w) // it is generated
+              TransactionalEmails.deletresetUrl(t)
+              Ok(views.html.Authentication.resetPassword(loginForm.fill((w.email, newPassword)), newPassword))
+          }.getOrElse {
+            Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
+          }
+        } else {
+          Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
         }
-      } else {
-        Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
-      }
+      }.getOrElse( Redirect(routes.Application.index()).flashing("error" -> "Sorry, This link has expired")
+      )
+
   }
+
 
   def login(visitor: Boolean) = Action {
     implicit request =>
@@ -108,10 +97,14 @@ object Authentication extends Controller {
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webUser) if visitor =>
               val cookie = createCookie(webUser)
-              Redirect(routes.Publisher.homePublisher()).withSession("uuid" -> webUser.uuid).withCookies(cookie)
+              Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> webUser.uuid).withCookies(cookie)
             case Some(webUser) =>
               val cookie = createCookie(webUser)
-              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> webUser.uuid).withCookies(cookie)
+              if (!Proposal.allMyDraftProposals(webUser.uuid).isEmpty){
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" ->  Messages("cfp.reminder.proposals")).withSession("uuid" -> webUser.uuid).withCookies(cookie)}
+              else {Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> webUser.uuid).withCookies(cookie)
+              }
+
             case None if visitor =>
               Redirect(routes.Application.homeVisitor()).flashing("error" -> Messages("login.error"))
             case None =>
@@ -186,7 +179,8 @@ object Authentication extends Controller {
     "twitter" -> optional(text),
     "blog" -> optional(text),
     "avatarUrl" -> optional(text),
-    "qualifications" -> nonEmptyText(maxLength = 750)
+    "qualifications" -> nonEmptyText(maxLength = 750),
+    "picture" -> optional(text)
   ))
 
   val newWebuserForm: Form[Webuser] = Form(
@@ -199,9 +193,13 @@ object Authentication extends Controller {
   val newVisitorForm: Form[Webuser] = Form(
     mapping(
       "email" -> (email verifying nonEmpty),
-      "firstName" -> nonEmptyText(maxLength = 50),
-      "lastName" -> nonEmptyText(maxLength = 50)
-    )(Webuser.createVisitor)(Webuser.unapplyForm))
+      "firstName" -> optional(text(maxLength = 50)),
+      "lastName" -> optional(text(maxLength = 50)),
+      "regId" -> optional(text),
+      "tel"-> optional (text),
+        "pictureurl"-> optional (text)
+
+      )(Webuser.createVisitor)(Webuser.unapplyFormVisitor))
 
   val webuserForm = Form(
     mapping(
@@ -263,7 +261,10 @@ object Authentication extends Controller {
                       if (visitor) {
                         Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> w.uuid).withCookies(cookie)
                       } else {
-                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
+                        if (!Proposal.allMyDraftProposals(w.uuid).isEmpty){
+                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" ->  Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)}
+                        else {Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                        }
                       }
                   }.getOrElse {
                     // Create a new one but ask for confirmation
@@ -274,11 +275,11 @@ object Authentication extends Controller {
                     }
 
                     if (visitor) {
-                      val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
+                      val newWebuser = Webuser.createVisitor(emailS, Some(firstName), Some(lastName) , None,None,None)
                       Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
 
                     } else {
-                      val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
+                      val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience", None)
 
                       Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                     }
@@ -297,24 +298,49 @@ object Authentication extends Controller {
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
         validForm => {
-          Webuser.saveNewWebuserEmailNotValidated(validForm)
-          TransactionalEmails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForSpeaker(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
-          Ok(views.html.Authentication.created(validForm.email))
-        }
-      )
-  }
 
-  def saveNewVisitor = Action {
-    implicit request =>
-      newVisitorForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Authentication.prepareSignupVisitor(invalidForm)),
-        validForm => {
-          Webuser.saveNewWebuserEmailNotValidated(validForm)
-          TransactionalEmails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForVisitor(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
-          Ok(views.html.Authentication.created(validForm.email))
+          if (!Webuser.isEmailRegistered(validForm.email)) {
+            Webuser.saveNewWebuserEmailNotValidated(validForm)
+            TransactionalEmails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForSpeaker(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
+            Ok(views.html.Authentication.created(validForm.email))
+          }
+          else {
+            Redirect(routes.Authentication.prepareSignup()).flashing("error" -> Messages("speakerExist"))
+          }
+
         }
       )
   }
+ /* def saveNewVisistorfromApi (attendee: , attendee_Email: String ) = Action {
+    implicit request =>
+      attendee.parse(Webuser)
+      Webuser.saveNewWebuserEmailNotValidated(attendee)
+      TransactionalEmails.sendValidateYourEmail(attendee.email, routes.Authentication.validateYourEmailForVisitor(Crypto.sign(attendee.email.toLowerCase.trim), new String(Base64.encodeBase64(attendee.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
+      Ok(views.html.Authentication.created(attendee.email))
+
+}*/
+
+
+    def saveNewVisitor = Action {
+      implicit request =>
+        newVisitorForm.bindFromRequest.fold(
+          invalidForm => BadRequest(views.html.Authentication.prepareSignupVisitor(invalidForm)),
+          validForm => {
+            if (!Webuser.isEmailRegistered(validForm.email)) {
+
+              Webuser.saveNewWebuserEmailNotValidated(validForm)
+              TransactionalEmails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForVisitor(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
+
+              Ok(views.html.Authentication.created(validForm.email))}
+            else {
+              Redirect(routes.Authentication.prepareSignup(true)).flashing("error" -> Messages("speakerExist"))
+
+            }
+          }
+        )
+    }
+
+
 
   def validateYourEmailForSpeaker(t: String, a: String) = Action {
     implicit request =>
@@ -324,8 +350,8 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
-            val someLang = request.acceptLanguages.headOption.map(_.code)
-            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang,None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience",None))
+          val someLang = request.acceptLanguages.headOption.map(_.code)
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang,None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)),None ,None, None, webuser.firstName, "No experience",None))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -355,6 +381,7 @@ object Authentication extends Controller {
       }
   }
 
+
   def validateImportedSpeaker = Action {
     implicit request =>
       importSpeakerForm.bindFromRequest.fold(
@@ -369,12 +396,13 @@ object Authentication extends Controller {
           val blog = validFormData._7
           val avatarUrl = validFormData._8
           val qualifications = validFormData._9
+          val picture =validFormData._10
 
           val validWebuser = if (Webuser.isEmailRegistered(email)) {
             // An existing webuser might have been created with a different play.secret key
             // or from a Golden ticket/visitor profile
             val existingUUID = Webuser.getUUIDfromEmail(email).getOrElse(Webuser.generateUUID(email))
-            Webuser.findByUUID(existingUUID).getOrElse(Webuser.createSpeaker(email, firstName, lastName))
+            Webuser.findByUUID(existingUUID).getOrElse(Webuser.createSpeaker(email, firstName, lastName ))
           } else {
             val newWebuser = Webuser.createSpeaker(email, firstName, lastName)
             Webuser.saveAndValidateWebuser(newWebuser)
@@ -382,7 +410,7 @@ object Authentication extends Controller {
           }
 
           val lang = request.acceptLanguages.headOption.map(_.code)
-          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications, None)
+          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl,picture, company, blog, validWebuser.firstName, qualifications, None)
           Speaker.save(newSpeaker)
           Webuser.addToSpeaker(validWebuser.uuid)
 
@@ -396,7 +424,7 @@ object Authentication extends Controller {
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.confirmImportVisitor(invalidForm)).flashing("error" -> "Please check your profile, invalid webuser."),
         webuserForm => {
-          val validWebuser = Webuser.createVisitor(webuserForm.email, webuserForm.firstName, webuserForm.lastName)
+          val validWebuser = Webuser.createVisitor(webuserForm.email, Some(webuserForm.firstName), Some(webuserForm.lastName) , webuserForm.registrationId,webuserForm.tel,webuserForm.pictureurl)
           Webuser.saveAndValidateWebuser(validWebuser)
           Ok(views.html.Authentication.validateImportedVisitor(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
         }
@@ -476,16 +504,18 @@ object Authentication extends Controller {
                   val email = json.\("emailAddress").as[String]
                   val firstName = json.\("firstName").asOpt[String]
                   val lastName = json.\("lastName").asOpt[String]
-                  val photo = json.\("pictureUrl").asOpt[String]
+                  val photo = json.\("picture").asOpt[String]
                   val summary = json.\("summary").asOpt[String]
 
                   // Try to lookup the speaker
                   Webuser.findByEmail(email).map {
                     w =>
                       val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
-                  }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
+                      if (!Proposal.allMyDraftProposals(w.uuid).isEmpty){
+                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" ->  Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)}
+                      else {Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                      }                  }.getOrElse {
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience",None)
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
 
@@ -583,9 +613,11 @@ object Authentication extends Controller {
                   Webuser.findByEmail(email).map {
                     w =>
                       val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
-                  }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience")
+                      if (!Proposal.allMyDraftProposals(w.uuid).isEmpty){
+                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" ->  Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)}
+                      else {Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                      }                  }.getOrElse {
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience",None)
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
                 case other =>
@@ -628,7 +660,7 @@ object Authentication extends Controller {
             Future.successful(Unauthorized("No JWT Token"))
           case Some(jwtToken) =>
 
-              Jwt.decode(jwtToken, ConferenceDescriptor.jwtSharedSecret(), Seq(JwtAlgorithm.HS256)) match {
+            Jwt.decode(jwtToken, ConferenceDescriptor.jwtSharedSecret(), Seq(JwtAlgorithm.HS256)) match {
               case Success(decodedString) =>
                 val json = Json.parse(decodedString)
                 val firstName = (json \ "firstName").as[String]
@@ -636,32 +668,8 @@ object Authentication extends Controller {
                 val uuid = (json \ "userId").as[String]
                 val email = (json \ "email").as[String]
 
-
-                // Check if the user is not already a speaker or a valid webuser
-                val maybeWebuserFromSpeaker = Speaker.allSpeakers().find(_.email == email).map{
-                  existingSpeaker =>
-                    Webuser(existingSpeaker.uuid,email,firstName,lastName,password = RandomStringUtils.randomAlphabetic(8),"speaker")
-                }
-                val existingWebuser = Webuser.findByEmail(email)
-
-                val (webuser:Webuser, newUUID:String) =(maybeWebuserFromSpeaker,existingWebuser) match {
-                  case (s,w) if s.isDefined =>
-                    play.Logger.warn(s"Existing speaker found, patch the Speaker ${s.get.uuid} ${s.get.email}")
-                    // fix for Speaker destroyed by the previous bug
-                    val fixSpeaker = Webuser(s.get.uuid,email, firstName, lastName, password = RandomStringUtils.randomAlphabetic(8),"speaker")
-                    Webuser.saveAndValidateWebuser(fixSpeaker)
-                    Webuser.addToDevoxxians(s.get.uuid)
-                    (maybeWebuserFromSpeaker.get, maybeWebuserFromSpeaker.get.uuid)
-                  case (s,w) if s.isEmpty && w.isDefined =>
-                    Webuser.addToDevoxxians(s.get.uuid)
-                    (existingWebuser.get, existingWebuser.get.uuid)
-                  case other=>
-                    val webuser = Webuser.createDevoxxian(email, Some("MY_DEVOXX_FR"), Some("00000"))
-                    val newUUID = Webuser.saveAndValidateWebuser(webuser)
-                    Webuser.addToDevoxxians(newUUID)
-
-                    (webuser,newUUID)
-                }
+                val webuser=Webuser(uuid,email,firstName,lastName,password = RandomStringUtils.random(8),"visitor")
+                val newUUID = Webuser.saveAndValidateWebuser(webuser) // it is generated
 
                 val cookie = createCookie(webuser)
                 Future.successful(
@@ -676,6 +684,7 @@ object Authentication extends Controller {
         Future.successful(Unauthorized("Invalid secure token"))
       }
   }
+
 
   private def createCookie(webuser: Webuser) = {
     Cookie("cfp_rm"

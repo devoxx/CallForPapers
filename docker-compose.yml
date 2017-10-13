@@ -9,7 +9,7 @@ services:
    expose:
      - 6379
   play:
-    image: alexproca/play:2.2.3
+    image: alexproca/play:2.3.10
     volumes:
       - .:/app:rw
     ports:
@@ -21,4 +21,4 @@ services:
     stdin_open: true
     env_file:
       - run.env
-    command: play run
+    command: sbt run

@@ -26,9 +26,11 @@ package models
 import library.Redis
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
-import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.{Format, Json}
+import play.api.data.Forms._
+import play.api.data._
+import play.api.data.validation.Constraints._
 
 case class Webuser(uuid: String,
                    email: String,
@@ -36,8 +38,12 @@ case class Webuser(uuid: String,
                    lastName: String,
                    password: String,
                    profile: String,
-                   networkId: Option[String] = None,
-                   networkType: Option[String] = None) {
+                   vip: Option[Boolean] = None ,
+                   registrationId: Option[String]= None,
+                   tel :Option[String]=None,
+                   pictureurl :Option[String]=None){
+
+  
 
   val cleanName: String = {
     firstName.capitalize + " " + lastName
@@ -47,15 +53,28 @@ case class Webuser(uuid: String,
 object Webuser {
   implicit val webuserFormat: Format[Webuser] = Json.format[Webuser]
 
-  val Internal =
-    Webuser("internal",
-            ConferenceDescriptor.current().fromEmail,
-            "CFP",
-            "Program Committee",
-            RandomStringUtils.random(64),
-            "visitor",
-            None,
-            None)
+  val Internal = Webuser("internal", ConferenceDescriptor.current().fromEmail, "CFP", "Program Committee", RandomStringUtils.random(64), "visitor")
+
+  def activeVip(webuser: Webuser , Avip : Boolean) = Redis.pool.withClient {
+    client =>
+      val updatWebuser = webuser.copy(vip = Some(Avip))
+      update(updatWebuser)
+
+  }
+  def activeRegistrationId(email:String , AregistrationId:String) = Redis.pool.withClient {
+
+    client =>
+      val updatWebuser = Webuser.findByEmail(email).get.copy(registrationId = Some(AregistrationId))
+      update(updatWebuser)
+  }
+
+
+
+ /*def vipIsActive(webuser: Webuser):Boolean = {
+
+ }*/
+  /*def regIdVerifiy():Boolean
+{}*/
 
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
@@ -66,46 +85,17 @@ object Webuser {
     Crypto.sign(StringUtils.abbreviate(email.trim().toLowerCase, 255))
   }
 
-  def createSpeaker(email: String,
-                    firstName: String,
-                    lastName: String): Webuser = {
-    Webuser(generateUUID(email),
-            email,
-            firstName,
-            lastName,
-            RandomStringUtils.randomAlphabetic(7),
-            "speaker",
-            None,
-            None)
+  def createSpeaker(email: String, firstName: String, lastName: String ): Webuser = {
+    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker" )
   }
 
-  def createVisitor(email: String,
-                    firstName: String,
-                    lastName: String): Webuser = {
-    Webuser(generateUUID(email),
-            email,
-            firstName,
-            lastName,
-            RandomStringUtils.randomAlphabetic(7),
-            "visitor",
-            None,
-            None)
+  def createVisitor(email: String, firstName: Option[String], lastName: Option[String] , regId :Option[String],tel:Option[String], pictureurl :Option[String]): Webuser = {
+    Webuser(generateUUID(email), email, firstName.getOrElse(""), lastName.getOrElse(""), RandomStringUtils.randomAlphabetic(7), "visitor" , None , regId,tel,pictureurl)
   }
-
-  def createDevoxxian(email: String,
-                      networkType: Option[String],
-                      networkId: Option[String]): Webuser = {
-    Webuser(generateUUID(email),
-            email,
-            "Devoxx",
-            "CFP",
-            RandomStringUtils.randomAlphabetic(7),
-            "devoxxian",
-            networkId,
-            networkType)
+  def unapplyFormVisitor(webuser: Webuser): Option[(String, Option[String], Option[String] ,Option[String],Option[String],Option[String])] = {
+    Some(webuser.email, Some(webuser.firstName), Some(webuser.lastName) , webuser.registrationId, webuser.tel,webuser.pictureurl)
   }
-
-  def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
+  def unapplyForm(webuser: Webuser): Option[(String, String, String )] = {
     Some(webuser.email, webuser.firstName, webuser.lastName)
   }
 
@@ -122,7 +112,15 @@ object Webuser {
 
   def findNewUserByEmail(email: String): Option[Webuser] = Redis.pool.withClient {
     client =>
-      client.hget("Webuser:New", email.toLowerCase.trim).flatMap {
+      client.hget("Webuser:New",email.toLowerCase.trim).flatMap {
+        json: String =>
+          Json.parse(json).asOpt[Webuser]
+      }
+  }
+
+  def findUserByEmail(email: String): Option[Webuser] = Redis.pool.withClient {
+    client =>
+      client.hget("Webuser",email.toLowerCase.trim).flatMap {
         json: String =>
           Json.parse(json).asOpt[Webuser]
       }
@@ -130,37 +128,30 @@ object Webuser {
 
   def saveAndValidateWebuser(webuser: Webuser): String = Redis.pool.withClient {
     client =>
-      val cleanEmail =  StringUtils.trimToEmpty(webuser.email.toLowerCase)
-      val cleanWebuser = webuser.copy(email =cleanEmail)
+      val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
 
       val tx = client.multi()
       tx.hset("Webuser", cleanWebuser.uuid, json)
       tx.set("Webuser:UUID:" + cleanWebuser.uuid, webuser.email)
-      tx.set("Webuser:Email:" + cleanEmail, webuser.uuid)
+      tx.set("Webuser:RegId:" + cleanWebuser.registrationId , webuser.uuid)
+      tx.set("Webuser:Email:" + cleanWebuser.email, webuser.uuid)
       tx.sadd("Webuser:" + cleanWebuser.profile, webuser.uuid)
-      tx.hdel("Webuser:New", cleanEmail)
+      tx.hdel("Webuser:New", cleanWebuser.email)
       tx.exec()
       cleanWebuser.uuid
   }
 
   def isEmailRegistered(email: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val cleanEmail = StringUtils.trimToEmpty(email.toLowerCase)
-      client.exists("Webuser:Email:" + cleanEmail)
-  }
-
-  def fixMissingEmail(email:String, uuid:String)=Redis.pool.withClient{
-    implicit client=>
-      val cleanEmail = StringUtils.trimToEmpty(email.toLowerCase)
-      client.set("Webuser:Email:" + cleanEmail, uuid)
+      client.exists("Webuser:Email:" + email.toLowerCase.trim)
   }
 
   def findByEmail(email: String): Option[Webuser] = email match {
     case null => None
     case "" => None
     case validEmail =>
-      val _email = StringUtils.trimToEmpty(validEmail.toLowerCase)
+      val _email = validEmail.toLowerCase.trim
       Redis.pool.withClient {
         client =>
           client.get("Webuser:Email:" + _email).flatMap {
@@ -175,8 +166,7 @@ object Webuser {
 
   def getUUIDfromEmail(email: String): Option[String] = Redis.pool.withClient {
     client =>
-      val _email = StringUtils.trimToEmpty(email.toLowerCase)
-      client.get("Webuser:Email:" + _email)
+      client.get("Webuser:Email:" + email.toLowerCase.trim)
   }
 
   def findByUUID(uuid: String): Option[Webuser] = Redis.pool.withClient {
@@ -187,6 +177,25 @@ object Webuser {
       }
   }
 
+def checkRegId(email: String , regId: String) : Boolean = Redis.pool.withClient {
+  client =>
+    val maybeUser = findByEmail(email)
+
+    maybeUser.get.registrationId.equals(Some(regId))
+
+
+}
+  def regIdExist(regId : String): Boolean = Redis.pool.withClient {
+    client =>
+      client.exists("Webuser:RegId:" + Some(regId))
+  }
+  def ifVisitorHasRegId(email: String ) : Boolean = Redis.pool.withClient {
+    client =>
+      val maybeUser = findByEmail(email)
+
+      maybeUser.get.registrationId.isDefined
+
+  }
   def checkPassword(email: String, password: String): Option[Webuser] = Redis.pool.withClient {
     client =>
       val maybeUser = findByEmail(email)
@@ -195,18 +204,6 @@ object Webuser {
       } else {
         None
       }
-  }
-
-  def findUser(email: String, password: String): Boolean = Redis.pool.withClient {
-    client =>
-      val maybeUser = findByEmail(email)
-      maybeUser.exists(_.password == password)
-  }
-
-  // The My Devoxx Gluon mobile app will use the following hard coded credentials to basic authenticate.
-  def gluonUser(email: String, password: String): Boolean = {
-    email.equals("gluon@devoxx.com") &&
-    password.equals(ConferenceDescriptor.gluonPassword())
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
@@ -227,9 +224,6 @@ object Webuser {
       tx.srem("Webuser:speaker", cleanWebuser.uuid)
       tx.srem("Webuser:cfp", cleanWebuser.uuid)
       tx.srem("Webuser:admin", cleanWebuser.uuid)
-      tx.srem("Webuser:visitor", cleanWebuser.uuid)
-      tx.srem("Webuser:gticket", cleanWebuser.uuid)
-      tx.srem("Webuser:devoxxian", cleanWebuser.uuid)
       tx.exec()
 
       TrackLeader.deleteWebuser(cleanWebuser.uuid)
@@ -271,6 +265,8 @@ object Webuser {
   }
 
   def hasAccessToCFP(uuid: String): Boolean = isMember(uuid, "cfp")
+  def hasAccessToVisitor(uuid: String) : Boolean = isMember(uuid , "visitor")
+  def hasAccessToAdminVis(uuid: String): Boolean = isMember(uuid , "adminVis")
 
   def hasAccessToAdmin(uuid: String): Boolean = isMember(uuid, "admin")
 
@@ -288,23 +284,14 @@ object Webuser {
       client.sadd("Webuser:speaker", uuid)
   }
 
-  def addToDevoxxians(uuid: String) = Redis.pool.withClient {
-    client =>
-      client.sadd("Webuser:devoxxian", uuid)
-  }
-
   def addToGoldenTicket(uuid: String) = Redis.pool.withClient {
     client =>
       client.sadd("Webuser:gticket", uuid)
   }
-
-  def removeFromGoldenTicket(uuid: String) = Redis.pool.withClient {
-    client =>
-      client.srem("Webuser:gticket", uuid)
-
-    play.Logger.info(s"${Messages("cfp.goldenTicket")} reviewer $uuid has been deleted from the ${Messages("cfp.goldenTicket")} reviewers list.")
-  }
-
+def addToAdminVisitors(uuid:String) = Redis.pool.withClient{
+  client =>
+    client.sadd("Webuser:adminVis" , uuid)
+}
   def noBackofficeAdmin() = Redis.pool.withClient {
     client =>
       !client.exists("Webuser:admin")
@@ -314,10 +301,17 @@ object Webuser {
     client =>
       client.sadd("Webuser:admin", uuid)
   }
-
+  def removeFromAdminVis(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.srem("Webuser:adminVis", uuid)
+  }
   def removeFromCFPAdmin(uuid: String) = Redis.pool.withClient {
     client =>
       client.srem("Webuser:cfp", uuid)
+  }
+  def removeFromVisitor(uuid : String) = Redis.pool.withClient{
+    cleint =>
+      cleint.srem("Webuser:visitor" , uuid)
   }
 
   def allSpeakers: List[Webuser] = Redis.pool.withClient {
@@ -331,15 +325,6 @@ object Webuser {
               None
             }, w => Option(w)
           )
-      }
-  }
-
-  def allDevoxxians(): List[Webuser] = Redis.pool.withClient {
-    client =>
-      val allDevoxxianUUIDs = client.smembers("Webuser:devoxxian").toList
-      client.hmget("Webuser", allDevoxxianUUIDs).flatMap {
-        js: String =>
-          Json.parse(js).asOpt[Webuser]
       }
   }
 
@@ -370,6 +355,14 @@ object Webuser {
           Json.parse(js).asOpt[Webuser]
       }
   }
+  def allVisitors(): List[Webuser] = Redis.pool.withClient{
+    client =>
+      val uuids = client.smembers("Webuser:visitor").toList
+      client.hmget("Webuser" , uuids).flatMap{
+        js:String =>
+          Json.parse(js).asOpt[Webuser]
+        }
+  }
 
   /* Required for helper.options */
   def allCFPAdminUsers(): Seq[(String, String)] = {
@@ -392,4 +385,14 @@ object Webuser {
     client =>
       !client.exists("Webuser:UUID:" + uuid)
   }
+  val newVisitorForm: Form[Webuser] = Form(
+    mapping(
+      "email" ->  (email verifying nonEmpty),
+      "firstName" -> optional(text(maxLength = 50)),
+      "lastName" -> optional(text(maxLength = 50)),
+      "regId" -> optional(text),
+      "tel"-> optional( text verifying pattern("""^\+(?:[0-9]{1,3})[" "]{1}[0-9]+""".r, error="A valid phone number is required")),
+     "pictureurl"-> optional(text)
+
+  )(Webuser.createVisitor)(Webuser.unapplyFormVisitor))
 }

@@ -1,25 +1,34 @@
 login.error=Email inconnu ou code d''accès invalide
 menu.home=Accueil
 email=Adresse email
+mail.create=Creer un nouveau mail
+mail.delete.notif=Etes vous sûr de vouloir supprimer cet e-mail ?
+mail.delete.slot=Etes vous sûr de vouloir supprimer cet slot?
+delete.slot= supprimer le slot
+mail.delete.room=Etes vous sûr de vouloir supprimer cette salle?
+mail.notify.refused.body=Etes vous sûr de vouloir notifier toute proposition refusée
+mail.notify.approved.body=Etes vous sûr de vouloir notifier toute proposition approvée
+delete.room= supprimer la salle
 firstName=Prénom
 lastName=Nom de famille
 password=Code d''accès
 CallForPaper=Appel aux conférenciers
 btn.login=Continuer
 menu.register=S''inscrire
-menu.blog=Site DevoxxFR
+menu.blog=Site DevoxxMA
 login=S''authentifier
 signup=S''inscrire
-signup.long=S''inscrire en tant qu''orateur pour Devoxx France
- 
+signup.long=S''inscrire en tant qu''orateur pour Devoxx Morocco
+Custom.email=Courrier électronique personnalisé
+custom.email1= notification personnalisé
 index.method1=S''authentifier
 # For single quote, you need to double escape
 # http://stackoverflow.com/questions/12070093/how-to-use-single-quotes-in-i18n-in-playframework2
 index.welcome=Déjà inscrit ? Authentifiez-vous avec votre code d''accès :
- 
+
 index.method2=Authentifiez-vous avec OpenId
 index.signupTitle=S''inscrire comme orateur
-index.signup2=Inscrivez-vous comme orateur à Devoxx France afin de proposer un ou plusieurs sujets :
+index.signup2=Inscrivez-vous comme orateur à Devoxx Morocco afin de proposer un ou plusieurs sujets :
 index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et utiliser un code d''accès :
 index.signup.btn=S''inscrire
 index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser un code d''accès. Si votre profil n''existe pas, il sera automatiquement créé.
@@ -29,7 +38,7 @@ twitter=Votre pseudo Twitter
 blog=Votre blog ou votre site internet
 forget.password=Code d''accès oublié ?
 home.txt2=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un code d''accès.
- 
+
 # Messages de play
 # --- Constraints
 constraint.required=Obligatoire
@@ -38,12 +47,12 @@ constraint.max=Valeur max. : {0}
 constraint.minLength=Longeur minimum : {0}
 constraint.maxLength=Longeur max: {0}
 constraint.email=Adresse email
- 
+
 # --- Formats
 format.date=Date (''{0}'')
 format.numeric=Numérique
 format.real=Real
- 
+
 # --- Errors
 error.invalid=Valeur invalide
 error.required=Champ obligatoire
@@ -58,14 +67,14 @@ error.minLength=Longeur minimum {0}
 error.maxLength=Longeur max {0}
 error.email=Adresse de courrier électronique valide
 error.pattern=Doit respecter {0}
- 
- 
+
+
 email.alreadyexists=Cette adresse email est déjà enregistrée dans notre base.
 forget.password.confirm=Un courrier électronique a été envoyé à l''adresse spécifiée.
 register.withopenid=Inscrivez-vous avec votre profil social
-cfp.closed=Le CFP de Devoxx France est fermé.
+cfp.closed=Le CFP de Devoxx Morocco est fermé.
 avatarUrl=URL de votre photo
- 
+
 # CFP Home page
 your.profile=Votre profil
 your.submission=Vos soumissions
@@ -74,34 +83,37 @@ profile.gravatar=Téléchargez et éditez directement votre photo sur
 profile.gravatar2=pour votre adresse email
 edit.profile=Editer votre profil
 edit.name=Editer votre nom
- 
+
 url.photo=URL de votre photo
 blog.website=Blog ou site internet
 new.proposal=Nouvelle proposition
- 
+
 # github login
 github.importprofile.error=Désolé, nous ne pouvons importer votre profil depuis github. Veuillez modifier votre configuration github.
 github.importprofile.error.emailnotfound=L e-mail n''a pu être récupéré.
 github.importprofile.error.namenotfound=Votre nom n''a pu être récupéré.
 github.importprofile.error.advice=Vous pouvez modifier votre configuration sur https://github.com/settings/profile
- 
+
 # CFP New
 New.proposal=Nouvelle proposition de sujet, étape 1/2
 New.proposal2=Nouvelle proposition de sujet, étape 2/2
 Edit.proposal=Editer une proposition, étape 1/2
 Edit.proposal2=Editer une proposition, étape 2/2
- 
+
 title=Titre de la présentation
 title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
 summary=Résumé de votre présentation pour le participant
+picture=Charger une photo
 summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe <a href="http://daringfireball.net/projects/markdown/syntax/" target="_blank">Markdown</a>.
 lang=Langue
-lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
+lang.help=75% des présentations à Devoxx Morocco doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
-mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
-talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq" target="new">FAQ</a> du site Devoxx France.
- 
- 
+
+mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé.Nous proposons un pass complet pour tous les slots pour un maximum de 2 conférenciers.
+talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.ma/faq" target="new">FAQ</a> du site Devoxx France.
+
+
+
 talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message pour le comité de sélection
@@ -116,7 +128,7 @@ moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers 
 btn.save=Sauver l''édition
 btn.home=Retour à l''accueil sans sauver
 btn.save2=Sauvegarder votre proposition
-not.saved=Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur "Sauvegarder la proposition" pour continuer.
+not.saved=Vérifiez le résumé à destination du participant à Devoxx Morocco, puis cliquez sur "Sauvegarder la proposition" pour continuer.
 validate.summary2=ou sinon utilisez
 validate.summary3=Retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
@@ -125,108 +137,110 @@ summary.preview=Aperçu de votre présentation
 preview.warn=Votre proposition est à l''état DRAFT. N''oubliez pas de soumettre la proposition avec l''icône
 preview.warn2=dans le tableau de la page d''accueil.
 presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''oubliez pas de cliquer sur l''enveloppe orange sur l''écran principal (
-
 # Proposal type
-key.label=Keynote, 20mn, jeudi et vendredi matin
-conf.label=Conference, 45mn, jeudi et vendredi
-uni.label=University, 3h, mercredi uniquement
+key.label=Keynote, 20mn, Mercredi et jeudi matin
+conf.label=Conference, 45mn, mercredi et jeudi
+uni.label=University, 2h, mardi uniquement
 tia.label=Tools in Action, 30mn, mercredi/jeudi
-quick.label=Quickie, 15mn, jeudi et vendredi midi
+quick.label=Quickie, 15mn, Mercredi et Jeudi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
-bof.label=Bird of a Feather, 1h, jeudi soir uniquement
+bof.label=Bird of a Feather, 1h, Mercredi soir uniquement
 other.label=Autre type de présentation
-lab.label=Hands-on Lab, 3h, mercredi uniquement
+lab.label=Hands-on Lab, 2h, mardi uniquement
 hack.label=Hackaton (événement spécial)
 ignite.label=Conférence Ignite, 5mn, jeudi et vendredi de 13h à 14h
- 
+repy.later.button=Je vous répondrai plus tard
+repy.later.button.save=Sauvegarder
+repy.later.button.close=Annuler
+repy.later.button.Notify=Notifier
 # Bug report
 Issue.report=Notifier l''équipe
 btn.send=Envoyer
 msg=Votre message
- 
+Notify.approved.after.refused= La proposition a été rejeté et le conférencier a déjà été informé
+give.the.explanation= Donner l'explication
+Notify.again= Notifier à nouveau
+Notify.again.notify= Notifier
+
 # Home
 appel.conf=Appel aux conférenciers
-appel.conf.dates=Call for Paper, Devoxx France 2017, 5 au 7 avril 2017
+appel.conf.dates=Call for Paper, Devoxx Morocco 2017, 14 au 16 novembre 2017
 cfp.opening=Ouverture du CFP
 cfp.closing=Fermeture du CFP
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.program=Annonce du programme :
-cfp.program.date=à partir de la mi-février 2017
+cfp.program.date=à partir du {0}
 video.title=Vidéos des éditions précédentes
 video.tag=Retrouvez toutes les vidéos des éditions précédentes sur le site
 theme.title=Thèmes
 theme.track=Les différentes tracks pour proposer un sujet :
-
 track.title=Titre
 track.description=Description
-
-track.java.title=Java, JVM, Javas SE/EE
+track.java.title=Language java et côté serveur
 track.java.desc=Tout sur Java, la JVM, Java SE, Java EE.
-java.label=Java, JVM, Javas SE/EE
-java.leaderboard=Java, JVM, Javas SE/EE
+track.java.desc=Tout sur Java et côté serveur , la JVM, Java SE, Java EE, Modularity, Spring, App Servers etc
 
-track.mobile.title=Mobile et Internet of Things
-track.mobile.desc=Mobile, Java et l’internet des objets, la domotique et l’embarqué.
-mobile.label=Mobile, IoT
-mobile.leaderboard=Mobile, IoT
-
-track.web.title=Web, JS, HTML5 et UX
-track.web.desc=Web, JS, user-experience, front-end et architecture Webs.
-web.label=Web, JS, HTML5 et UX
-wm.leaderboard=Web, JS, HTML5 et UX
-
-track.cloud.title=Cloud, Container et Scalabilité
-track.cloud.desc=Cloud-computing, Container, Virtualisation, Architectures résilientes
-cloud.label=Cloud, Container et Scalabilité
-cldops.leaderboard=Cloud, Container et Scalabilité
-
-track.archisec.title=Architecture, Performance & Securité
-track.archisec.desc=Architecture, performance, encryption et meilleures pratiques pour développer un logiciel sécurisé.
-archisec.label=Architecture, Performance et Securité
-archisec.leaderboard=Architecture, Performance et Securité
-
-track.agile_devops.title=DevOps, Agilité, Méthodologie & Tests
-track.agile_devops.desc=Méthodes et pratiques de développement / déploiement logiciel, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agilité, Méthodologie & Tests
-agTest.leaderboard=DevOps, Agilité, Méthodologie & Tests
-
-track.bigdata.title=BigData, Machine-learning, Intelligence artificielle et Analytics
-track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
-bigd.label=BigData, ML, IA
-bigd.leaderboard=BigData, ML, IA
-
-track.future.title=Future, Robotique
-track.future.desc=La robotique et l''informatique de demain
-future.label=Future, Robotique
-future.leaderboard=Future, Robotique
-
-track.lang.title=Langages alternatifs
-track.lang.desc=Tous les langages alternatifs à Java
-lang.label=Langages alternatifs
-lang.leaderboard=Langages alternatifs
-
+java.label=Language java et côté serveur
+java.leaderboard=Language java et côté serveur
+track.mobile.title=Mobile ,l'internet des objets et l'embarqué
+track.mobile.desc=Outils, frameworksk et bibliothèques pour la création des applications mobiles , développement de périphériques intégrés, IoT, Arduino, Raspberry Pi etc.
+mobile.label=Mobile ,l'internet des objets et l'embarqué
+mobile.leaderboard=Mobile ,l'internet des objets et l'embarqué
+track.web.title=Web moderne et  Expérience Utilisateur
+track.web.desc=HTTP/2, frameworks Web, HTML5, CSS3, JavaScript, bibliothèques ,Expérience Utilisateur et les outils pour créer des applications Web  .
+web.label=Web moderne et Expérience Utilisateur
+wm.leaderboard=Web moderne &  Expérience Utilisateur
+track.cloud.title=cloud, conteneurs et infrastructure
+track.cloud.desc=cloud-computing, conteneurs, Virtualisation, Architectures résilientes
+cloud.label=cloud , conteneurs et infrastructure
+cldops.leaderboard=cloud , conteneurs et infrastructure
+track.archisec.title=Architecture et sécurité
+track.archisec.desc=Architecture logicielle, cryptage et meilleures pratiques pour développer des applications sécurisées.
+archisec.label=Architecture et sécurité
+archisec.leaderboard=Architecture et sécurité
+track.agile_devops.title=DevOps, Agile, Méthodologie et Culture
+track.agile_devops.desc=Méthodes de développement de logiciels, culture de développeurs et du sujet en relation.
+agile_devops.label=DevOps, Agile,  Méthodologie et Culture
+agTest.leaderboard=DevOps, Agile,  Méthodologie et Culture
+track.bigdata.title=BigData, Apprentissage par machine, Intelligence artificielle et Analytics
+track.bigdata.desc=De l'analyse des données en temps réel à la prédiction massive et au stockage en nuage.
+bigd.label=BigData, Apprentissage par machine, IA et Analytics
+bigd.leaderboard=BigData, Apprentissage par machine, Intelligence artificielle et Analytics
+track.future.title=Robotique, réalité virtuelle et le Future
+track.future.desc= L'informatique quantique, l'informatique biologique, la cybernétique, la robotique industrielle, l'intelligence artificielle,réalité virtuelle, etc.
+future.label=Robotique, réalité virtuelle et le Future
+future.leaderboard=Robotique, réalité virtuelle et le Future
+track.lang.title=Langages de programation
+track.lang.desc=Les langages de programation:Ruby, Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
+lang.label=Langages de programation
+lang.leaderboard=Langages de programation
+track.Startup.label.title=Startup, Innovation et créativité
+Startup.label=Startup, Innovation et créativité
+Startup.label.leaderboard=Startup, Innovation et créativité
+track.Startup.label.title.desc=Lean startup, VCs, Angels et les nouvelles tendances dans les startups et la créativité.
 # Confirm import
-confirm.import.title=Créer votre profil de présentateur Devoxx France
+confirm.import.title=Créer votre profil de présentateur Devoxx Morocco
 confirm.import.save=Enregistrer et continuer
 avatarUrl.isEmpty=L''URL de votre photo est vide, nous utiliserons votre
 avatarUrl.defined=Votre photo (largeur recommandée 120px)
- 
+
 # Sign-up
 created.title=Demande d''inscription enregistrée
 created.text1=Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.
 created.text2=Validez votre adresse pour terminer votre enregistrement, votre code d''accès vous sera donné lorsque vous validerez votre email.
-created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.
- 
+created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx Morocco.
+
 # Prepare signup
 signup.title=Inscription orateur
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2017 :
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx Morocco 2017 :
 signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
- 
+
 # edit profile
 editProfile.title=Votre profil
 editProfile.help=Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné comme orateur, ainsi que dans le programme de la conférence :
-editProfile.save=Enregistrer
- 
+editProfile.save= Enregistrer
+editProfile.save.admin=Créer un Talk pour ce speaker
+
 # Home
 table.pres.title=Titre
 table.pres.state=Etat
@@ -239,7 +253,7 @@ table.pres.delete=Mettre à la poubelle
 table.pres.action=Actions
 table.pres.doSubmit=Soumettre
 table.pres.doDelete=Effacer
- 
+
 total.draft={0} propositions
 total.draft.sing={0} proposition
 total.archived.sing={0} archivé
@@ -253,7 +267,7 @@ talk.deleted=Proposition de sujet effacée.
 talk.deleted2=Annuler l''effacement de la proposition
 talk.draft=Status de la proposition passé à Draft
 talk.submitted=Votre proposition de sujet a été envoyée
- 
+
 # other speakers
 other.speakers=Gestion des présentateurs
 btn.enregistrer=Enregistrer
@@ -271,7 +285,7 @@ freepass=Oui
 no.freepass=Non
 speakers.updated=Liste des présentateurs mises à jour
 noOther.speaker=---- Pas d''autre présentateur ----
- 
+
 # short talk
 conf=Conference
 uni=University
@@ -283,7 +297,7 @@ hack=Hackaton
 key=Keynote
 all=All
 amd=Après-midi des Décideurs
- 
+
 tbl.submitted=Envoyé
 profile.imported=Profil importé
 profile.imported.txt=Votre profil a été importé avec succès. Vous pouvez modifier à tout moment votre bio, vos informations personnelles ou l''adresse de votre blog.
@@ -291,17 +305,26 @@ profile.continue=Continuer
 profile.username=Votre identifiant
 profile.password=Votre code d''accès
 profile.password.help=Nous ne souhaitons pas stocker l''un de vos mots-de-passe, et nous préférons en générer un pour vous. Nous vous encourageons à utiliser l''accès OpenId via Github ou Google.
- 
+Speaker.reply.later.notification=Le conférencier répondra au plus tard le :
+
 msgSpeaker=Votre message
 freepass.forIdiots=L''entrée est offerte uniquement si votre présentation est sélectionnée par le comité.
- 
+unfav-talk=Défavoriser
+fav-talk=Favoriser
 nav.homeSpeaker=Accueil
 editWebuser.title=Votre profil
- 
+speakerExist= Cet utilisateur existe déjà
 cfp.isOpen=Le CFP est ouvert
-cfp.open.enter=Proposer un sujet pour Devoxx France
- 
+cfp.open.enter=Proposer un sujet pour Devoxx Morocco
+cfp.visitor.enter=Créez mon profil visiteur ou se connecter
+informations.mails.manager.content=Pour Définir des Paramètres Dynamiques, Vous pouvez copier le paramètre dans le contenu du courrier électronique s'il existe dans la liste des paramètres
+informations.mails.manager.content.liste=La liste des paramètres:
 #CFP admin
+btn.saveDraft.admin=sauver comme proposition acceptée
+Edit.proposal.admin=Confirmation
+btn.etape1sur2.admin=Retour
+New.proposal.admin=Etape 2/2 : Proposition de sujet
+events.history = Historique d''événements
 admin.proposals.th.title=Titre
 admin.proposals.th.track=Track
 admin.proposals.th.mainSpeaker=Speaker
@@ -324,7 +347,7 @@ admin.cfp.msg=Message de l''événement
 admin.cfp.totalEvents=Total événements
 previous.page=Page précédente
 next.page=Page suivante
- 
+informations.mails.manager=Information
 admin.proposal=Proposition de sujet
 admin.proposals.th.lang=Langue
 admin.proposals.th.abstract=Texte pour le programme, vu par le conférencier
@@ -342,18 +365,18 @@ admin.btn.sendMessage=Envoyer votre message
 admin.sp.internal=Discussions internes et privées
 admin.sp.deleteMyVote=Annuler mon vote
 admin.btn.allvotes=Tous les votes
- 
+
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention
 admin.draft.warning2=Cette proposition n''est pas à l''état SUBMITTED. Vous ne pouvez pas voter.
 admin.draft.warning3=Etat actuel de cette proposition :
- 
+
 newProposal.maxLength=Maximum 1200 caractères. Possibilité d''utiliser Markdown
 preview.txt=Aperçu de votre présentation dans le programme papier
 tags.renderComment.postedBy=Posté par {0} - {1}
 admin.btn.sponsor=Voir comme un sponsor
 leaderboard.compute=Calcul des stats en cours...
- 
+
 admin.sp.accepted=Accepté
 admin.sp.approved=Approuvé
 admin.sp.refused=Refusé
@@ -361,32 +384,33 @@ admin.sp.rejected=Rejeté
 admin.sp.accepted.txt=Ce sujet a été Accepté par le speaker.
 admin.sp.approved.txt=Ce sujet a été Approuvé par le comité de sélection.
 btn.abstention=Voter 0 pour passer au suivant
- 
+
 cfp.isClosed=Le CFP est fermé
 cfp.isClosed.expl=Le CFP est actuellement fermé.
 cfp.closed.enter=S''authentifier
 tbl.cfp.closed=CFP fermé
 cfp.closed.restrictions=Le CFP est fermé. Vous pouvez éditer votre proposition. Cependant, merci de ne pas la modifier complètement par rapport à la version originale, sans quoi nous l''annulerons systématiquement.
- 
+
 forget.password.title=Code d''accès oublié ?
 forget.password.txt=Envoyez-moi un email de réinitialisation
 forget.password.notfound=Cet email n''existe pas, vous n''êtes pas enregistré.
- 
+
 new.accesscode.title=Nouveau code d''accès
 new.accesscode=Votre nouveau code d''accès est :
- 
+
 admin.btn.otherReviewer=Comparer mes votes
 btn.showVotes=Voir les votes
 comment.proposal=Fil de discussion
- 
+
 saved1=Proposition enregistrée. Pensez à soumettre le sujet en cliquant sur l''enveloppe orange !
 saved2=Proposition éditée et enregistrée.
- 
-approve.title=Devoxx France, Termes et Conditions du Présentateur
-accept.chk=J''accepte les conditions de Devoxx France
-acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Devoxx France :
-accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Devoxx France
- 
+
+approve.title=Devoxx Morocco, Termes et Conditions du Présentateur
+accept.chk=J''accepte les conditions de Devoxx Morocco
+acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Devoxx Morocco :
+accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Devoxx Morocco
+accept.preference.days=Merci de selectioner une date si vous acceptez de présenter ce sujet
+accept.preference.days.ms=préférences pour la planification
 acceptedProposals.title=Liste de vos soumissions approuvées/refusées
 ar.approved=Soumissions approuvées
 ar.rejected=Soumissions refusées
@@ -401,7 +425,9 @@ ar.proposalNotFound=Proposition de sujet non trouvée
 ar.choiceRecorded=Votre choix ({1}) pour la proposition {0} a bien été enregistré.
 ar.checkMyProposals=Accepter ou décliner les soumissions approuvées par le comité.
 ar.goBackHome=Retour à l''accueil
- 
+ar.deadline.talks=Je vous répondrai plus tard si j''accepte de présenter ou non le sujet {0} au plus tard le:
+ar.deadline.talks.ms=réponse plus tard
+ar.deadline.replylater.ms=Merci de ne pas dépasser le délai vous avez déja préciser la date:
 sw.proposal.title=Titre
 sw.proposal.talkType=Type de presentation
 sw.proposal.summary=Résumé
@@ -424,6 +450,8 @@ sw.all.lab=Tous les hand''s on labs
 sw.all.quick=Tous les quickies
 sw.all.bof=Toutes les BOFs
 sw.all.tia=Tous les tools in Action
+sw.all.trn= Tous les Training
+trn= Training
 sw.speakers=Présentateurs
 sw.intro=Le programme ainsi que l''agenda sont mis à jour régulièrement.
 sw.programme=Programme
@@ -433,10 +461,17 @@ sw.allSpeakers=Liste des présentateurs
 sw.proposal.presentedWith=Présenté avec
 admin.btn.webuser=Webusers
 editSpeakerName=Editer le nom et le prénom du speaker
-admin.btn.createNewspeaker=Créer un nouveau speaker
- 
-newSpeaker.title=Créer un nouveau speaker
+admin.btn.createNewspeaker=Créer Speaker & Talk
+admin.btn.manage.notificaion=Gérer la notification par courrier
+admin.btn.manage.notificaion.new=Le contenu de l''email:
+admin.btn.manage.notificaion.subject= L''objet de l''email
+newSpeaker.title.admin= Etape 1/2 : Créer un nouveau speaker
+newSpeaker.title= Créer ou Editer ce speaker
+speaker.create.only= Créer un speaker uniquement
+Stats.talk.type = Statistiques Accepted/Approved Talk
+Gestion.Talks=Gestion Talks
 avatarUrl2=URL vers une photo du speaker (linkedin, google+)
+picture=Uploadez une photo
 name=Prénom et nom de famille
 bio2=Bio du speaker
 twitter2=Twitter (avec @ au début)
@@ -455,11 +490,11 @@ calendar.pref.friday=Le vendredi
 calendar.pref.wednesday=Le mercredi
 proposalLang_fr=Présentation en Français
 proposalLang_en=Présentation en Anglais
-
 calendar.pref.reset=Pas de préférences
 sw.all.other=Evénements spéciaux
 acceptTermsConditions=Accepter les Termes/Conditions pour afficher la bio sur le site
 sp.authenticateAndCreate=S''authentifier comme ce speaker et créér un talk
+notify.accepte.terms=Notifier accepter terms/conditions
 day-uni=Mercredi
 day-labs=Mercredi
 day-tia=Mercredi
@@ -477,25 +512,28 @@ cstory=Sessions de live coding Code-Story
 sw.all.amd=Présentations de l''Après-midi des Décideurs
 sw.agenda=Agenda
 sw.agenda.txt=Horaires par journée
+sw.agenda.tue=Mardi
+sw.agenda.tuesday=Mardi
 sw.agenda.wed=Mercredi
 sw.agenda.wednesday=Mercredi
 sw.agenda.thu=Jeudi
 sw.agenda.thursday=Jeudi
 sw.agenda.fri=Vendredi
 sw.agenda.friday=Vendredi
+sw.show.tue=Mardi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
-sw.show.title.wed=Journée du Mercredi 20 avril 2017
-sw.show.title.thu=Journée du Jeudi 21 avril 2017
-sw.show.title.fri=Journée du Vendredi 22 avril 2017
- 
- 
+sw.show.title.tue=Journée du Mardi 14 novembre 2017
+sw.show.title.wed=Journée du Mercredi 15 novembre 2017
+sw.show.title.thu=Journée du Jeudi 16 novembre 2017
+
+
+
 sw.horaires=Horaires
 sw.breakfast=Accueil et petit-déjeuner
 sw.mainEvents=Evénements principaux
 sw.lunch=Déjeuner
-
 sw.reg=Accueil et petit déjeuner
 sw.dej=Accueil et petit déjeuner
 sw.chgt=Pause café
@@ -505,9 +543,7 @@ sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition
 sw.cocktail=Soirée Meet and Greet dans l''espace d''exposition jusqu''à 22h30
 sw.showAllDay=Voir l''agenda de toute la journée
 not.published=L''agenda pour ce type de conférence n''est pas encore publié.
-
 acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
-
 sw.details.mon=Détail du lundi
 sw.details.monday=Détail du lundi
 sw.details.tue=Détail du mardi
@@ -518,22 +554,25 @@ sw.details.thu=Détail du jeudi
 sw.details.thursday=Détail du jeudi
 sw.details.fri=Détail du vendredi
 sw.details.friday=Détail du vendredi
-
-
 antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
 bugReport.sent=Votre message a été envoyé à l''équipe, merci !
 sw.proposal.whenWhere=Heure de passage et salle
-day-mercredi=Mercredi
-day-jeudi=Jeudi
-day-vendredi=Vendredi
+
+day-mercredi=Mardi
+day-jeudi=Mercredi
+day-vendredi=Jeudi
+
+day-mon=Lundi
 day-monday=Lundi
+day-tue=Mardi
+day-tuesday=Mardi
+day-wed=Mercredi
+day-wednesday=Mercredi
 day-thu=Jeudi
 day-thursday=Jeudi
 day-fri=Vendredi
 day-friday=Vendredi
-day-wed=Mercredi
-day-wednesday=Mercredi
- 
+
 showAgendaByRoom=Agenda par salle
 Abs=Abs
 admin.btn.tracklead=Track leader
@@ -549,10 +588,10 @@ btn.saveAndSend=Sauver et envoyer au comité
 btn.saveDraft=Sauver comme Draft (Brouillon)
 cfp.reminder=Rappel
 cfp.reminder.proposals=pensez à soumettre votre brouillon au comité en cliquant sur "Envoyer"
-cfp.title=Devoxx France 2017
+cfp.title=Devoxx Morocco 2017
 conf.label.simple=Conférence
-CONF.subtitle=FR
-CONF.title=Devoxx France 2017
+CONF.subtitle=MA
+CONF.title=Devoxx Morocco 2017
 conference.dates=20 au 22 avril 2017
 contacted=Speaker contacté
 d1.label=Uniquement des slides
@@ -573,15 +612,14 @@ l3.label=Expert et sénior
 lab.label.simple=Hands-on lab
 hack.label.simple=Hackatons
 code.label.simple=Codestory
-
 level1.label=Ouvert à tout niveau d''audience, débutant comme expert
 level2.label=Pour une audience intermédiaire, avec une connaissance sur le sujet
 level3.label=Pour un public d''expert ou de sénior sur ce sujet
-longName=Devoxx FR 2017 CFP
+longName=Devoxx MA 2017 CFP
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2017
+longSplittedName_whiteEnd=MA 2017
 longSplittedName_whiteStart=Devox
-longYearlyName=Devoxx France 2017
+longYearlyName=Devoxx Morocco 2017
 mail.access_code.subject=Votre code d''accès présentateur pour {0}
 mail.account_created.subject=Bienvenue sur le CFP pour {0}
 mail.cfp_message_to_speaker.subject=[{1}] {0}
@@ -603,10 +641,11 @@ qualifications.label=Qualifications du présentateur
 qualifications.otherproposals=Sujet(s) proposé(s) par le speaker
 quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
-shortName=Devoxx FR
-shortYearlyName=Devoxx FR 2017
+shortName=Devoxx MA
+shortYearlyName=Devoxx MA 2017
 ssj.label=Server Side Java
 start=Startup presentation
+manager.slots=Gérer les slots
 start.label=
 start.label.simple=
 sw.hackatons=Hackatons
@@ -649,48 +688,49 @@ wl_travel=Transport et logement
 wl_travel.checkbox=Oui, inclure le remboursement
 wl_unknown=Inconnu
 admin.btn.speakersInvited=Tous les speakers invités
-
 bof.label.simple=Bird of a Feather
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
+mail.Account_Information.subject=Bienvenue à {0}
+
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
+mail.proposal_approved.subject2=Votre proposition de sujet a été approuvée {0}:le délai maximun pour accepter est le {1}
+notification.approved.title=Préciser d''une date limite
+notification.approved.body=Via le champs suivant vous pouvez choisir de préciser une date limite pour accepter cette proposition
+notification.approved.body.all=Via le champs suivant vous pouvez choisir de préciser une date limite pour accepter toute les  propositions
+
 mail.proposal_refused.subject=Votre proposition de sujet a été déclinée {0}
-mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre code d'accès speaker pour {1}
+mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre code d'accès speaker pour {1} à {0}
 msg_pub=Envoyer un message au présentateur
 qualifications2=Qualifications et expériences du présentateur
 question.proposal=Questions sur votre présentation
-
 wl.action=Action
 wl.lm=Dernière modif
+notify.all.refused=Notifier toute proposition refusée
+notify.all.Approved=Notifier toute proposition approvée
 wl.sn=Nom du speaker
 wl.fb=Suivi par
 wl.company=Société
 wl.track=Track
 wl.status=Dernier status
 wishlist.setPersonInCharge=Personne en charge de "{0}"
-
 proposal.approved.noVotes=Proposition approuvée - plus de votes possible
-
 wl.country=Pays
 wl.keynote=Keynote
 wl_keynote=Speaker keynote
 wl_keynote.checkbox=Oui, cela serait un speaker keynote
-
 showProposal.comment.ar=Poser une question à l''équipe à propos de cette présentation
 ar.proposalType=Type de présentation :
 ar.proposalId=Identifiant de la présentation :
-
 tag.proposal.title=Titre
 tag.proposal.youVoted=Votre vote
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
-
 speaker.mustAcceptTC=Vous devez accepter les Termes & Conditions pour que votre bio soit publiée sur le site
 speaker.ar1=Merci de
 speaker.ar2=cliquer ici
 speaker.ar3=pour revoir puis valider les Termes et Conditions.
-
 tagRenderRow-coffee=Pause café
 tagRenderRow-lunch=Déjeuner
 tagRenderRow-dej=Petit-déjeuner
@@ -702,26 +742,20 @@ please.check.approved=Merci de vérifier la liste des sujets approuvés par le c
 renderProposal.archived={0} propositions de sujets archivés de précédentes éditions.
 renderProposal.archived.single=Une proposition de sujet archivée.
 renderProposal.noTalks=Ce speaker n'a pas d''autres propositions actuellement
-
 mail.goldenticket.subject=Golden Ticket pour {0}
 error.loginRequired=Accès restreint, merci de vous authentifier
-
 userGroup=Faire évaluer aussi ma proposition de sujet par les Golden Ticket ?
 userGroup.checkbox= Oui, j'accepte que ma proposition soit revue par les personnes ayant acheté un Golden Ticket.
-
 goldenTicket.help.title=Golden Ticket
 goldenTicket.help.txt=Une nouveauté de {0} est l''introduction d''un petit comité de sélection composé de personnes ayant acheté l''un des 64 Golden Ticket sur le site de {0}. Si vous acceptez, ils peuvent alors revoir votre présentation, l''évaluer et la noter. Le comité du programme {0} évalue aussi votre proposition, et 2 notes différentes seront alors enregistrées. A noter que vous pouvez changer le status de ce flag à tout moment.
-
 gt.title=CFP spécial Golden ticket
-gt.disclaimer=Nous vous remercions de respecter les personnes qui proposent des sujets pour Devoxx France. En utilisant ce compte vous acceptez de ne pas publier sur les réseaux sociaux ou publiquement les informations que vous verrez sur le CFP.
+gt.disclaimer=Nous vous remercions de respecter les personnes qui proposent des sujets pour Devoxx Morocco. En utilisant ce compte vous acceptez de ne pas publier sur les réseaux sociaux ou publiquement les informations que vous verrez sur le CFP.
 gt.intro.1=Voici la liste complète des propositions que vous n''avez pas encore revu. Vous pouvez trier cette liste par type de présentation, par thème ou par auteur.
 gt.intro.2=Si vous le souhaitez, vous pouvez aussi
 gt.reviewYourVotes=revoir et corriger vos votes
 gt.intro.3=tant que le CFP est ouvert.
 gt.special.need=Mise à jour du mardi 9 février : seules les Conférences peuvent désormais être évaluées. La sélection des autres formats est terminée
 gt.todo=Votre liste de sujet à revoir :
-
-
 gt.yourVotes=Vos votes
 gt.personnal=Vos statistiques personnelles
 gt.youReviewed=Vous avez revu {0} sujet(s)
@@ -729,7 +763,6 @@ gt.youVoted=Vous avez donné une note pour {0} sujet(s)
 gt.averageVote=Votre note moyenne est {0}
 gt.noVotes=Vous n''avez pas encore commencé à revoir les sujets. Ne perdez pas de temps car cela peut prendre beaucoup de temps.
 gt.myvote.title=Propositions que vous avez évalué
-
 gt.showVotes.review=Revoir ou changer votre vote
 gt.home=Retour à l''accueil
 gt.vote.ok=Votre vote a été enregistré
@@ -738,13 +771,11 @@ gt.nomore=Vous n''avez plus de sujets à revoir pour l''instant, revenez plus ta
 gt.nextTalk=Continuer et évaluer le sujet suivant
 gt.nextTalkType=Continuer et évaluer un autre sujet du type [{0}]
 gt.nextTalkTrack=Continuer et évaluer une proposition dans la track [{0}]
-
 gtAdmin.totalGT=Nombre de personnes avec un Golden Ticket : {0}
 gtAdmin.top5=Top 5 par score
 gtAdmin.topWorst=Les 5 plus mal notés
 gtAdmin.average=Le score moyen donné par les Golden Ticket est : {0}
 gtAdmin.totalReviewer={0} propositions revues par les Golden Tickets
-
 svp.score=Score actuel
 svp.average=Note moyenne
 svp.gt.average=Note moyenne donnée par {0} Golden Ticket
@@ -759,50 +790,39 @@ svp.voted=a voté
 svp.goldenTicket.title=Golden Ticket
 svp.gt.novotes=Aucun Golden ticket n''a voté sur ce sujet
 svp.split=Différence entre le score GT et le score du comité
-
 gt.admin.sp.privateMessage=Message personnel du speaker pour le comité
-
 speaker.notfound=Speaker non trouvé, merci de créer un compte Speaker pour continuer. Un compte Golden ticket n''est pas suffisant.
 callforpaper.gt.create.profile=Votre profil de Golden ticket n''est pas suffisant pour accéder à la partie Speaker. Merci de compléter votre profil de présentateur pour continuer.
 cfp.goldenTicket=Golden tickets
 cfp.gt.enter=S''authentifier
 cfp.gt.infos=Plus d''informations sur les Golden Tickets
+invite.cfp.close = Gérer les utilisateurs
+closecfp= Fermer le CFP
+opencfp= Ouvrir le CFP
 callforpaper.import.profile=Votre profil de visiteur n''est pas suffisant pour accéder à la partie Speaker. Merci de compléter votre profil de présentateur pour continuer.
-
 gt.vote.foryou=Vous ne pouvez pas voter pour une proposition où vous êtes déjà speaker. Merci aussi de ne vous ajouter pas comme Speaker après avoir voté. Effacez votre vote si vous souhaitez changer cela.
 gt.vote.submitted=Votre vote et l''heure de votre vote sont enregistrés. Vous pouvez revenir et changer librement vos votes tant que le CFP est ouvert.
 gt.nav.home=Accueil GT
-
 gt.myvotes=Propositions de type {0}
-
 search.result=Nombre de résultats: {0}
 search.close=Fermer
 search.showOnly=Afficher seulement
 search.onlySpeakers=speakers
 search.onlyProposals=proposals
-
 noPasswordHere=Le site du CFP ne vous permet pas de configurer un mot de passe, et utilise un système de code d''accès, pour des raisons de sécurité. Nous vous recommandons d''utiliser un accès OpenId via votre comtpe Github/LinkedIn ou Google, lorsque cela reste possible.
 cfpadmin.toreview={0} sujet(s) à noter
 cfpAdmin.showWhenCreated=Sujet soumis par le speaker sur le CFP le {0}
-
 publisher.showMore=Voir la description
 publisher.room=Salle
-
 refused.termsConditions=Attention, vous avez refusé les Terms & Conditions Devoxx et vous ne pourrez donc pas présenter le ou les sujet(s) retenus. Si vous souhaitez revenir sur ce point, contacter l''équipe par email : program@devoxx.fr
-
 admin.cfp.empty.track=Il n''y a pas de nouvelles propositions de sujets dans la track {0} pour l''instant.
-
 cfp.filter.on=Filtrer par Track :
 cfp.filter.off=Pas de filtre
-
 cfpadmin.totalReviewed={0} revus
 cfpadmin.totalVoted={0} votés
-
-publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx France.
-
+publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx Morocco.
 cfp.showAgenda.title=Agenda
 cfp.showAgenda.txt=Agenda des conférences
-
 # Favorites and My Agenda
 fav.title=Préparer votre agenda
 fav.noAgenda=Vous n''avez pas encore créé d'agenda pour enregistrer la liste des présentations que vous aimeriez voir.
@@ -814,14 +834,15 @@ fav.day.2=Mardi
 fav.day.3=Mercredi
 fav.day.4=Jeudi
 fav.day.5=Vendredi
-
 mydevoxx.authenticated=Vous êtes authentifié via MyDevoxx. Vous pouvez sélectionner les sessions que vous souhaitez voir, et les ajouter dans votre agenda.
-
+visitor.manage= Gérer les visiteurs
 visitor.welcome.title=Bienvenue {0}
 visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vous pouvez marquer vos sujets favoris dans l''agenda de {0} et recharger cet agenda plus tard, via cette page.
-visitor.welcome.profile=Liste des sujets marqués comme favoris
+visitor.welcome.profile= Sujets ajoutées à mon agenda
+visitor.favorites= Liste des talks marqués comme favoris
 visitor.welcome.publisher=Parcourir l''agenda des conférences
-
+fav.notyet.sched=Vos favoris ne sont pas encore ajoutées au programme
+signup.visitor= Ajouter comme visiteur
 sms.text1=Vous souhaitez être notifié par SMS de l''heure de passage ? En cas de changement de salle de votre présentation ? Renseignez votre numéro de téléphone :
 sms.explanation=Numéro de téléphone au format international (exemple : +33661708090)
 confirm.phone=Confirmer votre numéro de téléphone
@@ -831,11 +852,8 @@ confirm.button=Valider
 phonenumber.updated.success=Votre numéro de téléphone a été configuré. Vous pourrez recevoir désormais des SMS, afin de vous informer de vos heures de passages ou des changements de salle.
 confirm.phone.error=Le code de confirmation n'est pas valide.
 invalid.confirmation.code=Code de confirmation incorrect, ou ayant expiré. Merci de retenter.
-invalid.phone=Numéro de téléphone invalide, il doit respecter le format international. Pour la France, les numéros de téléphones sont de la forme +3366....
+invalid.phone=Numéro de téléphone invalide, il doit respecter le format international. Pour le Maroc , les numéros de téléphones sont de la forme +212....
 sms.confirmationTxt=Code de confirmation Devoxx à saisir sur le site du CFP : {0}
-
 phoneNumber=Numéro de téléphone portable
-invalid.phoneNumber=Numéro de téléphone non valide
-invalid.phone.txt=Votre numéro de téléphone n''est pas valide ou n''est pas autorisé par notre plate-forme. Contactez l''équipe pour que nous puissions autoriser le pays de votre numéro de portable, ou corrigez le numéro.
 
-admin.btn.devoxxians=Tous les Devoxxians
+xconf.seeSchedule=Voir Le Programme de la Conférence

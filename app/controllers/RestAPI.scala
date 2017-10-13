@@ -23,17 +23,19 @@
 
 package controllers
 
-import controllers.Link.call2String
 import models.Speaker._
 import models._
+import notifiers._
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.i18n.Messages
-import play.api.libs.json.{JsNull, JsObject, Json}
-import play.api.mvc._
-
+import play.api.libs.json.{JsNull, JsObject, JsValue, Json}
+import play.api.mvc.{SimpleResult, _}
+import Link.call2String
+import controllers.Publisher.Ok
+import library.search.ElasticSearch
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.Play.current
+import play.api.Play
 
 /**
   * A real REST api for men.
@@ -42,6 +44,136 @@ import scala.concurrent.{ExecutionContext, Future}
 object RestAPI extends Controller {
 
   def index = UserAgentActionAndAllowOrigin(implicit request => Ok(views.html.RestAPI.index()))
+
+  def profilePicture(filename: String) = Action {
+    val storageFolder = current.configuration.getString("cfp.imageBase").getOrElse("storage");
+    val file = new java.io.File(s"$storageFolder/$filename");
+    if(file.exists) {
+      Ok.sendFile(file);
+    } else {
+      NotFound("Sorry, File not found");
+    }
+  }
+
+  def createAttendeeAccount() = Action {
+    implicit request: Request[AnyContent] =>
+      val requestToken = request.headers.get("Token")
+      val configurationToken = current.configuration.getString("cfp.TrustedRequestToken")
+      val body: AnyContent = request.body
+      val jsonBody: Option[JsValue] = body.asJson
+      jsonBody.map { json =>
+        val email=(json \ "email").as[String]
+        val registrationId=(json \ "registrationId").as[String]
+        val name=(json \ "name").as[String]
+
+        if(email=="" || registrationId=="" ||name=="" ){
+          BadRequest("not enough keys")
+        }
+        else {
+
+          if (configurationToken == requestToken) {
+
+            if (!Webuser.isEmailRegistered(email)) {
+              val fullname:List[String] =name.split(" ",2).toList
+              val firstname= if(fullname.length>=1){fullname(0)}else{""}
+              val lastname=if (fullname.length==2){fullname(1)}else{""}
+              val attendee = Webuser.createVisitor(email, Some(firstname), Some(lastname), Some(registrationId),None,None)
+
+              Webuser.saveAndValidateWebuser(attendee)
+              val likcfp = current.configuration.getString("cfp.hostname").get + "/homeVisitor"
+              TransactionalEmails.sendEmailtoparticipantcfpAccountInformation(attendee, email, likcfp)
+              Ok(Json.toJson(" creates a new visitor "))
+            }
+            else {
+              Webuser.findByEmail(email) match {
+                case Some(we) =>
+                  val webuser = we.copy(registrationId = Some(registrationId))
+                  Webuser.update(webuser)
+                  Ok(Json.toJson("user is already registred"))
+                case None => Ok(Json.toJson("not found"))
+              }
+            }
+          } else {
+
+            Ok(Json.toJson("Operation Not Authorized"))
+          }
+
+        } }.getOrElse {
+        BadRequest("not enough keys")
+      }
+
+
+
+  }
+  def visitorHasRegId (email:String) =  Action {
+    implicit request =>
+      val requestToken=request.headers.get("Token")
+      val configurationToken= current.configuration.getString("cfp.TrustedRequestToken")
+
+      if(configurationToken==requestToken){
+        if(Webuser.findByEmail(email).isDefined){
+          val wb = Webuser.findByEmail(email).get
+          if(Webuser.hasAccessToVisitor(wb.uuid)){
+            Webuser.ifVisitorHasRegId(email) match {
+
+              case true => Ok(Json.toJson(true))
+              case false => Ok(Json.toJson(false))
+            }
+          }else{
+            Ok(Json.toJson("Is not a visitor"))
+          }}else {
+          Ok(Json.toJson("Is not a member of CFP"))
+        }
+
+      }
+      else {
+        Ok(Json.toJson("Operation Not Authorized"))
+      }
+
+
+
+  }
+  def regIdExist (regId:String) =  Action {
+    implicit request =>
+      val requestToken=request.headers.get("Token")
+      val configurationToken= current.configuration.getString("cfp.TrustedRequestToken")
+      if(configurationToken==requestToken){
+        Webuser.regIdExist(regId) match {
+          case true => Ok(Json.toJson(true))
+          case false => Ok(Json.toJson(false))}
+      }
+      else {
+        Ok(Json.toJson("Operation Not Authorized"))
+      }
+
+
+
+  }
+
+
+  def serveSchedulerWebApp(path: String) = {
+    if(path.endsWith("js") || path.endsWith("css")) {
+      Assets.at(path="/public", file= "scheduler" + path)
+    } else {
+      Assets.at(path= "/public", file= "scheduler/index.html")
+    }
+  }
+  def serveSpeakersWebApp(path:String)= {
+    val root = "/public/speakers/"
+    Play.application(current).getFile(root.concat(path)).exists match {
+      case true => Assets.at(path=root, file=path)
+      case false => Assets.at(path=root, file="index.html")
+    }
+  }
+
+
+  def serveScheduleWebApp(path: String) = {
+    val root = "/public/schedule/"
+    Play.application(current).getFile(root.concat(path)).exists match {
+      case true => Assets.at(path=root, file=path)
+      case false => Assets.at(path=root, file="index.html")
+    }
+  }
 
   def profile(docName: String) = Action {
     implicit request =>
@@ -75,9 +207,9 @@ object RestAPI extends Controller {
           <item>
             <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
               { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
-                if(speaker.cleanTwitter.nonEmpty) {
-                  "(" + speaker.cleanTwitter.get + ")"
-                }
+            if(speaker.cleanTwitter.nonEmpty) {
+              "(" + speaker.cleanTwitter.get + ")"
+            }
               }
             </title>
             <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
@@ -88,6 +220,9 @@ object RestAPI extends Controller {
       </rss>
     )
   }
+
+
+
 
   def showAllConferences() = UserAgentActionAndAllowOrigin {
     implicit request =>
@@ -125,32 +260,32 @@ object RestAPI extends Controller {
               val allProposalTypesIds = ConferenceDescriptor.ConferenceProposalTypes.ALL.map(_.id)
 
               val jsonObject = Json.toJson(conference).as[JsObject] ++ Json.obj(
-                  "days" -> ConferenceDescriptor.current().timing.days.map(_.toString("EEEE", ConferenceDescriptor.current().locale.head)).toSeq,
-                  "proposalTypesId" -> allProposalTypesIds,
-                  //TODO
+                "days" -> ConferenceDescriptor.current().timing.days.map(_.toString("EEEE", ConferenceDescriptor.current().locale.head)).toSeq,
+                "proposalTypesId" -> allProposalTypesIds,
+                //TODO
 
-                  "links" -> List(
-                    Link(
-                      routes.RestAPI.showSpeakers(conference.eventCode),
-                      routes.RestAPI.profile("list-of-speakers"),
-                      "See all speakers"
-                    ),
-                    Link(
-                      routes.RestAPI.showAllSchedules(conference.eventCode),
-                      routes.RestAPI.profile("schedules"),
-                      "See the whole agenda"
-                    ),
-                    Link(
-                      routes.RestAPI.showProposalTypes(conference.eventCode),
-                      routes.RestAPI.profile("proposalType"),
-                      "See the different kind of conferences"
-                    ),
-                    Link(
-                      routes.RestAPI.showTracks(conference.eventCode),
-                      routes.RestAPI.profile("track"),
-                      "See the different kind of tracks"
-                    )
+                "links" -> List(
+                  Link(
+                    routes.RestAPI.showSpeakers(conference.eventCode),
+                    routes.RestAPI.profile("list-of-speakers"),
+                    "See all speakers"
+                  ),
+                  Link(
+                    routes.RestAPI.showAllSchedules(conference.eventCode),
+                    routes.RestAPI.profile("schedules"),
+                    "See the whole agenda"
+                  ),
+                  Link(
+                    routes.RestAPI.showProposalTypes(conference.eventCode),
+                    routes.RestAPI.profile("proposalType"),
+                    "See the different kind of conferences"
+                  ),
+                  Link(
+                    routes.RestAPI.showTracks(conference.eventCode),
+                    routes.RestAPI.profile("track"),
+                    "See the different kind of tracks"
                   )
+                )
 
               )
               Ok(jsonObject).withHeaders(ETAG -> eTag,
@@ -164,9 +299,11 @@ object RestAPI extends Controller {
     implicit request =>
 
       // First load published slots
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      /*val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
 
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet*/
+      val accepted: List[Proposal] = Proposal.allAccepted()
+      val allSpeakersIDs = accepted.flatMap(_.allSpeakerUUIDs).toSet
 
       val eTag = allSpeakersIDs.hashCode.toString
 
@@ -177,14 +314,14 @@ object RestAPI extends Controller {
         case other =>
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
           val speakers = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
-
+          val url:String = "http://blog.xebia.fr/images/devoxxuk-2014-logo.png"
           val updatedSpeakers = speakers.sortBy(_.name).map {
             speaker: Speaker =>
               Map(
                 "uuid" -> Json.toJson(speaker.uuid),
                 "firstName" -> speaker.firstName.map(Json.toJson(_)).getOrElse(JsNull),
                 "lastName" -> speaker.name.map(Json.toJson(_)).getOrElse(JsNull),
-                "avatarURL" -> speaker.avatarUrl.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
+                "avatarURL" -> speaker.avatarUrl.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson(url)),
                 "twitter" -> speaker.twitter.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
                 "company" -> speaker.company.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
                 "links" -> Json.toJson(List(
@@ -211,6 +348,7 @@ object RestAPI extends Controller {
 
   def showSpeaker(eventCode: String, uuid: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
+      val url:String = "http://blog.xebia.fr/images/devoxxuk-2014-logo.png"
 
       findByUUID(uuid).map {
         speaker =>
@@ -252,7 +390,7 @@ object RestAPI extends Controller {
                   "uuid" -> Json.toJson(speaker.uuid),
                   "firstName" -> speaker.firstName.map(Json.toJson(_)).getOrElse(JsNull),
                   "lastName" -> speaker.name.map(Json.toJson(_)).getOrElse(JsNull),
-                  "avatarURL" -> speaker.avatarUrl.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
+                  "avatarURL" -> speaker.avatarUrl.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson(url)),
                   "blog" -> speaker.blog.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
                   "company" -> speaker.company.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
                   "lang" -> speaker.lang.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson("fr")),
@@ -267,6 +405,79 @@ object RestAPI extends Controller {
           }
       }.getOrElse(NotFound("Speaker not found"))
   }
+
+  def showTalkSlot(eventCode: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+    implicit request =>
+      Proposal.findById(proposalId).map {
+        proposal =>
+          val eTag = proposal.hashCode.toString
+
+          request.headers.get(IF_NONE_MATCH) match {
+            case Some(tag) if tag == eTag =>
+              NotModified
+
+            case other => {
+              val slot = ScheduleConfiguration.loadSlots.filter{ slot =>
+                slot.proposal.isDefined && slot.proposal.get.id == proposalId
+              }.map { slot =>
+                val upProposal = slot.proposal.map {
+                  proposal =>
+                    val allSpeakers = proposal.allSpeakerUUIDs.flatMap {
+                      uuid => findByUUID(uuid)
+                    }
+                    val updatedProposal =
+                      Map(
+                        "id" -> Json.toJson(proposal.id),
+                        "title" -> Json.toJson(proposal.title),
+                        "lang" -> Json.toJson(proposal.lang),
+                        "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
+                        "summary" -> Json.toJson(proposal.summary),
+                        "track" -> Json.toJson(Messages(proposal.track.label)),
+                        "trackId" -> Json.toJson(proposal.track.id),
+                        "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                        "speakers" -> Json.toJson(allSpeakers.map {
+                          speaker =>
+                            Map(
+                              "link" -> Json.toJson(
+                                Link(
+                                  routes.RestAPI.showSpeaker(eventCode, speaker.uuid),
+                                  routes.RestAPI.profile("speaker"),
+                                  speaker.cleanName
+                                )
+                              ),
+                              "name" -> Json.toJson(speaker.cleanName)
+                            )
+                        })
+                      )
+                    updatedProposal
+                }
+
+
+                val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+                val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
+                Map(
+                  "slotId" -> Json.toJson(slot.id)
+                  , "day" -> Json.toJson(slot.day)
+                  , "roomId" -> Json.toJson(slot.room.id)
+                  , "roomName" -> Json.toJson(slot.room.name)
+                  , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                  , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                  , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                  , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
+                  , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
+                  , "break" -> Json.toJson(slot.break)
+                  , "roomSetup" -> Json.toJson(slot.room.setup)
+                  , "roomCapacity" -> Json.toJson(slot.room.capacity)
+                  , "notAllocated" -> Json.toJson(slot.notAllocated)
+                )
+              }.headOption
+              slot.map(json => Ok(Json.toJson(slot)).as(JSON).withHeaders(ETAG -> eTag)).getOrElse(NotFound("Slot not found")) }
+          }
+      }.getOrElse(NotFound("Proposal not found"))
+  }
+
+
 
   def showTalk(eventCode: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
@@ -326,7 +537,7 @@ object RestAPI extends Controller {
       // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
 
       val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx BE 2015 is not valid
-      val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
+    val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
 
       val eTag = proposals.hashCode.toString
 
@@ -479,7 +690,38 @@ object RestAPI extends Controller {
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL() + ">; rel=\"profile\""))
       }
   }
+  def showRoomsWithtalkNotBreak(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
+    implicit request =>
 
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
+      val newEtag = "v2_" + finalListOfSlots.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == newEtag => NotModified
+        case other =>
+          val toReturn = finalListOfSlots.filter { slot =>
+            slot.proposal.isDefined && slot.break.isEmpty && !slot.proposal.get.talkType.id.equals("trn")
+          }.map {
+            slot =>
+
+
+              Map(
+                  "roomId" -> Json.toJson(slot.room.id)
+                , "roomName" -> Json.toJson(slot.room.name)
+                , "roomSetup" -> Json.toJson(slot.room.setup)
+                , "roomCapacity" -> Json.toJson(slot.room.capacity)
+
+              )
+          }.distinct
+          val jsonObject = Json.toJson(
+            Map(
+              "rooms" -> Json.toJson(toReturn)
+            )
+          )
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("").absoluteURL() + ">; rel=\"profile\""))
+      }
+  }
   def showScheduleFor(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
@@ -491,6 +733,79 @@ object RestAPI extends Controller {
         case Some(someEtag) if someEtag == newEtag => NotModified
         case other =>
           val toReturn = finalListOfSlots.map {
+            slot =>
+              val upProposal = slot.proposal.map {
+                proposal =>
+                  val allSpeakers = proposal.allSpeakerUUIDs.flatMap(uuid => findByUUID(uuid))
+                  val updatedProposal =
+                    Map(
+                      "id" -> Json.toJson(proposal.id),
+                      "title" -> Json.toJson(proposal.title),
+                      "lang" -> Json.toJson(proposal.lang),
+                      "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
+                      "summary" -> Json.toJson(proposal.summary),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "trackId" -> Json.toJson(proposal.track.id),
+                      "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                      "speakers" -> Json.toJson(allSpeakers.map {
+                        speaker =>
+                          Map(
+                            "link" -> Json.toJson(
+                              Link(
+                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid),
+                                routes.RestAPI.profile("speaker"),
+                                speaker.cleanName
+                              )
+                            ),
+                            "name" -> Json.toJson(speaker.cleanName)
+                          )
+                      })
+                    )
+                  updatedProposal
+              }
+
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
+              Map(
+                "slotId" -> Json.toJson(slot.id)
+                , "day" -> Json.toJson(slot.day)
+                , "roomId" -> Json.toJson(slot.room.id)
+                , "roomName" -> Json.toJson(slot.room.name)
+                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
+                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
+                , "break" -> Json.toJson(slot.break)
+                , "roomSetup" -> Json.toJson(slot.room.setup)
+                , "roomCapacity" -> Json.toJson(slot.room.capacity)
+                , "notAllocated" -> Json.toJson(slot.notAllocated)
+              )
+          }
+          val jsonObject = Json.toJson(
+            Map(
+              "slots" -> Json.toJson(toReturn)
+            )
+          )
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL() + ">; rel=\"profile\""))
+      }
+  }
+
+  def showScheduleForByType(eventCode: String, day: String, talkType: String) = UserAgentActionAndAllowOrigin {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
+      val newEtag = "v2_" + finalListOfSlots.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == newEtag => NotModified
+        case other =>
+          val toReturn = finalListOfSlots.filter { slot =>
+            slot.proposal.isDefined &&
+              slot.proposal.get.talkType.id.toLowerCase == talkType.toLowerCase
+          }.map {
             slot =>
               val upProposal = slot.proposal.map {
                 proposal =>
@@ -608,6 +923,39 @@ object RestAPI extends Controller {
           )
 
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL() + ">; rel=\"profile\""))
+      }
+  }
+  def showSlots(eventCode: String) = UserAgentActionAndAllowOrigin {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val allSlots = ConferenceDescriptor.ConferenceSlots.all.map {
+        slot =>
+          Json.toJson {
+            Map(
+              "id" -> Json.toJson(slot.id)
+              , "name" -> Json.toJson(slot.name)
+              , "day" -> Json.toJson(slot.day)
+
+            )
+          }
+      }
+      val eTag = allSlots.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == eTag => NotModified
+        case other =>
+          val jsonObject = Json.toJson(
+            Map(
+              "content" -> Json.toJson("All slots"),
+              "slots" -> Json.toJson(allSlots)
+            )
+          )
+
+          Ok(jsonObject).as(JSON).withHeaders(
+            ETAG -> eTag,
+            "Access-Control-Allow-Origin" -> "*",
+            "Links" -> ("<" + routes.RestAPI.profile("").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -789,48 +1137,6 @@ object RestAPI extends Controller {
           )
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag)
       }
-  }
-
-
-  /**
-    * Verify a user account.
-    * This can also create a new user when the email does not exist!
-    *
-    * @return
-    */
-  val verifyAccountForm=Form(
-    tuple(
-      "email"->email,
-      "networkId"->optional(text),
-      "networkType"->optional(text)
-    )
-  )
-
-  def verifyAccount() = UserAgentActionAndAllowOrigin {
-    implicit request =>
-      verifyAccountForm.bindFromRequest().fold(
-        invalidForm=>{
-          BadRequest(invalidForm.errorsAsJson).as(JSON)
-        },
-        validTuple=>{
-          val email = validTuple._1
-          val newNetworkType = validTuple._2
-          val newNetworkId = validTuple._3
-          Webuser.findByEmail(email) match {
-            case Some(foundUser)=>
-            // Update users social network credentials
-            Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
-            Ok(foundUser.uuid)
-
-            case None=>
-            // User does not exist, lets create
-            val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-            val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-            Webuser.addToDevoxxians(uuid)
-            Created(uuid)
-          }
-        }
-      )
   }
 }
 

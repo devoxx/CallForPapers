@@ -1,7 +1,7 @@
 package controllers
 
 import library.search.{DoIndexProposal, _}
-import library._
+import library.{DraftReminder, Redis, ZapActor }
 import models.{Tag, _}
 import org.joda.time.{DateTime, Instant}
 import play.api.Play
@@ -11,8 +11,6 @@ import play.api.data._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
-
-import scala.concurrent.Future
 
 /**
   * Backoffice actions, for maintenance and validation.
@@ -105,6 +103,7 @@ object Backoffice extends SecureCFPController {
   def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
+
       if (state == ProposalState.ACCEPTED.code) {
         Proposal.findById(proposalId).foreach {
           proposal =>
@@ -119,6 +118,8 @@ object Backoffice extends SecureCFPController {
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
         }
       }
+
+
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
   }
 
@@ -150,7 +151,6 @@ object Backoffice extends SecureCFPController {
       ElasticSearchActor.masterActor ! DoIndexAllProposals
       ElasticSearchActor.masterActor ! DoIndexAllAccepted
       ElasticSearchActor.masterActor ! DoIndexAllHitViews
-      ElasticSearchActor.masterActor ! DoIndexSchedule
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Elastic search actor started...")
   }
 
@@ -242,12 +242,12 @@ object Backoffice extends SecureCFPController {
       // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
       val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
         for (speakerId <- specialSpeakers) yield {
-          val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
-          val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
-          val conflict = groupedByDate.filter(_._2.size > 1)
-          val speaker = Speaker.findByUUID(speakerId).get
-          (speaker, conflict)
-        }
+        val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
+        val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
+        val conflict = groupedByDate.filter(_._2.size > 1)
+        val speaker = Speaker.findByUUID(speakerId).get
+        (speaker, conflict)
+      }
 
       Ok(
         views.html.Backoffice.sanityCheckSchedule(
@@ -259,30 +259,6 @@ object Backoffice extends SecureCFPController {
         )
       )
 
-  }
-
-  def refreshSchedules() = SecuredAction(IsMemberOf("admin")).async {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      import akka.pattern.ask
-      import akka.util.Timeout
-
-      import scala.concurrent.ExecutionContext.Implicits.global
-      import scala.concurrent.duration._
-      implicit val timeout = Timeout(15 seconds)
-
-      val futureMessages:Future[Any] = ZapActor.actor  ? CheckSchedules
-
-      futureMessages.map {
-        case s: List[(Proposal,String,String,String)] =>
-          Ok(views.html.Backoffice.refreshSchedules(s))
-        case other => Ok("unknown return type from Akka")
-      }
-  }
-
-  def confirmPublicationChange(talkType:String, proposalId:String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      ZapActor.actor ! UpdateSchedule(talkType, proposalId)
-      Redirect(routes.Backoffice.refreshSchedules())
   }
 
   def sanityCheckProposals() = SecuredAction(IsMemberOf("admin")) {
@@ -312,7 +288,7 @@ object Backoffice extends SecureCFPController {
 
       maybeUpdated.map {
         newListOfSlots =>
-          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
+          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser )
           ScheduleConfiguration.publishConf(newID, talkType)
 
           Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
@@ -467,68 +443,6 @@ object Backoffice extends SecureCFPController {
       }
 
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
-  }
-
-
-  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-
-      request.body.asJson.map {
-        json =>
-          val message = json.\("stringField").as[String]
-
-          ZapActor.actor ! NotifyMobileApps(message)
-
-          Ok(message)
-      }.getOrElse {
-        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
-      }
-  }
-
-  def deleteWebuser(uuid:String)=SecuredAction(IsMemberOf("admin")) {
-    implicit request=>
-      Webuser.findByUUID(uuid) match{
-        case Some(w) =>
-          Webuser.delete(w)
-          Speaker.delete(uuid)
-          FavoriteTalk.deleteAllForWebuser(uuid)
-          ScheduleTalk.deleteAllForWebuser(uuid)
-          Ok("Deleted Webuser and deleted speaker, favorite talks and scheduleTalk. Webuser="+w)
-        case None => NotFound("Webuser not found")
-      }
-  }
-
-  def checkInvalidWebuserForAllSpeakers()=SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      Speaker.allSpeakersUUID().foreach{
-        uuid=>
-          Webuser.findByUUID(uuid) match {
-            case None=>
-               val s = Speaker.findByUUID(uuid)
-              play.Logger.info("Missing Webuser for Speaker "+uuid+" "+s.map(_.cleanName))
-            case other=>
-          }
-
-          Webuser.isSpeaker(uuid) match {
-            case false =>
-              val s = Speaker.findByUUID(uuid)
-              play.Logger.info("Missing group for speaker "+uuid+" "+s.map(_.cleanName))
-            case other=>
-          }
-          Speaker.findByUUID(uuid).foreach{
-            speaker=>
-              Webuser.isEmailRegistered(speaker.email) match {
-                case false =>
-                  play.Logger.error(s"Speaker's email is not stored in Webuser:Email => BUG ${speaker.email}")
-                  Webuser.fixMissingEmail(speaker.email,speaker.uuid)
-                case other=>
-              }
-          }
-
-      }
-      Ok("voir la console")
-
-
   }
 
 }

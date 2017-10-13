@@ -12,13 +12,15 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading"><p>@speaker.cleanName</p><small>@webuser.email</small></div>
+
+
                 <table class="table">
                     <tbody>
                         <tr>
                             <td>
-                            @if(speaker.avatarUrl.isEmpty) {
+                            @if(speaker.avatarUrl.isEmpty && speaker.picture.isEmpty) {
                                 <div class="media">
-                                        <img class="media-object"
+                                        <img style="border-radius: 160px;" class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75"
                                         alt="@webuser.firstName @webuser.lastName"
                                         title="This is you" />
@@ -27,15 +29,28 @@
                                             Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
                                     </div>
                                 </div>
-                            } else {
+
+                            } else{
+
+                                @if(speaker.avatarUrl.isDefined){
                                 <div class="media">
-                                        <img class="media-object"
+
+                                        <img style="border-radius: 160px;" class="media-object"
                                         width="75"
                                         src="@speaker.avatarUrl.get"
-                                        alt="@webuser.firstName @webuser.lastName"
-                                        title="This is you" />
+                                        alt="@webuser.firstName @webuser.lastName"/>
+
                                 </div>
-                            }
+                            }else {
+
+                                <div class="media">
+                                    <img  style="border-radius: 160px;" class="media-object"
+                                    width="75"
+                                    src="@speaker.picture.get"
+                                    alt="@webuser.firstName @webuser.lastName"
+                                    title="This is you" />
+                                </div>}}
+
                             </td>
                         </tr>
 
@@ -43,7 +58,7 @@
                             <td>@Html(Messages("bio"))</td>
                             <td>
                             @if(speaker.hasBio) {
-                                <i class="icon-ok alert-success"></i>
+                                <i style="border-radius: 160px" class="icon-ok alert-success"></i>
                             } else {
                                 <i class="icon-exclamation-sign error"></i>
                             }
@@ -54,7 +69,7 @@
                             <td>@Html(Messages("url.photo"))</td>
                             <td>
                             @if(speaker.hasAvatar) {
-                                <i class="icon-ok alert-success"></i>
+                                <i style="border-radius: 160px" class="icon-ok alert-success"></i>
                             } else {
                                 <i class="icon-exclamation-sign error"></i>
                             }
@@ -65,9 +80,9 @@
                             <td>@Html(Messages("blog.website"))</td>
                             <td>
                             @if(speaker.hasBlog) {
-                                <i class="icon-ok alert-success"></i>
+                                <i style="border-radius: 160px" class="icon-ok alert-success"></i>
                             } else {
-                                <i class="icon-exclamation-sign error"></i>
+                                <i  class="icon-exclamation-sign error"></i>
                             }
                             </td>
                         </tr>
@@ -75,7 +90,7 @@
                             <td>@Html(Messages("company"))</td>
                             <td>
                             @if(speaker.hasCompany) {
-                                <i class="icon-ok alert-success"></i>
+                                <i style="border-radius: 160px" class="icon-ok alert-success"></i>
                             } else {
                                 <i class="icon-exclamation-sign error"></i>
                             }
@@ -86,7 +101,7 @@
                             <td>@Html(Messages("twitter"))</td>
                             <td>
                             @if(speaker.hasTwitter) {
-                                <i class="icon-ok alert-success"></i>
+                                <i style="border-radius: 160px" class="icon-ok alert-success"></i>
                             } else {
                                 <i class="icon-exclamation-sign error"></i>
                             }
@@ -96,9 +111,9 @@
                             <td>@Html(Messages("qualifications.label"))</td>
                             <td>
                             @if(StringUtils.trimToEmpty(speaker.qualifications.getOrElse("")).isEmpty) {
-                                <i class="icon-exclamation-sign error"></i>
+                                <i  class="icon-exclamation-sign error"></i>
                             } else {
-                                <i class="icon-ok alert-success"></i>
+                                <i style="border-radius: 160px" class="icon-ok alert-success"></i>
                             }
                             </td>
                         </tr>
@@ -107,7 +122,7 @@
 
 
                 <div class="panel-footer">
-                    <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
+                    <a href="@routes.CallForPaper.editProfile()"  style="border-radius: 5px" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
                 </div>
 
             </div>
@@ -131,49 +146,32 @@
 
             @if(Webuser.isMember(webuser.uuid, "cfp")){
                 <div class="digestMessage">
-                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>@Messages("email.digest.description")<br>
-                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
-                                <td>
-                                    <select id="digest">
-                                    @Digest.allDigests.map { digest =>
-                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
-                                            <option value='@digest.value' selected>
-                                        }else {
-                                            <option value='@digest.value'>
-                                            }
-                                        @digest.value
-                                    </option>
-                                    }
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
-                                    <div class="filterTracks">
-                                    @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
-                                        @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
-                                            @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
-                                                <input type="checkbox" id="@track.id" checked/>
-                                            } else {
-                                                <input type="checkbox" id="@track.id"/>
-                                            }
-                                        } else {
-                                            <input type="checkbox" id="@track.id"/>
+                <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>@Messages("email.digest.description")<br>
+                                <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
+                            <td>
+                                <select id="digest">
+                                @Digest.allDigests.map { digest =>
+                                    @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                        <option value='@digest.value' selected>
+                                    }else {
+                                        <option value='@digest.value'>
                                         }
-                                        &nbsp;@Html(Messages(track.label))<br>
-                                    }
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    @digest.value
+                                </option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
             }
+
 
         </div>
 
@@ -234,40 +232,46 @@
                         <tr>
                             <td>
                                 <a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a><br>
-                                <a style="padding-left:4px;padding-left:3px;" href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> @Messages("hfspk.edit.speaker")</a>
+                                <a style="padding-left:4px;padding-left:3px; border-radius: 5px" href="@routes.CallForPaper.editOtherSpeakers(prop.id)"  class="btn btn-xs btn-color-9" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> @Messages("hfspk.edit.speaker")</a>
                             </td>
-                            <td>
-                                <div style="max-width:114px">
-                                @tags.renderGravatar(prop.mainSpeaker,showName = false)
-                                @prop.secondarySpeaker.map{secondarySpeakerUUID=>
+                            <td >
+                                <div style="max-width:2000px ; display: inline-block">
+                                    <span>@tags.renderGravatar(prop.mainSpeaker,showName = false)</span>
+                               <span> @prop.secondarySpeaker.map{secondarySpeakerUUID=>
                                     @tags.renderGravatar(secondarySpeakerUUID,showName = false)
-                                }
-                                @prop.otherSpeakers.map{listOfUUID=>
+                               }</span>
+                               <span> @prop.otherSpeakers.map{listOfUUID=>
                                     @listOfUUID.split(",").map{suid=>
                                         @tags.renderGravatar(suid,showName = false)
                                     }
-                                }
+                                }</span>
                                 </div>
                             </td>
                             <td>
                             @if(prop.state.code=="accepted" || prop.state.code=="approved"){
-                                <span class="label label-success">@prop.state.code</span>
+                                <span style="border-radius: 10px"  class="label label-success">@prop.state.code</span>
                             }
                             @if(prop.state.code=="declined" || prop.state.code=="rejected" ||prop.state.code=="deleted"){
-                                <span class="label label-danger">@prop.state.code</span>
+                                <span style="border-radius: 10px"  class="label label-danger">@prop.state.code</span>
                             }
                              @if(prop.state.code=="draft"){
                                 <span class="label label-warning">@prop.state.code</span>
                             }
                             @if(prop.state.code=="submitted"){
-                                <span class="label label-info">@prop.state.code</span>
+                                <span style="border-radius: 10px"  class="label label-info">@prop.state.code</span>
                             }
                             @if(prop.state.code=="backup"){
-                                <span class="label label-warning">@prop.state.code</span>
+                                <span style="border-radius: 10px"  class="label label-warning">@prop.state.code</span>
                             }
                             @if(prop.state.code=="archived"){
-                                <span class="label label-default">@prop.state.code</span>
+                                <span style="border-radius: 10px"  class="label label-default">@prop.state.code</span>
                             }
+                                @if(prop.state.code=="toreview"){
+                                    <span style="border-radius: 10px"  class="label label-toreview">@prop.state.code</span>
+                                }
+                                @if(prop.state.code=="replylater"){
+                                    <span style="border-radius: 10px" class="label label-replylater">@prop.state.code</span>
+                                }
                             </td>
                             <td>
                             @if(prop.state==ProposalState.DRAFT){
@@ -283,7 +287,7 @@
                             </td>
                             <td>
                                 @if(prop.state==ProposalState.SUBMITTED ||prop.state==ProposalState.DRAFT ){
-                                    <a href="@routes.CallForPaper.deleteProposal(prop.id)" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
+                                    <a href="@routes.CallForPaper.deleteProposal(prop.id)" style="border-radius: 160px" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
                                 }
 
                             </td>
@@ -311,9 +315,13 @@
                     </tfoot>
                 </table>
             }
-@if(ConferenceDescriptor.isCFPOpen){
-            <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
+@if(ConferenceDescriptor.isCFPOpen || webuser.vip==Some(true)){
+            <a href="@routes.CallForPaper.newProposal" style="border-radius: 5px" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
 }else{
+
+    <div>
+        <!-- <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))-->
+    </div>
     <div class="panel panel-success">
         <div class="panel-heading">Information</div>
         <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
@@ -360,31 +368,15 @@
 
 </div>
 <script language="JavaScript">
-
-    $('#digest').change(function(){
+    var selection = $('#digest');
+    selection.change(function(){
         $.ajax({
             type: "POST",
-            url: "/cfp/profile/digest?value="+$('#digest').val(),
+            url: "@routes.DigestController.update().absoluteURL(ConferenceDescriptor.isHTTPSEnabled)?value="+selection.val(),
             success: function(data) {
                 return $('#digestMsg').text(data);
             }
         })
-    });
-
-    $('.filterTracks input[type="checkbox"]').on('click', function() {
-
-        if ($(this).is(':checked')) {
-            $.ajax({
-                type: "POST",
-                url: "/cfp/profile/digestTrack?value="+$(this).attr('id')
-            })
-
-        } else {
-            $.ajax({
-                type: "DELETE",
-                url: "/cfp/profile/digestTrack?value="+$(this).attr('id')
-            })
-        }
     });
 </script>
 <!-- @speaker.uuid -->

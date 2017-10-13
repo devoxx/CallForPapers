@@ -7,8 +7,6 @@ The application allows a speaker to register with Github/Google+ or LinkedIn, th
 A program committee can then vote, ask questions to speaker and finally, build an Agenda for a conference.
 The CFP offers also a REST API with the list of selected talks, speakers and the schedules. 
 
-In 2015, the Devoxx France's CFP received 681 proposals for 220 slots. The 16 members of the technical committee for Devoxx FR did more than 6700 reviews in 2 months.
-
 # Contributors
 
 Original author: Nicolas Martignole [@nmartignole](http://www.twitter.com/nmartignole)

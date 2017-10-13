@@ -113,6 +113,7 @@ object ScheduleConfiguration {
       }
   }
 
+
   def publishConf(id: String, confType: String) = Redis.pool.withClient {
     implicit client => client.hset("Published:Schedule", confType, id)
   }
@@ -183,7 +184,19 @@ object ScheduleConfiguration {
       sc => sc.slots
     }
   }
+ /* def isfavedtalksScheduled ( p :Proposal) : Boolean= Redis.pool.withClient{
 
+
+    val id = findSlotForConfType(p.talkType.id , p.id).getOrElse(id.)
+
+
+     //loadAllPublishedSlots().contains(slot.getOrElse(""))
+    implicit client =>
+      client.hexists("ScheduleConfigurationByID" ,  )
+
+
+}
+*/
   def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)

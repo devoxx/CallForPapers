@@ -142,6 +142,8 @@ trait SecureCFPController extends Controller {
         authenticator <- SecureCFPController.findAuthenticator;
         user <- SecureCFPController.lookupWebuser(authenticator)
       ) yield {
+
+
         if (authorize.isEmpty || authorize.get.isAuthorized(user)) {
           block(SecuredRequest(user, request))
         } else {
@@ -213,6 +215,11 @@ object SecureCFPController {
     findAuthenticator.isDefined
   }
 
+def hasAccessToVisitor(implicit request : RequestHeader) : Boolean = {
+  findAuthenticator.exists(uuid =>
+    Webuser.hasAccessToVisitor(uuid)
+  )
+}
   def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
     findAuthenticator.exists(uuid =>
       Webuser.isSpeaker(uuid)
@@ -236,6 +243,13 @@ object SecureCFPController {
       Webuser.hasAccessToGoldenTicket(uuid)
     )
   }
+  def hasAccessToAdminVis(implicit request: RequestHeader): Boolean = {
+    findAuthenticator.exists(uuid =>
+      Webuser.hasAccessToAdminVis(uuid)
+    )
+  }
+
+
 
   def getCurrentUser(implicit request: RequestHeader): Option[Webuser] = {
     findAuthenticator.flatMap(uuid => lookupWebuser(uuid))

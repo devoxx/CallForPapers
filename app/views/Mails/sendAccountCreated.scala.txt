@@ -1,17 +1,43 @@
 @(firstName:String, email:String, tempPassword:String)
 
-Dear @firstName
+@if( !Webuser.hasAccessToVisitor(Webuser.findByEmail(email).get.uuid)){
 
-Welcome to @Messages("longName") (Call For Papers)
 
-As a convenience to you, we have created an account for you on @Messages("longName"). This account will enable to you access your profile and your submissions.
-To access your @Messages("longName") speaker dashboard, please click in the link below.
 
-@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.index()
+<h2>Dear @firstName</h2>
 
-- Your username is @email
-- Your password is @tempPassword
+<p>Welcome to @Messages("longName") (Call For Papers)</p>
 
-Best regards
+<p>As a convenience to you, we have created an account for you on @Messages("longName"). This account will enable you to access your profile and your submissions.</p>
+<p>To access your @Messages("longName") speaker dashboard, please click in the link below.</p>
 
-The @Messages("longName") team
+<p><a rel="notrack" href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.index()">Access to @Messages("longName") CFP</a></p>
+
+<ul>
+    <li>- Your username is <strong>@email</strong></li>
+    <li>- Your password is <strong>@tempPassword</strong></li>
+</ul>
+
+<p>&nbsp;</p>
+<p>Best regards</p>
+<p>The @Messages("longName") team</p>
+}else{
+
+    <h2>Dear @firstName</h2>
+
+    <p>Welcome to @Messages("longName") (Call For Papers)</p>
+
+    <p>As a convenience to you, we have created an account for you on @Messages("longName"). This account will enable you to access your profile , you can see the full program , create your agenda and choose your favorite talks .</p>
+    <p>To access your @Messages("longName") visitor dashboard, please click in the link below.</p>
+
+    <p><a rel="notrack" href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.homeVisitor()">Access to @Messages("longName") visitor </a></p>
+
+    <ul>
+        <li>- Your username is <strong>@email</strong></li>
+        <li>- Your password is <strong>@tempPassword</strong></li>
+    </ul>
+
+    <p>&nbsp;</p>
+    <p>Best regards</p>
+    <p>The @Messages("longName") team</p>
+}

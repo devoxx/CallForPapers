@@ -44,8 +44,6 @@ object ApprovedProposal {
     , ("quick.label", ConferenceProposalConfigurations.QUICK.slotsCount)
     , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
     , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
-    , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
-    , ("other.label", ConferenceProposalConfigurations.OTHER.slotsCount)
   )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
@@ -182,6 +180,18 @@ object ApprovedProposal {
           tx.sadd("RefusedSpeakers:" + otherSpeaker, proposal.id.toString)
       }
       tx.exec()
+  }
+  def rejecte(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+
+      client.sadd("RejectedById:", proposal.id.toString)
+
+  }
+  def cancelrejecte(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+
+      client.srem("RejectedById:", proposal.id.toString)
+
   }
 
   def cancelApprove(proposal: Proposal) = Redis.pool.withClient {
@@ -352,5 +362,12 @@ object ApprovedProposal {
       }
       val setOfSpeakers = allSpeakers.filterNot(_._2.isEmpty).map(_._1)
       setOfSpeakers
+  }
+  def allNotifyRefused(): List[String] = Redis.pool.withClient {
+    implicit client =>
+
+      val allProposalIDs = client.smembers("RejectedById:" )
+
+      allProposalIDs.toList
   }
 }

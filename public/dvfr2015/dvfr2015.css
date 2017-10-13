@@ -8936,7 +8936,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 300;
-    src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v10/IY9HZVvI1cMoAHxvl0w9LQLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Light'), local('Lato-Light'), url(http://fonts.gstatic.com/s/lato/v10/IY9HZVvI1cMoAHxvl0w9LQLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -8945,7 +8945,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 300;
-    src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v10/22JRxvfANxSmnAhzbFH8PgLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Light'), local('Lato-Light'), url(http://fonts.gstatic.com/s/lato/v10/22JRxvfANxSmnAhzbFH8PgLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -8954,7 +8954,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v10/8qcEw_nrk_5HEcCpYdJu8PesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+    src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v10/8qcEw_nrk_5HEcCpYdJu8PesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -8963,7 +8963,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v10/MDadn8DQ_3oT6kvnUq_2r_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+    src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v10/MDadn8DQ_3oT6kvnUq_2r_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -8972,7 +8972,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v10/rZPI2gHXi8zxUjnybc2ZQALUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Bold'), local('Lato-Bold'), url(http://fonts.gstatic.com/s/lato/v10/rZPI2gHXi8zxUjnybc2ZQALUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -8981,7 +8981,7 @@ p#mc4wp-checkbox label {
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v10/MgNNr5y1C_tIEuLEmicLmwLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+    src: local('Lato Bold'), local('Lato-Bold'), url(http://fonts.gstatic.com/s/lato/v10/MgNNr5y1C_tIEuLEmicLmwLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -19967,7 +19967,7 @@ Main Top Section - Image Page
     *vertical-align: auto;
     *zoom: 1;
     *display: inline;
-    font-size: 30px;
+    font-size: 22px;
     font-family: "qtype_otseext_medium";
     line-height: 50px;
     padding-top: 14px;
@@ -19978,10 +19978,10 @@ Main Top Section - Image Page
 }
 
 #top-header .logo-holder:after {
-    Content: 'X';
+    Content: 'X MA';
     color: #f5af33;
     position: relative;
-    left: -12px;
+    left: -13px;
 }
 
 #top-header .logo-holder a {
@@ -20003,7 +20003,7 @@ Main Top Section - Image Page
     -ms-transform: skew(-20deg, 0);
     transform: skew(-20deg, 0);
     position: absolute;
-    width: 75%;
+    width: 79%;
     height: 100%;
     left: 210px;
     z-index: 1;
@@ -20065,6 +20065,7 @@ Main Top Section - Image Page
     border-bottom: 1px solid transparent;
     padding-top: 4px;
     text-align: left;
+    text-decoration: none;
     padding-bottom: 2px;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
@@ -20081,6 +20082,7 @@ Main Top Section - Image Page
     text-transform: uppercase;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    text-decoration: none;
     padding-top: 4px;
     padding-bottom: 2px;
     -webkit-transition: all 0.3s;

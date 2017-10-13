@@ -26,13 +26,15 @@ package library
 import java.util
 
 import akka.actor._
+import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
+import com.amazonaws.services.sns.AmazonSNSClient
+import com.amazonaws.services.sns.model._
+import com.amazonaws.{ClientConfiguration, Protocol}
 import controllers.{CFPAdmin, LeaderboardController}
 import models._
-import notifiers.Mails
-import org.apache.http.client.entity.UrlEncodedFormEntity
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.message.BasicNameValuePair
+import notifiers.{Mails, TransactionalEmails}
+import org.apache.commons.lang3.StringUtils
+import play.api.Play
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
@@ -59,6 +61,11 @@ case class SendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: 
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
 case class DraftReminder()
+case class SendScheduledFavorites()
+case class SendScheduleForSpeakers()
+case class SendScheduleForSpeaker(uuid : String)
+
+case class NotifyAllVisitorsForSchedule()
 
 case class ComputeLeaderboard()
 
@@ -67,7 +74,9 @@ case class ComputeVotesAndScore()
 case class RemoveVotesForDeletedProposal()
 
 case class ProposalApproved(reporterUUID: String, proposal: Proposal)
-
+case class ProposalApprovedAfeterRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String])
+case class ProposalcustomRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String])
+case class allAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept:String)
 case class ProposalRefused(reporterUUID: String, proposal: Proposal)
 
 case class SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
@@ -84,13 +93,10 @@ case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
 
 case class SendHeartbeat(apiKey: String, name: String)
 
-case class NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean] = None)
+case class NotifyMobileApps(confType: String)
 
-case class EmailDigests(digest: Digest)
-
-case object CheckSchedules
-
-case class UpdateSchedule(talkType:String, proposalId:String)
+case class EmailDigests(digest : Digest)
+case class DoCreateTalkAfterCfp(wb : Webuser)
 
 
 // Defines an actor (no failover strategy here)
@@ -105,10 +111,17 @@ class ZapActor extends Actor {
     case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
+    case SendScheduledFavorites() => sendFavoritedScheduled()
+    case SendScheduleForSpeakers() => sendScheduleSpeaks()
+    case SendScheduleForSpeaker(uuid:String) => sendScheduleSpeaker(uuid: String)
+    case NotifyAllVisitorsForSchedule => sendNotificationSchedule()
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
+    case ProposalApprovedAfeterRefese(reporterUUID, proposal,content,subject) => doProposalApprovedAfeterRefese(reporterUUID, proposal,content,subject)
+    case ProposalcustomRefese(reporterUUID, proposal,content,subject) => doProposalcustomRefese(reporterUUID, proposal,content,subject)
+    case  allAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept)=>doallAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept)
     case ProposalRefused(reporterUUID, proposal) => doProposalRefused(reporterUUID, proposal)
     case SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) => doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
@@ -117,11 +130,13 @@ class ZapActor extends Actor {
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
-    case NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]) => doNotifyMobileApps(message, scheduleUpdate)
+    case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
-    case CheckSchedules => doCheckSchedules()
-    case UpdateSchedule(talkType:String, proposalId:String) => doUpdateProposal(talkType:String, proposalId:String)
+    case DoCreateTalkAfterCfp(wb : Webuser) => CreateTalkAfterCfp(wb)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
+  }
+  def sendNotificationSchedule(){
+
   }
 
   def publishBugReport(issue: Issue) {
@@ -185,6 +200,53 @@ class ZapActor extends Actor {
       }
     }
   }
+  def sendFavoritedScheduled(){
+    val allvisitors = Webuser.allVisitors()
+    allvisitors.foreach{ (vis : Webuser) =>
+     if ( !FavoriteTalk.getAllfavTalkByVisitor(vis.uuid).isEmpty & FavoriteTalk.isFavScheduleexist(vis.uuid)){
+       val favs = FavoriteTalk.getAllfavTalkByVisitor(vis.uuid)
+       val slots = favs.flatMap {
+         talk: Proposal =>
+           ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+       }
+       Mails.sendScheduledFavorite(slots , vis)
+
+     }
+    }
+  }
+  def sendScheduleSpeaks(){
+    val allSpeaks = Webuser.allSpeakers
+      allSpeaks.foreach{ (spea : Webuser)=>
+      if(Speaker.isPropScheduleexist(spea.uuid)){
+        val props = Proposal.allMyProposals(spea.uuid)
+        val slots = props.flatMap{
+          talk: Proposal =>
+            ScheduleConfiguration.findSlotForConfType(talk.talkType.id , talk.id)
+
+        }
+        Mails.sendScheduledSpeaksProps(slots , spea)
+      }
+    }
+
+
+  }
+  def sendScheduleSpeaker(uuid:String){
+
+
+      if (Speaker.isPropScheduleexist(uuid)){
+        val props = Proposal.allMyProposals(uuid)
+        val slots = props.flatMap{
+          talk: Proposal =>
+            ScheduleConfiguration.findSlotForConfType(talk.talkType.id , talk.id)
+
+        }
+        Mails.sendScheduledSpeaksProps(slots , Webuser.findByUUID(uuid).get)
+      }
+
+
+
+
+  }
 
   def doComputeLeaderboard() {
     Leaderboard.computeStats()
@@ -212,7 +274,34 @@ class ZapActor extends Actor {
       Proposal.approve(reporterUUID, proposal.id)
     }
   }
+  def doallAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept:String){
 
+     Speaker.findByUUID(speakeruuidNotAccept).map{x=>
+       Mails.sendAcceptedtoAcceptteTermeAndCondition(x)
+
+     }.getOrElse{
+       play.Logger.error("Speaker not found with uuid " + speakeruuidNotAccept)
+     }
+  }
+
+  def doProposalApprovedAfeterRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String]) {
+    for (reporter <- Webuser.findByUUID(reporterUUID);
+         speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
+      Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Approved"))
+      Mails.sendProposalApprovedAfeterRefese(speaker, proposal,content,subject)
+      Proposal.approve(reporterUUID, proposal.id)
+
+    }
+  }
+  def doProposalcustomRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String]) {
+    for (reporter <- Webuser.findByUUID(reporterUUID);
+         speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
+      Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Refused"))
+      Mails.sendProposalcustomRefese(speaker, proposal,content,subject)
+      Proposal.reject(reporterUUID, proposal.id)
+
+    }
+  }
   def doProposalRefused(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
@@ -286,72 +375,76 @@ class ZapActor extends Actor {
       play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
     }
   }
+  def CreateTalkAfterCfp (wb : Webuser) : Unit = {
+    play.Logger.debug(s"Notify golden ticket ${wb.uuid}")
+    Webuser.findByUUID(wb.uuid).map {
+      invitedWebuser: Webuser =>
+      Mails.sendCreateTalkCfpClose(invitedWebuser)
 
-  /**
-    * Push mobile schedule notification via Gluon Link
-    *
-    * method: POST
-    * url: https://cloud.gluonhq.com/3/push/enterprise/notification
-    * form params:
-    *   - title: notification title
-    *   - body: notification body
-    *   - deliveryDate: when the push notification should be sent (not yet implemented, give 0 for now)
-    *   - priority: HIGH of NORMAL
-    *   - expirationType: WEEKS, DAYS, HOURS of MINUTES
-    *   - expirationAmount: number of units of expirationType: WEEKS [0,4], DAYS: [0,7], HOURS: [0,24], MINUTES: [0,60]
-    *   - targetType: ALL_DEVICES or SINGLE_DEVICE
-    *   - targetDeviceToken: the device token where to push the notification, only in combination with targetType=SINGLE_DEVICE
-    *   - invisible: true or false
-    *   authenticatie: Authorization header with value: "Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
-    *
-    * Example silent push
-    *
-    * curl https://cloud.gluonhq.com/3/push/enterprise/notification -i -X POST
-    *   -H "Authorization: Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
-    *   -d "title=update"
-    *   -d "body=update"
-    *   -d "deliveryDate=0"
-    *   -d "priority=HIGH"
-    *   -d "expirationType=DAYS"
-    *   -d "expirationAmount=1"
-    *   -d "targetType=ALL_DEVICES"
-    *   -d "invisible=true"
-    *
-    *
-    * @param message the notification message
-    * @param scheduleUpdate true = invisible message
-    */
-  def doNotifyMobileApps(message:String, scheduleUpdate: Option[Boolean]): Unit = {
 
-    play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
+    }.getOrElse {
+    play.Logger.error("user not found with uuid " + wb.uuid)
+  }
 
-    val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader("Authorization","Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj")
 
-    val urlParameters = new util.ArrayList[BasicNameValuePair]()
-    urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
 
-    if (scheduleUpdate.getOrElse(false)) {
-      urlParameters.add(new BasicNameValuePair("body", ConferenceDescriptor.current().confUrlCode))
-    } else {
-      urlParameters.add(new BasicNameValuePair("body", message))
-    }
-
-    urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
-    urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
-    urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
-    urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
-    urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
-    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
-    urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
-
-    post.setEntity(new UrlEncodedFormEntity(urlParameters))
-    val client = new DefaultHttpClient
-    client.execute(post)
   }
 
   /**
-    * Handle email digests, including track proposal filters.
+    * Push mobile schedule notification via AWS SNS.
+    *
+    * @param confType the event type that has been modified
+    */
+  def doNotifyMobileApps(confType: String): Unit = {
+
+    play.Logger.debug("Notify mobile apps of a schedule change")
+
+    val awsKey: Option[String] = Play.current.configuration.getString("aws.key")
+    val awsSecret: Option[String] = Play.current.configuration.getString("aws.secret")
+    val awsRegion: Option[String] = Play.current.configuration.getString("aws.region")
+
+    if (awsKey.isDefined && awsSecret.isDefined && awsRegion.isDefined) {
+
+      val credentials: AWSCredentials with Object = new BasicAWSCredentials(awsKey.get, awsSecret.get)
+
+      val configClient: ClientConfiguration = new ClientConfiguration()
+      configClient.setProtocol(Protocol.HTTP)
+
+      val snsClient: AmazonSNSClient = new AmazonSNSClient(credentials, configClient)
+      snsClient.setEndpoint(awsRegion.get)
+
+      //create a new SNS topic
+      val createTopicRequest: CreateTopicRequest = new CreateTopicRequest("cfp_schedule_updates")
+      val createTopicResult: CreateTopicResult = snsClient.createTopic(createTopicRequest)
+
+      play.Logger.debug(createTopicResult.getTopicArn)
+
+      //publish to an SNS topic
+      val publishRequest: PublishRequest = new PublishRequest()
+
+      publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
+
+      val messageAttributeValue: MessageAttributeValue = new MessageAttributeValue()
+      messageAttributeValue.setStringValue("wns/raw")
+      messageAttributeValue.setDataType("String")
+
+      val attributeValueMap: util.HashMap[String, MessageAttributeValue] = new util.HashMap[String, MessageAttributeValue]()
+      attributeValueMap.put("AWS.SNS.MOBILE.WNS.Type", messageAttributeValue)
+
+      publishRequest.setMessageAttributes(attributeValueMap)
+      publishRequest.setMessageStructure("json")
+      publishRequest.setTargetArn(createTopicResult.getTopicArn)
+
+      val publish: PublishResult = snsClient.publish(publishRequest)
+
+      play.Logger.debug(publish.getMessageId)
+    } else {
+      play.Logger.error("AWS key and secret not configured")
+    }
+  }
+
+  /**
+    * Handle email digests.
     *
     * @param digest the digest to process
     */
@@ -365,43 +458,19 @@ class ZapActor extends Actor {
     if (newProposalsIds.nonEmpty) {
 
       // Filter CFP users on given digest
-      val foundUsersIDs = Webuser.allCFPWebusers()
+      val foundUsers = Webuser.allCFPWebusers()
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
-        .map(userToNotify => userToNotify.uuid)
+        .map(userToNotify => userToNotify.email)
 
-      play.Logger.info(foundUsersIDs.size + " user(s) for digest " + digest.value)
+      play.Logger.debug(s"Email Digest ${foundUsers.size} user(s) for digest ${digest.value}")
 
-      if (foundUsersIDs.nonEmpty) {
+      if (foundUsers.nonEmpty) {
 
         play.Logger.debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
-        // Check which users have digest track filters
-        val trackDigestUsersIDs = foundUsersIDs.filter(uuid => Digest.getTrackFilters(uuid).nonEmpty)
-
-        val noTrackDigestUsersIDs = trackDigestUsersIDs.diff(foundUsersIDs)
-
-        // Mail digest to users who have no track filter set
-        if (noTrackDigestUsersIDs.nonEmpty) {
-
-          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
-        }
-
-        // Handle the digest users that have a track filter
-        trackDigestUsersIDs.map{uuid =>
-
-          // Filter the proposals based on digest tracks
-          val trackFilterIDs = Digest.getTrackFilters(uuid)
-
-          val trackFilterProposals =
-            proposals.filter(proposal => trackFilterIDs.contains(proposal.track.id))
-
-          // If proposals exist, then mail digest to user
-          if (trackFilterProposals.nonEmpty) {
-            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, LeaderboardController.getLeaderBoardParams)
-          }
-        }
+        Mails.sendDigest(digest, foundUsers, proposals, LeaderboardController.getLeaderBoardParams)
 
       } else {
         play.Logger.debug("No users found for digest " + digest.value)
@@ -410,105 +479,6 @@ class ZapActor extends Actor {
       // Empty digest for next interval.
       Digest.purge(digest)
 
-    } else {
-      play.Logger.debug("No new proposals found for digest " + digest.value)
     }
   }
-
-  def doCheckSchedules() = {
-
-    import scalaz._
-    import Scalaz._
-
-    val allPublishedSlots: List[Slot] = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
-    val approvedOrAccepted = allPublishedSlots.filter(p => p.proposal.get.state == ProposalState.APPROVED || p.proposal.get.state == ProposalState.ACCEPTED)
-
-    val publishedProposalIDs: Set[String] = approvedOrAccepted.map(_.proposal.get.id).toSet
-
-    // Build the list of Speakers
-//    val allSpeakersUUID: Set[String] = approvedOrAccepted.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-//    val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersUUID)
-
-    val allValidProposals = Proposal.loadAndParseProposals(publishedProposalIDs)
-
-    type ProposalAndError=(Proposal, String, String,String)
-
-    def checkSameTitle: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
-      if (p1.title == p2.title) "Same title".successNel
-      else (p1, "Title was changed",p1.title, p2.title).failureNel
-    }
-
-    def checkSameSummary: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
-      if (p1.summary == p2.summary) "Same summary".successNel
-      else (p1,"Summary was changed",p1.summary, p2.summary).failureNel
-    }
-
-    def checkSameMainSpeaker: (Proposal, Proposal) =>ValidationNel[ProposalAndError, String] = (p1,p2) => {
-      if (p1.mainSpeaker == p2.mainSpeaker) "Same main speaker".successNel
-      else (p1, "Main speaker was changed", p1.mainSpeaker, p2.mainSpeaker).failureNel
-    }
-
-    def checkSameSecondSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
-      if (p1.secondarySpeaker == p2.secondarySpeaker) "Same secondary speaker".successNel
-      else (p1,"Secondary speaker was changed",p1.secondarySpeaker.getOrElse("?"), p2.secondarySpeaker.getOrElse("?")).failureNel
-    }
-
-    def checkSameOtherSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
-      if (p1.otherSpeakers == p2.otherSpeakers) "Same other speaker".successNel
-      else (p1, "Other speaker was changed", p1.otherSpeakers.mkString("/") , p2.otherSpeakers.mkString("/")).failureNel
-    }
-
-    val validateProposals= for {
-      a <- checkSameTitle
-      b <- checkSameSummary
-      c <- checkSameMainSpeaker
-      d <- checkSameSecondSpeakers
-      e <- checkSameOtherSpeakers
-    } yield( a |@| b |@| c |@| d |@| e ) // |@| is an Applicative Builder -> it accumulates the combined result as a tuple
-
-    def doNothing(p1:String, p2:String, p3:String,p4:String, p5:String) = s"$p1 $p2 $p3 $p4 $p5"
-
-   val messages:List[ValidationNel[ProposalAndError,String]]= allPublishedSlots.map {
-      s: Slot =>
-        val publishedProposal = s.proposal.get
-        // cause we did a filter where proposal is Defined
-        val fromCFPProposal = allValidProposals(publishedProposal.id)
-        validateProposals(publishedProposal, fromCFPProposal)(doNothing)
-    }
-
-    val onlyErrors= messages.filter(_.isFailure).flatMap { f: Validation[NonEmptyList[ProposalAndError], String] =>
-      val noEmpty = f.toEither.left.get
-      noEmpty.toList
-    }
-
-
-    sender() ! onlyErrors
-
-  }
-
-  def doUpdateProposal(confType:String, proposalId:String)={
-    play.Logger.debug("Update published Schedule for proposal Id "+proposalId)
-
-    ScheduleConfiguration.findSlotForConfType(confType,proposalId).foreach{
-      slot=>
-        val proposal = slot.proposal.get
-        ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id).foreach{
-          id=>
-            ScheduleConfiguration.loadScheduledConfiguration(id).foreach{ p=>
-              val newSlots = p.slots.map{
-                s:Slot=>
-                  s match {
-                    case e if e.proposal.isDefined && e.proposal.get.id==proposalId =>
-                      e.copy(proposal=Proposal.findById(proposalId))
-                    case other => other
-                  }
-              }
-              val newID = ScheduleConfiguration.persist(confType, newSlots, Webuser.Internal)
-              ScheduleConfiguration.publishConf(newID,confType)
-            }
-
-        }
-    }
-  }
-
 }

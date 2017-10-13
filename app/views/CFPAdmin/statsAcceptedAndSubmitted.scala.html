@@ -1,0 +1,146 @@
+@(params: controllers.LeaderBoardParams
+        )(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Stats By Track") {
+  <div class="row" xmlns="http://www.w3.org/1999/html">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title"><i class="icon-dashboard"></i> Stats By Track And Type</h1><br>
+          <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> refresh now </a></small>
+        </div>
+<div>
+        @if(params.totalSubmittedByTrack.nonEmpty){
+            <div class="col-md-6">
+              <h3>Submitted by Track</h3>
+              @defining(params.totalSubmittedByTrack.values.max){maxValue=>
+                @params.totalSubmittedByTrack.toSeq.sortBy(_._2).reverse.map{case(track,total)=>
+                <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
+                    <span class="sr-only">@Messages(track)</span>
+                </div>
+                </div>
+                }
+              }
+            </div>
+          }
+
+          @if(params.totalSubmittedByType.nonEmpty){
+            <div class="col-md-6">
+              <h3>Submitted by Type</h3>
+              <table class="table table-bordered table-simple">
+                <thead>
+                  <tr>
+                    <th>Proposal type</th>
+                    <th>Proposal received</th>
+                    <th>Total slots</th>
+                    <th>Proposal approved</th>
+                    <th>To allocate</th>
+                  </tr>
+                </thead>
+                @params.totalSubmittedByType.map { case (propType, total) =>
+                <tbody>
+                  <tr>
+                    <th>@Messages(propType) <a href="@routes.CFPAdmin.allProposalsByType(propType)"><i class="icon-arrow-right"></i></a></th>
+                    <td><span class="label label-warning"> @total </span></td>
+                    <td><span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span></td>
+                    @defining(models.ApprovedProposal.countApproved(propType)) { approvedTotal =>
+                      <td><span class="label label-primary">@approvedTotal</span> </td>
+                      <td><span class="label label-danger">@(params.totalSlotsToAllocate.get(propType+".label").map(s=>s-approvedTotal))</span> </td>
+                    }
+                </tr>
+                </tbody>
+                }
+              </table>
+            </div>
+            <div class="clearfix"></div>
+          }
+
+          @if(params.allApprovedByTrack.nonEmpty) {
+            <div class="col-md-6">
+              <h3>Approved by Track (total @params.allApprovedByTrack.size)</h3>
+              @defining(params.allApprovedByTrack.values.max){maxValue=>
+                @params.allApprovedByTrack.toSeq.sortBy(_._2).reverse.map{case(track,total)=>
+                <span class="label label-info">@total</span> @Messages(track)
+                <div class="progress progress-striped active">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
+                    <span class="sr-only">@Messages(track)</span>
+                </div>
+                </div>
+                }
+              }
+
+            </div>
+          }
+          @if(params.allApprovedByTalkType.nonEmpty) {
+
+            <div class="col-md-6">
+              <h3>Approved by Type</h3>
+              <table id="allProposals" class="table table-bordered table-hover table-condensed">
+                <thead>
+                  <tr>
+                    <th>Proposal Type</th>
+                    <th>Number of approved submissions</th>
+                    <th>To Allocate</th>
+                  </tr>
+                </thead>
+                <tbody>
+              @params.allApprovedByTalkType.map { case (propType, total) =>
+              <tr> <td>@Messages(propType)</td>
+                <td><span class="label label-warning">@total</span></td>
+               <td><span class="label label-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> </td>
+              </tr>}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="clearfix"></div>
+
+          }
+
+          @if(params.totalAcceptedByTrack.nonEmpty){
+            <div class="clearfix"></div>
+            <div class="col-md-6">
+              <h3>Accepted by Track</h3>
+              @defining(params.totalAcceptedByTrack.values.max){maxValue=>
+                @params.totalAcceptedByTrack.toSeq.sortBy(_._2).reverse.map{case(track,total)=>
+                <span class="label label-info">@total</span> @Messages(track)
+                <div class="progress progress-striped active">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
+                    <span class="sr-only">@Messages(track)</span>
+                </div>
+                </div>
+                }
+              }
+            </div>
+          }
+
+          @if(params.totalAcceptedByType.nonEmpty){
+            <div class="col-md-6">
+              <h3>Accepted by Type</h3>
+              <table id="allProposals" class="table table-bordered table-hover table-condensed">
+                <thead>
+                  <tr>
+                    <th>Proposal Type</th>
+                    <th>Number of accepted submissions</th>
+                    <th>To Allocate</th>
+                  </tr>
+                </thead>
+                <tbody>
+              @params.totalAcceptedByType.map { case (propType, total) =>
+                <tr>
+                  <td>@Messages(propType)</td>
+                  <td><span class="label label-warning">@total</span></td>
+                <td><span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span> </td>
+              </tr> }
+                </tbody>
+              </table>
+            </div>
+            <div class="clearfix"></div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,20 +1,30 @@
 @(validationLink:String, conferenceName:String)
+<table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody><tr>
+        <td class="mcnImageContent" valign="top" style="padding-right: 9px;padding-left: 9px;padding-top: 0;padding-bottom: 0;text-align: center;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
 
+
+            <img align="center" alt="" src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1504010262/Logo-Black-Transparent_ehvams.png" width="183" style="max-width: 183px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" class="mcnImage">
+
+
+        </td>
+    </tr>
+    </tbody></table>
 <h2>Welcome to @conferenceName</h2>
 <p>Thanks for joining @conferenceName CFP Web site. To validate your email address, please copy the following link to your browser address bar:</p>
-<p><a rel="notrack"  href="@validationLink">@validationLink</a></p>
+<p><a rel="notrack"  href="@validationLink"> @validationLink</a></p>
 <br/>
 <p>The @conferenceName Team</p>
 <br/>
 <hr>
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    <h2>Bienvenue à @conferenceName!</h2>
-    <p>Merci de vous être inscrit sur le site du CFP de @Messages("longName").
-        Pour valider votre adresse de courrier électronique, merci d'ouvrir le lien suivant ou de le recopier
-        dans la barre d'adresse de votre navigateur internet :</p>
-    <p><a rel="notrack" href="@validationLink">@validationLink</a></p>
-    <br/>
-    <p>L'équipe @conferenceName</p>
-    <br/>
-    <hr>
-}
+    @if(ConferenceDescriptor.current().frLangEnabled) {
+        <h2>Bienvenue à @conferenceName!</h2>
+        <p>Merci de vous être inscrit sur le site du CFP de @Messages("longName").
+            Pour valider votre adresse de courrier électronique, merci d'ouvrir le lien suivant ou de le recopier
+            dans la barre d'adresse de votre navigateur internet :</p>
+        <p><a rel="notrack" href="@validationLink">@validationLink</a></p>
+        <br/>
+        <p>L'équipe @conferenceName</p>
+        <br/>
+        <hr>
+    }

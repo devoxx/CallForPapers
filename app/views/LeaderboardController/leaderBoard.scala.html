@@ -115,81 +115,13 @@
 
                     <div class="clearfix"></div>
 
-                    @if(golden.stats.nonEmpty) {
-                        <div class="goldenticket">
-                            <h3><i class="icon-ticket"></i> Golden Ticket Stats</h3>
-
-                            <div class="col-md-3">
-                                <h1>@golden.totalTickets</h1>
-                                <small><i class="icon-ticket"></i> Tickets Created</small>
-                            </div>
-
-                            <div class="col-md-3">
-                                <h1>@golden.stats.count(st => st._3 > 0)</h1>
-                                <small><i class="icon-ticket"></i> Active Voters</small>
-                            </div>
-
-                            <div class="col-md-3">
-                                <h1>@golden.stats.map(st => st._2).sum</h1>
-                                <small><i class="icon-ticket"></i> Total Points Given</small>
-                            </div>
-
-                            <div class="col-md-3">
-                                <h1>@golden.stats.map(st => st._3).sum</h1>
-                                <small><i class="icon-ticket"></i> Proposals Reviewed</small>
-                            </div>
-                            <div class="clearfix"></div>
-
-                            @if(golden.stats.size > 4) {
-                                <br>
-                                <div class="col-md-4">
-                                    @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
-                                        @tags.renderTotalWithLabel(gt._3, "review", "reviews")
-                                        by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
-                                    }
-                            </div>
-
-                                @if(golden.stats.size > 9) {
-                                    <div class="col-md-4">
-                                        @golden.stats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
-                                            @tags.renderTotalWithLabel(gt._3, "review", "reviews")
-                                            by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
-                                        }
-                                    </div>
-
-                                    @if(golden.stats.size > 14) {
-                                        <div class="col-md-4">
-                                            @golden.stats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
-                                                @tags.renderTotalWithLabel(gt._3, "review", "reviews")
-                                                by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
-                                            }
-                                        </div>
-                                    }
-                                }
-                            }
-
-                            <div class="clearfix"></div>
-
-                            <div class="col-md-4">
-                                <br>
-                                <small><a href='@routes.GoldenTicketAdminController.showStats()' class="btn btn-sm btn-warning">More Golden Stats</a></small>
-                            </div>
-
-                            <div class="col-md-4">
-                            </div>
-
-                            <div class="col-md-4">
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                    }
 
 
                     @if(params.totalSubmittedByTrack.nonEmpty){
                     <div class="col-md-6">
                         <h3>Submitted by Track</h3>
                             @defining(params.totalSubmittedByTrack.values.max){maxValue=>
-                            @params.totalSubmittedByTrack.map{case(track,total)=>
+                            @params.totalSubmittedByTrack.toSeq.sortBy(_._2).reverse.map{case(track,total)=>
                                 <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
@@ -236,7 +168,7 @@
                         <div class="col-md-6">
                         <h3>Approved by Track (total @params.allApprovedByTrack.size)</h3>
                         @defining(params.allApprovedByTrack.values.max){maxValue=>
-                            @params.allApprovedByTrack.map{case(track,total)=>
+                            @params.allApprovedByTrack.toSeq.sortBy(_._2).reverse.map{case(track,total)=>
                                 <span class="label label-info">@total</span> @Messages(track)
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
@@ -265,7 +197,7 @@
                      <div class="col-md-6">
                         <h3>Accepted by Track</h3>
                             @defining(params.totalAcceptedByTrack.values.max){maxValue=>
-                            @params.totalAcceptedByTrack.map{case(track,total)=>
+                            @params.totalAcceptedByTrack.toSeq.sortBy(_._2).reverse.map{case(track,total)=>
                                 <span class="label label-info">@total</span> @Messages(track)
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">

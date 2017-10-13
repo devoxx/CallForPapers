@@ -1,5 +1,5 @@
 @(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
+@import notifiers.Mails
 @main("All refused talks") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -45,7 +45,26 @@
 
                     <br>
                     <small>If proposal's state = REJECTED then the speaker has been notified.</small>
+                    @if(allProposals.length!=0){
+                    <a class="label btn btn-danger"  data-toggle="modal" data-target="#notifyAll"> @Messages("notify.all.refused")</a>}
 
+                    <div id="notifyAll" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">@Messages("notify.all.refused")</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>@Messages("mail.notify.refused.body") </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                    <a type="button" class="btn btn-primary"  href="@routes.ApproveOrRefuse.notifyrefusedAll(confType)">@Messages("repy.later.button.Notify")</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <table id="allProposals" class="table table-bordered table-condensed">
                         <thead>
                             <tr>
@@ -80,6 +99,51 @@
                                         @Messages(proposal.state.code)
                                     </td>
                                     <td>
+                                        <a class="label btn btn-default" data-toggle="modal" data-target="#@(proposal.id)c" >
+                                        @Messages("custom.email1")</a>
+                                        <div id="@(proposal.id)c" class="modal fade" role="dialog" >
+                                            <div class="modal-dialog" style="width:80% ;left:0">
+                                                <div class="modal-content">
+                                                    <div class="modal-header" >
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title">@Messages("Custom.email")</h4>
+                                                    </div>
+
+                                                    <form  action="@routes.ApproveOrRefuse.notifycustomemailrefused(confType, proposal.id)" method="POST">
+
+
+                                                        @if(MailsManager.getEmailMode().get=="disable"){
+
+                                                            <label> <h5>@Messages("admin.btn.manage.notificaion.new") </h5></label>
+
+                                                            <textarea class="email" name="email">
+                                                            @views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()</textarea>
+
+                                                        }@if(MailsManager.getEmailMode().get=="enable"){
+                                                        <label> <h5>@Messages("admin.btn.manage.notificaion.subject"):</h5> </label>
+                                                        @MailsManager.getMailByTypeAndLang("rejected",proposal.lang).map{reject=>
+                                                            <input  name="subject" value="@reject.Subject" style="width:100% ;left:0"/>
+                                                        }.getOrElse( <input  name="subject" value="" style="width:100% ;left:0"/>)
+
+
+                                                        <label> <h5>@Messages("admin.btn.manage.notificaion.new") </h5></label>
+
+                                                        @MailsManager.getMailByTypeAndLang("rejected",proposal.lang).map{reject=>
+                                                        <textarea class="email" name="email">
+                                                            @reject.content,Webuser.findByUUID(proposal.mainSpeaker).get,proposal)
+                                                        </textarea>
+                                                        }.getOrElse(  <textarea class="email" name="email"></textarea>)
+
+                                                    }
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                                            <button type="submit" class="btn btn-primary"  >@Messages("repy.later.button.Notify") </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="label label-danger"><i class="icon-warning-sign"></i> Notify refused</a>
                                     </td>
                                 </tr>
@@ -111,4 +175,11 @@
     } );
 </script>
 
+    <script>tinymce.init({
+        selector: '.email',
+        height: 400,
+        menubar: false,
+
+        content_css: '//www.tinymce.com/css/codepen.min.css'
+    });</script>
 }

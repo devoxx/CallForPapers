@@ -1,5 +1,5 @@
-@(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
+@(allProposals:List[models.Proposal], confType:String,allNotiyRefese:List[String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@import notifiers.Mails
 @main("ApproveOrRefuse - All votes") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -39,6 +39,33 @@
                         @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
                             <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
                         }
+                        @if(allProposals.length!=0){
+                            <a class="label btn btn-danger"  data-toggle="modal" data-target="#notifyAll"> @Messages("notify.all.Approved")</a>
+                        }
+
+
+                        <div id="notifyAll" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">@Messages("notify.all.Approved")</h4>
+                                    </div>
+                                    <form action="@routes.ApproveOrRefuse.notifyApproveddAll(confType)" method="post">
+
+                                    <div class="modal-body">
+                                        <p>@Messages("mail.notify.approved.body") </p>
+                                        <p>@Messages("notification.approved.body.all")</p>
+                                        <input class="datepicker"   data-date-format="mm/dd/yyyy"  name="deadline">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                        <button type="submit" class="btn btn-primary"  >@Messages("repy.later.button.Notify") </button>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
                         <br>
 
@@ -79,13 +106,110 @@
                                             @if(proposal.state.code=="accepted"){
                                                 <small>Speaker has accepted</small>
                                             }else {
-                                                <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="label label-success"><i class="icon-envelope"></i>
+                                                <a class="label btn btn-default" data-toggle="modal" data-target="#@(proposal.id)c" >
+                                                    @Messages("custom.email1")</a>
+                                                <div id="@(proposal.id)c" class="modal fade" role="dialog" >
+                                                    <div class="modal-dialog" style="width:80% ;left:0">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header" >
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                <h4 class="modal-title">@Messages("Custom.email")</h4>
+                                                            </div>
+
+                                                            <form  action="@routes.ApproveOrRefuse.notifycustomemailapproved(confType, proposal.id)" method="POST">
+
+                                                                    @if(MailsManager.getEmailMode().get=="disable"){
+
+                                                                        <label> <h5>@Messages("admin.btn.manage.notificaion.new") </h5></label>
+
+                                                                        <textarea class="email" name="email">
+                                                                        @views.html.Mails.acceptrefuse.sendProposalApproved(proposal,Some("note fund")).toString()</textarea>
+
+
+                                                                    }@if(MailsManager.getEmailMode().get=="enable"){
+                                                                <label> <h5>@Messages("admin.btn.manage.notificaion.subject"):</h5> </label>
+                                                                @MailsManager.getMailByTypeAndLang("approved",proposal.lang).map{reject=>
+                                                                <input  name="subject" value="@reject.Subject" style="width:100% ;left:0"/>
+                                                                }.getOrElse( <input  name="subject" value="" style="width:100% ;left:0"/>)
+
+
+                                                                <label> <h5>@Messages("admin.btn.manage.notificaion.new") </h5></label>
+
+                                                                @MailsManager.getMailByTypeAndLang("approved",proposal.lang).map{reject=>
+                                                                <textarea class="email" name="email">
+                                                                    @Mails.replaceAllDynamicParametres( reject.content,Webuser.findByUUID(proposal.mainSpeaker).get,proposal )
+                                                                </textarea>
+                                                                }.getOrElse(  <textarea class="email" name="email"></textarea>)
+
+                                                            }
+
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                                                    <button type="submit" class="btn btn-primary"  >@Messages("repy.later.button.Notify") </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button class="label label-success" class="btn btn-sm btn-success" data-toggle="modal" data-target="#@proposal.id"><i class="icon-envelope"></i>
                                                 @if(proposal.state.code=="approved"){
-                                                 Notify again
-                                                } else{
-                                                 Notify
+                                                @Messages("Notify.again")
+
+
+                                            }else{
+
+                                                    @Messages("repy.later.button.Notify")
                                                 }
-                                                 </a>
+                                                 </button>
+                                                @if(proposal.state.code=="replylater"){<p> @Messages("Speaker.reply.later.notification") @proposal.deadline.get.toString("yyyy/MM/dd")</p>}
+                                                @if(proposal.state.code=="approved"){
+                                                @if(allNotiyRefese.contains(proposal.id.toString)){
+                                                    <button class="label label-warning" data-toggle="modal" data-target="#@(proposal.id)r">  @Messages("Notify.approved.after.refused") </button>
+
+                                                    <div id="@(proposal.id)r" class="modal fade" role="dialog" >
+                                                        <div class="modal-dialog" style="width:80% ;left:0">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header" >
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                    <h4 class="modal-title">@Messages("give.the.explanation")</h4>
+                                                                </div>
+                                                                <form action="@routes.ApproveOrRefuse.notifyafterrefused(confType, proposal.id)" method="post">
+
+                                                                    <textarea class="email" name="email">
+                                                                    @views.html.Mails.acceptrefuse.sendProposalApproved(proposal,Some("note fund")).toString()
+                                                                    </textarea>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                                                        <button type="submit" class="btn btn-primary"  >@Messages("repy.later.button.Notify") </button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }}
+
+                                                <div id="@proposal.id" class="modal fade" role="dialog" >
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                <h4 class="modal-title"> @Messages("notification.approved.title")</h4>
+                                                            </div>
+                                                            <form action="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" method="post">
+                                                                <div class="modal-body">
+                                                                    <p>@Messages("notification.approved.body")</p>
+                                                                    <input class="datepicker"   data-date-format="mm/dd/yyyy"  name="deadline">
+
+                                                                    </div>
+                                                                 <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                                                    <button type="submit" class="btn btn-primary"  >@Messages("repy.later.button.Notify") </button>
+                                                                 </div>
+                                                                    </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             }
                                             </td>
                                     </tr>
@@ -100,6 +224,7 @@
 </div>
 
 <script type="text/javascript">
+        $('.datepicker').datepicker();
     $(document).ready(function() {
     $('#allProposals').dataTable({
     "aaSorting": [[ 0, "desc" ]],
@@ -117,4 +242,11 @@
     });
     } );
 </script>
+    <script>tinymce.init({
+        selector: '.email',
+        height: 400,
+        menubar: false,
+
+        content_css: '//www.tinymce.com/css/codepen.min.css'
+    });</script>
 }

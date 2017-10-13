@@ -1,4 +1,4 @@
-@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(newProposal:Form[models.Proposal] , webuser: Webuser)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("New proposal") {
 <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
@@ -12,7 +12,8 @@
                 } else {
                     <h2>@Messages("New.proposal")</h2>
                 }
-                @if(!ConferenceDescriptor.isCFPOpen){
+
+                @if(!ConferenceDescriptor.isCFPOpen && webuser.vip!=Some(true) ){
                     <div class="alert alert-info">
                         @Messages("cfp.closed.restrictions")
                     </div>
@@ -20,6 +21,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-7">
             @if(flash.get("error").isDefined){
                 <div class="alert alert-danger alert-dismissable">
@@ -39,6 +41,8 @@
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
                 @helper.inputText(newProposal("videoLink"), 'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
+                    <!--  ce colum pour preferences -->
+                <input type="hidden" name="preferences" value="@newProposal("preferences").value">
                 @if(ConferenceDescriptor.current().frLangEnabled) {
                     @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
                 }else{
@@ -74,18 +78,19 @@
                     placeholder = Messages("tag.placeholder5"))
                 }
 
-                @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
+                <!--@if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                     @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
                     <div id="sponsorTalkMsg" class="alert alert-info">
                         <p>@Messages("sponsorTalk.help")</p>
                         <p>@Messages("sponsor.name.plz")</p>
                     </div>
-                }
+                }-->
                 <hr>
-                <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
-                <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
+                <a style="border-radius: 5px" class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
+                <button style="border-radius: 5px" type="submit" class="btn btn-success btn-sm"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
             }
         </div>
+
 
         <div class="col-md-5">
             <h3>@Messages("helpAndTips")</h3>
@@ -96,10 +101,9 @@
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
 
-            @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
+            <!--@if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                 <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
-            }
-            <p><label>@Messages("goldenTicket.help.title")</label><br> @Html(Messages("goldenTicket.help.txt", Messages("shortYearlyName")))</p>
+            }-->
 
         </div>
 

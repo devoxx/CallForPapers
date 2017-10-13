@@ -6,24 +6,59 @@
             <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.all." + talkType)
         </p>
     </div>
+    <div class="page-header">
+        <div class="row">
 
-    @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
+        </div>
+    </div>
+
+
+
+    <div class="btn-group btn-group-justified"  >
+    @ConferenceDescriptor.ConferenceProposalTypes.ALL.map { x =>
+        @if(talkType!=x.id){
+            <a  class="btn" href="@routes.Publisher.showByTalkType(x.id)" style="background-color: #666666;color: white" > @Messages(x.label+".simple")  </a>
+
+        }else{
+            <a class="btn btn-default " href="@routes.Publisher.showByTalkType(x.id)" > @Messages(x.label+".simple") </a>
+        }}
+
+    </div>
+
+    @proposals.groupBy(_.track).toList.sortWith(_._2.size>_._2.size).sliding(3,3).map { case oneRow =>
+    <div class="row">
         @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
-            <div class="large-3 columns trackBox">
-                @tags.publisher.renderIconForTrack(track) @Messages(track.label)
-            <ul>
-            @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
-                <li>
-                    <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)" class="blackLink">@proposal.title</a></strong>
-                    <br>
-                    @proposal.allSpeakerUUIDs.map { speakerUUID =>
-                        @tags.publisher.renderSpeaker(speakerUUID)
-                    }
-                </li>
-            }
-            </ul>
-            </div>
+        <div class="col-md-4">
+            @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+        <ul>
+        @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
+            <li>
+                <h5> <a  href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)" class="blackLink"> @if(UserCFPController.findAuthenticator.isDefined){ @if(!FavoriteTalk.isFavByThisVisitor(proposal.id , req.session.get("uuid").getOrElse(""))) {
+
+                    <a style="text-decoration: none" href="@routes.Favorites.addAsFavorite(proposal.id)">
+                        <img style="height: 20px; width: 20px;"  src="https://image.flaticon.com/icons/png/128/149/149220.png" style="height: 40px ; width: 40px"/>
+                    </a>
+                }else{
+                    <a style="text-decoration: none" href="@routes.Favorites.removefromFavorite(proposal.id)">
+                        <img style="height: 20px; width: 20px;"  src="https://image.flaticon.com/icons/png/128/148/148839.png" style="height: 40px ; width: 40px"/>
+                    </a>
+
+                }} @proposal.title</a>
+
+                </h5>
+
+               <!-- @proposal.allSpeakerUUIDs.map { speakerUUID =>
+                    @tags.publisher.renderSpeaker(speakerUUID)
+                }-->
+            </li>
         }
+        </ul>
+        </div>
+
+        }
+    </div>
         <div class="clearfix"><hr></div>
+
     }
+
 }

@@ -23,8 +23,7 @@
 
 package library.search
 
-import models.{ApprovedProposal, ConferenceDescriptor, ProposalType, Track}
-import org.joda.time.DateTime
+import models.ApprovedProposal
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -32,7 +31,6 @@ import scala.util.{Failure, Success, Try}
 import scala.concurrent.Future
 import play.api.Play
 import play.api.Play.current
-import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSAuthScheme.BASIC
 /**
  * Wrapper and helper, to reuse the ElasticSearch REST API.
@@ -150,6 +148,7 @@ object ElasticSearch {
         }
     }
   }
+
 
   def deleteIndex(indexName: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -441,76 +440,4 @@ object ElasticSearch {
         }
     }
   }
-
- def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
-   val indexName = "schedule_" + ConferenceDescriptor.current().eventCode.toLowerCase
-    val zeQuery =
-      s"""
-        |"dis_max": {
-        |   "queries": [
-        |                { "match": { "name":"${query.format.getOrElse("%")}"}},
-        |                { "match": { "day":"${query.day.getOrElse("%")}"}},
-        |                { "match": { "from":"${query.after.getOrElse("2017-01-01T00:15:00.000Z")}"}},
-        |                { "match": { "room":"${query.room.getOrElse("%")}"}},
-        |                { "match": { "title": { "query":"${query.topic.getOrElse("%")}","boost":2 }}},
-        |                { "match": { "summary": {"query":"${query.topic.getOrElse("%")}","boost":3 }}},
-        |                { "match": { "track.id":"${query.track.getOrElse("%")}"}},
-        |                { "match": { "talkType.id":"${query.format.getOrElse("%")}"}},
-        |                { "match": { "mainSpeaker": {"query":"${query.speaker.getOrElse("%")}","boost":1.3} }},
-        |                { "match": { "secondarySpeaker":"${query.speaker.getOrElse("%")}" }},
-        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("%")}" }},
-        |                { "match": { "company": {"query":"${query.company.getOrElse("%")}", "boost":1.6 }}}
-        |            ],
-        |            "tie_breaker": 0.3
-        |}
-      """.stripMargin
-
-    val json: String = s"""
-        |{
-        | "from" : 0,
-        | "size" : 10,
-        | "query" : {
-        |   $zeQuery
-        | }
-        |}
-      """.stripMargin
-
-    if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch advanced talk search query $json")
-    }
-
-    val futureResponse = WS.url(host + "/" + indexName + "/_search")
-      .withFollowRedirects(true)
-      .withRequestTimeout(4000)
-      .withAuth(username, password,BASIC)
-      .post(json)
-    futureResponse.map {
-      response =>
-        response.status match {
-          case 200 => Success(response.body)
-          case other => Failure(new RuntimeException("Unable to perform search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
-        }
-    }
-  }
-
-}
-
-case class ESSchedule(name:String,day:String,from:DateTime,to:DateTime,
-                      room:String,title:String,summary:String,track:Track,talkType:ProposalType,
-                      mainSpeaker:String,secondarySpeaker:Option[String])
-
-
-
-case class ESResult(_score:Double, _type:String,_index:String,_id:String,_source:JsValue)
-case class ESHits(max_score:Option[Double], total:Long,hits:List[ESResult] )
-case class ESSearchResult(took:Int,timed_out:Boolean,hits:ESHits)
-
-object ESSchedule{
-  implicit val esScheduleFormat=Json.format[ESSchedule]
-
-  implicit val esResult= Json.format[ESResult]
-
-  implicit val esHits=Json.format[ESHits]
-
-  implicit  val esSearchResult=Json.format[ESSearchResult]
 }

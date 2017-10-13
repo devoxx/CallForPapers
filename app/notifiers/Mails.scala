@@ -23,11 +23,24 @@
 
 package notifiers
 
+
+import javax.swing.text.html.HTML
+import java.io.File
+
 import models._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
+import controllers.{CallForPaper, LeaderBoardParams}
 import controllers.LeaderBoardParams
+import org.joda.time.{DateTime, DateTimeZone, Period}
+import org.joda.time.format.DateTimeFormat
+import play.twirl.api.Html
+
+import scala.util.matching.Regex
+import java.io.BufferedWriter
+import java.io.FileWriter
+import javax.security.auth.Subject;
 
 /**
   * Sends all emails
@@ -42,6 +55,15 @@ object Mails {
   val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
   val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
   val bccEmail: Option[String] = ConferenceDescriptor.current().bccEmail
+  def replaceAllDynamicParametres(content:String,speaker: Webuser,proposal: Proposal): String ={
+    var cont= content.replace("Speaker.email",speaker.email )
+    cont=cont.replace("Speaker.firstName",speaker.firstName )
+    cont=cont.replace("proposal.title",proposal.title )
+    proposal.deadline match {
+      case Some(a)=>cont= cont.replace("proposal.deadline",a.toString("dd/MM/yyyy") )
+      case None =>}
+    cont
+  }
 
   /**
     * Send a message to a set of Speakers.
@@ -177,65 +199,157 @@ object Mails {
   }
 
   def sendProposalApproved(speaker: Webuser, proposal: Proposal) = {
-    val subjectEmail: String = Messages("mail.proposal_approved.subject", proposal.title)
-    val otherSpeakers = extractOtherEmails(proposal)
+    MailsManager.getEmailMode() match {
+      case Some(email)=>
+        if (email=="disable"){
+          //pour calculer la date limite pour accepter de présenter le sujet
+          var subjectEmail: String = Messages("mail.proposal_approved.subject", proposal.title)
+          var bodyh=views.html.Mails.acceptrefuse.sendProposalApproved(proposal,None).toString()
+          proposal.deadline match {
+            case None =>
+            case Some(days)=>subjectEmail= Messages("mail.proposal_approved.subject2", proposal.title,DateTimeFormat.forPattern("dd/MM/yyyy").print(days))
+              bodyh= views.html.Mails.acceptrefuse.sendProposalApproved(proposal,Some(DateTimeFormat.forPattern("dd/MM/yyyy").print(days))).toString()
+          }
 
+          val otherSpeakers = extractOtherEmails(proposal)
+          val email = Email(
+            subject = subjectEmail,
+            from = fromSender,
+            to = Seq(speaker.email),
+            cc = otherSpeakers,
+            bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+            bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
+            bodyHtml = Some(bodyh),
+            charset = Some("utf-8")
+          )
+
+          MailerPlugin.send(email)
+        }else{
+          MailsManager.getMailByTypeAndLang("approved",proposal.lang) match {
+            case Some(mail)=>
+              val otherSpeakers = extractOtherEmails(proposal)
+              val email = Email(
+                subject = mail.Subject,
+                from = fromSender,
+                to = Seq(speaker.email),
+                cc = otherSpeakers,
+                bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+                bodyText = Some(replaceAllDynamicParametres(mail.content,speaker,proposal).toString()),
+                bodyHtml = Some(replaceAllDynamicParametres(mail.content,speaker,proposal)),
+                charset = Some("utf-8")
+              )
+              MailerPlugin.send(email)
+            case None=>
+          }
+        }
+      case None=>
+    }
+
+  }
+
+  def sendProposalApprovedAfeterRefese(speaker: Webuser, proposal: Proposal,content:String,subject:Option[String]) = {
+    //pour calculer la date limite pour accepter de présenter le sujet
+
+    var subjectEmail: String = subject.map(x=>x).getOrElse(Messages("mail.proposal_approved.subject", proposal.title))
+    val otherSpeakers = extractOtherEmails(proposal)
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
       to = Seq(speaker.email),
       cc = otherSpeakers,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
+      bodyText = Some(content),
+      bodyHtml = Some(content),
       charset = Some("utf-8")
     )
 
     MailerPlugin.send(email)
   }
+  def sendProposalcustomRefese(speaker: Webuser, proposal: Proposal,content:String,subject:Option[String]) = {
+    //pour calculer la date limite pour accepter de présenter le sujet
 
+    var subjectEmail: String = subject.map(x=>x).getOrElse(Messages("mail.proposal_refused.subject", proposal.title))
+    val otherSpeakers = extractOtherEmails(proposal)
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(speaker.email),
+      cc = otherSpeakers,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(content),
+      bodyHtml = Some(content),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
   def sendProposalRefused(speaker: Webuser, proposal: Proposal) = {
-    val subjectEmail: String = Messages("mail.proposal_refused.subject", proposal.title)
-    val otherSpeakers = extractOtherEmails(proposal)
+    MailsManager.getEmailMode() match {
+      case Some(email)=>
+        if (email=="disable"){
+          val subjectEmail: String = Messages("mail.proposal_refused.subject", proposal.title)
+          val otherSpeakers = extractOtherEmails(proposal)
+
+          val email = Email(
+            subject = subjectEmail,
+            from = fromSender,
+            to = Seq(speaker.email),
+            cc = otherSpeakers,
+            bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+            bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
+            bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
+            charset = Some("utf-8")
+          )
+
+          MailerPlugin.send(email)}
+        else{
+          MailsManager.getMailByTypeAndLang("rejected",proposal.lang) match {
+            case Some(mail)=>
+              val otherSpeakers = extractOtherEmails(proposal)
+              val email = Email(
+                subject = mail.Subject,
+                from = fromSender,
+                to = Seq(speaker.email),
+                cc = otherSpeakers,
+                bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+                bodyText = Some(replaceAllDynamicParametres(mail.content,speaker,proposal).toString()),
+                bodyHtml = Some(replaceAllDynamicParametres(mail.content,speaker,proposal)),
+                charset = Some("utf-8")
+              )
+              MailerPlugin.send(email)
+            case None=>
+          }
+
+        }
+      case None=>
+    }
+  }
+  def sendAcceptedtoAcceptteTermeAndCondition(speaker:Speaker)={
+    val subjectEmail:String=Messages("acceptTermsConditions")
+    val email =Email(
+      subject=subjectEmail ,
+      from=fromSender,
+      to =Seq(speaker.email) ,
+      bcc= bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(""),
+      bodyHtml = Some(views.html.Mails.sendtoAcceptetermAndCondition(speaker).toString()),
+      charset = Some("utf-8")
+    )
+    MailerPlugin.send(email)
+
+
+  }
+
+  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
+    val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
       to = Seq(speaker.email),
-      cc = otherSpeakers,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
-      charset = Some("utf-8")
-    )
-
-    MailerPlugin.send(email)
-  }
-
-  /**
-    * Mail digest.
-    *
-    * @param userIDs the list of CFP uuids for given digest
-    * @param digest  List of speakers and their new proposals
-    * @return
-    */
-  def sendDigest(digest: Digest,
-                 userIDs: List[String],
-                 proposals: List[Proposal],
-                 isDigestFilterOn: Boolean,
-                 leaderBoardParams: LeaderBoardParams): String = {
-
-  val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
-
-    val emails = userIDs.map(uuid => Webuser.findByUUID(uuid).get.email)
-
-    val email = Email(
-      subject = subjectEmail,
-      from = fromSender,
-      to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
-      bcc = emails,
-      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
-      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
+      bodyText = Some(views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
+      bodyHtml = Some(views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
       charset = Some("utf-8")
     )
 
@@ -273,6 +387,97 @@ object Mails {
 
     MailerPlugin.send(email)
   }
+
+  def sendCreateTalkCfpClose(webuser: Webuser) = {
+    val subjectEmail: String = Messages("Invitation to create talk")
+    val linkToCFPHome: String = ConferenceDescriptor.getFullRoutePath(controllers.routes.Application.home.url)
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(webuser.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendCreateTalkCfpClose(webuser, linkToCFPHome).toString()),
+      bodyHtml = Some(views.html.Mails.sendCreateTalkCfpClose(webuser, linkToCFPHome).toString()),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
+
+
+  def sendEmailTalk(webuser: Webuser, gt: GoldenTicket) = {
+    val subjectEmail: String = Messages("mail.goldenticket.subject", Messages("shortYearlyName"))
+
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(webuser.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.goldenticket.sendGoldenTicketEmail(webuser, gt).toString()),
+      bodyHtml = Some(views.html.Mails.goldenticket.sendGoldenTicketEmail(webuser, gt).toString()),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
+  def sendScheduledFavorite( slots:List[Slot] , webuser:Webuser ) = {
+    val subjectEmail: String = Messages("Scheduled Favorite")
+    val email =Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(webuser.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendScheduledFavorite(slots , webuser).toString()),
+      bodyHtml = Some(views.html.Mails.sendScheduledFavorite(slots , webuser).toString()),
+      charset = Some("utf-8")
+
+
+    )
+    MailerPlugin.send(email)
+  }
+  def sendScheduledSpeaksProps( slots:List[Slot] , webuser:Webuser ) = {
+    val subjectEmail: String = Messages("Scheduled Talks")
+    val email =Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(webuser.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendScheduledTalksInfo(slots , webuser).toString()),
+      bodyHtml = Some(views.html.Mails.sendScheduledTalksInfo(slots , webuser).toString()),
+      charset = Some("utf-8")
+
+
+    )
+    MailerPlugin.send(email)
+  }
+
+  /**
+    * Mail digest.
+    *
+    * @param emails the list of CFP user emails for given digest
+    * @param digest List of speakers and their new proposals
+    * @return
+    */
+  def sendDigest(digest: Digest,
+                 emails: List[String],
+                 proposals: List[Proposal],
+                 leaderBoardParams: LeaderBoardParams): String = {
+
+    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq("no-reply-digest@devoxx.com"), // Use fake email because we use bcc instead
+      bcc = emails,
+      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
+
 
   private def extractOtherEmails(proposal: Proposal): List[String] = {
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))

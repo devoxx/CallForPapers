@@ -1,6 +1,6 @@
 @(speakersAndProposals: List[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@main("CFP Speakers - with a badge") {
+@main("CFP Speakers") {
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
@@ -25,9 +25,6 @@
                     <em>Primary or secondary speaker, with a speaker badge</em>
                     <em>CFP or Red Coat not included</em>
                     <em>No Quickies or B.O.F</em>
-                    <br>
-Removed also Proposals with state != Accepted. Thus, a speaker with approved proposals but that forget to accept, should not be listed here.
-                    <br>
                     <span class="label label-info">@speakersAndProposals.size speakers</span>
                 </div>
                 <div class="panel-footer">

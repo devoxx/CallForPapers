@@ -23,10 +23,13 @@
 
 package notifiers
 
+import library.Redis
 import models._
+import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.Play.current
+import play.api.libs.json.Json
 import play.api.libs.mailer.{Email, MailerPlugin}
 
 /**
@@ -39,6 +42,27 @@ object TransactionalEmails {
   val committeeEmail = ConferenceDescriptor.current().committeeEmail
   val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
   val bccEmail = ConferenceDescriptor.current().bccEmail
+  def replaceAllDynamicParametres(content:String,speaker: Option[Webuser],proposal: Option[Proposal] , validationLink:Option[String] , code:Option[String]): String ={
+    var cont = content.replace("******" , "*****")
+    if (speaker.isDefined){
+    cont= cont.replace("Speaker.email",speaker.get.email)
+    cont=cont.replace("Speaker.firstName",speaker.get.firstName )
+      cont=cont.replace("webuser.email" , speaker.get.email)
+      cont=cont.replace("webuser.password" , speaker.get.password)
+
+
+    }
+
+    if(proposal.isDefined){
+      proposal.get.deadline match {
+        case Some(a)=>cont= cont.replace("proposal.deadline",a.toString("dd/MM/yyyy") )
+        case None =>}
+    cont=cont.replace("proposal.title",proposal.get.title )}
+    cont=cont.replace("cfplink" , ConferenceDescriptor.getFullRoutePath(controllers.routes.Application.home().url))
+   if(validationLink.isDefined){cont=cont.replace("validationLink" , validationLink.get )}
+    if(code.isDefined){cont=cont.replace("pswd" , code.get )}
+    cont
+  }
 
   def sendResetPasswordLink(emailAddress: String, resetUrl: String) = {
     val timestamp: String = new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm dd/MM")
@@ -57,47 +81,139 @@ object TransactionalEmails {
   }
 
   def sendAccessCode(emailAddress: String, code: String) = {
-    val subjectEmail: String = Messages("mail.access_code.subject", Messages("longName"))
-    val email = Email(
-      subject = subjectEmail,
-      from = fromSender,
-      to = Seq(emailAddress),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendAccessCode(emailAddress, code).toString()),
-      bodyHtml = Some(views.html.Mails.sendAccessCode(emailAddress, code).toString),
-      charset = Some("utf-8")
-    )
-    MailerPlugin.send(email)
+    MailsManager.getEmailMode() match {
+      case Some(email) =>
+        if (email == "disable") {
+          val subjectEmail: String = Messages("mail.access_code.subject", Messages("longName"))
+          val email = Email(
+            subject = subjectEmail,
+            from = fromSender,
+            to = Seq(emailAddress),
+            bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+            bodyText = Some(views.txt.Mails.sendAccessCode(emailAddress, code).toString()),
+            bodyHtml = Some(views.html.Mails.sendAccessCode(emailAddress, code).toString),
+            charset = Some("utf-8")
+          )
+          MailerPlugin.send(email)
+        } else {
+          MailsManager.getMailByTypeAndLang("Access Code Speaker", "fr") match {
+            case Some(mail) =>
+
+              val email = Email(
+                subject = mail.Subject,
+                from = fromSender,
+                to = Seq(emailAddress),
+                bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+                bodyText = Some(replaceAllDynamicParametres(mail.content, Webuser.findByEmail(emailAddress), None, Some(code) , Some(code)).toString()),
+                bodyHtml = Some(replaceAllDynamicParametres(mail.content, Webuser.findByEmail(emailAddress), None, Some(code) , Some(code)).toString()),
+                charset = Some("utf-8")
+              )
+              MailerPlugin.send(email)
+            case None =>
+          }
+        }
+      case None =>
+    }
+
+
   }
 
   def sendWeCreatedAnAccountForYou(emailAddress: String, firstname: String, tempPassword: String) = {
-    val subjectEmail: String = Messages("mail.account_created.subject", Messages("longName"))
-    val email = Email(
-      subject = subjectEmail,
-      from = fromSender,
-      to = Seq(emailAddress),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendAccountCreated(firstname, emailAddress, tempPassword).toString()),
-      bodyHtml = Some(views.html.Mails.sendAccountCreated(firstname, emailAddress, tempPassword).toString()),
-      charset = Some("utf-8")
-    )
-    MailerPlugin.send(email)
+    MailsManager.getEmailMode() match {
+      case Some(email)=>
+        if (email=="disable") {
+          val subjectEmail: String = Messages("mail.account_created.subject", Messages("longName"))
+          val email = Email(
+            subject = subjectEmail,
+            from = fromSender,
+            to = Seq(emailAddress),
+            bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+            bodyText = Some(views.txt.Mails.sendAccountCreated(firstname, emailAddress, tempPassword).toString()),
+            bodyHtml = Some(views.html.Mails.sendAccountCreated(firstname, emailAddress, tempPassword).toString()),
+            charset = Some("utf-8")
+          )
+          MailerPlugin.send(email)
+        }else{
+          MailsManager.getMailByTypeAndLang("We Create Account For You", "fr") match {
+            case Some(mail)=>
+
+              val email = Email(
+                subject = mail.Subject,
+                from = fromSender,
+                to = Seq(emailAddress),
+                bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+                bodyText = Some(replaceAllDynamicParametres(mail.content,Webuser.findByEmail(emailAddress), None , None , Some(Webuser.findByEmail(emailAddress).get.password)).toString()),
+                bodyHtml = Some(replaceAllDynamicParametres(mail.content,Webuser.findByEmail(emailAddress), None , None , Some(Webuser.findByEmail(emailAddress).get.password)).toString()),
+                charset = Some("utf-8")
+              )
+              MailerPlugin.send(email)
+            case None=>
+          }
+        }
+      case None=>
+    }
+
+
   }
 
   def sendValidateYourEmail(emailAddress: String, validationLink: String) = {
-    val conferenceName = Messages("longName")
-    val subjectEmail: String = Messages("mail.email_validation.subject", conferenceName)
+    MailsManager.getEmailMode() match {
+      case Some(email)=>
+        if (email=="disable") {
+          val conferenceName = Messages("longName")
+          val subjectEmail: String = Messages("mail.email_validation.subject", conferenceName)
+
+          val email = Email(
+            subject = subjectEmail,
+            from = fromSender,
+            to = Seq(emailAddress),
+            bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+            bodyText = Some(views.txt.Mails.sendValidateYourEmail(validationLink, conferenceName).toString()),
+            bodyHtml = Some(views.html.Mails.sendValidateYourEmail(validationLink, conferenceName).toString()),
+            charset = Some("utf-8")
+          )
+
+          MailerPlugin.send(email)
+        }else{
+          MailsManager.getMailByTypeAndLang("Validate your account", "fr") match {
+            case Some(mail)=>
+
+              val email = Email(
+                subject = mail.Subject,
+                from = fromSender,
+                to = Seq(emailAddress),
+                bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+                bodyText = Some(replaceAllDynamicParametres(mail.content,None, None , Some(validationLink) , None ).toString()),
+                bodyHtml = Some(replaceAllDynamicParametres(mail.content,None, None , Some(validationLink) , None ).toString()),
+                charset = Some("utf-8")
+              )
+              MailerPlugin.send(email)
+            case None=>
+          }
+        }
+      case None=>
+    }
+
+
+
+    }
+
+  def sendEmailtoparticipantcfpAccountInformation(participant:Webuser,emailAddress: String,cfpLink: String) = {
+    val conferenceName = Messages("longYearlyName")
+    val subjectEmail: String = Messages("mail.Account_Information.subject", conferenceName)
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
       to = Seq(emailAddress),
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendValidateYourEmail(validationLink, conferenceName).toString()),
-      bodyHtml = Some(views.html.Mails.sendValidateYourEmail(validationLink, conferenceName).toString()),
+      bodyText = Some(views.txt.Mails.sendEmailtoparticipantcfpAccountInformation( cfpLink,conferenceName,participant).toString()),
+      bodyHtml = Some(views.html.Mails.sendEmailtoparticipantcfpAccountInformation(cfpLink,conferenceName,participant).toString()),
       charset = Some("utf-8")
     )
+
     MailerPlugin.send(email)
+
   }
 
   def sendBugReport(bugReport: Issue) = {
@@ -114,5 +230,29 @@ object TransactionalEmails {
       charset = Some("utf-8")
     )
     MailerPlugin.send(email)
+  }
+
+  def generateId(): String = Redis.pool.withClient {
+    implicit client =>
+      val newId = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(4)
+      if (client.hexists("ValidResetUrl", newId)) {
+        generateId()
+      } else {
+        newId
+      }
+  }
+
+  def verifyResetUrl(t: String, resetUrl: String) = Redis.pool.withClient {
+    client =>
+
+      client.setex(t, 86400, resetUrl)
+  }
+  def getvalidResetUrl(t:String):Option[String]= Redis.pool.withClient{
+    client=>
+      client.get(t)
+  }
+  def deletresetUrl (t:String) =Redis.pool.withClient{
+    client=>
+      client.del(t)
   }
 }

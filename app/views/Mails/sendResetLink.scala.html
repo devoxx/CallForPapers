@@ -3,7 +3,7 @@
 <h3>Did you forget your @Messages("longName") access code?</h3>
 <p>Someone asked to reset your @Messages("longName") access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.</p>
 <p><a rel="notrack" href="@Html(resetUrl)">@Html(resetUrl)</a></p>
-<p>Please visit this link to reset your access code.</p>
+<p>Please visit this link to reset your access code.If you don’t use this link within 24 hours, it will expire</p>
 <p>We don't want to store your super secret password, that might be the same one as your Google Account. We prefer to generate
 a random access code. We also encourage you to use one of our OpenID's providers like Github or Google+. Simpler, more secure, that just rocks!</p>
 <p>The @Messages("longName") team</p>
@@ -16,7 +16,7 @@ a random access code. We also encourage you to use one of our OpenID's providers
 
     <p>Pour réinitialiser votre mot de passe, merci de visiter cette URL :</p>
     <p><a rel="notrack"  href="@Html(resetUrl)">@Html(resetUrl)</a></p>
-
+<p> Si vous n'utilisez pas ce lien dans les 24 heures, il expirera</p>
     <p>Nous ne voulons pas stocker vos mots de passe et nous préférons les générer au hasard. Par ailleurs, nous vous encourageons à
     utiliser votre profil Github ou Google+ pour vous authentifier. Plus simple, plus moderne.</p>
     <p>L'équipe @Messages("longName")</p>

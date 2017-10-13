@@ -1,8 +1,10 @@
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
 import models.Digest
+import models.ConferenceDescriptor
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
@@ -11,27 +13,41 @@ import play.api.libs.concurrent._
 import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
 import play.core.Router.Routes
+import play.api.mvc._
+
 import scala.util.control.NonFatal
+import models.CfpManager
+import play.api.Mode.Mode
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import play.filters.gzip.GzipFilter
 
 // We must import the compiled cfp error page
 import views.html.cfpErrorPage
 
-object Global extends GlobalSettings {
+object Global extends WithFilters(new GzipFilter()) with GlobalSettings {
   override def onStart(app: Application) {
+    CfpManager.testCfpImageBase()
+    CfpManager.cfpRedisExist()
+    CfpManager.testemailTemplate()
+    ConferenceDescriptor.verifyopeningcfp
     Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
       case Some(true) if Play.isProd =>
         CronTask.draftReminder()
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
         CronTask.doEmailDigests()
+        //ConferenceDescriptor.verifyopeningcfp
       // CronTask.doSetupOpsGenie()
       case Some(true) if Play.isDev =>
         CronTask.doEmailDigests()
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
+       //ConferenceDescriptor.verifyopeningcfp
+
+
+
       case _ =>
         play.Logger.of("Global").warn("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
     }
@@ -76,6 +92,12 @@ object Global extends GlobalSettings {
     ElasticSearchActor.masterActor ! StopIndex
     super.onStop(app)
   }
+
+
+  /*override def onRequestCompletion(request: RequestHeader) = {
+   // ConferenceDescriptor.verifyopeningcfp
+
+  }*/
 }
 
 object CronTask {

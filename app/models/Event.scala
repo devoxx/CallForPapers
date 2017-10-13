@@ -105,6 +105,7 @@ object Event {
       }
   }
 
+
   def speakerNotified(speaker: Speaker, allApproved: Set[Proposal], allRejected: Set[Proposal], allBackups: Set[Proposal]) = Redis.pool.withClient {
     client =>
       client.sadd("NotifiedSpeakers", speaker.uuid)

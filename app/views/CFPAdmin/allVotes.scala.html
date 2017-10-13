@@ -1,9 +1,10 @@
 @(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved: Long, totalRemaining: Long, confType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
-    @import models.Review.{AverageNote, TotalAbst, TotalVoter}
+@import models.Review.{AverageNote, TotalAbst, TotalVoter}
 
     @main("All votes") {
         <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+       <script type="text/javascript" src="dataTables.filter.html.js"></script>
 
         <div class="row">
             <div class="col-md-12">
@@ -53,10 +54,12 @@
 
             <div class="col-md-12">
                 <small>All proposals with at least one vote, with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
-                <small>If you just created a proposal and it's not listed here : please add a vote.</small>
-
+                <small>If you just created a proposal and it's not listed here : please add a vote.</small><br/>
+                <br><div id="filt"><b> Filtrez par Statut : </b> </div><br/>
                 <table id="allProposals" class="compact cell-border order-column">
+
                     <thead>
+
                         <tr>
                             <th/>
                             <th>Avg</th>
@@ -69,9 +72,29 @@
                             <th>Type</th>
                             <th>Track</th>
                             <th>Lang</th>
+                            <th>Status</th>
                             <th><i class="icon-thumbs-up"></i> / <i class="icon-thumbs-down"></i></th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr>
+                            <th/>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+
+
                     <tbody>
                     @allVotes.map { case (proposal, voteAndTotalVotes, gtScore, gtVoteCast) =>
                         @defining(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)) { refused =>
@@ -127,6 +150,16 @@
                                         [@proposal.lang]
                                     </td>
                                     <td>
+                                        <span class="label label-@proposal.state.code">@proposal.state.code</span></td>
+                                       <td> @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
+                                            <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i>
+                                                Remove from refused list</a>
+                                        }
+                                        @if(approved && proposal.state.code == ProposalState.REJECTED.code) {
+                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                                Cancel approve</a>
+                                        }
+                                        <br>
                                         @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
                                             @if(approved) {
                                                 <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
@@ -147,15 +180,7 @@
                                             }
                                         }
                                         <br>
-                                        <span class="label label-@proposal.state.code">@proposal.state.code</span>
-                                        @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i>
-                                                Remove from refused list</a>
-                                        }
-                                        @if(approved && proposal.state.code == ProposalState.REJECTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
-                                                Cancel approve</a>
-                                        }
+
 
 
                                     </td>
@@ -163,6 +188,7 @@
                             }
                         }
                     }
+
                     </tbody>
                 </table>
 
@@ -173,31 +199,103 @@
         <script type="text/javascript">
                 $(document).ready(function () {
 
+
                     $.fn.dataTableExt.oStdClasses.sStripeOdd = '';
                     $.fn.dataTableExt.oStdClasses.sStripeEven = '';
 
-                    $('#allProposals').DataTable({
+                   $('#allProposals').DataTable({
+
+
+                       "initComplete": function () {
+                           this.api().column(11).every( function () {
+                               var column = this;
+                               var select = $('<select><option value="">ALL</option></select>')
+                                       .appendTo( $('#filt'))
+                                       .on( 'change', function () {
+                                           console.log($(this).val());
+                                           var val = $.fn.dataTable.util.escapeRegex(
+                                                   $(this).val()
+                                           );
+
+                                           column
+                                                   .search( val ? '^'+val+'$' : '', true , false )
+                                                   .draw();
+
+                                       } );
+
+
+                               column.data().unique().sort().each( function ( d, j ) {
+                                   var html_val = $.parseHTML(d)
+
+
+                                   if (html_val != null){ // check if html is not null
+                                       var new_d = $(html_val)[0].innerText // take first html object <span> in this case
+                                       select.append( '<option value="'+new_d+'">'+new_d+'</option>' )
+                                   }
+
+                               } );
+                           } );
+                       },
+
                         "autoWidth": true,
-                        "dom": 'lfirtp',
+                        "dom": 'lfrtip',
                         "aaSorting": [[1, "desc"]],
                         "pageLength": 75,
                         "lengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
                         "stateSave": true,
+
+
+
                         "drawCallback": function (oSettings) {
                             /* Need to redo the counters if filtered or sorted */
                             if (oSettings.bSorted || oSettings.bFiltered) {
                                 for (var i = 0, iLen = oSettings.aiDisplay.length ; i < iLen ; i++) {
                                     $('td:eq(0)', oSettings.aoData[oSettings.aiDisplay[i]].nTr).html(i + 1);
+
                                 }
                             }
                         },
+
+
                         "aoColumnsDef": [
                             {"bSortable": "false", "bSearchable": "false", "aTargets": 0},
+                            {"bSortable": "false", "bSearchable": "false", "aTargets":11},
                             {"sType": "numeric", "aTargets": [1, 2, 3, 4]},
-                            {"sType": "string", "aTargets": [5, 6, 7, 8, 9, 10, 11, 12,13]}
+                            {"sType": "string", "aTargets": [5, 6, 7, 8, 9,10,12,13] },
+
+
                         ],
                         "stripeClasses": []
+
                     });
+
+                    /*$('#mySelect').on('change',function(){
+                        var selectedValue = $(this).val();
+                        oTable.fnFilter("^"+selectedValue+"$", 10, true); //Exact value, column, reg
+                    });*/
+                   /* $("allProposals > thead th").each(function(i) {
+                        $("<select />").attr("data-index", i).html($("<option />")).change(function() {
+                            $("allProposals > tbody > tr").show().filter(function() {
+                                var comb = [], children = $(this).children();
+                                children.each(function(i) {
+                                    var value = $("select[data-index='" + i + "']").val();
+                                    if (value == $(this).text() || value == "") comb.push(1);
+                                });
+                                return comb.length != children.length;
+                            }).hide();
+                        }).appendTo("body");
+                    });
+                    $("allProposals > tbody tr").each(function() {
+                        $(this).children().each(function(i) {
+                            var that = $(this);
+                            var select = $("select[data-index='" + i + "']");
+                            if (!select.children().filter(function() {
+                                        return $(this).text() == that.text();
+                                    }).length) {
+                                select.append($("<option />").text($(this).text()));
+                            }
+                        });
+                    });*/
 
                     $('a.refuseBtn').click(function (e) {
                         e.preventDefault();
@@ -247,6 +345,9 @@
                         });
                     });
 
+
+
+
                     $('a.cancelRefuseBtn').click(function (e) {
                         e.preventDefault();
                         var url = this.href;
@@ -262,6 +363,7 @@
                             alert("error");
                         });
                     });
+
 
 
                 });

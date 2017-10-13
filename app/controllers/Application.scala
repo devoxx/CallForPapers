@@ -56,6 +56,8 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
+      //ConferenceDescriptor.verifyopeningcfp
+
       Ok(html.Application.index())
   }
 
@@ -73,4 +75,5 @@ object Application extends Controller {
           Redirect(routes.Application.index()).flashing("success" -> Messages("bugReport.sent"))
         })
   }
+
 }

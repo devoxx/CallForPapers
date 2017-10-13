@@ -3,7 +3,7 @@
 @main("Backoffice") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-magnet"></i> Backoffice</h2>
+        <h2>&nbsp;&nbsp;&nbsp;<i class="icon-magnet"></i> Backoffice</h2>
     </div>
     <div class="clearfix"></div>
 
@@ -29,105 +29,62 @@
             <h4><i class="icon-check"></i> Accepted talks notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
+                <a style="border-radius: 7px" href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
             <h4><i class="icon-ban-circle"></i> Refused talks notification service</h4>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
+                <a style="border-radius: 7px" href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
 
             <h4><i class="icon-ban-circle"></i> Mass refuse system</h4>
-            <a href="@routes.ApproveOrRefuse.prepareMassRefuse("tia")" class="btn btn-danger btn-sm"><i class="icon-warning-sign"></i> Mass Refuse system</a>
+            <a  style="border-radius: 7px" href="@routes.ApproveOrRefuse.prepareMassRefuse("tia")" class="btn btn-danger btn-sm"><i class="icon-warning-sign"></i> Mass Refuse system</a>
 
             <h4><i class="icon-road"></i> Proposals</h4>
-            <a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Proposals by Company</a>
-            <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-warning btn-sm"><i class="icon-ticket"></i> Approved by Company</a>
+            <a style="border-radius: 7px" href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Proposals by Company</a>
+            <a  style="border-radius: 7px" href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-warning btn-sm"><i class="icon-ticket"></i> Approved by Company</a>
 
-            <h4><i class="icon-ticket"></i> Golden Tickets</h4>
+          <!--  <!--<h4><i class="icon-ticket"></i> Golden Tickets</h4>
             <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Golden Tickets</a>
             <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> Create a Golden Ticket</a>
             <a href="@routes.GoldenTicketAdminController.newGroupOfGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-cloud-download"></i> Import/create Golden Tickets</a>
-            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success"><i class="icon-star"></i> Golden Ticket Votes</a>
+            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success"><i class="icon-star"></i> Golden Ticket Votes</a>-->
 
             <h4><i class="icon-calendar"></i> Planner</h4>
-            <a href="/assets/angular/index.html" class="btn btn-success btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>
-            <a href="@routes.Backoffice.sanityCheckSchedule()"  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
-            <a href="@routes.Favorites.showAllForAdmin()"  class="btn btn-sm btn-primary"><i class="icon-calendar"></i> Most popular talks faved on Agenda</a>
+            <a style="border-radius: 7px" href="/assets/angular/index.html" class="btn btn-success btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.sanityCheckSchedule()"  class="btn btn-sm btn-success"><i class="icon-medkit"></i> Sanity check for schedule</a>
+            <a  style="border-radius: 7px" href="@routes.Favorites.showAllForAdmin()"  class="btn btn-sm btn-success"><i class="icon-calendar"></i> Most popular talks faved on Agenda</a>
 
             <h4><i class="icon-group"></i> Webusers</h4>
-            <a href="@routes.CFPAdmin.allWebusers()" class="btn btn-sm btn-primary"><i class="icon-user"></i> @Messages("admin.btn.webuser")</a>
-            <a href="@routes.CFPAdmin.allCFPWebusers()" class="btn btn-sm btn-primary"><i class="icon-user-md"></i> @Messages("admin.btn.tracklead")</a>
-            <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
-            <a href="@routes.CFPAdmin.allDevoxxians()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.devoxxians")</a>
+            <a style="border-radius: 7px" href="@routes.CFPAdmin.allWebusers()" class="btn btn-sm btn-primary"><i class="icon-user"></i> @Messages("admin.btn.webuser")</a>
+            <a style="border-radius: 7px" href="@routes.CFPAdmin.allCFPWebusers()" class="btn btn-sm btn-primary"><i class="icon-user-md"></i> @Messages("admin.btn.tracklead")</a>
+            <a style="border-radius: 7px" href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
 
             <h4><i class="icon-star"></i> Top Talks</h4>
-            <a href="@routes.MobileVotingV1.topTalksAsHtml()" class="btn btn-sm btn-success"><i class="icon-star-half-full"></i> Show the top rated talks</a>
+            <a style="border-radius: 7px" href="@routes.MobileVotingV1.topTalksAsHtml()" class="btn btn-sm btn-success"><i class="icon-star-half-full"></i> Show the top rated talks</a>
 
             <h4><i class="icon-moon"></i> Cron</h4>
-            <a href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
-            <a href="@routes.Backoffice.showDigests()" class="btn btn-sm btn-primary"><i class="icon-envelope"></i> Email Digests</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.showDigests()" class="btn btn-sm btn-primary"><i class="icon-envelope"></i> Email Digests</a>
 
             <h4><i class="icon-tags"></i> Tags</h4>
-            <a href="@routes.Backoffice.showAllTags()" class="btn btn-sm btn-primary"><i class="icon-tag"></i> All tags</a>
-            <a href="@routes.Backoffice.newTag()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> New tag</a>
-            <a href="@routes.Backoffice.getProposalsByTags()" class="btn btn-sm btn-primary"><i class="icon-tags"></i> All proposals by Tags</a>
-            <a href="@routes.Backoffice.getCloudTag()" class="btn btn-sm btn-primary"><i class="icon-cloud"></i> Cloud Tag</a>
-            <a href="@routes.Backoffice.importTags()" class="btn btn-sm btn-primary"><i class="icon-truck"></i> Import tags</a>
-            <a href="@routes.Backoffice.exportTags()" class="btn btn-sm btn-primary"><i class="icon-save"></i> Export tags</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.showAllTags()" class="btn btn-sm btn-color-10"><i class="icon-tag"></i> All tags</a>
+            <a  style="border-radius: 7px" href="@routes.Backoffice.newTag()" class="btn btn-sm btn-color-10"><i class="icon-plus"></i> New tag</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.getProposalsByTags()" class="btn btn-sm btn-color-10"><i class="icon-tags"></i> All proposals by Tags</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.getCloudTag()" class="btn btn-sm btn-color-10"><i class="icon-cloud"></i> Cloud Tag</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.importTags()" class="btn btn-sm btn-color-10"><i class="icon-truck"></i> Import tags</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.exportTags()" class="btn btn-sm btn-color-10"><i class="icon-save"></i> Export tags</a>
 
             <h4><i class="icon-search"></i> ElasticSearch</h4>
-            <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="icon-remove"></i> Delete Index</a>
-            <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Re-index</a><br>
+            <a style="border-radius: 7px" href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="icon-remove"></i> Delete Index</a>
+            <a style="border-radius: 7px" href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Re-index</a><br>
 
             @if(ConferenceDescriptor.isTwilioSMSActive()){
                 <h4>SMS notification</h4>
-                <a href="@routes.SMSController.allSpeakers()" class="btn btn-primary btn-sm"><i class="icon-phone"></i> See the list of speakers with phoneNumber</a>
+                <a style="border-radius: 7px" href="@routes.SMSController.allSpeakers()" class="btn btn-primary btn-sm"><i class="icon-phone"></i> See the list of speakers with phoneNumber</a>
             }
-
-            <br><br>
-
-            <div class="panel panel-danger">
-                <div class="panel-heading"><h4><i class="icon-comment"></i> 'My Devoxx' Mobile Notifications</h4></div>
-                <div class="panel-body">
-                    <form>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon">Push notification</span>
-                                <input id="pushMessage" type="text" class="form-control" placeholder="Message to push to all 'My Devoxx' mobile users, handle with care!">
-                            </div>
-                        </div>
-                    </form>
-                    <button id="pushMsg" class="btn btn-danger btn-sm"><i class="icon-warning-sign"></i> Push Message</button>
-                </div>
-            </div>
 
         </div>
         </div>
     </div>
 </div>
-<script type="text/javascript">
-        $('#pushMsg').click(function(evt) {
-            var msg = $('#pushMessage').val();
-
-            var obj = {
-                stringField: msg
-            };
-
-            $.ajax({
-                type : 'POST',
-                url : "/admin/push/message",
-                data: JSON.stringify(obj),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                success : function(data) {
-                    alert("Mobile users notified");
-                },
-                error : function(data) {
-                    setError('Push notification failed!');
-                }
-            });
-            return false;
-        });
-</script>
 }

@@ -32,13 +32,13 @@ import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
 /**
-  * Speaker profile, is used mainly to show details.
-  *
-  * Webuser is the "technical" and internal web user representation.
-  *
-  * Author: nicolas martignole
-  * Created: 28/09/2013 11:01
-  */
+ * Speaker profile, is used mainly to show details.
+ *
+ * Webuser is the "technical" and internal web user representation.
+ *
+ * Author: nicolas martignole
+ * Created: 28/09/2013 11:01
+ */
 case class Speaker(uuid: String
                    , email: String
                    , name: Option[String]
@@ -46,15 +46,18 @@ case class Speaker(uuid: String
                    , lang: Option[String]
                    , twitter: Option[String]
                    , avatarUrl: Option[String]
+                   , picture: Option[String]
                    , company: Option[String]
                    , blog: Option[String]
                    , firstName: Option[String]
                    , qualifications: Option[String]
                    , phoneNumber:Option[String]
+
                   ) {
 
   def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
+
   }
 
   def cleanShortName: String = {
@@ -100,24 +103,25 @@ case class Speaker(uuid: String
   def hasBlog = StringUtils.trimToEmpty(blog.getOrElse("")).nonEmpty
 
   lazy val bioAsHtml: String = {
-    val escapedHtml = play.twirl.api.HtmlFormat.escape(bio).body
+    val escapedHtml = play.twirl.api.HtmlFormat.escape(bio).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 }
 
 object Speaker {
-
+  implicit  val read = Json.reads[Speaker]
+  implicit  val write = Json.writes[Speaker]
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(webuserUUID: String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
+  def createSpeaker(webuserUUID:String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
+                    avatarUrl: Option[String], picture: Option[String] ,company: Option[String], blog: Option[String], firstName: String,
                     qualifications: String, phoneNumber:Option[String]): Speaker = {
-    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications),phoneNumber)
+    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl,picture, company, blog, Some(firstName), Option(qualifications),phoneNumber)
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications: String): Speaker = {
+                          avatarUrl: Option[String], picture: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications: String): Speaker = {
     uuid match {
       case None =>
         val newUUID = Webuser.generateUUID(email)
@@ -126,24 +130,25 @@ object Speaker {
         } else {
           refuseTerms(newUUID)
         }
-        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications),None)
+        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, picture,company, blog, Option(firstName), Option(qualifications),None)
       case Some(validUuid) =>
         if (acceptTerms) {
           doAcceptTerms(validUuid)
         } else {
           refuseTerms(validUuid)
         }
-        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications),None)
+        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, picture, company, blog, Option(firstName), Option(qualifications),None)
     }
 
   }
 
-  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String, Option[String])] = {
-    Some("xxx",s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.phoneNumber)
+  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], String, String, Option[String])] = {
+    Some("xxx",s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.picture,s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.phoneNumber)
   }
 
-  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String)] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), !needsToAccept(s.uuid), s.qualifications.getOrElse("No experience"))
+  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String],Option[String], Option[String],
+    Option[String], Option[String], String, Boolean, String)] = {
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl,s.picture, s.company, s.blog, s.firstName.getOrElse(""), !needsToAccept(s.uuid), s.qualifications.getOrElse("No experience"))
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -158,12 +163,12 @@ object Speaker {
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
-    def updatePhone(uuid: String, thePhone: String, maybeLang:Option[Lang]) = {
-      for(speaker <- findByUUID(uuid)){
-        val speakerLang = maybeLang.map(_.code).getOrElse("en")
-        Speaker.update(uuid,speaker.copy(phoneNumber = Option(thePhone), lang=Option(speakerLang)))
-      }
+  def updatePhone(uuid: String, thePhone: String, maybeLang:Option[Lang]) = {
+    for(speaker <- findByUUID(uuid)){
+      val speakerLang = maybeLang.map(_.code).getOrElse("en")
+      Speaker.update(uuid,speaker.copy(phoneNumber = Option(thePhone), lang=Option(speakerLang)))
     }
+  }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
     findByUUID(uuid).map {
@@ -188,7 +193,6 @@ object Speaker {
       client.hdel("Speaker", uuid)
   }
 
-  // Warning : that's a slow operation
   def allSpeakers(): List[Speaker] = Redis.pool.withClient {
     client =>
       client.hvals("Speaker").flatMap {
@@ -250,13 +254,13 @@ object Speaker {
   def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
     client =>
 
-      val termKeys = Benchmark.measure(() =>
+      val termKeys = Benchmark.measure(()=>
         client.hkeys("TermsAndConditions")
-        , "termKeys")
+        ,"termKeys")
 
       val speakerIDs = Benchmark.measure(() =>
         termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
-        , "speakerIDs")
+        ,"speakerIDs")
 
       val allSpeakers = Benchmark.measure(() =>
         client.hmget("Speaker", speakerIDs).flatMap {
@@ -265,7 +269,7 @@ object Speaker {
               play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
               None
             }, validSpeaker => Some(validSpeaker))
-        }, "allSpeakers")
+        },"allSpeakers")
       allSpeakers
   }
 
@@ -275,12 +279,13 @@ object Speaker {
       val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
       allSpeakerIDs.diff(allThatAcceptedConditions)
   }
+  def isPropScheduleexist(webuserId: String): Boolean = {
 
-  def allSpeakersFromPublishedSlots: List[Speaker] = {
-    val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
-    val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-    val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
-    val speakers: List[Speaker] = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
-    speakers.sortBy(_.name.getOrElse(""))
+    val props = Proposal.allMyProposals(webuserId)
+    val slots = props.flatMap {
+      talk: Proposal =>
+        ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+    }
+    !slots.isEmpty
   }
 }
