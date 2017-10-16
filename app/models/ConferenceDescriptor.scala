@@ -636,8 +636,8 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.LAB.id,
             WEDNESDAY,
-            new DateTime(TUE_DATE + "13:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
-            new DateTime(TUE_DATE + "16:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r1)
+            new DateTime(TUE_DATE + "14:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime(TUE_DATE + "17:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r1)
       }
 
       labsTuesdayMorning ++ 
