@@ -268,7 +268,6 @@ object Rating {
 
       play.Logger.info(s"Deleting summarised and individual talk ratings for all talks for $conferenceCode.")
       deleteAll()
-
       tx.exec()
       play.Logger.debug(s"Finished archiving ratings (aka mobile votes - ${allRatingsForTalksByTalkId.size} of them) for all talks for ${conferenceCode}.")
   }

@@ -144,6 +144,7 @@ object CFPAdmin extends SecureCFPController {
 
   def showVotesForProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import scala.concurrent.ExecutionContext.Implicits.global
       val uuid = request.webuser.uuid
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
@@ -287,6 +288,8 @@ object CFPAdmin extends SecureCFPController {
 
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
       ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
         case r if r.isSuccess =>
