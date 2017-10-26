@@ -43,6 +43,7 @@ GET           /cfp/home                                                         
 GET           /cfp/profile                                                      controllers.CallForPaper.editProfile
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
+GET           /cfp/newSpeakerForExistingWebuserByUuid                           controllers.CallForPaper.newSpeakerForExistingWebuserByUuid(webUuid: String)
 
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
@@ -120,6 +121,7 @@ GET           /cfpadmin/allSpeakers/approvedTalks                               
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
 GET           /cfpadmin/allSpeakersWhoHaveAnswereQandA                          controllers.CFPAdmin.allSpeakersWhoHaveAnsweredQandA()
 GET           /cfpadmin/allSpeakersWhoHaveNotAnswereQandA                       controllers.CFPAdmin.allSpeakersWhoHaveNotAnsweredQandA()
+GET           /cfpadmin/allUsersWithIncompleteSpeakerProfile                    controllers.CFPAdmin.allUsersWithIncompleteSpeakerProfile()
 
 GET           /cfpadmin/leaderboard                                             controllers.LeaderboardController.leaderBoard
 GET           /cfpadmin/leaderboard/reviewerStats                               controllers.LeaderboardController.allReviewersAndStats

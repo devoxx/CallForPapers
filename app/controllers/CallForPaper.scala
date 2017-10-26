@@ -84,6 +84,14 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
+  def newSpeakerForExistingWebuserByUuid(webUuid: String) = SecuredAction {
+    implicit request =>
+      val webuser = Webuser.findByUUID(webUuid).get
+      val defaultValues = (webuser.email, webuser.firstName, webuser.lastName, StringUtils.abbreviate("...", 750), None, None, None, None, "No experience",
+        QuestionAndAnswers.empty)
+      Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
+  }
+
   // Specific secured action. We need a redirect from homeForSpeaker, to be able to display flash message
   def newSpeakerForExistingWebuser = SecuredAction {
     implicit request =>
