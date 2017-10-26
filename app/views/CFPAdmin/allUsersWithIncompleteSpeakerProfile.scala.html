@@ -1,0 +1,85 @@
+@(webusers:List[Webuser])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Speakers") {
+    <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+        </div>
+    }
+
+    <div class="col-md-12">
+        <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Users with an blank, incomplete or missing speaker profile</h3>
+            <h4></h4>
+            <span class="label label-info">@webusers.size users</span>
+        </div>
+        <div class="panel-body">
+
+            @if(webusers.nonEmpty){
+            <table id="speakersTable" class="table table-bordered table-strippted">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @webusers.map{ webuser: Webuser =>
+                    <tr>
+                        <td>
+                            @webuser.cleanName
+                        </td>
+                        <td>
+                            <small>@webuser.email</small>
+                        </td>
+                        <td>
+                            <a href="@routes.CallForPaper.newSpeakerForExistingWebuserByUuid(webuser.uuid)" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
+                            <a href="@routes.Backoffice.deleteSpeaker(webuser.uuid)" class="btn btn-sm btn-danger" ><i class="icon-lock"></i> @Messages("sp.deleteSpeaker")</a>
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+            }else{
+                <P>All users have a completed speaker profile.</P>
+            }
+        </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#speakersTable').dataTable({
+        "aaSorting": [[ 0, "asc" ]],
+        "iDisplayLength": 50,
+        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        "bStateSave": true,
+        "aoColumns": [
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"}
+        ]
+    });
+} );
+</script>
+}
