@@ -144,7 +144,6 @@ object CFPAdmin extends SecureCFPController {
 
   def showVotesForProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      import scala.concurrent.ExecutionContext.Implicits.global
       val uuid = request.webuser.uuid
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
@@ -288,8 +287,6 @@ object CFPAdmin extends SecureCFPController {
 
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
       ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
         case r if r.isSuccess =>
@@ -636,6 +633,30 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksForExport(proposals))
   }
 
+  def allSpeakersWhoHaveAnsweredQandA() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers().toList
+      val filteredSpeakers = allApprovedSpeakers
+                              .filter(
+                                speaker => speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion
+                              )
+      
+    Ok(views.html.CFPAdmin.allSpeakersWhoHaveAnsweredQandA(filteredSpeakers))
+  }
+
+  def allSpeakersWhoHaveNotAnsweredQandA() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers().toList
+      val filteredSpeakers = allApprovedSpeakers
+                              .filter(
+                                speaker => ! speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion
+                              )
+
+    Ok(views.html.CFPAdmin.allSpeakersWhoHaveNotAnsweredQandA(filteredSpeakers))
+  }
+  
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = Webuser.allSpeakers.sortBy(_.cleanName)
