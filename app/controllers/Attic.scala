@@ -149,7 +149,7 @@ object Attic extends SecureCFPController {
   // Mobile API
   def deleteRatings()= SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Rating.delete()
+      Rating.deleteAll()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
   }
 }

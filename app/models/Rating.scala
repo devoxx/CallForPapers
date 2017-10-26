@@ -225,7 +225,7 @@ object Rating {
     BigDecimal(score).setScale(2,RoundingMode.HALF_EVEN).toDouble
   }
 
-  def delete() = Redis.pool.withClient {
+  def deleteAll() = Redis.pool.withClient {
     implicit client =>
       client.del(RATING_KEY)
 
@@ -267,8 +267,7 @@ object Rating {
       }
 
       play.Logger.info(s"Deleting summarised and individual talk ratings for all talks for $conferenceCode.")
-      delete()
-
+      deleteAll()
       tx.exec()
       play.Logger.debug(s"Finished archiving ratings (aka mobile votes - ${allRatingsForTalksByTalkId.size} of them) for all talks for ${conferenceCode}.")
   }
