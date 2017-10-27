@@ -583,7 +583,7 @@ object CFPAdmin extends SecureCFPController {
       val speakers = ApprovedProposal.allApprovedSpeakers()
       val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
-          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val allProposalsForThisSpeaker = Proposal.allAcceptedProposalsByAuthor(speaker.uuid).values
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
             .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
@@ -598,7 +598,7 @@ object CFPAdmin extends SecureCFPController {
       val speakers = ApprovedProposal.allApprovedSpeakers()
       val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
-          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val allProposalsForThisSpeaker = Proposal.allAcceptedProposalsByAuthor(speaker.uuid).values
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
           (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty)
@@ -628,7 +628,7 @@ object CFPAdmin extends SecureCFPController {
       val speakers = ApprovedProposal.allApprovedSpeakers()
       val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
-          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val allProposalsForThisSpeaker = Proposal.allAcceptedProposalsByAuthor(speaker.uuid).values
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
           (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty)
