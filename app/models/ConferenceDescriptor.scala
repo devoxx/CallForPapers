@@ -634,7 +634,7 @@ object ConferenceDescriptor {
 
 
       labsTuesdayMorning ++ 
-      labsTuesdayAfternoon ++
+      labsTuesdayAfternoon
     }
 
     // BOFS
