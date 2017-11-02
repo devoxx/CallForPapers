@@ -76,7 +76,7 @@ object RestAPI extends Controller {
                 }
               }
             </title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2018/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}
@@ -924,12 +924,12 @@ object Conference {
     ))
 
   def conference2015(implicit req: RequestHeader) = Conference(
-    ConferenceDescriptor.conference2017().eventCode,
-    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.conference2017().timing.datesI18nKey),
-    ConferenceDescriptor.conference2017().locale.map(_.toString),
-    ConferenceDescriptor.conference2017().localisation,
+    ConferenceDescriptor.conference().eventCode,
+    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.conference().timing.datesI18nKey),
+    ConferenceDescriptor.conference().locale.map(_.toString),
+    ConferenceDescriptor.conference().localisation,
     Link(
-      routes.RestAPI.showConference(ConferenceDescriptor.conference2017().eventCode).absoluteURL(),
+      routes.RestAPI.showConference(ConferenceDescriptor.conference().eventCode).absoluteURL(),
       routes.RestAPI.profile("conference").absoluteURL(),
       "See more details about " + Messages("longYearlyName")
     ))

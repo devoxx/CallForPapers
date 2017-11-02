@@ -68,6 +68,10 @@
                         <button type="submit" class="btn btn-primary">Archive all Labs</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.DEEP_DIVE.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Deep dives</button>
+                    </form>
+                    <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
                         <button type="submit" class="btn btn-primary">Archive all Ignite</button>
                     </form>

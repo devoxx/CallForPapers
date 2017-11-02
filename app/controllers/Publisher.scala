@@ -208,6 +208,7 @@ object Publisher extends Controller {
       }
 
       day match {
+        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
         case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
         case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
         case other => NotFound("Day not found")
