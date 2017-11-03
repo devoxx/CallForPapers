@@ -182,7 +182,7 @@ object ConferenceDescriptor {
     val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, GEEK, IOT, SECURITY, ARCHITECTURE, UNKNOWN)
   }
 
-  val DEVOXX_CONF_URL_CODE = "devoxxuk2018"
+  val DEVOXX_CONF_URL_CODE = "devoxxuk"
 
   object ConferenceTracksDescription {
     val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
@@ -667,7 +667,7 @@ object ConferenceDescriptor {
   val DEVOXX_CONF_SITE_URL = "https://www.devoxx.co.uk/"
   val DEVOXX_INFO_SITE_URL = DEVOXX_CONF_SITE_URL + "#info"
   val DEVOXX_SPONSORS_SITE_URL = DEVOXX_CONF_SITE_URL + "#sponsors"
-  val DEVOXX_TICKETS_SITE_URL = "https://www.eventbrite.co.uk/e/devoxx-uk-2017-tickets-28649696012"
+  val DEVOXX_TICKETS_SITE_URL = "https://www.eventbrite.co.uk/e/devoxx-uk-2018-tickets-39324055308"
   val DEVOXX_CFP_OPENED_ON_DATE = "2017-11-01T00:00:00+01:00"
   val DEVOXX_CFP_CLOSED_ON_DATE = "2018-01-16T23:59:59+01:00"
   val DEVOXX_SCHEDULE_ANNOUNCEMENT_DATE = "2018-01-30T00:00:00+01:00"
