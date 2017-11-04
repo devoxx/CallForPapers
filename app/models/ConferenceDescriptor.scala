@@ -146,7 +146,7 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
-    val DEEP_DIVE = ProposalConfiguration(id = "deep_dive", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.DEEP_DIVE.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
+    val DEEP_DIVE = ProposalConfiguration(id = "deep_dive", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.DEEP_DIVE.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-anchor",
       chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
@@ -175,11 +175,10 @@ object ConferenceDescriptor {
     val BIGDATA = Track("bigdata", "bigdata.label")
     val WEB = Track("web", "web.label")
     val GEEK = Track("geek", "geek.label")
-    val IOT = Track("iot", "iot.label")
     val SECURITY = Track("security", "security.label")
     val ARCHITECTURE = Track("architecture", "architecture.label")
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, GEEK, IOT, SECURITY, ARCHITECTURE, UNKNOWN)
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, GEEK, SECURITY, ARCHITECTURE, UNKNOWN)
   }
 
   val DEVOXX_CONF_URL_CODE = "devoxxuk"
@@ -193,7 +192,6 @@ object ConferenceDescriptor {
     val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_bigdata.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
     val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
     val GEEK = TrackDesc(ConferenceTracks.GEEK.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_geek.png", ConferenceTracks.GEEK.label, "track.geek.desc")
-    val IOT = TrackDesc(ConferenceTracks.IOT.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_iot.png", ConferenceTracks.IOT.label, "track.iot.desc")
 
     val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
     val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
@@ -207,7 +205,6 @@ object ConferenceDescriptor {
       , BIGDATA
       , WEB
       , GEEK
-      , IOT
       , SECURITY
       , ARCHITECTURE
     )

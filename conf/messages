@@ -108,7 +108,7 @@ speakerQandA=Speaker Q&A
 question=Question
 answer=Answer
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">Info</a>.
+talkType.help=Each type of talk is described on the <a href="{0}#whatson" target="new">Info</a>.
 
 audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -154,9 +154,9 @@ quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
 quick.label.simple=Quickie Sessions
 bof.label=Birds of a Feather, 1hour, Thursday evening
 bof.label.simple=Birds of a Feather
-lab.label=Hands-on Labs, 2hours, Thursday and Friday
+lab.label=Hands-on Labs, 3hours, Thursday and Friday
 lab.label.simple=Hands-on Lab
-deep.dive.label=Deep Dive Sessions, 3.5hours, Wednesday
+deep.dive.label=Deep Dive Sessions, 3hours, Wednesday
 deep.dive.label.simple=Deep Dive Sessions
 ignite.label=Ignite Sessions, 5minutes, Thursday evening
 ignite.label.simple=Ignite Sessions
@@ -210,9 +210,6 @@ track.web.desc=Web frameworks, performance and accessibility, languages and tool
 
 geek.label=Mind the Geek
 track.geek.desc=Developer candy: stuff we want to know about but don’t (generally) do at work. Robotics, biological computing, cybernetics, AI, new toys, tomorrow’s world…
-
-iot.label=IoT
-track.iot.desc=Developing for the IOT, embedded, M2M, smart objects. Connectivity, security, infrastructure and how our world is changing.
 
 security.label=Security
 track.security.desc=Encryption, defensive practices, tools and technologies to be secure
@@ -446,7 +443,7 @@ closing_key=Closing Keynote
 all=All
 ignite=Ignite Sessions
 
-sw.proposal.speaker=Presented by
+sw.proposal.speaker=Presented by    
 admin.btn.changeState=Change one proposal state
 
 sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
