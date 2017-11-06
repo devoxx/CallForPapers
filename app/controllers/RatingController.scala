@@ -61,7 +61,7 @@ object RatingController extends SecureCFPController {
       val defaultRating = Rating(
         "",
         request.webuser.uuid,
-        "DevoxxUK2017",
+        "DevoxxUK2018",
         DateTime.now().getMillis,
         List(
           RatingDetail(

@@ -1,10 +1,11 @@
 @()(implicit lang: Lang, req:RequestHeader)
 
-@views.html.Publisher.devoxxUK2017(Messages("sw.show.fri")){
+@views.html.Publisher.devoxxUK(Messages("sw.show.fri")){
 <div class="large-12 columns">
     <h1 class="entry-title">@Messages("sw.show.title.fri")</h1>
     <p class="breadcrumb">
         <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+        <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
         <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
         <strong>@Messages("sw.agenda.fri")</strong>
     </p>
