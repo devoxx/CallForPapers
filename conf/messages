@@ -220,6 +220,9 @@ track.architecture.desc=How-Tos, strategies, tools, techniques and best practice
 unknown.label=Unknown
 track.unknown.desc=Unknown track
 
+all.label=All
+track.all.desc=All tracks
+
 # confirm import
 confirm.import.title=Create your Speaker''s profile
 confirm.import.save=Save and send an email
