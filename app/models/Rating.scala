@@ -147,7 +147,7 @@ object Rating {
     )
   }
 
-  private val RATING_KEY = "Rating:2017"
+  private val RATING_KEY = "Rating:2018"
 
   def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
     client =>
@@ -268,7 +268,6 @@ object Rating {
 
       play.Logger.info(s"Deleting summarised and individual talk ratings for all talks for $conferenceCode.")
       deleteAll()
-
       tx.exec()
       play.Logger.debug(s"Finished archiving ratings (aka mobile votes - ${allRatingsForTalksByTalkId.size} of them) for all talks for ${conferenceCode}.")
   }

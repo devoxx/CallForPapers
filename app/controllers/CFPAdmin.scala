@@ -636,6 +636,46 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksForExport(proposals))
   }
 
+  def allSpeakersWhoHaveAnsweredQandA() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers().toList
+      val filteredSpeakers = allApprovedSpeakers
+                              .filter(
+                                speaker => speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion
+                              )
+      
+    Ok(views.html.CFPAdmin.allSpeakersWhoHaveAnsweredQandA(filteredSpeakers))
+  }
+
+  def allSpeakersWhoHaveNotAnsweredQandA() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers().toList
+      val filteredSpeakers = allApprovedSpeakers
+                              .filter(
+                                speaker => ! speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion
+                              )
+
+    Ok(views.html.CFPAdmin.allSpeakersWhoHaveNotAnsweredQandA(filteredSpeakers))
+  }
+
+  def allUsersWithIncompleteSpeakerProfile() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val mapOfAllWebusers = Webuser.allWebusers
+      val filteredWebusersWithNoSpeakerProfiles = mapOfAllWebusers.filter(
+          webuserKeyValuePair =>
+            Speaker.findByUUID(webuserKeyValuePair._2.get.uuid).isEmpty ||
+            Speaker.findByUUID(webuserKeyValuePair._2.get.uuid).get == null
+      ).values
+        .toList
+        .flatten
+        .sortBy(_.cleanName)
+
+    Ok(views.html.CFPAdmin.allUsersWithIncompleteSpeakerProfile(filteredWebusersWithNoSpeakerProfiles))
+  }
+
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = Webuser.allSpeakers.sortBy(_.cleanName)

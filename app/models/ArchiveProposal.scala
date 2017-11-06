@@ -98,7 +98,6 @@ object ArchiveProposal {
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
   }
 
-
   private def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val conferenceCode = ConferenceDescriptor.current().eventCode
@@ -107,7 +106,10 @@ object ArchiveProposal {
       tx.sadd(s"ArchivedById:${conferenceCode}", proposal.id.toString)
       tx.sadd(s"Archived:${conferenceCode}" + proposal.talkType.id, proposal.id.toString)
       tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + proposal.mainSpeaker, proposal.id.toString)
-      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + secondarySpeaker, proposal.id.toString))
+      proposal.secondarySpeaker.map(
+        secondarySpeaker =>
+          tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + secondarySpeaker, proposal.id.toString)
+      )
       proposal.otherSpeakers.foreach {
         otherSpeaker: String =>
           tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + otherSpeaker, proposal.id.toString)

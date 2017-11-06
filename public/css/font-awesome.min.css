@@ -212,6 +212,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-link:before{content:"\f0c1";}
 .icon-cloud:before{content:"\f0c2";}
 .icon-beaker:before{content:"\f0c3";}
+.icon-anchor:before{content:"\f13d";}
 .icon-cut:before{content:"\f0c4";}
 .icon-copy:before{content:"\f0c5";}
 .icon-paperclip:before,.icon-paper-clip:before{content:"\f0c6";}

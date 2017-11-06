@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx UK 2017
+CONF.title=Devoxx UK 2018
 CONF.subtitle=UK
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx UK 2017
-longYearlyName=Devoxx United-Kingdom 2017
+shortYearlyName=Devoxx UK 2018
+longYearlyName=Devoxx United-Kingdom 2018
 shortName=Devoxx UK
-longName=Devoxx UK 2017 CFP
+longName=Devoxx UK 2018 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=UK 2017
-conference.dates=11th-12th May
+longSplittedName_whiteEnd=UK 2018
+conference.dates=9th-11th May
 # -----------------
-cfp.title=Devoxx UK 2017 CFP
+cfp.title=Devoxx UK 2018 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -108,7 +108,7 @@ speakerQandA=Speaker Q&A
 question=Question
 answer=Answer
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">Info</a>.
+talkType.help=Each type of talk is described on the <a href="{0}#whatson" target="new">Info</a>.
 
 audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -154,8 +154,10 @@ quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
 quick.label.simple=Quickie Sessions
 bof.label=Birds of a Feather, 1hour, Thursday evening
 bof.label.simple=Birds of a Feather
-lab.label=Hands-on Labs, 2hours, Thursday and Friday
+lab.label=Hands-on Labs, 3hours, Thursday and Friday
 lab.label.simple=Hands-on Lab
+deep.dive.label=Deep Dive Sessions, 3hours, Wednesday
+deep.dive.label.simple=Deep Dive Sessions
 ignite.label=Ignite Sessions, 5minutes, Thursday evening
 ignite.label.simple=Ignite Sessions
 
@@ -172,12 +174,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx UK 2016''s videos on
+video.tag=Review Devoxx UK 2017''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx United-Kingdom 2017:
+theme.track=List of tracks for Devoxx United-Kingdom 2018:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx UK 2017, 11th-12th May
+appel.conf.dates=Devoxx UK 2018, 9th-11th May
 
 # Tracks
 
@@ -189,28 +191,25 @@ javase.label=Java Language
 track.java.desc=Java Language, Java SE, JDK, performance tuning, modularity, and more.
 
 cloud.label=Cloud, Containers &amp; Infrastructure
-track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
+track.cloud.desc=Cloud, Terraform, Ansible, Kubernetes, Docker, Istio, PaaS and serverless
 
 ssj.label=Server Side Java
 serverside.label=Server Side Java
-track.ssj.desc=Java EE, appservers, databases, MOM, batch processing &amp; related JSRs
+track.ssj.desc=Java EE, EE4J, Spring, appservers, databases, MOM, batch processing &amp; related JSRs
 
 lang.label=Programming Languages
 track.lang.desc=Other languages running on the JVM, functional languages, mobile and new kids on the block. The languages, tools, libraries and best practices
 
-bigdata.label=Big Data & Machine Learning
-bd.label=Big Data & Machine Learning
-track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning.
+bigdata.label=Big Data & AI
+bd.label=Big Data & AI
+track.bigdata.desc=Big Data, Fast Data, NoSQL, Machine learning, Deep Learning, Neural Networks, etc
 
 web.label=Modern Web
 webHtml5.label=Modern Web
-track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
+track.web.desc=Web frameworks, performance and accessibility, languages and tooling to build modern browser apps
 
 geek.label=Mind the Geek
 track.geek.desc=Developer candy: stuff we want to know about but don’t (generally) do at work. Robotics, biological computing, cybernetics, AI, new toys, tomorrow’s world…
-
-iot.label=IoT
-track.iot.desc=Developing for the IOT, embedded, M2M, smart objects. Connectivity, security, infrastructure and how our world is changing.
 
 security.label=Security
 track.security.desc=Encryption, defensive practices, tools and technologies to be secure
@@ -436,6 +435,7 @@ sw.details=See details
 
 conf=Conference
 lab=Hands-on Labs
+deep_dive=Deep Dive
 quick=Quickie Sessions
 bof=BOF (Birds of a Feather)
 opening_key=Opening Keynote
@@ -443,7 +443,7 @@ closing_key=Closing Keynote
 all=All
 ignite=Ignite Sessions
 
-sw.proposal.speaker=Presented by
+sw.proposal.speaker=Presented by    
 admin.btn.changeState=Change one proposal state
 
 sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
@@ -453,6 +453,7 @@ sw.all.opening_key=All Opening Keynotes
 sw.all.closing_key=All Closing Keynotes
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
+sw.all.deep_dive=All Deep Dives
 sw.all.quick=All Quickie Sessions
 sw.all.bof=All BOFs
 sw.all.ignite=All Ignite Sessions
@@ -489,18 +490,18 @@ calendar.pref.reset=No preferences
 sw.all.other=Other kind of presentation
 acceptTermsConditions=Accept Terms/Conditions to display this bio on the web site
 sp.authenticateAndCreate=Authenticate as this speaker and create a new talk
-day-uni=Wednesday
+day-deep-dive=Wednesday
+day-deep-dives=Wednesday
 day-labs=Wednesday
-day-tia=Wednesday
 day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 8th May
-day-tuesday=Tuesday, 9th May
-day-wednesday=Wednesday, 10th May
-day-thursday=Thursday, 11th May
-day-friday=Friday, 12th May
+day-monday=Monday, 7th May
+day-tuesday=Tuesday, 8th May
+day-wednesday=Wednesday, 9th May
+day-thursday=Thursday, 10th May
+day-friday=Friday, 11th May
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -527,11 +528,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 8th May 2017
-sw.show.title.tue=Tuesday, 9th May 2017
-sw.show.title.wed=Wednesday, 10th May 2017
-sw.show.title.thu=Thursday, 11th May 2017
-sw.show.title.fri=Friday, 12th May 2017
+sw.show.title.mon=Monday, 7th May 2018
+sw.show.title.tue=Tuesday, 8th May 2018
+sw.show.title.wed=Wednesday, 9th May 2018
+sw.show.title.thu=Thursday, 10th May 2018
+sw.show.title.fri=Friday, 11th May 2018
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
