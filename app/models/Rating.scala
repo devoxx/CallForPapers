@@ -147,7 +147,7 @@ object Rating {
     )
   }
 
-  private val RATING_KEY = "Rating:2017"
+  private val RATING_KEY = "Rating:2018"
 
   def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
     client =>

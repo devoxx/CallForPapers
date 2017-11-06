@@ -144,7 +144,7 @@ object Publisher extends Controller {
   private val thursday: String = "thursday"
   private val friday: String = "friday"
 
-  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = thursday) = Action {
+  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
     implicit request =>
       val realSlotId = slotId.orElse {
         ScheduleConfiguration.getPublishedSchedule(confType)
@@ -208,6 +208,7 @@ object Publisher extends Controller {
       }
 
       day match {
+        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
         case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
         case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
         case other => NotFound("Day not found")
