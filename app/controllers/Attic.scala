@@ -81,7 +81,7 @@ object Attic extends SecureCFPController {
         proposalType => {
           Future(ArchiveProposal.archiveAll(proposalType)).map {
             totalArchived =>
-              Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalArchived archived"))
+              Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalArchived $proposalType(s) archived"))
           }
         }
       )
