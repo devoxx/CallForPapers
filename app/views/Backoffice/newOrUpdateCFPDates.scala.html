@@ -1,0 +1,43 @@
+@(cfpDatesForm: Form[models.CFPDates])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main("Set new or update CFP Opening/Closing/Schedule announcement dates") {
+  <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2>@Messages("cfp.dates")</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable">
+        @flash.get("error").get
+        </div>
+      }
+      @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable">
+        @flash.get("success").get
+        </div>
+      }
+      @helper.form(action = routes.Backoffice.saveCFPDates) {
+        @helper.inputDate(cfpDatesForm("opening"), 'type -> "datetime-local", '_label->"CFP Opening Date")
+        @helper.inputDate(cfpDatesForm("closing"), 'type -> "datetime-local", '_label->"CFP Closing Date")
+        @helper.inputDate(cfpDatesForm("scheduleAnnouncement"), 'type -> "datetime-local", '_label->"Schedule Announcement Date")
+        @helper.inputRadioGroup(cfpDatesForm("toggleCFPAcceptance"), Seq("Y"->"Open","N"->"Close"), '_label->"Toggle CFP Acceptance")
+
+        @if(cfpDatesForm("opening").value.isDefined ||
+            cfpDatesForm("closing").value.isDefined ||
+            cfpDatesForm("scheduleAnnouncement").value.isDefined ||
+            cfpDatesForm("toggleCFPAcceptance").value.isDefined) {
+          <button type="submit" class="btn btn-success btn-lg" value="save"><i class="icon-edit"></i> Update</button>
+        }else {
+          <button type="submit" class="btn btn-success btn-lg" value="save"><i class="icon-save"></i> Save</button>
+        }
+        <a href="javascript:history.back()" class="btn btn-primary btn-lg"><i class="ui-icon-cancel"> Cancel</a>
+      }
+    </div>
+  </div>
+}

@@ -55,6 +55,8 @@
             <a href="@routes.Backoffice.sanityCheckSchedule()"  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
             <a href="@routes.Favorites.showAllForAdmin()"  class="btn btn-sm btn-primary"><i class="icon-calendar"></i> Most popular talks faved on Agenda</a>
 
+            <a href="@routes.Backoffice.newOrUpdateCFPDates()" class="btn btn-success btn-sm"><i class="icon-calendar"></i> Set CFP dates</a>
+
             @if(controllers.Backoffice.isScheduleInProgressMessageDisplayStatus().equals(Some("Hide"))) {
                 <a href="@routes.Backoffice.setSchedulingInProgressMessageTo("Show")" class="btn btn-sm btn-primary"><i class="icon-info-sign"></i>
                     Show Schedule-in-progress message</a>

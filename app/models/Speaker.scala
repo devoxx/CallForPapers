@@ -260,7 +260,7 @@ object Speaker {
       implicit client =>
         val tx = client.multi()
         allSpeakers.foreach (speaker => {
-          val conferenceCode = ConferenceDescriptor.current ().eventCode
+          val conferenceCode = ConferenceDescriptor.current().eventCode
 
           play.Logger.info(s"Attempting to archive ${speaker.uuid.toString} for ${conferenceCode}.")
 
