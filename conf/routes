@@ -294,6 +294,8 @@ DELETE        /schedulling/deletescheduledConfigurations                        
 POST          /schedulling/publish                                              controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 GET           /schedulling/setSchedulingInProgressMessageTo                     controllers.Backoffice.setSchedulingInProgressMessageTo(displayStatus: String)
+GET           /schedulling/newOrUpdateCFPDates                                  controllers.Backoffice.newOrUpdateCFPDates()
+POST          /schedulling/saveCFPDates                                         controllers.Backoffice.saveCFPDates()
 
 # WishList
 GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishList()

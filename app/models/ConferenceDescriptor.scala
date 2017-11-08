@@ -2,6 +2,7 @@ package models
 
 import java.util.Locale
 
+import controllers.Backoffice
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
 import play.api.i18n.Messages
@@ -753,7 +754,7 @@ object ConferenceDescriptor {
   )
 
   def isCFPOpen: Boolean = {
-    Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
+    Backoffice.isCFPOpen()
   }
 
   // All timezone sensitive methods are using this constant variable.
