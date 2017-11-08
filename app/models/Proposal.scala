@@ -378,7 +378,7 @@ object Proposal {
 
           if (newState == ProposalState.SUBMITTED) {
             client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
-            play.Logger.info(s"New proposal submitted by $userName (uuid: $uuid, proposal id: '$proposalId')")
+            play.Logger.info(s"New or existing proposal submitted by '$userName' (uuid: $uuid, proposal id: '$proposalId')")
           }
       }
       if (maybeExistingState.isEmpty) {
@@ -387,7 +387,7 @@ object Proposal {
         Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
       }
 
-      play.Logger.info(s"Proposal state changed to ${newState.code} by $userName (uuid: $uuid, proposal id: '$proposalId')")
+      play.Logger.info(s"Proposal state changed to '${newState.code}' by '$userName' (uuid: $uuid, proposal id: '$proposalId')")
   }
 
   def changeTags(proposal: Proposal, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
