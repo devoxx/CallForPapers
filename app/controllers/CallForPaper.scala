@@ -184,6 +184,7 @@ object CallForPaper extends SecureCFPController {
           val summary = validProposal.summaryAsHtml
           // markdown to HTML
           val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
+          play.Logger.info(s"Proposal being previewed after being changed by '${request.webuser.cleanName}' (uuid: ${request.webuser.uuid}, proposal id: '${validProposal.id}')")
           Ok(html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
         }
       )
@@ -212,10 +213,12 @@ object CallForPaper extends SecureCFPController {
                   Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                 }
                 Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                play.Logger.info(s"Existing proposal has been changed and saved by '${request.webuser.cleanName}' (uuid: ${request.webuser.uuid}, proposal id: '${existingProposal.id}')")
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
               } else {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
                 Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code + "]"))
+                play.Logger.info(s"Existing proposal has been changed and saved by '${request.webuser.cleanName}' (uuid: ${request.webuser.uuid}, proposal id: '${existingProposal.id}')")
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
               }
             case other =>
@@ -224,10 +227,12 @@ object CallForPaper extends SecureCFPController {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
                 Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                play.Logger.info(s"New proposal created and saved by '${request.webuser.cleanName}' (uuid: ${request.webuser.uuid}, proposal id: '${proposal.id}')")
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
+                play.Logger.info(s"Proposal cannot be saved, attempt made to edit and save by '${request.webuser.cleanName}' (uuid: ${request.webuser.uuid}, proposal id: '${proposal.id}')")
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
               }
           }
