@@ -160,6 +160,7 @@ object Digest {
                 .foreach(digest => {
         client.hset(digestRedisKey + digest.value, proposalId, now)
       })
+    play.Logger.info(s"Proposal added to the digest queue (proposal id: '$proposalId')")
   }
 
   /**

@@ -4,7 +4,7 @@ import scala.concurrent.duration._
 import library.search.{DoIndexProposal, _}
 import library._
 import models._
-import org.joda.time.Instant
+import org.joda.time.{DateTime, Instant}
 import play.api.cache.EhCachePlugin
 import play.api.data._
 import play.api.data.Forms._
@@ -442,6 +442,65 @@ object Backoffice extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       controllers.Backoffice.setScheduleInProgressMessage(displayStatus)
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress", displayStatus))
+  }
+
+  def newOrUpdateCFPDates() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      play.Logger.debug("Loading new or update CFP Dates")
+      CFPDates.load() match {
+        case Some(savedCFPDates) => Ok(views.html.Backoffice.newOrUpdateCFPDates(CFPDates.cfpDatesForm.fill(savedCFPDates)))
+        case None => Ok(views.html.Backoffice.newOrUpdateCFPDates(CFPDates.cfpDatesForm))
+      }
+  }
+
+  def saveCFPDates() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      play.Logger.warn("Saving new/updated CFP Dates")
+      CFPDates.cfpDatesForm.bindFromRequest.fold(
+        hasErrors => {
+          play.Logger.warn(s"Bad Request due to ${hasErrors.errorsAsJson}")
+          BadRequest(views.html.Backoffice.newOrUpdateCFPDates(hasErrors))
+        },
+        cfpDatesData => {
+          play.Logger.info(Messages("cfp.dates.saved"))
+          CFPDates.save(cfpDatesData)
+          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("cfp.dates.saved"))
+        }
+      )
+  }
+
+  def isCFPOpen(): Boolean = {
+    CFPDates.load() match {
+      case Some(savedCFPDates) => savedCFPDates.toggleCFPAcceptance == "Y"
+      case None => false
+    }
+  }
+
+  def cfpOpeningDate(): DateTime = {
+     DateTime.parse(
+        CFPDates.load() match {
+          case Some(savedCFPDates) => savedCFPDates.opening ++ "T00:00:00+01:00"
+          case None => "2017-11-08T00:00:00+01:00"
+        }
+     )
+  }
+
+  def cfpClosingDate(): DateTime = {
+    DateTime.parse(
+        CFPDates.load() match {
+          case Some(savedCFPDates) => savedCFPDates.closing ++ "T23:59:59+01:00"
+          case None => "2018-01-09T23:59:59+01:00"
+        }
+    )
+  }
+
+  def scheduleAnnouncementDate(): DateTime = {
+    DateTime.parse(
+        CFPDates.load() match {
+          case Some(savedCFPDates) => savedCFPDates.scheduleAnnouncement ++ "T00:00:00+01:00"
+          case None => "2018-01-23T00:00:00+01:00"
+        }
+    )
   }
 
   def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
