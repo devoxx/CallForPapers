@@ -364,6 +364,7 @@ object Proposal {
   }
 
   def changeProposalState(uuid: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
+    val userName = Webuser.findByUUID(uuid).get.cleanName
     client =>
       // Same kind of operation for the proposalState
       val maybeExistingState = for (state <- ProposalState.allAsCode if client.sismember("Proposals:ByState:" + state, proposalId)) yield state
@@ -377,6 +378,7 @@ object Proposal {
 
           if (newState == ProposalState.SUBMITTED) {
             client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
+            play.Logger.info(s"New proposal submitted by $userName (uuid: $uuid, proposal id: '$proposalId')")
           }
       }
       if (maybeExistingState.isEmpty) {
@@ -384,6 +386,8 @@ object Proposal {
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
         Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
       }
+
+      play.Logger.info(s"Proposal state changed to ${newState.code} by $userName (uuid: $uuid, proposal id: '$proposalId')")
   }
 
   def changeTags(proposal: Proposal, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
