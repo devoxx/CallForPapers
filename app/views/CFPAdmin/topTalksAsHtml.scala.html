@@ -6,7 +6,7 @@
     <p>@results.size</p>
 
 
-    <ul>
+    <ol>
     @results.map{case(proposal,ratings)=>
         <li>
             "@proposal.title" par @proposal.allSpeakers.map(_.cleanName).mkString(", ")<br>
@@ -14,7 +14,7 @@
     </li>
     }
 
-    </ul>
+    </ol>
 
     <hr>
     <p>For testing</p>
