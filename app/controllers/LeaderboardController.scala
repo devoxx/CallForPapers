@@ -57,6 +57,7 @@ object LeaderboardController extends SecureCFPController {
 
     val totalSlotsToAllocate = ApprovedProposal.getTotal
     val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
+    val totalAcceptedBySpeakers = Leaderboard.totalAcceptedBySpeakers()
     val totalWithTickets = Leaderboard.totalWithTickets()
     val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
     val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) } toList
@@ -86,6 +87,7 @@ object LeaderboardController extends SecureCFPController {
       totalAcceptedByTrack, totalAcceptedByType,
       totalSlotsToAllocate,
       totalApprovedSpeakers,
+      totalAcceptedBySpeakers,
       totalWithTickets,
       totalRefusedSpeakers,
       allApprovedByTrack,
@@ -256,6 +258,7 @@ case class LeaderBoardParams(
                               totalAcceptedByType: Map[String, Int],
                               totalSlotsToAllocate: Map[String, Int],
                               totalApprovedSpeakers: Long,
+                              totalAcceptedBySpeakers: Long,
                               totalWithTickets: Long,
                               totalRefusedSpeakers: Long,
                               allApprovedByTrack: Map[String, Int],

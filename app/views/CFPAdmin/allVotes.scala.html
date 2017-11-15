@@ -15,11 +15,13 @@
                     <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
                 }
                 <br>
+                <br>
                 <i class="icon-filter"></i> @Messages("search.showOnly"):
                 @Track.allIDs.map { idTrack =>
-                    <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-default btn-sm">@idTrack
-                        - @confType</a>
+                        <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-default btn-sm">@Messages(idTrack+".label").replace("&amp;", "&")
+                        - @Messages(confType)</a>
                 }
+                <br>
                 <br>
                 <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i>
                     Recompute total and votes</a> -
