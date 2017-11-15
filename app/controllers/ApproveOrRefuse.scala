@@ -184,6 +184,7 @@ object ApproveOrRefuse extends SecureCFPController {
                   case "accept" =>
                     if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
                       Proposal.accept(request.webuser.uuid, proposalId)
+                      ApprovedProposal.accept(maybeProposal.get)
                       val validMsg = "Speaker has set the status of this proposal to ACCEPTED"
                       Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
                       ZapActor.actor ! SendMessageToCommittee(request.webuser.uuid, p, validMsg)

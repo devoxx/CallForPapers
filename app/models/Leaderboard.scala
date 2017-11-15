@@ -115,6 +115,9 @@ object Leaderboard {
       val totalApprovedSpeakers = ApprovedProposal.allApprovedSpeakerIDs().diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalApprovedSpeakers", totalApprovedSpeakers.toString)
 
+      val totalAcceptedBySpeakers = ApprovedProposal.allAcceptedBySpeakerIDs().diff(allWebusers.map(_.uuid)).size
+      tx.set("Leaderboard:totalAcceptedBySpeakers", totalAcceptedBySpeakers.toString)
+
       val totalWithTickets = ApprovedProposal.allApprovedSpeakersWithFreePass().map(_.uuid).diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalWithTickets", totalWithTickets.toString)
 
@@ -236,6 +239,10 @@ object Leaderboard {
 
   def totalApprovedSpeakers(): Long = {
     getFromRedis("Leaderboard:totalApprovedSpeakers")
+  }
+
+  def totalAcceptedBySpeakers(): Long = {
+    getFromRedis("Leaderboard:totalAcceptedBySpeakers")
   }
 
   def totalWithTickets(): Long = {

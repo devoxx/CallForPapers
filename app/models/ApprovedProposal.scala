@@ -24,7 +24,7 @@
 package models
 
 import library.Redis
-import models.ConferenceDescriptor.ConferenceProposalConfigurations
+import models.ConferenceDescriptor.{ConferenceProposalConfigurations, ConferenceProposalTypes}
 
 /**
  * Approve or reject a proposal
@@ -51,9 +51,28 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:quick") + client.scard("Approved:bof") + client.scard("Approved:tia") + client.scard("Approved:opening_key") + client.scard("Approved:closing_key") + client.scard("Approved:ignite")
+          var totalCount: Long = 0
+          ConferenceProposalTypes.ALL.foreach(
+            eachType => totalCount += client.scard(s"Approved:$eachType")
+          )
+          totalCount
         case other =>
           client.scard(s"Approved:$talkType")
+      }
+  }
+
+  def countAccepted(talkType: String): Long = Redis.pool.withClient {
+    client =>
+      talkType match {
+        case null => 0
+        case "all" =>
+          var totalCount: Long = 0
+          ConferenceProposalTypes.ALL.foreach(
+            eachType => totalCount += client.scard(s"Accepted:$eachType")
+          )
+          totalCount
+        case other =>
+          client.scard(s"Accepted:$talkType")
       }
   }
 
@@ -62,7 +81,12 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:quick") + client.scard("Refused:bof") + client.scard("Refused:tia") + client.scard("Refused:opening_key") + client.scard("Refused:closing_key") + client.scard("Refused:ignite")
+          var totalCount: Long = 0
+          ConferenceProposalTypes.ALL.foreach(
+            eachType => totalCount += client.scard(s"Refused:$eachType")
+          )
+          totalCount
+
         case other =>
           client.scard(s"Refused:$talkType")
       }
@@ -166,6 +190,20 @@ object ApprovedProposal {
       tx.exec()
   }
 
+  def accept(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+      val tx = client.multi()
+      tx.sadd("AcceptedById:", proposal.id.toString)
+      tx.sadd("Accepted:" + proposal.talkType.id, proposal.id.toString)
+      tx.sadd("AcceptedBySpeakers:" + proposal.mainSpeaker, proposal.id.toString)
+      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("AcceptedBySpeakers:" + secondarySpeaker, proposal.id.toString))
+      proposal.otherSpeakers.foreach {
+        otherSpeaker: String =>
+          tx.sadd("AcceptedBySpeakers:" + otherSpeaker, proposal.id.toString)
+      }
+      tx.exec()
+  }
+  
   def refuse(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       cancelApprove(proposal)
@@ -322,6 +360,15 @@ object ApprovedProposal {
       client.keys("ApprovedSpeakers:*").map {
         key =>
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          speakerUUID
+      }
+  }
+
+  def allAcceptedBySpeakerIDs(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.keys("AcceptedBySpeakers:*").map {
+        key =>
+          val speakerUUID = key.substring("AcceptedBySpeakers:".length)
           speakerUUID
       }
   }
