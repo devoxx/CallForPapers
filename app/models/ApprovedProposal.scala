@@ -195,11 +195,11 @@ object ApprovedProposal {
       val tx = client.multi()
       tx.sadd("AcceptedById:", proposal.id.toString)
       tx.sadd("Accepted:" + proposal.talkType.id, proposal.id.toString)
-      tx.sadd("AcceptedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
-      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("AcceptedSpeakers:" + secondarySpeaker, proposal.id.toString))
+      tx.sadd("AcceptedBySpeakers:" + proposal.mainSpeaker, proposal.id.toString)
+      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("AcceptedBySpeakers:" + secondarySpeaker, proposal.id.toString))
       proposal.otherSpeakers.foreach {
         otherSpeaker: String =>
-          tx.sadd("AcceptedSpeakers:" + otherSpeaker, proposal.id.toString)
+          tx.sadd("AcceptedBySpeakers:" + otherSpeaker, proposal.id.toString)
       }
       tx.exec()
   }
@@ -360,6 +360,15 @@ object ApprovedProposal {
       client.keys("ApprovedSpeakers:*").map {
         key =>
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          speakerUUID
+      }
+  }
+
+  def allAcceptedBySpeakerIDs(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.keys("AcceptedBySpeakers:*").map {
+        key =>
+          val speakerUUID = key.substring("AcceptedBySpeakers:".length)
           speakerUUID
       }
   }

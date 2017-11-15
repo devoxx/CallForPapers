@@ -33,9 +33,14 @@
                         <small><i class="icon-user"></i> speakers</small>
                     </div>
 
-                      <div class="col-md-3">
+                    <div class="col-md-3">
                         <h1>@params.totalApprovedSpeakers</h1>
                         <small><i class="icon-user"></i> approved speakers</small><br>
+                    </div>
+
+                    <div class="col-md-3">
+                        <h1>@params.totalAcceptedBySpeakers</h1>
+                        <small><i class="icon-user"></i> accepted by speakers</small><br>
                     </div>
 
                     <div class="col-md-3">
@@ -83,8 +88,10 @@
                     <div class="col-md-4">
                         <h3><i class="icon-star"></i> Most Votes</h3>
                         @params.mostReviewed.map { mr =>
-                            @tags.renderGravatarByProposal(mr._1)
-                            <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
+                            @if(mr._2 > 0) {
+                                @tags.renderGravatarByProposal(mr._1)
+                                <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
+                            }
                         }
                         <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary">See all Votes</a></small>
                     </div>
@@ -92,8 +99,10 @@
                     <div class="col-md-4">
                         <h3><i class="icon-bell"></i> Eager Speakers</h3>
                         @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
-                            @tags.renderGravatar(br._1)
-                            @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
+                            @if(br._2 > 0) {
+                                @tags.renderGravatar(br._1)
+                                @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
+                            }
                         }
                         <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary">See all</a></small>
                     </div>
@@ -232,7 +241,7 @@
                                     <th>Proposal received</th>
                                     <th>Total slots</th>
                                     <th>Proposal approved</th>
-                                    <th>Proposal accepted</th>
+                                    <th>Proposal accepted by speaker(s)</th>
                                     <th>To allocate</th>
                                 </tr>
                             </thead>
