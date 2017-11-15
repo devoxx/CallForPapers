@@ -232,6 +232,7 @@
                                     <th>Proposal received</th>
                                     <th>Total slots</th>
                                     <th>Proposal approved</th>
+                                    <th>Proposal accepted</th>
                                     <th>To allocate</th>
                                 </tr>
                             </thead>
@@ -241,10 +242,13 @@
                                     <th>@Messages(propType) <a href="@routes.CFPAdmin.allProposalsByType(propType)"><i class="icon-arrow-right"></i></a></th>
                                     <td><span class="label label-warning">@total</span></td>
                                     <td><span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span></td>
-                            @defining(models.ApprovedProposal.countApproved(propType)) { approvedTotal =>
-                                       <td><span class="label label-primary">@approvedTotal</span> </td>
-                                       <td><span class="label label-danger">@(params.totalSlotsToAllocate.get(propType+".label").map(s=>s-approvedTotal))</span> </td>
-                            }
+                                    @defining(models.ApprovedProposal.countApproved(propType)) { approvedTotal =>
+                                        <td><span class="label label-primary">@approvedTotal</span> </td>
+                                    }
+                                    @defining(models.ApprovedProposal.countAccepted(propType)) { acceptedTotal =>
+                                        <td><span class="label label-warning">@acceptedTotal</span></td>
+                                        <td><span class="label label-danger">@(params.totalSlotsToAllocate.get(propType+".label").map(s=>s-acceptedTotal))</span> </td>
+                                    }
                                 </tr>
                             </tbody>
                         }
