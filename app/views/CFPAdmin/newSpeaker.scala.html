@@ -49,6 +49,7 @@
         @if(speakerForm.hasGlobalErrors){
             has global errors
         }
+
         @helper.form(action = routes.CFPAdmin.saveNewSpeaker) {
             <label for="name">UUID:</label> <input type="text" readonly name="uuid" value='@speakerForm("uuid").value.getOrElse("")'>
             @helper.inputText(speakerForm("firstName"), 'size->40)
@@ -62,20 +63,6 @@
             @helper.inputText(speakerForm("twitter2"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog2"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-            <div class="prettyprint">
-                <h4><b>@Messages("speakerQandA")</b></h4>
-
-                    @helper.repeat(speakerForm("questionAndAnswers2"), min = 5) { questionAndAnswer =>
-                        @Html("<hr color=#000000 />")
-                        @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")) {
-                            @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70)
-                        } else {
-                            @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70, 'disabled -> true)
-                        }
-                        @helper.textarea(questionAndAnswer("answer"), '_label -> "Answer", 'cols -> 70, 'rows -> 5)
-                    }
-            </div>
-
             @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "en")
             @helper.checkbox(speakerForm("acceptTermsConditions"))
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
@@ -87,7 +74,7 @@
                     Styling with Markdown is supported in the above input and text areas (click for a quick cheatsheet)
                 </a>
             </div>
-    }
+        }
     </div>
 </div>
 
