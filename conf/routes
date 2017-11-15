@@ -119,8 +119,8 @@ GET           /cfpadmin/allDevoxxians                                           
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
-GET           /cfpadmin/allSpeakersWhoHaveAnswereQandA                          controllers.CFPAdmin.allSpeakersWhoHaveAnsweredQandA()
-GET           /cfpadmin/allSpeakersWhoHaveNotAnswereQandA                       controllers.CFPAdmin.allSpeakersWhoHaveNotAnsweredQandA()
+GET           /cfpadmin/allSpeakers/whoHaveAnswereQandA                         controllers.CFPAdmin.allSpeakersWhoHaveAnsweredQandA()
+GET           /cfpadmin/allSpeakers/whoHaveNotAnswereQandA                      controllers.CFPAdmin.allSpeakersWhoHaveNotAnsweredQandA()
 GET           /cfpadmin/allUsersWithIncompleteSpeakerProfile                    controllers.CFPAdmin.allUsersWithIncompleteSpeakerProfile()
 
 GET           /cfpadmin/leaderboard                                             controllers.LeaderboardController.leaderBoard
