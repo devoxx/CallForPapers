@@ -62,17 +62,41 @@ object TrackLeader {
       }
   }
 
-  def updateAllTracks(mapsByTrack: Map[String, Seq[String]]): util.List[AnyRef] = Redis.pool.withClient{
+  def isReviewer(trackId: String, index: Integer, webUserId: String): Boolean = Redis.pool.withClient {
+    client =>
+      client.hget(s"TrackReviewers", s"${trackId}:${index}") match {
+        case Some(w) if w == webUserId => true
+        case _ => false
+      }
+  }
+
+  def updateAllTracks(leadersPerTrack: Map[String, Seq[String]],
+                      reviewersPerTrack: Map[String, Seq[String]]): util.List[AnyRef] = Redis.pool.withClient{
     client=>
     val tx = client.multi()
     tx.del("TrackLeaders")
-    mapsByTrack.foreach {
+    leadersPerTrack.foreach {
       case (trackId, seqUUIDs) =>
         Redis.pool.withClient {
           client =>
             seqUUIDs.filterNot(_ == "no_track_lead").foreach {
               uuid: String =>
                 tx.hset(s"TrackLeaders", trackId, uuid)
+            }
+        }
+    }
+
+    tx.del("TrackReviewers")
+    reviewersPerTrack.foreach {
+      case (trackId, seqUUIDs) =>
+        var index: Int = 1
+        Redis.pool.withClient {
+          client =>
+            seqUUIDs.filterNot(_ == "no_reviewer").distinct.foreach {
+              uuid: String => {
+                tx.hset(s"TrackReviewers", s"${trackId}:${index}", uuid)
+                index = index + 1
+              }
             }
         }
     }

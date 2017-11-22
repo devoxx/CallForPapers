@@ -687,13 +687,27 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.showCFPUsers(Webuser.allCFPAdminUsers()))
   }
 
-  def updateTrackLeaders() = SecuredAction(IsMemberOf("cfp")) {
+  def updateTrackLeadersAndReviewers() = SecuredAction(IsMemberOf("cfp")) {
     implicit req: SecuredRequest[play.api.mvc.AnyContent] =>
 
+      var leadersPerTrack = req.request.body.asFormUrlEncoded.map {
+        perTrack =>
+            ConferenceDescriptor.ConferenceTracks.ALL.map {
+              track => (track.id, perTrack.get(s"leader-${track.id}").get)
+        }
+      }.get.toMap
+
+      var reviewersPerTrack = req.request.body.asFormUrlEncoded.map {
+        perTrack =>
+          ConferenceDescriptor.ConferenceTracks.ALL.map {
+            track => (track.id, perTrack.get(s"reviewer-${track.id}").get)
+          }
+      }.get.toMap
+
       req.request.body.asFormUrlEncoded.map {
-        mapsByTrack =>
-          TrackLeader.updateAllTracks(mapsByTrack)
-          Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("success" -> "List of track leaders updated")
+        trackLeadersForm =>
+          TrackLeader.updateAllTracks(leadersPerTrack, reviewersPerTrack)
+          Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("success" -> "List of track leaders and reviewers updated")
       }.getOrElse {
         Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("error" -> "No value received")
       }
