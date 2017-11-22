@@ -197,7 +197,11 @@ object Leaderboard {
       // Take CFP members, remove admin and remove all webuser that reviewed at least one
       val otherThatHaveNoVotes = client.sdiff("Webuser:cfp", "Webuser:admin", "Computed:Reviewer:ReviewedOne").map(s => (s, "0"))
       val toReturn = (lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes).toMap
-      toReturn
+      
+      if (toReturn.count(_._2 > "0") == 0)
+        toReturn.empty
+      else
+        toReturn
   }
 
   def totalSubmittedByTrack(): Map[String, Int] = Redis.pool.withClient {
