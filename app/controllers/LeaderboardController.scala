@@ -46,8 +46,8 @@ object LeaderboardController extends SecureCFPController {
     val totalVotes = Leaderboard.totalVotes()
     val totalWithVotes = Leaderboard.totalWithVotes()
     val totalNoVotes = Leaderboard.totalNoVotes()
-    val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
-    val bestReviewers = Review.allReviewersAndStats()
+    val mostReviewed = Leaderboard.mostReviewed().filter(_._2 > 0) map { case (k, v) => (k.toString, v) } toList
+    val bestReviewers = Review.allReviewersAndStats().filter(_._3 > 0)
     val lazyOnes = Leaderboard.lazyOnes()
 
     val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()

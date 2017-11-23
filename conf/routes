@@ -110,7 +110,7 @@ GET           /cfpadmin/sponsorTalk/remove/:proposalId                          
 GET           /cfpadmin/compareReviewer                                         controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 
 GET           /cfpadmin/allWebusers                                             controllers.CFPAdmin.allWebusers()
-POST          /cfpadmin/cfpWebusers/trackLeaders                                controllers.CFPAdmin.updateTrackLeaders()
+POST          /cfpadmin/cfpWebusers/trackLeadersAndReviewers                    controllers.CFPAdmin.updateTrackLeadersAndReviewers()
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
 
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()

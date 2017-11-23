@@ -87,58 +87,77 @@
 
                     <div class="col-md-4">
                         <h3><i class="icon-star"></i> Most Votes</h3>
-                        @params.mostReviewed.map { mr =>
-                            @if(mr._2 > 0) {
+                        @if(params.mostReviewed.nonEmpty) {
+                            @params.mostReviewed.map { mr =>
                                 @tags.renderGravatarByProposal(mr._1)
                                 <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
                             }
+                            <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary">See all Votes</a></small><br>
+                        } else {
+                            <br><br><small><a class="btn btn-sm btn-primary">No one has started voting yet</a></small><br>
                         }
-                        <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary">See all Votes</a></small>
                     </div>
 
                     <div class="col-md-4">
                         <h3><i class="icon-bell"></i> Eager Speakers</h3>
-                        @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
-                            @if(br._2 > 0) {
+                        @if(params.proposalsBySpeakers.nonEmpty) {
+                            @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
                                 @tags.renderGravatar(br._1)
                                 @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
                             }
+                            <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary">See all</a></small><br>
+                        } else {
+                            <br><br><small><a class="btn btn-sm btn-primary">No one has submitted any talks yet</a></small>
                         }
-                        <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary">See all</a></small>
                     </div>
-                    @if(params.totalCommentsPerProposal.nonEmpty) {
-                        <div class="col-md-4">
-                            <h3><i class="icon-comments"></i> Most Debatable</h3>
+
+                    <div class="col-md-4">
+                        <h3><i class="icon-comments"></i> Most Debatable</h3>
+                        @if(params.totalCommentsPerProposal.nonEmpty) {
                             @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
                                 @tags.renderGravatarByProposal(tc._1)
-                            <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
+                                <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
                             }
-                        </div>
-                    }
+                        } else {
+                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small>
+                        }
+                    </div>
                     <div class="clearfix"></div>
 
                     <div class="col-md-4">
                         <h3><i class="icon-trophy"></i> Top Reviewers</h3>
-                        @params.bestReviewers.filter(entry => entry._3 > 0).sortBy(_._3).reverse.take(5).map { br =>
-                            @tags.renderGravatar(br._1)
-                            @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+                        @if(params.bestReviewers.nonEmpty) {
+                            @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
+                                @tags.renderGravatar(br._1)
+                                @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+                            }
+                            <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small><br>
+                        } else {
+                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small><br>
                         }
-                        <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small>
                     </div>
 
                     <div class="col-md-4">
                         <h3><i class="icon-ambulance"></i> The Lazy One's</h3>
-                        @Random.shuffle(params.lazyOnes.filter(_._2.toInt < 5)).take(5).map { wr =>
-                            @tags.renderGravatar(wr._1)
-                            @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
+                        @if(params.lazyOnes.nonEmpty) {
+                            @Random.shuffle(params.lazyOnes.filter(_._2.toInt < 5)).take(5).map { wr =>
+                                @tags.renderGravatar(wr._1)
+                                @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
+                            }
+                            <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all</a></small><br>
+                        } else {
+                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small><br>
                         }
-                        <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all</a></small>
                     </div>
                     <div class="col-md-4">
                         <h3><i class="icon-heart"></i> Generous One's</h3>
-                        @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
-                            @tags.renderGravatar(wr._1)
-                        <small>avg. rating of @wr._2</small>
+                        @if(params.generousVoters.nonEmpty) {
+                            @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
+                                @tags.renderGravatar(wr._1)
+                            <small>avg. rating of @wr._2</small>
+                            }
+                        } else {
+                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small>
                         }
                     </div>
 
