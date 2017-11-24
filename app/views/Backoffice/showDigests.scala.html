@@ -71,6 +71,9 @@
           <h3><i class="icon-inbox"></i> Daily Digest (@daily.size)</h3>
         </div>
 
+        <br>
+        <small><a href="@routes.Backoffice.doDailyDigests()" class="btn btn-sm btn-primary"><i class="icon-key"></i> Trigger Digest</a></small>
+
         <div class="panel-body">
         @if(daily.nonEmpty){
           <table id="tags" class="table table-bordered table-hover table-condensed">

@@ -51,7 +51,8 @@ DELETE        /cfp/profile/digestTrack                                          
 POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
 GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
-GET           /cfp/backoffice/triggerDigest                                     controllers.Backoffice.doWeeklyDigests()
+GET           /cfp/backoffice/triggerDailyDigest                                controllers.Backoffice.doDailyDigests()
+GET           /cfp/backoffice/triggerWeeklyDigest                               controllers.Backoffice.doWeeklyDigests()
 
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
