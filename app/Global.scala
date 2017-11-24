@@ -21,10 +21,10 @@ import scala.util.control.NonFatal
 object Global extends GlobalSettings {
 
   override def onStart(app: Application) {
-    play.Logger.of("Global").info("Application has been started...")
+    play.Logger.info("Application has been started...")
 
     val cronUpdateFlag = Play.current.configuration.getBoolean("actor.cronUpdater.active")
-    play.Logger.of("Global").debug(s"actor.cronUpdater.active='${cronUpdateFlag}'")
+    play.Logger.debug(s"actor.cronUpdater.active='${cronUpdateFlag}'")
 
     cronUpdateFlag match {
       case Some(true) if Play.isProd =>
