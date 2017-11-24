@@ -164,7 +164,7 @@ object CronTask {
         delayForDaily = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
     }
     Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
-    play.Logger.info(s"Scheduled akka system with ${delayForDaily} milliseconds delay with an interval of every 24 hours (1 day) to send out Daily email digests.")
+    play.Logger.info(s"Scheduled akka system with ${delayForDaily} milliseconds i.e. ${TimeUnit.MILLISECONDS.toHours(delayForDaily)} hours delay with an interval of every 24 hours (1 day) to send out Daily email digests.")
 
     // The weekly digest schedule
     var delayForWeekly : Long = 0L
@@ -181,9 +181,9 @@ object CronTask {
     }
     val totalDelay = delayForWeekly + delayForDaily
     Akka.system.scheduler.schedule(totalDelay milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
-    play.Logger.info(s"Scheduled akka system with ${totalDelay} milliseconds delay with an interval of 7 days to send out Weekly email digests.")
+    play.Logger.info(s"Scheduled akka system with ${totalDelay} milliseconds i.e. ${TimeUnit.MILLISECONDS.toHours(totalDelay)} hours delay with an interval of 7 days to send out Weekly email digests.")
 
-    play.Logger.info("Email digests weekly delay : "+ delayForWeekly + " & " + delayForDaily)
+    play.Logger.info(s"Email digests weekly delay : ${delayForWeekly} ms, i.e. ${TimeUnit.MILLISECONDS.toHours(delayForWeekly)} hours and ${delayForDaily} ms, i.e. ${TimeUnit.MILLISECONDS.toHours(totalDelay)} hours")
   }
 
   def doSetupOpsGenie() = {
