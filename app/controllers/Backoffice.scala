@@ -426,7 +426,7 @@ object Backoffice extends SecureCFPController {
       import library.Contexts.statsContext
 
       Akka.system.scheduler.scheduleOnce(1 milliseconds, ZapActor.actor, EmailDigests(Digest.DAILY))
-      play.Logger.info(s"Scheduled akka system with to send out Daily email digests immediately(1 millisecond delay with an interval of 1 millisecond).")
+      play.Logger.info(s"Scheduled akka system to send out Daily email digests immediately (1 millisecond delay, only once - no interval).")
 
       Redirect(routes.Backoffice.showDigests()).flashing("success" -> "Daily digest sent")
   }
@@ -440,7 +440,7 @@ object Backoffice extends SecureCFPController {
       import library.Contexts.statsContext
 
       Akka.system.scheduler.schedule(1 milliseconds, 1 milliseconds, ZapActor.actor, EmailDigests(Digest.WEEKLY))
-      play.Logger.info(s"Scheduled akka system with to send out Weekly email digests immediately(1 millisecond delay with an interval of 1 millisecond).")
+      play.Logger.info(s"Scheduled akka system to send out Weekly email digests immediately (1 millisecond delay with an interval of 1 millisecond).")
 
       Redirect(routes.Backoffice.showDigests()).flashing("success" -> "Weekly digest sent")
   }
