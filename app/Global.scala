@@ -21,7 +21,12 @@ import scala.util.control.NonFatal
 object Global extends GlobalSettings {
 
   override def onStart(app: Application) {
-    Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
+    play.Logger.of("Global").info("Application has been started...")
+
+    val cronUpdateFlag = Play.current.configuration.getBoolean("actor.cronUpdater.active")
+    play.Logger.of("Global").debug(s"actor.cronUpdater.active='${cronUpdateFlag}'")
+
+    cronUpdateFlag match {
       case Some(true) if Play.isProd =>
         CronTask.draftReminder()
         CronTask.doIndexElasticSearch()
@@ -142,6 +147,7 @@ object CronTask {
 
     // The 5 min. (semi) real time digest schedule
     Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
+    play.Logger.info("Scheduled akka system with 1 minute delay with an interval of every 5 minutes to send out Real-time email digests.")
 
     // The daily digest schedule
     var delayForDaily : Long = 0L
@@ -158,6 +164,7 @@ object CronTask {
         delayForDaily = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
     }
     Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
+    play.Logger.info(s"Scheduled akka system with ${delayForDaily} milliseconds delay with an interval of every 24 hours (1 day) to send out Daily email digests.")
 
     // The weekly digest schedule
     var delayForWeekly : Long = 0L
@@ -174,8 +181,9 @@ object CronTask {
     }
     val totalDelay = delayForWeekly + delayForDaily
     Akka.system.scheduler.schedule(totalDelay milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
+    play.Logger.info(s"Scheduled akka system with ${totalDelay} milliseconds delay with an interval of 7 days to send out Weekly email digests.")
 
-    play.Logger.of("Global").info("Email digests weekly delay : "+ delayForWeekly + " & " + delayForDaily)
+    play.Logger.info("Email digests weekly delay : "+ delayForWeekly + " & " + delayForDaily)
   }
 
   def doSetupOpsGenie() = {
