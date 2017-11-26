@@ -31,6 +31,7 @@ import library.Redis
  */
 
 object ArchiveProposal {
+
   def pruneAllDeleted(): Int = {
     Proposal.allDeleted().foldLeft(0) {
       (cpt: Int, proposal: Proposal) =>
@@ -48,13 +49,13 @@ object ArchiveProposal {
   }
 
   def archiveAll(proposalTypeId: String):Int = {
-    val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
+    // val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
     val ids=Proposal.allProposalIDsNotArchived
     val proposals = Proposal.loadAndParseProposals(ids).values
 
     // First, check that the approval category is ok (bug #159 on old talks)
     // Rely on the current proposal talkType
-    proposals.foreach(p=> ApprovedProposal.changeTalkType(p.id,p.talkType.id))
+    proposals.foreach(p => ApprovedProposal.changeTalkType(p.id, p.talkType.id))
 
     // Then filter and execute archive
     val onlySameType = proposals.filter(_.talkType.id == proposalTypeId)
@@ -98,6 +99,18 @@ object ArchiveProposal {
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
   }
 
+  def getArchivedProposals(conferenceCode: String): Set[Proposal] = Redis.pool.withClient {
+    implicit client =>
+
+      val allKeys = client.keys(s"ArchivedById:$conferenceCode")
+      val finalList = allKeys.flatMap {
+        key =>
+          val allProposalIDs = client.smembers(key).toList
+          val allProposals = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+          allProposals.values.toList
+      }
+      finalList
+  }
 
   private def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
@@ -114,6 +127,8 @@ object ArchiveProposal {
       }
       tx.exec()
   }
+
+
 
   def isArchived(proposalId: String): Boolean = Redis.pool.withClient {
     implicit client =>
