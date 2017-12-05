@@ -678,7 +678,7 @@ object ConferenceDescriptor {
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
-    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
+    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("info@devoxx.co.uk"),
     conferenceUrls = ConferenceUrls(
       info = DEVOXX_INFO_SITE_URL,
       sponsors = DEVOXX_SPONSORS_SITE_URL,
@@ -723,7 +723,7 @@ object ConferenceDescriptor {
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
-    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
+    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("info@devoxx.co.uk"),
     conferenceUrls = ConferenceUrls(
       info = DEVOXX_INFO_SITE_URL,
       sponsors = DEVOXX_SPONSORS_SITE_URL,
