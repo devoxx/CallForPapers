@@ -1,5 +1,6 @@
 import java.util.concurrent.TimeUnit
 
+import controllers.Backoffice
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
 import models.Digest
@@ -102,18 +103,30 @@ object CronTask {
   def draftReminder() = {
     import play.api.libs.concurrent.Execution.Implicits._
 
-    val draftTime = Play.configuration.getInt("actor.draftReminder.days")
-    draftTime match {
-      case Some(everyX) =>
-        // Compute delay between now and 8:00 in the morning
-        // This is a trick to avoid to send a message when we restart the server
-        val tomorrow = DateMidnight.now().plusDays(1)
-        val interval = tomorrow.toInterval
-        val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
-        play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
-        Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
-      case _ =>
-        play.Logger.debug("CronTask : do not send reminder for draft")
+    val INITIAL_DELAY_IN_DAYS = 1
+    val draftTimeInDays = Play.configuration.getInt("actor.draftReminder.days")
+    val totalDelayInDays = INITIAL_DELAY_IN_DAYS + draftTimeInDays.get
+
+    val cfpClosingInHumanReadableDate = Backoffice.cfpClosingDate().toString("EEEE, dd/MM/YYYY HH:mm")
+
+    if ( DateMidnight.now().isAfter(Backoffice.cfpClosingDate()) ) {
+      play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP has already CLOSED on ${cfpClosingInHumanReadableDate}.")
+    } else if ( DateMidnight.now().plusDays(totalDelayInDays).isAfter(Backoffice.cfpClosingDate()) ) {
+      play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP will already be CLOSED in ${totalDelayInDays} days from now, on ${cfpClosingInHumanReadableDate}.")
+    } else {
+        draftTimeInDays match {
+        case Some(everyX) =>
+          // Compute delay between now and 8:00 in the morning
+          // This is a trick to avoid to send a message when we restart the server
+          val tomorrow = DateMidnight.now().plusDays(INITIAL_DELAY_IN_DAYS)
+          val interval = tomorrow.toInterval
+          val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
+          play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
+          Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
+          play.Logger.debug("CronTask : check for Draft proposals has been set to trigger at the above interval.")
+        case _ =>
+          play.Logger.debug("CronTask : do not send reminder for draft")
+      }
     }
   }
 

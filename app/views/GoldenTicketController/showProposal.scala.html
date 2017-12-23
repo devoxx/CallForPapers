@@ -150,7 +150,7 @@
                 @if(proposal.state == ProposalState.SUBMITTED) {
                     @maybeMyVote.map { review: ReviewByGoldenTicket =>
                         <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote)
-                        - @review.date.toString("EEEE d MMM YYYY HH:mm")
+                        - @review.date.toString("EEEE, d MMM YYYY HH:mm")
 
                     <a href="@routes.GoldenTicketController.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
 

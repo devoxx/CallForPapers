@@ -163,13 +163,19 @@ class ZapActor extends Actor {
 
   def sendDraftReminder() {
     val allProposalBySpeaker = Proposal.allDrafts().groupBy(_.mainSpeaker)
+
+    if (allProposalBySpeaker.isEmpty) {
+      play.Logger.warn("Speakers do not have any pending draft proposals, no reminder will be sent.")
+      return
+    }
+
     allProposalBySpeaker.foreach {
       case (speaker: String, draftProposals: List[Proposal]) => {
         Webuser.findByUUID(speaker).map {
           speakerUser =>
             Mails.sendReminderForDraft(speakerUser, draftProposals)
         }.getOrElse {
-          play.Logger.warn("User not found")
+          play.Logger.warn(s"User '${speaker}' not found")
         }
       }
     }

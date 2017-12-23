@@ -4,7 +4,7 @@ import scala.concurrent.duration._
 import library.search.{DoIndexProposal, _}
 import library._
 import models._
-import org.joda.time.{DateTime, Instant}
+import org.joda.time.{DateMidnight, DateTime, Instant}
 import play.api.cache.EhCachePlugin
 import play.api.data._
 import play.api.data.Forms._
@@ -272,8 +272,14 @@ object Backoffice extends SecureCFPController {
 
   def sendDraftReminder = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      ZapActor.actor ! DraftReminder()
-      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
+      if ( DateMidnight.now().isAfter(cfpClosingDate()) ) {
+        val notSentDraftMessageAsCFPIsClosed = s"Draft reminders HAVE NOT BEEN sent to speakers, as CFP already CLOSED on ${cfpClosingDate().toString("EEEE, dd/MM/YYYY HH:mm")}."
+        play.Logger.debug(notSentDraftMessageAsCFPIsClosed)
+        Redirect(routes.Backoffice.homeBackoffice()).flashing("error" -> notSentDraftMessageAsCFPIsClosed)
+      } else {
+        ZapActor.actor ! DraftReminder()
+        Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
+      }
   }
 
   def showAllDeclined() = SecuredAction(IsMemberOf("admin")) {
