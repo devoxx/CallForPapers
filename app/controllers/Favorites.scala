@@ -39,6 +39,8 @@ import scala.concurrent.Future
   */
 object Favorites extends UserCFPController {
 
+  private val securityGroups = List("cfp", "adminVis", "admin")
+
   def home() = SecuredAction {
     implicit request =>
 
@@ -50,6 +52,19 @@ object Favorites extends UserCFPController {
       }.toList.sortBy(_.from.getMillis)
       val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
       Ok(views.html.Favorites.homeFav(slots, rooms))
+  }
+
+  def favSchedule() = SecuredAction {
+    implicit request =>
+
+      val proposals = FavoriteTalk.getAllfavTalkByVisitor(request.webuser.uuid)
+
+      val slots = proposals.flatMap {
+        talk: Proposal =>
+          ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+      }.sortBy(_.from.getMillis)
+      val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
+      Ok(views.html.Favorites.homeFavVisitor(slots, rooms))
   }
 
   val formProposal = Form("proposalId" -> nonEmptyText)
@@ -72,12 +87,75 @@ object Favorites extends UserCFPController {
             NotFound("Proposal not found")
           }
         })
-
   }
 
-  def welcomeVisitor() = SecuredAction.async {
+  def toggleProposalToAgenda(proposalId: String) = SecuredAction { implicit request =>
+    FavoriteTalk.favTalkByVisitor(proposalId , request.webuser.uuid)
+    FavoriteTalk.getAllfavTalkByVisitor(request.webuser.uuid)
+      .filter(_.id==proposalId)
+      .headOption
+      .map(p => Ok(JsObject(Seq("proposalId" -> JsString(proposalId), "status" -> JsString("Favorited")))))
+      .getOrElse(Ok(JsObject(Seq("proposalId" -> JsString(proposalId), "status" -> JsString("Not Favorited")))))
+  }
+
+  def addAsFavorite(idP:String) = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser)))
+
+     FavoriteTalk.favTalkByVisitor(idP , request.webuser.uuid)
+
+  Redirect(routes.Publisher.showByTalkType(Proposal.findById(idP).get.talkType.id))}
+  def removefromFavorite(idP:String) = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      FavoriteTalk.unfavTalkByVisitor(idP , request.webuser.uuid)
+      Redirect(routes.Publisher.showByTalkType(Proposal.findById(idP).get.talkType.id))}
+
+  def addAsFavoritev2(idP:String) = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      FavoriteTalk.favTalkByVisitor(idP , request.webuser.uuid)
+
+      Redirect(routes.Favorites.welcomeVisitor(Some(Proposal.findById(idP).get.talkType.id)))}
+  def removefromFavoritev2(idP:String) = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      FavoriteTalk.unfavTalkByVisitor(idP , request.webuser.uuid)
+      Redirect(routes.Favorites.welcomeVisitor(Some(Proposal.findById(idP).get.talkType.id)))}
+
+
+
+  def welcomeVisitor( talkType:Option[String]) = SecuredAction.async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      talkType match {
+        case Some(a)=>
+      a match {
+      case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
+      Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+      ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), a ,Webuser.newVisitorForm.fill(request.webuser))))
+      case other =>
+      Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(a), a ,Webuser.newVisitorForm.fill(request.webuser))))
+
+      }
+        case None=>Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+          ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), ConferenceDescriptor.ConferenceProposalTypes.CONF.id ,Webuser.newVisitorForm.fill(request.webuser))))
+
+      }
+
+  }
+  def editProfile()  = SecuredAction{
+    implicit request:SecuredRequest[play.api.mvc.AnyContent]=>
+      Webuser.newVisitorForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id, ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), ConferenceDescriptor.ConferenceProposalTypes.CONF.id ,invalidForm)),
+        validForm => {
+          Webuser.findByEmail(validForm.email) match {
+            case Some(v)=>
+                Webuser.update(validForm)
+              Redirect(routes.Favorites.welcomeVisitor(None))
+            case None=>Redirect(routes.Favorites.welcomeVisitor(None))
+          }
+        }
+      )
+
   }
 
   def isFav(proposalId: String) = Action {
@@ -86,15 +164,31 @@ object Favorites extends UserCFPController {
         uuid =>
           val jsonResponse = JsObject(Seq("proposalId" -> JsString(proposalId)))
           Ok(jsonResponse)
-
       }.getOrElse {
         NoContent
       }
   }
+  def getAllfavByVisitors(webuserId : String)=SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent]=>
+      val favs = FavoriteTalk.getAllfavTalkByVisitor(webuserId)
 
-  def showAllForAdmin() = SecuredAction(IsMemberOf("admin")) {
-    implicit r: SecuredRequest[play.api.mvc.AnyContent] =>
-      val all = FavoriteTalk.all().toList.sortBy(_._2).reverse
+      Ok(views.html.Favorites.ListofMyFav(favs, Webuser.findByUUID(webuserId)))
+
+  }
+
+  def getFavedScheduled (webuserId : String)=SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent]=>
+      val favs = FavoriteTalk.getAllfavTalkByVisitor(webuserId)
+      val slots = favs.flatMap {
+        talk: Proposal =>
+          ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+      }
+      Ok(slots.toString())
+  }
+
+  def showAllForAdmin()=SecuredAction(IsMemberOfGroups(securityGroups)){
+    implicit r:SecuredRequest[play.api.mvc.AnyContent]=>
+      val all=FavoriteTalk.allFavorites().toList.sortBy(_._2).reverse
       Ok(views.html.Favorites.showAllForAdmin(all))
   }
 

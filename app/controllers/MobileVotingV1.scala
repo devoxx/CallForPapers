@@ -232,10 +232,11 @@ object MobileVotingV1 extends SecureCFPController {
         }
 
         val proposalsForThisDay: List[Proposal] = specifiedDay match {
+          case d if Set("wed", "wednesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
           case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
           case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
           case other => {
-            play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected thursday/friday...")
+            play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected wednesday/thursday/friday...")
             Nil
           }
         }

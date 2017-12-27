@@ -24,13 +24,15 @@
 package library.search
 
 import models.ApprovedProposal
-import play.api.libs.ws.WS
+import play.api.libs.ws.{WS, WSAuthScheme}
 import play.api.libs.concurrent.Execution.Implicits._
-
 import controllers.AdvancedSearchParam
+
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.Future
 import play.api.Play
+import play.api.Play.current
+import play.api.libs.ws.WSAuthScheme.BASIC
 import com.ning.http.client.Realm.AuthScheme.BASIC
 
 /**
@@ -57,7 +59,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Indexing to $index $json")
     }
     val futureResponse = WS.url(host + "/" + index)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .put(json)
     futureResponse.map {
       response =>
@@ -75,7 +77,7 @@ object ElasticSearch {
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -101,7 +103,7 @@ object ElasticSearch {
     }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post(settings)
     futureResponse.map {
       response =>
@@ -127,7 +129,7 @@ object ElasticSearch {
   def createMapping(index: String, mapping: String) = {
     val url = s"$host/$index/_mapping?ignore_conflicts=true"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .withRequestTimeout(6000)
       .put(mapping)
     futureResponse.map {
@@ -145,7 +147,7 @@ object ElasticSearch {
     val url = s"$host/_refresh"
     val futureResponse = WS.url(url)
       .withRequestTimeout(6000)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post("{}")
     futureResponse.map {
       response =>
@@ -163,7 +165,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Deleting index $indexName")
     }
     val futureResponse = WS.url(host + "/" + indexName + "/")
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .delete()
     futureResponse.map {
       response =>
@@ -179,7 +181,7 @@ object ElasticSearch {
   def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
     val futureResponse = WS.url(host + "/_search")
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
@@ -221,7 +223,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -276,7 +278,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -335,7 +337,7 @@ object ElasticSearch {
       """.stripMargin
 
     val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -483,7 +485,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, BASIC)
+      .withAuth(username, password, WSAuthScheme.BASIC)
       .post(json)
     futureResponse.map {
       response =>

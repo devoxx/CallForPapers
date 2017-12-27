@@ -6,120 +6,93 @@
 <h2>@Messages("CONF.title") Schedule</h2>
 </div>
 
-    <div class="large-3 columns">
-        <div class="input-wrap">
-            <form name="search" action="/2018/search" method="GET">
-            <input type="search" name="q" value="" placeholder="Search by title, keyword or speaker" class="wpcf7-form-control wpcf7-text" autofocus>
-        </form>
-        </div>
+    <div class="small-12 medium-12 large-12 column">
+      <a style="text-decoration: none" href="/app">
+        <h3 style="color: #ff7518">@Messages("xconf.seeSchedule")</h3>
+      </a>
+    </div>
+    <hr>
+    <div class="small-12 medium-6 large-6 column">
+        <A  style="text-decoration: none" href="@routes.Publisher.showByTalkType("key")"> <h3 style="color: #ff7518">Keynotes</h3></A>
+        <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le mardi à 9h précise.
+            Autour du thème de 2017  "Unleashing The Next Wave", soyez prêt à être surpris.
+        </p>
+        <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
+
+
     </div>
     <div class="large-3 columns right">
         <a href="https://itunes.apple.com/us/app/my-devoxx/id1094805620" target="_blank"><img src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/AppStore.jpg"></a>
         <a href="https://play.google.com/store/apps/details?id=com.devoxx" target="_blank"><img src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/GooglePlay.jpg"></a>
     </div>
 
-    <table class="mainSchedule">
-        <thead>
-            <tr>
-                <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader">
-                    <div class="scheduleHeaderDate">@Messages("day-wednesday")</div><br><a href="@routes.Publisher.showByDay("wed")">Click</a> to see full schedule
-                </th>
-                <th class="scheduleHeader">
-                    <div class="scheduleHeaderDate">@Messages("day-thursday")</div><br><a href="@routes.Publisher.showByDay("thu")">Click</a> to see full schedule
-                </th>
-                <th class="scheduleHeader">
-                    <div class="scheduleHeaderDate">@Messages("day-friday")</div><br><a href="@routes.Publisher.showByDay("fri")">Click</a> to see full schedule
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-                <!-- ******************************************************************* //-->
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td rowspan="8"  class="scheduleHeader scheduleRight">What's On?</td>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("opening_key", "thursday", "Keynotes Schedule")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("closing_key", "friday", "Keynotes Schedule")</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("conf", "thursday", "Conference Schedule")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("conf", "friday", "Conference Schedule")</td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("deep_dive", "wednesday", "Deep Dive Schedule")</td>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow"></td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow"></td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "thursday", "Quickies Schedule")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "friday", "Quickies Schedule")</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("bof", "thursday", "BOFs Schedule")</td>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow"></td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("ignite", "thursday", "Ignite Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td colspan="4" class="scheduleContentRow ">
-                    <p class="scheduleAllTalks"><a href="/2018/talks">Click</a> to see all the talks grouped by event type</p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="small-12 medium-6 large-6 column">
+        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("conf")">  <h3 style="color: #ff7518">Conference</h3></A>
+        <p>Les conférences sont des présentations de 45mn, le mercredi et le jeudi. C'est le format le plus représenté, avec plus de 49 conférences pendant 2
+            jours.</p>
+        <p><A href="@routes.Publisher.showByTalkType("conf")">Liste des Conférences</A></p>
 
-    <!-- ******************************************************************* //-->
 
-<div class="large-3 columns">
-<h3>The Devoxxians</h3>
-<p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2018/speakers.html">here</a>.</p>
-</div>
+    </div>
+    <div class="clearfix"></div>
 
-<div class="large-3 columns">
-<h3>BOFs</h3>
-<p>Informal evening sessions of 1 hour designed for audience participation. A host will kick off proceedings and open the floor for audience members to provide opinions and suggest actions.</p>
-</div>
 
-<div class="large-3 columns">
-<h3>Quickie Sessions</h3>
-<p>15 minute sessions held during the lunch breaks, there give the chance to present a quickfire view, explanation or delve into a particular subject.</p>
-</div>
+    <div class="small-12 medium-6 large-6 column">
+        <A  style="text-decoration: none" href="@routes.Publisher.showByTalkType("uni")"> <h3 style="color: #ff7518">University</h3></A>
+        <p>Les Universités sont des sessions longues de 2h, le mercredi.</p>
+        <p>A noter qu'il y aura 9 Universités pour 2017.</p>
+        <p><A href="@routes.Publisher.showByTalkType("deep-dive")">Liste des Universités</A></p>
 
-<div class="large-3 columns">
-<h3>Ignite Sessions</h3>
-<p>These are 5 minute sessions held on Thursday evening, with 20 slides auto-forwarding every 15 seconds. Not for the faint-hearted, there sessions are meant to “ignite” the audience on a subject, whereby awareness, thought, and action are generated on the subjects presented.</p>
-</div>
 
-<div class="large-3 columns">
-<h3>Hands-on Labs</h3>
-<p>Practical hands-on sessions of 2 hours with maximum of 40 people per room. Attendees will need to prepare their machines for Labs in advance so that sessions get underway promptly.</p>
-</div>
+    </div>
 
-<div class="large-3 columns">
-<h3>Deep Dive Sessions</h3>
-<p>These are intensive 3 hour sessions where an expert delves much more extensively into a subject than is possible during regular conference sessions. Deep Dives give attendees the chance to rapidly immerse themselves into a subject matter with an in-depth examination of a topic or technology.</p>
-</div>
 
-<div class="large-3 columns">
-<h3>Conference Sessions</h3>
-<p>Conference talks are 50 minutes in duration and run throughout Thursday & Friday.</p>
-</div>
+
+
+    <div class="small-12 medium-6 large-6 column">
+        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("tia")"><h3 style="color: #ff7518">Tools in Action</h3></A>
+        <p>Les TIA (Tools-in-Action) sont des sessions courtes de 25mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
+        <p>Pour la 3ème édition de Devoxx Morocco, les TIA auront pendant les trois jours. Il y a 20 TIA au total.</p>
+        <p><A href="@routes.Publisher.showByTalkType("tia")">Liste des Tools in Action</A></p>
+
+
+    </div>
+
+    <div class="small-12 medium-6 large-6 column">
+        <A  style="text-decoration: none" href="@routes.Publisher.showByTalkType("lab")"> <h3 style="color: #ff7518">Hands-on Labs</h3></A>
+        <p>Session pratique de 2h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques pendant le preumier jour qui permettent
+            de découvrir ou d'approfondir un sujet. Il faut venir avec son ordinateur. Nous avons prévu 6 Hands-on Lab pour 2017.</p>
+        <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
+    </div>
+
+
+    <div class="clearfix"></div>
+
+
+
+    <div class="small-12 medium-6 large-6 column">
+        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("quick")"><h3 style="color: #ff7518">Quickies</h3></A>
+        <p>Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner mardi et jeudi. C'est LE format
+            dédié aux débutants, mais aussi aux experts qui n'ont que 15mn pour vous convaincre. Le format simple et rapide permet
+            de découvrir un projet ou une idée pendant l'heure du repas. 10 Quickies animeront le mercredi.</p>
+        <p><A href="@routes.Publisher.showByTalkType("quick")">Liste des Quickies</A></p>
+
+
+    </div>
+
+
+    <div class="small-12 medium-6 large-6 column">
+        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("bof")"> <h3 style="color: #ff7518">BOF</h3></A>
+        <p>Les <a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a>
+            sont des sessions mythiques de Devoxx Morocco, à partir de 14h00 le jeudi soir.
+            C'est LE point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.</p>
+        <p><A href="@routes.Publisher.showByTalkType("bof")">Liste des B.O.Fs</A></p>
+
+
+
+    </div>
+
+    <div class="clearfix"></div>
+
+
 }

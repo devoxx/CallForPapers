@@ -2,11 +2,19 @@ package controllers
 
 import scala.concurrent.duration._
 import library.search.{DoIndexProposal, _}
+import library.{DraftReminder, Redis, ZapActor }
+import models.{Tag, _}
+import org.joda.time.{DateTime, Instant}
+import play.api.Play
 import library._
 import models._
 import org.joda.time.{DateMidnight, DateTime, Instant}
 import play.api.cache.EhCachePlugin
 import play.api.data._
+import play.api.i18n.Messages
+import play.api.libs.json.Json
+import play.api.mvc.Action
+
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Akka
@@ -105,6 +113,7 @@ object Backoffice extends SecureCFPController {
   def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
+
       if (state == ProposalState.ACCEPTED.code) {
         Proposal.findById(proposalId).foreach {
           proposal =>
@@ -119,6 +128,8 @@ object Backoffice extends SecureCFPController {
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
         }
       }
+
+
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
   }
 
@@ -209,28 +220,56 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val publishedTalksExceptBOF = allPublishedProposals.filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
-      val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val declined = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val approved = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.APPROVED)
+      val accepted = allPublishedProposals.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val approved = publishedConf.filter(_.proposal.get.state == ProposalState.APPROVED)
+      val allSpeakersIDs = allPublishedProposals.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      
+      // For Terms&Conditions we focus on all talks except BOF
+      val allSpeakersExceptBOF = allPublishedProposals.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersExceptBOF.filter(uuid => Speaker.needsToAccept(uuid)).filter {
+        speakerUUID =>
+          // Keep only speakers with at least one accepted or approved talk
+          approved.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID)) || accepted.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID))
+      }
 
-      val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
-
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-
-      // val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
-
-      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersIDs)
+      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
         slot: Slot =>
           val proposal = slot.proposal.get
-          Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
+          !Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))
+      // ALL Talks for Conflict search
+      val approvedOrAccepted = allPublishedProposals.filter(p => p.proposal.get.state == ProposalState.ACCEPTED || p.proposal.get.state == ProposalState.APPROVED)
+
+      val specialSpeakers = allSpeakersIDs
+
+      // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
+      val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
+        for (speakerId <- specialSpeakers) yield {
+        val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
+        val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
+        val conflict = groupedByDate.filter(_._2.size > 1)
+        val speaker = Speaker.findByUUID(speakerId).get
+        (speaker, conflict)
+      }
+
+      Ok(
+        views.html.Backoffice.sanityCheckSchedule(
+          declined,
+          approved,
+          acceptedThenChangedToOtherState,
+          allSpeakers,
+          allWithConflicts.filter(_._2.nonEmpty)
+        )
+      )
 
   }
 
@@ -261,7 +300,7 @@ object Backoffice extends SecureCFPController {
 
       maybeUpdated.map {
         newListOfSlots =>
-          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
+          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser )
           ScheduleConfiguration.publishConf(newID, talkType)
 
           Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
@@ -288,13 +327,12 @@ object Backoffice extends SecureCFPController {
       val allDeclined = Proposal.allDeclinedProposals()
       //      Proposal.decline(request.webuser.uuid, proposalId)
       Ok(views.html.Backoffice.showAllDeclined(allDeclined))
-
   }
 
-  def showAllAgendaForInge = SecuredAction(IsMemberOf("admin")) {
+  def exportAgenda = Action {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
-      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+      Ok(views.html.Backoffice.exportAgenda(publishedConf))
   }
 
   // Tag related controllers
@@ -304,6 +342,8 @@ object Backoffice extends SecureCFPController {
       val allTags = Tag.allTags().sortBy(t => t.value)
       Ok(views.html.Backoffice.showAllTags(allTags))
   }
+
+  // Tag related controllers
 
   def newTag = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
@@ -378,50 +418,6 @@ object Backoffice extends SecureCFPController {
           BadRequest("Tag ID doesn't exist")
         }
       }
-  }
-
-  def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      val allProposalsByTags = Tags.allProposals()
-
-      Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
-  }
-
-  def getCloudTag = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      val termCounts = Tags.countProposalTags()
-      if (termCounts.nonEmpty) {
-        Ok(views.html.CallForPaper.cloudTags(termCounts))
-      } else {
-        NotFound("No proposal tags found")
-      }
-  }
-
-  def showDigests = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-
-      // TODO Can this be condensed in Scala ?  (Stephan)
-
-      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
-      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
-      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
-
-      val realTime = realTimeDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
-
-      val daily = dailyDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
-
-      val weekly = weeklyDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
-
-      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 
   def doDailyDigests = SecuredAction(IsMemberOf("admin")) {
@@ -537,5 +533,49 @@ object Backoffice extends SecureCFPController {
       }.getOrElse {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
+  }
+
+  def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allProposalsByTags = Tags.allProposals()
+
+      Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
+  }
+
+  def getCloudTag = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val termCounts = Tags.countProposalTags()
+      if (termCounts.nonEmpty) {
+        Ok(views.html.CallForPaper.cloudTags(termCounts))
+      } else {
+        NotFound("No proposal tags found")
+      }
+  }
+  
+  def showDigests = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      // TODO Can this be condensed in Scala ?  (Stephan)
+
+      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
+      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
+      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
+
+      val realTime = realTimeDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val daily = dailyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val weekly = weeklyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 }

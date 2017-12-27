@@ -1,3 +1,4 @@
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 import controllers.Backoffice
@@ -6,30 +7,39 @@ import library.{DraftReminder, _}
 import models.Digest
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.{DateMidnight, DateTime, LocalTime}
+import models.Digest
+import models.ConferenceDescriptor
+import org.joda.time.format.DateTimeFormatterBuilder
+import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
+import play.api._
 import play.api.libs.concurrent._
 import play.api.mvc.{Action, Handler, RequestHeader}
+import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
-import play.api.templates.HtmlFormat
-import play.api.{UnexpectedException, _}
 import play.core.Router.Routes
-import views.html.errorPage
+import play.api.mvc._
+
+import scala.util.control.NonFatal
+import models.CfpManager
+import play.api.Mode.Mode
 
 import akka.actor.Cancellable
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.control.NonFatal
+import play.filters.gzip.GzipFilter
 
-object Global extends GlobalSettings {
+// We must import the compiled cfp error page
+import views.html.cfpErrorPage
 
+object Global extends WithFilters(new GzipFilter()) with GlobalSettings {
   override def onStart(app: Application) {
-    play.Logger.info("Application has been started...")
-
-    val cronUpdateFlag = Play.current.configuration.getBoolean("actor.cronUpdater.active")
-    play.Logger.debug(s"actor.cronUpdater.active='${cronUpdateFlag}'")
-
-    cronUpdateFlag match {
+    CfpManager.testCfpImageBase()
+    CfpManager.cfpRedisExist()
+    CfpManager.testemailTemplate()
+    ConferenceDescriptor.verifyopeningcfp
+    Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
       case Some(true) if Play.isProd =>
         CronTask.draftReminder()
         CronTask.doIndexElasticSearch()
@@ -40,35 +50,43 @@ object Global extends GlobalSettings {
         CronTask.doEmailDigests()
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
+       //ConferenceDescriptor.verifyopeningcfp
+
+
+
       case _ =>
         play.Logger.of("Global").warn("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
     }
   }
 
-  override def onError(request: RequestHeader, ex: Throwable) = {
-    val viewO: Option[(UsefulException) => HtmlFormat.Appendable] = Play.maybeApplication.map {
-      case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
-      case app => errorPage.apply(_: UsefulException)(request)
-    }
-    try {
-      Future.successful(InternalServerError(viewO.getOrElse(views.html.defaultpages.devError.f) {
-        ex match {
-          case e: UsefulException => e
-          case NonFatal(e) => UnexpectedException(unexpected = Some(e))
-        }
-      }))
-    } catch {
-      case e: Throwable =>
-        Logger.error("Error while rendering default error page", e)
-        Future.successful(InternalServerError)
-    }
-  }
-
+  /**
+    * Server error 500
+    */
+// override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
+//    def devError = views.html.defaultpages.devError(Option(System.getProperty("play.editor"))) _
+//    def prodError = views.html.cfpErrorPage.f // Devoxx Error page
+//    try {
+//      Future.successful(InternalServerError(Play.maybeApplication.map {
+//        case app if app.mode == Mode.Prod => prodError
+//        case app => devError
+//      }.getOrElse(devError) {
+//        ex match {
+//          case e: UsefulException => e
+//          case NonFatal(e) => UnexpectedException(unexpected = Some(e))
+//        }
+//      }))
+//    } catch {
+//      case NonFatal(e) => {
+//        Logger.error("Error while rendering default error page", e)
+//        Future.successful(InternalServerError)
+//      }
+//    }
+//  }
   /**
     * 404 custom page, for Prod mode only
     */
   override def onHandlerNotFound(request: RequestHeader) = {
-    val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
+    val viewO: Option[(RequestHeader, Option[Routes]) => play.twirl.api.HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
       case app => views.html.notFound.apply(_, _)(request)
     }
@@ -189,8 +207,19 @@ object CronTask {
     Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
     play.Logger.info(s"Scheduled akka system with ${delayForDaily} milliseconds i.e. ${TimeUnit.MILLISECONDS.toHours(delayForDaily)} hours delay with an interval of every 24 hours (1 day) to send out Daily email digests.")
 
+    Play.configuration.getInt("digest.weekly") match {
+      case Some(value) =>
+        val dayDelta = 7 + value - DateTime.now().dayOfWeek().get()
+        delayForDaily = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
+
+      case _ =>
+        // Default is midnight
+        delayForDaily = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
+    }
+    Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
+
     // The weekly digest schedule
-    var delayForWeekly : Long = 0L
+    var delayForWeekly: Long = 0L
 
     Play.configuration.getInt("digest.weekly") match {
       case Some(value) =>
@@ -202,11 +231,10 @@ object CronTask {
         val dayDelta = 7 - DateTime.now().dayOfWeek().get()
         delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
     }
-    val totalDelay = delayForWeekly + delayForDaily
-    Akka.system.scheduler.schedule(totalDelay milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
-    play.Logger.info(s"Scheduled akka system with ${totalDelay} milliseconds i.e. ${TimeUnit.MILLISECONDS.toHours(totalDelay)} hours delay with an interval of 7 days to send out Weekly email digests.")
+    Akka.system.scheduler.schedule(delayForWeekly + delayForDaily milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
 
-    play.Logger.info(s"Email digests weekly delay : ${delayForWeekly} ms, i.e. ${TimeUnit.MILLISECONDS.toHours(delayForWeekly)} hours and ${delayForDaily} ms, i.e. ${TimeUnit.MILLISECONDS.toHours(totalDelay)} hours")
+    // The 5 min. (semi) real time digest schedule
+    Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
   }
 
   def doSetupOpsGenie() = {

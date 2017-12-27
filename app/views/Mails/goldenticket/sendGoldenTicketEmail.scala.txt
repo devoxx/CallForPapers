@@ -7,7 +7,13 @@
 
 --------------------------------------------------------
 
-Dear @webuser.firstName
+Bonjour @webuser.firstName
+
+Félicitations et bienvenue au programme des Golden Tickets !
+Devoxx France est une conférence pour la communauté. Avec cette initiative, vous êtes au coeur
+de la sélection des sujets pour Devoxx France. Vous avez jusqu'à la fin janvier environ pour revoir et noter
+les sujets proposés par les orateurs. Votre note, de 1 à 10, est ajoutée aux notes des membres du comité
+de sélection.
 
 Congratulations! By purchasing a Blind Bird ticket for @Messages("CONF.title") you can now help to shape the program.
 

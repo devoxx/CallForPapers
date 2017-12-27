@@ -44,7 +44,7 @@ case class RatingReview(total: Int = 0, rates: IndexedSeq[(Int, Int)], feedback:
 
 case class Rating(talkId: String, user: String, conference: String, timestamp: Long, details: List[RatingDetail]) {
   def id(): String = {
-    StringUtils.trimToEmpty((talkId + user + conference).toLowerCase()).hashCode.toString
+    StringUtils.trimToEmpty((talkId + user + conference + timestamp).toLowerCase()).hashCode.toString
   }
 
   def allVotes: List[Int] = details.map(_.rating)
@@ -53,13 +53,12 @@ case class Rating(talkId: String, user: String, conference: String, timestamp: L
 
   def count: Int = allVotes.length
 
-  def hasReview: Boolean = details.exists(r => r.review.isDefined)
-
   def average: Double = if (count == 0) {
     0
   } else {
     sum / count
   }
+
 }
 
 object Rating {
@@ -237,7 +236,7 @@ object Rating {
 
   def archiveTalkRatings(): Unit = Redis.pool.withClient {
     val conferenceCode = ConferenceDescriptor.current().eventCode
-            
+
     val allAcceptedTalks = Proposal.allProposals().filter(_.state == ProposalState.ACCEPTED)
     val allRatingsForTalks = allRatings()
 
@@ -270,5 +269,17 @@ object Rating {
       deleteAll()
       tx.exec()
       play.Logger.debug(s"Finished archiving ratings (aka mobile votes - ${allRatingsForTalksByTalkId.size} of them) for all talks for ${conferenceCode}.")
+  }
+
+  def attic() = Redis.pool.withClient {
+    implicit client =>
+      client.del("Rating:2016")
+
+      val allKeys = client.keys("Rating:2016:ByTalkId:*")
+      val tx = client.multi()
+      allKeys.foreach { key: String => tx.del(key) }
+      tx.exec()
+
+
   }
 }

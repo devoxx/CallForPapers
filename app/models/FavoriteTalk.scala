@@ -39,10 +39,39 @@ object FavoriteTalk {
       client.sadd(redis + ":ByProp:" + proposalId, webuserId)
       client.sadd(redis + ":ByUser:" + webuserId, proposalId)
   }
+  def favTalkByVisitor(proposalId: String, webuserId: String) = Redis.pool.withClient {
+    implicit client =>
+      client.sadd(redis + ":ByProposalsFav:" + proposalId, webuserId)
+      client.sadd(redis + ":ByVisitor:" + webuserId, proposalId)
+  }
 
+  def getAllfavTalkByVisitor(webuserId : String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val ids = client.smembers(redis + ":ByVisitor:" + webuserId)
+      Proposal.loadProposalByIDs(ids , ProposalState.ACCEPTED)
+  }
+  def isFavScheduleexist(webuserId: String): Boolean = {
+
+    val favs = FavoriteTalk.getAllfavTalkByVisitor(webuserId)
+    val slots = favs.flatMap {
+      talk: Proposal =>
+        ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+    }
+    !slots.isEmpty
+  }
   def isFavByThisUser(proposalId: String, webuserId: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.sismember(redis + ":ByProp:" + proposalId, webuserId)
+  }
+
+  def isFavByThisVisitor(proposalId: String, webuserId:String): Boolean = Redis.pool.withClient {
+    implicit client =>
+      client.sismember(redis + ":ByProposalsFav:" + proposalId, webuserId)
+  }
+  def unfavTalkByVisitor(proposalId: String, webuserId: String) = Redis.pool.withClient {
+    implicit client =>
+      client.srem(redis + ":ByProposalsFav:" + proposalId, webuserId)
+      client.srem(redis + ":ByVisitor:" + webuserId, proposalId)
   }
 
   def unfavTalk(proposalId: String, webuserId: String) = Redis.pool.withClient {
@@ -84,6 +113,24 @@ object FavoriteTalk {
         proposalId =>
           val proposal = Proposal.findById(proposalId)
           val total = client.scard(redis + ":ByProp:" + proposalId)
+          (proposal, total)
+      }.filterNot(_._1.isEmpty)
+        .map(t => (t._1.get, t._2))
+  }
+
+  def allFavorites() = Redis.pool.withClient {
+    implicit client =>
+      val allFav: Set[String] = client.keys(redis + ":ByProposalsFav:*")
+
+      val allProposalIDs: Set[String] = allFav.map {
+        key: String =>
+          key.substring((redis + ":ByProposalsFav:").length)
+      }
+
+      allProposalIDs.map {
+        proposalId =>
+          val proposal = Proposal.findById(proposalId)
+          val total = client.scard(redis + ":ByProposalsFav:" + proposalId)
           (proposal, total)
       }.filterNot(_._1.isEmpty)
         .map(t => (t._1.get, t._2))

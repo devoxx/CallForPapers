@@ -23,8 +23,12 @@
 
 package controllers
 
+import controllers.Authentication.Redirect
+import notifiers.TransactionalEmails
 import library.search.ElasticSearch
 import library.{SendMessageToCommittee, ZapActor}
+import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
+import library.{NotifyProposalSubmitted, SendMessageToCommittee, ZapActor}
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.cache.Cache
@@ -34,6 +38,9 @@ import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
+import play.api.mvc.Cookie
+
+import scala.concurrent.Future
 import views.html
 
 /**
@@ -50,28 +57,24 @@ object CallForPaper extends SecureCFPController {
 
       Speaker.findByUUID(uuid).map {
         speaker: Speaker =>
-          // BUG
-          if(!Webuser.isSpeaker(uuid)){
+          if (Webuser.isSpeaker(uuid) == false) {
             Webuser.addToDevoxxians(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
           val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
+          val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
 
           (hasApproved, hasAccepted) match {
             case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
             case other =>
-
               val allProposals = Proposal.allMyProposals(uuid)
-
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-
-              val ratings = Rating.allRatingReviewsForTalks(allProposals)
-
-              Ok(html.CallForPaper.homeForSpeaker(speaker,
-                                                  request.webuser,
-                                                  allProposals,
-                                                  totalArchived,
-                                                  ratings))
+              val ratings = if (hasAccepted || hasApproved) {
+                Rating.allRatingsForTalks(allProposals)
+              } else {
+                Map.empty[Proposal, List[Rating]]
+              }
+              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
@@ -87,39 +90,45 @@ object CallForPaper extends SecureCFPController {
   def newSpeakerForExistingWebuserByUuid(webUuid: String) = SecuredAction {
     implicit request =>
       val webuser = Webuser.findByUUID(webUuid).get
-      val defaultValues = (webuser.email, webuser.firstName, webuser.lastName, StringUtils.abbreviate("...", 750), None, None, None, None, "No experience",
-        QuestionAndAnswers.empty)
+      val defaultValues = (webuser.email, webuser.firstName, webuser.lastName, StringUtils.abbreviate("...", 750),
+        None, None, None, None, None, "No experience", None, QuestionAndAnswers.empty)
       Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
+
+//      found   : (String, String, String, String, None.type,      None.type,      None.type,      None.type,      String,         None.type,              Option[Seq[models.QuestionAndAnswer]])
+//      required: (String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String,   Option[String], Option[Seq[models.QuestionAndAnswer]])
   }
 
   // Specific secured action. We need a redirect from homeForSpeaker, to be able to display flash message
   def newSpeakerForExistingWebuser = SecuredAction {
     implicit request =>
       val w = request.webuser
-      val defaultValues = (w.email, w.firstName, w.lastName, StringUtils.abbreviate("...", 750), None, None, None, None, "No experience",
-        QuestionAndAnswers.empty)
+      val defaultValues = (w.email, w.firstName, w.lastName, StringUtils.abbreviate("...", 750),
+        None, None, None, None, None,"No experience", None, QuestionAndAnswers.empty)
+
       Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
   }
 
   val speakerForm = play.api.data.Form(mapping(
-    "uuid" -> optional(ignored("xxx")),
+    "uuid" -> ignored("xxx"),
     "email" -> (email verifying nonEmpty),
     "lastName" -> nonEmptyText(maxLength = 25),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
+    "picture" -> optional(text) ,
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
     "qualifications" -> nonEmptyText(maxLength = 750),
+    "phoneNumber" -> optional(text),
     "questionAndAnswers" -> optional(seq(
       mapping(
         "question" -> optional(text),
         "answer" -> optional(text)
       )(QuestionAndAnswer.apply)(QuestionAndAnswer.unapply))
     )
-  )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
+  )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = SecuredAction {
     implicit request =>
@@ -143,13 +152,37 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a new proposal form
+
+
+  private def createCookie(webuser: Webuser) = {
+    Cookie("cfp_rm"
+      , value = Crypto.encryptAES(webuser.uuid)
+      , maxAge = Some(588000)
+      , secure = ConferenceDescriptor.isHTTPSEnabled
+      , httpOnly = true)
+  }
+
+
+  def vipProposal(uuid : String) = SecuredAction(IsMemberOf("cfp")) {
+
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+    Ok(views.html.Application.index())
+     // Redirect(routes.CallForPaper.newProposal()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> uuid)
+
+  }
+
+
+
   def newProposal() = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      Ok(html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
+
+      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(uuid)))
   }
 
+
   // Load a proposal
+
   def editProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
@@ -158,15 +191,15 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalForm.fill(proposal)
-            Ok(html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
             // Switch the mainSpeaker and the other Speakers
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.otherSpeakers.contains(uuid)) {
             // Switch the secondary speaker and this speaker
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }
@@ -179,7 +212,7 @@ object CallForPaper extends SecureCFPController {
   def previewProposal() = SecuredAction {
     implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors, request.webuser)).flashing("error" -> "invalid.form"),
         validProposal => {
           val summary = validProposal.summaryAsHtml
           // markdown to HTML
@@ -194,9 +227,14 @@ object CallForPaper extends SecureCFPController {
   def saveProposal() = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
+      /*val wb = Webuser.findByUUID(uuid)
+      wb match {
+       case Some(w) => Webuser.activeVip( w , false)
+
+      }*/
 
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(html.CallForPaper.newProposal(hasErrors)),
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors , request.webuser)),
         proposal => {
           // If the editor is not the owner then findProposal returns None
           Proposal.findProposal(uuid, proposal.id) match {
@@ -365,6 +403,10 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
+          if (ConferenceDescriptor.notifyProposalSubmitted) {
+            // This generates too many emails for France and is useless
+            ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
+          }
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
         case None =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
@@ -426,5 +468,54 @@ object CallForPaper extends SecureCFPController {
             InternalServerError
         }
       }
+  }
+
+  val phoneForm = play.api.data.Form("phoneNumber" -> nonEmptyText(maxLength = 15))
+  val phoneConfirmForm = play.api.data.Form(tuple(
+    "phoneNumber" -> nonEmptyText(maxLength = 15),
+    "confirmation" -> nonEmptyText(maxLength = 15)
+  )
+  )
+
+  def updatePhoneNumber() = SecuredAction.async {
+    implicit request =>
+      phoneForm.bindFromRequest().fold(
+        invalidPhone => Future.successful(Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.phone"))),
+        validPhone => {
+          Future.successful {
+            val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
+            if (ConferenceDescriptor.isTwilioSMSActive()) {
+              TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code))
+              Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
+            } else {
+              val webuser = request.webuser
+              Speaker.updatePhone(webuser.uuid, validPhone, request.acceptLanguages.headOption)
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
+            }
+
+          }
+        }
+      )
+  }
+
+  def confirmPhone() = SecuredAction {
+    implicit request =>
+      phoneConfirmForm.bindFromRequest().fold(
+        hasErrors => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code")),
+        success => {
+          val thePhone = success._1
+          val theConfCode = success._2
+          val webuser = request.webuser
+          val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
+          if (theConfCode == code) {
+            Speaker.updatePhone(webuser.uuid, thePhone, request.acceptLanguages.headOption)
+            SmsActor.actor ! SendWelcomeAndHelp(thePhone)
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
+          } else {
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code"))
+          }
+
+        }
+      )
   }
 }

@@ -29,7 +29,7 @@ import models.Webuser
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
-import play.api.mvc.{SimpleResult, _}
+import play.api.mvc._
 
 import scala.concurrent.Future
 
@@ -80,7 +80,7 @@ trait SecureCFPController extends Controller {
   protected val notAuthenticatedJson = Unauthorized(Json.toJson(Map("error" -> "Credentials required"))).as(JSON)
   protected val notAuthorizedJson = Forbidden(Json.toJson(Map("error" -> "Not authorized"))).as(JSON)
 
-  def notAuthenticatedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
+  def notAuthenticatedResult[A](implicit request: Request[A]): Future[Result] = {
     Future.successful {
       render {
         case Accepts.Json() => notAuthenticatedJson
@@ -92,7 +92,7 @@ trait SecureCFPController extends Controller {
     }
   }
 
-  def notAuthorizedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
+  def notAuthorizedResult[A](implicit request: Request[A]): Future[Result] = {
     Future.successful {
       render {
         case Accepts.Json() => notAuthorizedJson
@@ -136,12 +136,14 @@ trait SecureCFPController extends Controller {
 
     def invokeSecuredBlock[B](authorize: Option[Authorization],
                               request: Request[B],
-                              block: SecuredRequest[B] => Future[SimpleResult]): Future[SimpleResult] = {
+                              block: SecuredRequest[B] => Future[Result]): Future[Result] = {
       implicit val req = request
       val result = for (
         authenticator <- SecureCFPController.findAuthenticator;
         user <- SecureCFPController.lookupWebuser(authenticator)
       ) yield {
+
+
         if (authorize.isEmpty || authorize.get.isAuthorized(user)) {
           block(SecuredRequest(user, request))
         } else {
@@ -154,7 +156,7 @@ trait SecureCFPController extends Controller {
       })
     }
 
-    def invokeBlock[B](request: Request[B], block: SecuredRequest[B] => Future[SimpleResult]): Future[SimpleResult] =
+    def invokeBlock[B](request: Request[B], block: SecuredRequest[B] => Future[Result]): Future[Result] =
       invokeSecuredBlock(authorize, request, block)
   }
 
@@ -162,8 +164,8 @@ trait SecureCFPController extends Controller {
     * An action that adds the current user in the request if it's available.
     */
   object UserAwareAction extends ActionBuilder[RequestWithUser] {
-    protected def invokeBlock[A](request: Request[A],
-                                 block: (RequestWithUser[A]) => Future[SimpleResult]): Future[SimpleResult] = {
+    def invokeBlock[A](request: Request[A],
+                                 block: (RequestWithUser[A]) => Future[Result]): Future[Result] = {
       implicit val req = request
       val user = for (
         authenticator <- SecureCFPController.findAuthenticator;
@@ -213,6 +215,12 @@ object SecureCFPController {
     findAuthenticator.isDefined
   }
 
+//def hasAccessToVisitor(implicit request : RequestHeader) : Boolean = {
+//  findAuthenticator.exists(uuid =>
+//    Webuser.hasAccessToVisitor(uuid)
+//  )
+//}
+  
   def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
     findAuthenticator.exists(uuid =>
       Webuser.isSpeaker(uuid)
@@ -236,6 +244,12 @@ object SecureCFPController {
       Webuser.hasAccessToGoldenTicket(uuid)
     )
   }
+
+//  def hasAccessToAdminVis(implicit request: RequestHeader): Boolean = {
+//    findAuthenticator.exists(uuid =>
+//      Webuser.hasAccessToAdminVis(uuid)
+//    )
+//  }
 
   def getCurrentUser(implicit request: RequestHeader): Option[Webuser] = {
     findAuthenticator.flatMap(uuid => lookupWebuser(uuid))

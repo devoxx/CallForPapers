@@ -78,7 +78,7 @@ object GoldenTicketController extends SecureCFPController {
           .filterNot(_.sponsorTalk)
       } else {
         ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-          .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF)
+          .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.LAB || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.QUICK || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.DEEP_DIVE || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.IGNITE)
           .filterNot(_.sponsorTalk)
       }
 

@@ -1,4 +1,5 @@
-@(proposal:models.Proposal)
+@(proposal:models.Proposal ,nbdays:Option[String])
+
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <h3>Bienvenue à @Messages("shortYearlyName")</h3>
@@ -14,6 +15,9 @@
     <p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong></p>
     <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
     <p>Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).</p>
+<div><strong>N.B:</strong> Ce type de présentation donne droit à un badge speaker, et vous permettra d'accéder à l'ensemble de la conférence,
+    ainsi qu'au diner des speakers.Vous n'avez pas à vous inscrire, votre badge Speaker sera préparé à l'entrée de la conférence.
+</div>
     <h3>Comment poser une question ?</h3>
     <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
     <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
@@ -39,3 +43,5 @@
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
 <p>The @Messages("shortYearlyName") Team</p>
+
+    <p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>

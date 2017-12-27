@@ -1,0 +1,43 @@
+@(slots: List[Slot] , webuser :Webuser)
+
+
+
+
+     Hello <strong>@webuser.firstName</strong> we would like to thank you about your participation at DevoxxMa , here is your talks that just have been scheduled.
+                                           <ul> @slots.slice(0,3).map { case (slot : Slot) =>
+                                           <li> <strong>@slot.proposal.get.title</strong>
+                                                By
+                                               <strong>@slot.proposal.get.allSpeakers.map { case (speak) =>@speak.cleanName}.mkString("" , ", " , ".")</strong> , @slot.day from <strong>@slot.from.toString("H:mm")</strong> to <strong>@slot.to.toString("H:mm")</strong> in <strong>@slot.room.name </strong> .
+
+                                           </li>
+
+
+
+
+
+            }
+                                           </ul>
+
+                                    For more details visit this link <a href="@ConferenceDescriptor.getFullRoutePath(controllers.routes.Publisher.homePublisher().url)">@ConferenceDescriptor.current().eventCode full programme </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        <p>Team Devoxx Morocco</p>
+
+
+
+
+
+

@@ -152,4 +152,5 @@ object Attic extends SecureCFPController {
       Rating.deleteAll()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
   }
+
 }

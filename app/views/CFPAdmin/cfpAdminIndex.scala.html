@@ -1,183 +1,200 @@
 @(events: List[Event],
- allProposalsForReview: List[Proposal],
- totalEvents:Long,
- page:Int,
- sort:Option[String],
- ascdesc:Option[String],
- track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+        allProposalsForReview: List[Proposal],
+        totalEvents:Long,
+        page:Int,
+        sort:Option[String],
+        ascdesc:Option[String],
+        track:Option[String],
+        totalReviewed:Long,
+        totalVoted:Option[Int]
+)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import models.ConferenceDescriptor
 @import play.api.templates.Html
 
 @main("CFP Admin") {
+    <head>
+
+
+
+        <style>.viewport {
+            display: table-row-group;
+
+            left: 0px;
+            align-items: inherit;
+            justify-content: center;
+            height: 100vh;
+            background-color: $mdBlueGrey;
+        }
+        .dropdown-inline {
+            display: inline-block;
+            position: relative;
+        }
+        .error-notice {
+            margin: 5px 5px; /* Making sure to keep some distance from all side */
+        }
+
+        .oaerror {
+            width: 90%; /* Configure it fit in your design  */
+            margin: 0 auto; /* Centering Stuff */
+            background-color: #FFFFFF; /* Default background */
+            padding: 20px;
+            border: 1px solid #eee;
+            border-left-width: 5px;
+            border-radius: 3px;
+            margin: 0 auto;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+        }
+
+        .danger {
+            border-left-color: #d9534f; /* Left side border color */
+            background-color: rgba(217, 83, 79, 0.1); /* Same color as the left border with reduced alpha to 0.1 */
+        }
+
+        .danger strong {
+            color:  #d9534f;
+        }
+
+        .warning {
+            border-left-color: #f0ad4e;
+            background-color: rgba(240, 173, 78, 0.1);
+        }
+
+        .warning strong {
+            color: #f0ad4e;
+        }
+
+        .info {
+            border-left-color: #5bc0de;
+            background-color: rgba(91, 192, 222, 0.1);
+        }
+
+        .info strong {
+            color: #5bc0de;
+        }
+
+        .success {
+            border-left-color: #2b542c;
+            background-color: rgba(67, 161, 70, 0.54);
+        }
+
+        .success strong {
+            color: #2b542c;
+        }
+
+
+
+
+        </style>
+
+
+    </head>
+
     <div class="row">
 
-        <div class="col-md-12 col-sm-12 col-lg-12">
 
-            <div class="panel-body">
-                <div class="button-group">
-                    <a href="@routes.LeaderboardController.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
-                    <a href="@routes.GoldenTicketAdminController.showStats()" class="btn btn-sm btn-success">@Messages("cfp.goldenTickets") Stats</a>
-                    <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> @Messages("admin.btn.myvotes")</a>
-                    <a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(None)" class="btn btn-sm btn-primary"><i class="icon-circle-arrow-right"></i> @Messages("admin.btn.otherReviewer")</a>
-                    <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
-                    <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i class="icon-large"></i><i class="icon-adjust"></i> @Messages("admin.btn.allvotes")</a>
-                    <a href="@routes.InviteController.allInvitations()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakersInvited")</a>
-                    <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-primary"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
-                    @if(SecureCFPController.hasAccessToAdmin(req)){
-                        <a href="@routes.Backoffice.allProposals()" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a>
-                    }
-                </div>
+        @if(flash.get("error").isDefined){
+            <div class="oaerror warning" style="max-width: 300px">
+                <strong>Error :</strong>
+                @flash.get("error").get
             </div>
+        }
+        @if(flash.get("success").isDefined){
+            <div class="oaerror success" style="max-width: 300px"><strong>Success: </strong>
+                @flash.get("success").get
+            </div><br>
+        }
 
-            @if(flash.get("error").isDefined) {
-                <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
-                    @flash.get("error").getOrElse("?")
-                </div>
-            }
-            @if(flash.get("success").isDefined) {
-                <div class="alert alert-success alert-dismissable">
-                @flash.get("success").getOrElse("?")
-                </div>
-            }
+        <div class="panel-body">
 
-            <div class="panel-body">
-
-                <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
-                        </div>
-                    </div>
-
-                    <i class="icon-filter"></i> @Messages("cfpadmin.filterOn")
-                    @Track.allIDs.map{idTrack=>
-                        @if(track.isDefined && track.get == idTrack) {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@Html(Messages(idTrack + ".label"))</a>
-                        }else {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack+".label"))</a>
-                        }
-                    }
-                    @if(track.isDefined && track.get == "all") {
-                        <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option("all"))" class="btn btn-default btn-success">ALL</a>
-                    }else {
-                        <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option("all"))" class="btn btn-default btn-sm">ALL</a>
-                    }
-                    
-                    @if(allProposalsForReview.nonEmpty) {
-                        <br>
-                        <br>
-                        <table class="table table-bordered table-striped table-hover table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>@tags.renderThTag("track", page, sort, ascdesc)</th>
-                                    <th>Speakers</th>
-                                    <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
-                                    <th>@Messages("admin.proposals.th.action")</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @allProposalsForReview.map { proposal: Proposal =>
-                                <tr>
-                                    <td>
-                                        @proposal.title
-                                        @if(proposal.tags.isDefined) {
-                                            <br><br>
-                                            @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag, cfpAdmin = true))
-                                        }
-                                    </td>
-                                    <td>
-                                    @Html(Messages(proposal.track.label))
-                                    </td>
-                                    <td>
-                                        @tags.renderGravatar(proposal.mainSpeaker)
-
-                                        @proposal.secondarySpeaker.map { sc =>
-                                            @tags.renderGravatar(sc)
-                                        }
-
-                                        @proposal.otherSpeakers.map { s =>
-                                            @tags.renderGravatar(s)
-                                        }
-                                    </td>
-                                    <td>@Messages(proposal.talkType.id)</td>
-                                    <td>
-                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
-                                    </td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
-                    } else {
-                        <h4>@Html(Messages("admin.cfp.empty", Messages(track.get+".label")))</h4>
-                    }
-            </div>
-        </div>
-
-        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @Messages("admin.cfp.recentEvents")</h3>
-                </div>
-
-                <div class="panel-body">
-                    <table class="table table-bordered table-striped table-hover table-condensed">
-                        <thead>
-                            <tr>
-                                <th>@Messages("admin.cfp.date")</th>
-                                <th>@Messages("admin.cfp.author")</th>
-                                <th>@Messages("admin.cfp.propId")</th>
-                                <th>@Messages("admin.cfp.msg")</th>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <small>
-                                    @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
-                                    @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1,sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
-                                    }
-                                    @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1,sort,ascdesc,track)">@Messages("next.page") &gt;</a>
-                                    }</small>
-                                </td>
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                        @events.map { event: Event =>
-                            <tr>
-                                <td class="text-center">
-                                    <small>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("dd/MM HH:mm"))</small>
-                                </td>
-                                <td class="text-center">
-                                @tags.renderGravatar(event.uuid,showName = false)
-                                </td>
-                                <td class="text-center">
-                                @tags.renderObjRef(event.objRef)
-                                </td>
-                                <td><small>@event.msg</small></td>
-                            </tr>
-                        }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4">
-                                    <small>
-                                    @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
-                                    @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1,sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
-                                    }
-                                    @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1,sort,ascdesc,track)">@Messages("next.page") &gt;</a>
-                                    }
-                                    </small>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small>
+                    </h3>
+                    @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0))
                 </div>
             </div>
+
+            <i class="icon-filter"></i> @Messages("cfp.filter.on")
+            @Track.allIDs.map{idTrack=>
+                @if(track.isDefined && track.get == idTrack) {
+                    <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" style="border-radius: 15px" class="btn btn-success btn-sm">@idTrack</a>
+                }else {
+                    <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" style="border-radius: 15px" class="btn btn-default btn-sm">@idTrack</a>
+                }
+            }
+            - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn  btn-warning btn-sm"><i class="icon-remove"></i>@Messages("cfp.filter.off")</a>
+
+            @if(allProposalsForReview.nonEmpty) {
+                <br>
+                <br>
+                <table class="table table-bordered table-striped table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>@tags.renderThTag("track", page, sort, ascdesc)</th>
+                            <th>Speakers</th>
+                            <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
+                            <th>@Messages("admin.proposals.th.action")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @allProposalsForReview.map { proposal: Proposal =>
+                        <tr>
+                            <td>
+                                @proposal.title
+                                @if(proposal.tags.isDefined) {
+                                    <br><br>
+                                        @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag, cfpAdmin = true))
+                                    }
+                            </td>
+                            <td>
+                            @Messages(proposal.track.label)
+                            </td>
+                            <td>
+                                @tags.renderGravatar(proposal.mainSpeaker)
+                                @proposal.secondarySpeaker.map { sc =>
+                                    @tags.renderGravatar(sc)
+                                }
+                                @proposal.otherSpeakers.map { s =>
+                                    @tags.renderGravatar(s)
+                                }
+                            </td>
+                            <td>@Messages(proposal.talkType.id)</td>
+                            <td>
+                                <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            } else {
+                @if(track.isDefined){
+                    <h4>@Messages("admin.cfp.empty.track", Messages(track.get +".leaderboard"))</h4>
+                }else{
+                    <h4>@Messages("admin.cfp.empty")</h4>
+                }
+            }
         </div>
     </div>
+
+
+    </div>
 }
+
+
+<script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-36251023-1']);
+        _gaq.push(['_setDomainName', 'jqueryscript.net']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+</script>

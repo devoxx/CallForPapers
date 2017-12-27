@@ -1,0 +1,21 @@
+@(webuser:models.Webuser, linkToCFPHome: String)
+@import models._
+
+ @if(Webuser.hasAccessToCFP(webuser.uuid)){
+    Hello @webuser.firstName we have invited you to create a proposal for the Devoxx MA CFP , as
+    you might know the CFP is close, but we have made an exception because
+    we aknowledge your capacities and would like to see the proposal that you would submit!
+    Please follow this link to access your account: @linkToCFPHome Devoxx MA CFP web site
+    Your password is: @webuser.password
+
+   } else {
+
+                                          Hello @webuser.firstName we have invited you to create a proposal for the Devoxx MA CFP , as
+                                          you might know the CFP is close, but we have made an exception because
+                                          we aknowledge your capacities and would like to see the proposal that you would submit!
+                                          Please follow this link to complete and validate your account: @linkToCFPHome Devoxx MA CFP web site
+                                          Your password is: @webuser.password
+
+
+
+                                      }

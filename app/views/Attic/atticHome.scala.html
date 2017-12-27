@@ -75,6 +75,10 @@
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
                         <button type="submit" class="btn btn-primary">Archive all Ignite</button>
                     </form>
+                    <form action="@routes.Attic.doArchive()" method="POST">
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.OTHER.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all other talks</button>
+                    </form>
 
                     <form action="@routes.Attic.doArchiveAllSpeakersQandA()" method="POST">
                         <input type="hidden" name="opType" value="prune"/>
@@ -119,8 +123,8 @@
                             </form>
                         </div>
 
-                    </div>
                 </div>
             </div>
         </div>
-    }
+    </div>
+}
