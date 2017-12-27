@@ -15,6 +15,8 @@ import play.api.{UnexpectedException, _}
 import play.core.Router.Routes
 import views.html.errorPage
 
+import akka.actor.Cancellable
+
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -122,12 +124,20 @@ object CronTask {
           val interval = tomorrow.toInterval
           val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
           play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
-          Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
+          val theScheduledDraftReminder = Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
+          createOneTimeSchedulerToCancel(theScheduledDraftReminder)
           play.Logger.debug("CronTask : check for Draft proposals has been set to trigger at the above interval.")
         case _ =>
           play.Logger.debug("CronTask : do not send reminder for draft")
       }
     }
+  }
+
+  private def createOneTimeSchedulerToCancel(scheduledReminder: Cancellable) = {
+    import play.api.libs.concurrent.Execution.Implicits._
+
+    val timeBetweenNowAndCloseOfCFP = Duration.create(Backoffice.cfpClosingDate().getMillis - DateMidnight.now().getMillis, TimeUnit.MILLISECONDS)
+    Akka.system.scheduler.scheduleOnce(timeBetweenNowAndCloseOfCFP, ZapActor.actor, CancelDraftReminderWhenCFPCloses(scheduledReminder))
   }
 
   def doIndexElasticSearch() = {
