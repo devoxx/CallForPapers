@@ -109,7 +109,7 @@ object CronTask {
 
     val cfpClosingInHumanReadableDate = Backoffice.cfpClosingDate().toString("EEEE, dd/MM/YYYY HH:mm")
 
-    if ( DateMidnight.now().isAfter(Backoffice.cfpClosingDate()) ) {
+    if ( ! Backoffice.isCFPOpen() ) {
       play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP has already CLOSED on ${cfpClosingInHumanReadableDate}.")
     } else if ( DateMidnight.now().plusDays(totalDelayInDays).isAfter(Backoffice.cfpClosingDate()) ) {
       play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP will already be CLOSED in ${totalDelayInDays} days from now, on ${cfpClosingInHumanReadableDate}.")

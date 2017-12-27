@@ -272,7 +272,7 @@ object Backoffice extends SecureCFPController {
 
   def sendDraftReminder = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      if ( DateMidnight.now().isAfter(cfpClosingDate()) ) {
+      if ( ! isCFPOpen() ) {
         val notSentDraftMessageAsCFPIsClosed = s"Draft reminders HAVE NOT BEEN sent to speakers, as CFP already CLOSED on ${cfpClosingDate().toString("EEEE, dd/MM/YYYY HH:mm")}."
         play.Logger.debug(notSentDraftMessageAsCFPIsClosed)
         Redirect(routes.Backoffice.homeBackoffice()).flashing("error" -> notSentDraftMessageAsCFPIsClosed)
