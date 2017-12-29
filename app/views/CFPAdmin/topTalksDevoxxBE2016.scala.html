@@ -1,7 +1,6 @@
 @(results: List[(Proposal, List[Rating])], day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 <!DOCTYPE html>
-
 <html>
     <head>
         <meta charset="utf-8" />
@@ -20,7 +19,8 @@
                 <ul>
                 @results.map { case (proposal, ratings) =>
                 <li><span class="title">@proposal.title</span>
-                    <span class="score">@Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings) with @ratings.length votes</span>
+                    <span class="score">@Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings)
+                        with @ratings.length votes</span>
                     <span class="speaker">@proposal.allSpeakers.map(_.cleanName).mkString(", ")</span>
                 </li>
                 }

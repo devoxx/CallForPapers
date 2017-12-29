@@ -4,7 +4,6 @@
 @import notifiers.Mails
 
 @main("ApproveOrRefuse - All votes") {
-
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
@@ -37,8 +36,6 @@
                         <h3>@allProposals.size proposals approved</h3>
                            <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
                            <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
-
-
                         @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
                             <span class="label label-info">@listOfProps.size @Html(Messages(track.label))</span>
                         }
@@ -249,7 +246,6 @@
         selector: '.email',
         height: 400,
         menubar: false,
-
         content_css: '//www.tinymce.com/css/codepen.min.css'
     });</script>
 }

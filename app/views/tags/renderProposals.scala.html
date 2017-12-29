@@ -3,7 +3,6 @@
 @import play.api.templates.Html
 
 @defining(proposals.values.partition(_.state.code==ProposalState.ARCHIVED.code)) { case (archivedProposals, notArchived) =>
-
     @if(notArchived.nonEmpty){
 <table class="table table-bordered">
     <thead>
@@ -59,8 +58,8 @@
                 }
                 </td>
             }
-        <td>@Messages(proposal.talkType.id)</td>
-        <td>@Html(Messages(proposal.track.label))</td>
+            <td>@Messages(proposal.talkType.id)</td>
+            <td>@Html(Messages(proposal.track.label))</td>
         </tr>
         }
     }

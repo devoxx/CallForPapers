@@ -74,11 +74,9 @@
                         <h3>@Messages("svp.allVotes")</h3>
                     </div>
                     <div class="panel-body">
-
                     @if(proposal.mainSpeaker == currentUser || proposal.secondarySpeaker == Some(currentUser) || proposal.otherSpeakers.contains(currentUser)) {
                         <em>@Messages("svp.noshow")</em>
                     } else {
-
                         <div class="media">
                         <table>
                         @allVotes.sortBy(_._2).map { case (author, vote) =>

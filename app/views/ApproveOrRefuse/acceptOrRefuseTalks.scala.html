@@ -24,23 +24,21 @@
                                 </div>
                             </div>
                         }
+                        <h3><i class="icon-play-circle"></i> @Messages("ar.approved")</h3>
+                        @if(approvedProposals.isEmpty){
+                            @Messages("ar.noneApproved")
+                        }else{
+                            <div class="panel panel-warning">
 
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Important :</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        @Messages("ar.pleaseAccept")
+                                    </div>
 
-                            <h3><i class="icon-play-circle"></i> @Messages("ar.approved")</h3>
-                            @if(approvedProposals.isEmpty){
-                                @Messages("ar.noneApproved")
-                            }else{
-                                <div class="panel panel-warning">
-
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title">Important :</h3>
-                                        </div>
-                                        <div class="panel-body">
-                                            @Messages("ar.pleaseAccept")
-                                        </div>
-
-                                </div>
-                            }
+                            </div>
+                        }
                           @approvedProposals.sortBy(_.title).map{proposal=>
                             <div class="panel panel-success">
                                 <div class="panel-heading">
@@ -233,7 +231,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-lg-12">
             <a href="@routes.CallForPaper.homeForSpeaker" class="btn btn-primary">@Messages("ar.goBackHome")</a>
         </div>

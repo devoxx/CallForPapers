@@ -4,7 +4,7 @@
     <div class="container">
       <div class="navbar-header">
         <div class="logo">
-            <a href="https://devoxx.ma"><img [src]="logoImg" alt="image" /></a>
+            <a href="https://devoxx.co.uk"><img [src]="logoImg" alt="image" /></a>
         </div> <!-- /Logo -->
         <button (click)="slide()" id="menu_slide" data-target="#navigation" aria-expanded="false" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
           <span class="sr-only">Toggle navigation</span>
@@ -24,7 +24,7 @@
 
       <div #navigation class="collapse navbar-collapse" id="navigation">
         <ul class="nav navbar-nav">
-          <li><a href="https://cfp.devoxx.ma/2017/index.html" class="js-target-scroll">Home</a></li>
+          <li><a href="https://cfp.devoxx.co.uk/2018/index.html" class="js-target-scroll">Home</a></li>
           <li><a [routerLinkActive]="['selected']" [routerLink]="['']" class="js-target-scroll">Schedule</a></li>
           <li [ngClass]="{'hidden':!showScheduleTraining}"><a [routerLinkActive]="['selected']"  [routerLink]="['training']" class="js-target-scroll">Training Schedule</a></li>
         </ul>

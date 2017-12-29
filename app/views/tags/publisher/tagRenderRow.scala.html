@@ -1,7 +1,6 @@
 @(subSlots: List[Slot], room: Room, roomSize: Int, showEndTime:Boolean)(implicit req:RequestHeader)
 
 @import org.joda.time.DateTimeZone
-@import play.api.templates.Html
 
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated) {

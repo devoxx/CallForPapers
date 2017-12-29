@@ -4,20 +4,21 @@
 
         <div class="page-header">
             <div class="row">
-               <div class="col-md-2"><div  style="font-size:20px ;text-align: center">@*** @webuser.pictureurl.map{x=>
-                   <img src="@x"  style="width:75px;height:75px;  border-top-left-radius: 50% 50%;border-top-right-radius: 50% 50%;border-bottom-right-radius: 50% 50%;border-bottom-left-radius: 50% 50%;">
-               }.getOrElse{***@
-                       <img src="https://www.gravatar.com/avatar/"  style="width:75px;height:75px;  border-top-left-radius: 50% 50%;border-top-right-radius: 50% 50%;border-bottom-right-radius: 50% 50%;border-bottom-left-radius: 50% 50%;">
+               <div class="col-md-2">
+                   <div  style="font-size:20px ;text-align: center">@*** @webuser.pictureurl.map{x=>
+                       <img src="@x"  style="width:75px;height:75px;  border-top-left-radius: 50% 50%;border-top-right-radius: 50% 50%;border-bottom-right-radius: 50% 50%;border-bottom-left-radius: 50% 50%;">
+                   }.getOrElse{***@
+                           <img src="https://www.gravatar.com/avatar/"  style="width:75px;height:75px;  border-top-left-radius: 50% 50%;border-top-right-radius: 50% 50%;border-bottom-right-radius: 50% 50%;border-bottom-left-radius: 50% 50%;">
 
-               @***} ***@ @Messages("visitor.welcome.title",webuser.firstName)
-                   <a data-toggle="modal" data-target="#update-profile"  id="profile">
-                       <span class="glyphicon glyphicon-pencil" style="font-size:15px"> @Messages("edit.profile")</span>
-                   </a>
-
-               </div> </div>
-                <div class="col-md-10" style="margin-top: 16px">
+                   @***} ***@ @Messages("visitor.welcome.title",webuser.firstName)
+                       <a data-toggle="modal" data-target="#update-profile"  id="profile">
+                           <span class="glyphicon glyphicon-pencil" style="font-size:15px"> @Messages("edit.profile")</span>
+                       </a>
+                    </div>
+               </div>
+            <div class="col-md-10" style="margin-top: 16px">
                 @Messages("visitor.welcome.text1",Messages("longYearlyName"))
-                </div>
+            </div>
             </div>
         </div>
 

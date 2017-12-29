@@ -502,7 +502,7 @@ object ConferenceDescriptor {
   // My Devoxx is an OAuth provider on which a user can register
   def isMyDevoxxActive:Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
 
-  def myDevoxxURL():String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.ma")
+  def myDevoxxURL():String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.co.uk")
 
   // This is a JWT String shared secret that needs to be configured as a global environment variable
   def jwtSharedSecret() : String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
