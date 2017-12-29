@@ -240,7 +240,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
   shareOnTwitter(talkId: string,title:string,speakers:any[]) {
     let joinedSpeakers = speakers.map((e)=>e.name).join(",");
-    let bodyText=`#DevoxxMA Checkout this talk  ${title} by ${joinedSpeakers}`;
+    let bodyText=`#DevoxxUK Checkout this talk  ${title} by ${joinedSpeakers}`;
     let currentYear = new Date().getFullYear();
     let link = `${window['talkLink'] || "https://cfp.devoxx.co.uk/2018/talk"}/${talkId}`;
     let url = `http://twitter.com/share?url=${encodeURIComponent(link)}&text=${encodeURIComponent(bodyText)}`;

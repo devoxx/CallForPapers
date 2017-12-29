@@ -3,7 +3,7 @@
 
 
 
-     Hello <strong>@webuser.firstName</strong> we would like to thank you about your participation at DevoxxMa , here is your talks that just have been scheduled.
+     Hello <strong>@webuser.firstName</strong> we would like to thank you about your participation at DevoxxUK, here is your talks that just have been scheduled.
                                            <ul> @slots.slice(0,3).map { case (slot : Slot) =>
                                            <li> <strong>@slot.proposal.get.title</strong>
                                                 By

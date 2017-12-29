@@ -8,9 +8,9 @@ WORKDIR /root
 
 EXPOSE 9000
 
-COPY  target/universal/build/cfp-devoxxma-* /root/cfp-devoxxma
+COPY  target/universal/build/cfp-devoxxuk-* /root/cfp-devoxxuk
 
-RUN chmod +x /root/cfp-devoxxma/bin/cfp-devoxxma
+RUN chmod +x /root/cfp-devoxxuk/bin/cfp-devoxxuk
 
-CMD ["/root/cfp-devoxxma/bin/cfp-devoxxma"]
+CMD ["/root/cfp-devoxxuk/bin/cfp-devoxxuk"]
 

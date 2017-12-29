@@ -1,6 +1,6 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.layout("Schedule", Some("DevoxxMA - Schedule")) {
+@views.html.Publisher.layout("Schedule", Some("DevoxxUK - Schedule")) {
 	<base href="@routes.Publisher.serveSchedule("").url">
 	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
 	<link href='//fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
@@ -12,7 +12,7 @@
 } {
 	<script>
         var apiBaseUrl = window.location.origin;
-        var eventCode = "DevoxxMA2017";
+        var eventCode = "DevoxxUK2018";
         window["config"] = {
           apiLink: {
             ScheduleUrl: apiBaseUrl.concat('/api/conferences/{eventcode}/schedules/').replace('{eventcode}',eventCode),
