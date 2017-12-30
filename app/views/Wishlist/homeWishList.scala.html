@@ -1,4 +1,4 @@
-@(requests:List[(models.RequestToTalk,Option[Webuser])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(requests: List[(models.RequestToTalk, Option[Webuser])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @import play.twirl.api.Html
 
@@ -23,9 +23,9 @@
                 </div>
 
                 <div class="panel-body">
-<a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishList.newWishList")</a><br>
+                    <a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary" style="border-radius: 5px">@Messages("wishList.newWishList")</a><br>
                     <p>Total wishListed : @requests.size</p>
-  @if(flash.get("error").isDefined) {
+                    @if(flash.get("error").isDefined) {
                         <div class="alert alert-danger alert-dismissable">
                             <strong>Error :</strong>
                             @flash.get("error").get
@@ -36,79 +36,79 @@
                         @flash.get("success").get
                         </div>
                     }
-<table id="allWishList" class="table table-bordered table-hover table-condensed">
-    <thead>
-        <tr>
-            <th>@Messages("wl.action")</th>
-            <th>@Messages("wl.lm")</th>
-            <th>@Messages("wl.sn")</th>
-            <th>@Messages("wl.fb")</th>
-            <th>@Messages("wl.company")</th>
-            <th>@Messages("wl.country")</th>
-            <th>@Messages("wl.track")</th>
-            <th>@Messages("wl.keynote")</th>
-            <th>@Messages("wl.status")</th>
-        </tr>
-    </thead>
-    <tbody>
-@requests.map { case(request: RequestToTalk,maybePersonInCharge:Option[Webuser]) =>
-    <tr>
-        <td>
-            <a href="@routes.Wishlist.edit(request.id)" class="btn btn-sm btn-primary"><i class="icon-edit"></i></a>
-            <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-sm btn-danger"><i class="icon-trash"></i></a>
-        </td>
-        <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, d MMM YYYY, HH:mm"))</td>
-        <td>@request.speakerName</td>
-        <td>
-           @maybePersonInCharge.map{webuser=>
-                @webuser.cleanName<br>
-                <a href="@routes.Wishlist.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="icon-minus-sign-alt"></i></a>
-           }.getOrElse{
-               <a href="@routes.Wishlist.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i> </a>
-           }
-        </td>
-        <td>@request.company</td>
-        <td>@request.country</td>
-        <td>@Html(Messages(request.track.label))</td>
-        <td>@if(request.keynote.isDefined && request.keynote.get){
-            Yes
-        } else{
-            No
-        }
-        </td>
-        <td>@Messages("wl_"+request.status.code)</td>
-    </tr>
-}
-    </tbody>
-</table>
+                    <table id="allWishList" class="table table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>@Messages("wl.action")</th>
+                                <th>@Messages("wl.lm")</th>
+                                <th>@Messages("wl.sn")</th>
+                                <th>@Messages("wl.fb")</th>
+                                <th>@Messages("wl.company")</th>
+                                <th>@Messages("wl.country")</th>
+                                <th>@Messages("wl.track")</th>
+                                <th>@Messages("wl.keynote")</th>
+                                <th>@Messages("wl.status")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @requests.map { case (request: RequestToTalk, maybePersonInCharge: Option[Webuser]) =>
+                        <tr>
+                            <td>
+                                <a href="@routes.Wishlist.edit(request.id)" class="btn btn-sm btn-primary" style="border-radius: 5px"><i class="icon-edit"></i></a>
+                                <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-sm btn-danger" style="border-radius: 5px"><i class="icon-trash"></i></a>
+                            </td>
+                            <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, d MMM YYYY, HH:mm"))</td>
+                            <td>@request.speakerName</td>
+                            <td>
+                            @maybePersonInCharge.map { webuser =>
+                                @webuser.cleanName <br>
+                            <a href="@routes.Wishlist.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="icon-minus-sign-alt" style="border-radius: 5px"></i></a>
+                            }.getOrElse {
+                                <a href="@routes.Wishlist.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success" style="border-radius: 5px"><i class="icon-plus-sign"></i> </a>
+                            }
+                            </td>
+                            <td>@request.company</td>
+                            <td>@request.country</td>
+                            <td>@Html(Messages(request.track.label))</td>
+                            <td>@if(request.keynote.isDefined && request.keynote.get) {
+                                Yes
+                            } else {
+                                No
+                            }
+                            </td>
+                            <td>@Messages("wl_" + request.status.code)</td>
+                        </tr>
+                        }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-</div>
+    </div>
 
-<script type="text/javascript">
-$(document).ready(function() {
+    <script type="text/javascript">
+            $(document).ready(function () {
 
-    $('#allWishList').dataTable({
-    "aaSorting": [[ 2, "desc" ]],
-    "iDisplayLength" : -1,
-    "aLengthMenu": [
-    [25, 50, 100, 200, -1],
-    [25, 50, 100, 200, "All"]
-    ],
-        "bStateSave": true,
-        "aoColumns": [
-        { "sType": "string"},
-        { "sType": "date"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "boolean"},
-        { "sType": "string"}
-        ]
-    });
-} );
-</script>
+                $('#allWishList').dataTable({
+                    "aaSorting": [[2, "desc"]],
+                    "iDisplayLength": -1,
+                    "aLengthMenu": [
+                        [25, 50, 100, 200, -1],
+                        [25, 50, 100, 200, "All"]
+                    ],
+                    "bStateSave": true,
+                    "aoColumns": [
+                        {"sType": "string"},
+                        {"sType": "date"},
+                        {"sType": "string"},
+                        {"sType": "string"},
+                        {"sType": "string"},
+                        {"sType": "string"},
+                        {"sType": "string"},
+                        {"sType": "boolean"},
+                        {"sType": "string"}
+                    ]
+                });
+            });
+    </script>
 }

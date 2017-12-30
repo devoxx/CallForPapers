@@ -16,7 +16,7 @@
                 <div class="panel-heading">
                     <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
                     <small>Stats are computed every 10 minutes</small><br>
-                    <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
+                    <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary" style="border-radius: 5px"><i class="icon-compass"></i> Trigger a refresh now</a></small>
                 </div>
 
                 <div class="panel-body">
@@ -68,12 +68,12 @@
 
                     <div class="col-md-3">
                         <br>
-                        <small><a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposals by Company</a></small>
+                        <small><a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-sm btn-warning" style="border-radius: 5px">All Proposals by Company</a></small>
                     </div>
 
                     <div class="col-md-3">
                         <br>
-                        <small><a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-sm btn-success">Approved Speakers by Company</a></small>
+                        <small><a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-sm btn-success" style="border-radius: 5px">Approved Speakers by Company</a></small>
                     </div>
                     <div class="clearfix"></div>
 
@@ -84,9 +84,9 @@
                                 @tags.renderGravatarByProposal(mr._1)
                             <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
                             }
-                            <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary">See all Votes</a></small><br>
+                            <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary" style="border-radius: 5px">See all Votes</a></small><br>
                         } else {
-                            <br><br><small><a class="btn btn-sm btn-primary">No one has started voting yet</a></small><br>
+                            <br><br><small><a class="btn btn-sm btn-primary" style="border-radius: 5px">No one has started voting yet</a></small><br>
                             }
                     </div>
 
@@ -97,7 +97,7 @@
                                 @tags.renderGravatar(br._1)
                                 @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
                             }
-                            <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary">See all</a></small><br>
+                            <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary" style="border-radius: 5px">See all</a></small><br>
                         } else {
                             <br><br><small><a class="btn btn-sm btn-primary">No one has submitted any talks yet</a></small>
                         }
@@ -111,7 +111,7 @@
                                 <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
                             }
                         } else {
-                            <br><br><small><a class="btn btn-sm btn-primary">No one has started commenting/discussing yet</a></small>
+                            <br><br><small><a class="btn btn-sm btn-primary" style="border-radius: 5px">No one has started commenting/discussing yet</a></small>
                         }
                     </div>
 
@@ -122,9 +122,9 @@
                                 @tags.renderGravatar(br._1)
                                 @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
                             }
-                            <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small><br>
+                            <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary" style="border-radius: 5px">See all reviewers</a></small><br>
                         } else {
-                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small><br>
+                            <br><br><small><a class="btn btn-sm btn-primary" style="border-radius: 5px">No one has started reviewing yet</a></small><br>
                         }
                     </div>
 
@@ -135,9 +135,9 @@
                                 @tags.renderGravatar(wr._1)
                                 @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
                             }
-                            <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all</a></small><br>
+                            <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary" style="border-radius: 5px">See all</a></small><br>
                         } else {
-                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small><br>
+                            <br><br><small><a class="btn btn-sm btn-primary" style="border-radius: 5px">No one has started reviewing yet</a></small><br>
                         }
                     </div>
                     <div class="col-md-4">
@@ -148,7 +148,7 @@
                             <small>avg. rating of @wr._2</small>
                             }
                         } else {
-                            <br><br><small><a class="btn btn-sm btn-primary">No one has started reviewing yet</a></small>
+                            <br><br><small><a class="btn btn-sm btn-primary" style="border-radius: 5px">No one has started reviewing yet</a></small>
                         }
                     </div>
 
@@ -215,7 +215,7 @@
                     @if(params.totalSubmittedByTrack.nonEmpty){
                             <div class="col-md-4">
                                 <br>
-                                <small><a href='@routes.GoldenTicketAdminController.showStats()' class="btn btn-sm btn-warning">More Golden Stats</a></small>
+                                <small><a href='@routes.GoldenTicketAdminController.showStats()' class="btn btn-sm btn-warning" style="border-radius: 5px">More Golden Stats</a></small>
                             </div>
 
                             <div class="col-md-4">

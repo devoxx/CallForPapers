@@ -18,7 +18,7 @@
                     <div class="panel-body">
                         <div class="col-md-12">
                         @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                            <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
+                            <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm" style="border-radius: 5px"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
 
                             @if(flash.get("error").isDefined) {
