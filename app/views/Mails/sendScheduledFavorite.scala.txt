@@ -34,7 +34,7 @@
 
 
 
-                                        <p>Team Devoxx Morocco</p>
+                                        <p>Team Devoxx UK</p>
 
 
 

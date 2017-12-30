@@ -3,6 +3,75 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <style>
+                .viewport {
+                    display: table-row-group;
+
+                    left: 0px;
+                    align-items: inherit;
+                    justify-content: center;
+                    height: 100vh;
+                    background-color: $ mdBlueGrey;
+                }
+
+                .dropdown-inline {
+                    display: inline-block;
+                    position: relative;
+                }
+
+                .error-notice {
+                    margin: 5px 5px; /* Making sure to keep some distance from all side */
+                }
+
+                .oaerror {
+                    width: 90%; /* Configure it fit in your design  */
+                    margin: 0 auto; /* Centering Stuff */
+                    background-color: #FFFFFF; /* Default background */
+                    padding: 20px;
+                    border: 1px solid #eee;
+                    border-left-width: 5px;
+                    border-radius: 3px;
+                    margin: 0 auto;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 16px;
+                }
+
+                .danger {
+                    border-left-color: #d9534f; /* Left side border color */
+                    background-color: rgba(217, 83, 79, 0.1); /* Same color as the left border with reduced alpha to 0.1 */
+                }
+
+                .danger strong {
+                    color: #d9534f;
+                }
+
+                .warning {
+                    border-left-color: #f0ad4e;
+                    background-color: rgba(240, 173, 78, 0.1);
+                }
+
+                .warning strong {
+                    color: #f0ad4e;
+                }
+
+                .info {
+                    border-left-color: #5bc0de;
+                    background-color: rgba(91, 192, 222, 0.1);
+                }
+
+                .info strong {
+                    color: #5bc0de;
+                }
+
+                .success {
+                    border-left-color: #2b542c;
+                    background-color: rgba(67, 161, 70, 0.54);
+                }
+
+                .success strong {
+                    color: #2b542c;
+                }
+        </style>
         <title>@Messages("shortName") REST API - @title</title>
         <link href="@routes.Assets.at(path = "/public", file = "css/bootstrap.cosmo.min.css")" rel="stylesheet">
         <link href="@routes.Assets.at(path = "/public", file = "css/font-awesome.min.css")" rel="stylesheet">
@@ -13,7 +82,7 @@
         <div class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="/" class="navbar-brand">@Messages("longSplittedName_whiteStart") <span class="yl">@Messages("longSplittedName_colored")</span>
+                    <a href="/" class="navbar-brand">@Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span>
                         @Messages("longSplittedName_whiteEnd") CFP</a>
                     <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                         <span class="icon-bar"></span>
