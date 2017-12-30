@@ -1,6 +1,6 @@
 @(proposals: Map[String, Proposal], currentUser: String)(implicit req: RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @defining(proposals.values.partition(_.state.code==ProposalState.ARCHIVED.code)) { case (archivedProposals, notArchived) =>
     @if(notArchived.nonEmpty){

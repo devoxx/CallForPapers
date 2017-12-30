@@ -301,18 +301,12 @@
                                         <a href="#" class="btn btn-color-3 dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-animations="flipInX flipInY flipInX flipInY"><img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1505785229/presentation_hgpmof.png">   @Messages("Gestion.Talks") <span class="caret"></span></a>
                                         <ul class="dropdown-menu" role="menu">
                                             @if(SecureCFPController.hasAccessToAdmin(req)) {
-                                                <li>
-                                                    <a href="@routes.Backoffice.allProposals()"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a>
-                                                </li>
+                                                <li><a href="@routes.Backoffice.allProposals()"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a></li>
+                                                <li class="divider"></li>
                                             }
+                                            <li> <a href="@routes.CFPAdmin.allSponsorTalks()"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a></li>
                                             <li class="divider"></li>
-                                            <li> <a href="@routes.CFPAdmin.allSponsorTalks()"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                            <li> <a href="@routes.CFPAdmin.seeEvents(0, None, None, None)" ><i class="icon-bookmark"></i>
-                                                See events </a></li>
-
-
+                                            <li> <a href="@routes.CFPAdmin.seeEvents(0, None, None, None)" ><i class="icon-bookmark"></i> See events</a></li>
                                             <li class="divider"></li>
                                             <li>  <a href="@routes.CFPAdmin.newOrEditSpeaker(None)"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a></li>
                                         </ul>
@@ -322,18 +316,17 @@
                                         <a href="#" class="btn btn-color-10  dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-animations="flipInX flipInY flipInX flipInY"><img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1505817053/presentation_1_evz3u4.png">
                                             Speakers & Visitor <span class="caret"></span></a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li>  <a href="@routes.InviteController.allInvitations()" ><i class="icon-group"></i> @Messages("admin.btn.speakersInvited")</a>
-                                            </li>
+                                            <li><a href="@routes.InviteController.allInvitations()" ><i class="icon-group"></i> @Messages("admin.btn.speakersInvited")</a></li>
+                                            @***
                                             <li class="divider"></li>
-
-                                            <li>   <a href="@routes.CFPAdmin.newSpeakerOnly(None)" ><i class="icon-asterisk"></i> @Messages("speaker.create.only") </a>
-                                            </li>
-
+                                            <li><a href="@routes.CFPAdmin.newSpeakerOnly(None)" ><i class="icon-asterisk"></i> @Messages("speaker.create.only") </a></li>
+                                            ***@
+                                            @***
                                             <li class="divider"></li>
-                                            <li> <a href="@routes.CFPAdmin.allVisitiors()" ><i class="icon-asterisk"></i> @Messages("visitor.manage")</a>
-                                            </li>
+                                            <li><a href="@routes.CFPAdmin.allVisitiors()" ><i class="icon-asterisk"></i> @Messages("visitor.manage")</a></li>
+                                            ***@
                                             <li class="divider"></li>
-                                            <li>  <a href="@routes.CFPAdmin.allWebusers()"><i class="icon-user"></i> @Messages("invite.cfp.close")</a>
+                                            <li><a href="@routes.CFPAdmin.allWebusers()"><i class="icon-user"></i> @Messages("invite.cfp.close")</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -355,46 +348,39 @@
                                         data-animations="bounceInDown bounceInRight bounceInUp bounceInLeft"><img style="padding-left: 2px " src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1505783723/analytics_1_mzsnvf.png">
                                             All statistics <span class="caret"></span></a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li> <a href="@routes.LeaderboardController.leaderBoard()"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a></li>
+                                            <li><a href="@routes.LeaderboardController.leaderBoard()"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a></li>
                                             <li class="divider"></li>
-                                            <li>
-                                                <a href="@routes.LeaderboardController.statsAppAcc()"><i class="icon-dashboard"></i> @Messages("Stats.talk.type") </a>
-
-                                            </li>
+                                            <li><a href="@routes.LeaderboardController.statsAppAcc()"><i class="icon-dashboard"></i> @Messages("Stats.talk.type") </a></li>
                                         </ul>
                                     </div>
                                     <div class="dropdown dropdown-inline">
                                         <a href="#" class="btn btn-color-1 dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-animations="flipInX flipInY flipInX flipInY"><img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1505785227/settings_gahwua.png">
                                             Configuration <span class="caret"></span></a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a href="@routes.CFPAdmin.manageSlots()"><i class="icon-asterisk"></i>
-                                                Slots & Rooms Management </a></li>
-
-                                            <li class="divider"></li>
-                                            <li class="dropdown">  <a href="@routes.CFPAdmin.manageNotification()" ><i class="icon-dashboard"></i> @Messages("admin.btn.manage.notificaion") </a>
-
-                                            </li>
-                                            <li class="divider"> </li>
-
+                                            <li><a href="@routes.CFPAdmin.manageSlots()"><i class="icon-asterisk"></i>Slots & Rooms Management</a></li>
                                             @if(SecureCFPController.hasAccessToAdmin(req)) {
-                                                <li> @if(MailsManager.getEmailMode().get == "enable") {
-                                                    <a href="@routes.CFPAdmin.changeEmailConfiguration("disable")"><i class="icon-lock"></i>
-                                                        disable dynamic email templates </a>
-                                                } @if(MailsManager.getEmailMode().get == "disable") {
-                                                    <a href="@routes.CFPAdmin.changeEmailConfiguration("enable")"><i class="icon-unlock"></i>
-                                                        enable dynamic email templates</a>
-                                                }</li>
+                                                <li class="divider"></li>
+                                                <li class="dropdown"><a href="@routes.CFPAdmin.manageNotification()" ><i class="icon-dashboard"></i> @Messages("admin.btn.manage.notification") </a></li>
+                                                <li class="divider"></li>
+                                                <li>
+                                                    @if(MailsManager.getEmailMode().get == "enable") {
+                                                        <a href="@routes.CFPAdmin.changeEmailConfiguration("disable")"><i class="icon-lock"></i>disable dynamic email templates </a>
+                                                    }
+                                                    @if(MailsManager.getEmailMode().get == "disable") {
+                                                        <a href="@routes.CFPAdmin.changeEmailConfiguration("enable")"><i class="icon-unlock"></i>enable dynamic email templates</a>
+                                                    }
+                                                </li>
                                             }
-                                            </li>
 
-                                            <li class="divider"></li>
+                                            @***
                                             @if(SecureCFPController.hasAccessToAdmin(req)) {
+                                                <li class="divider"></li>
                                                 <li> @if(ConferenceDescriptor.isCFPOpen) {
                                                     <a href="@routes.CFPAdmin.managecfp()" ><i class="icon-circle-arrow-down"></i> @Messages("closecfp")</a>
                                                 } else {
                                                     <a href="@routes.CFPAdmin.managecfp()" ><i class="icon-circle-arrow-up"></i> @Messages("opencfp")</a>
                                                 }</li>
-                                            }
+                                            }***@
                                         </ul>
                                     </div>
                                 </div>

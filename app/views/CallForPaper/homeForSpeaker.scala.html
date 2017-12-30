@@ -6,7 +6,7 @@
         needsToAcceptTermAndCondition: Boolean)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @import org.apache.commons.lang3.StringUtils
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @main(Messages("cfp.title")) {
     <div class="row">
@@ -34,15 +34,12 @@
                             } else {
                                 @if(speaker.avatarUrl.isDefined) {
                                     <div class="media">
-
                                         <img style="border-radius: 160px;" class="media-object"
                                         width="75"
                                         src="@speaker.avatarUrl.get"
                                         alt="@webuser.firstName @webuser.lastName"/>
-
                                     </div>
                                 } else {
-
                                     <div class="media">
                                         <img style="border-radius: 160px;" class="media-object"
                                         width="75"
@@ -52,10 +49,8 @@
                                     </div>
                                 }
                             }
-
                             </td>
                         </tr>
-
                         <tr>
                             <td>@Html(Messages("bio"))</td>
                             <td>
@@ -188,34 +183,6 @@
                             </label>
                         </form>
                     </div>
-                </div>
-            }
-
-            @if(Webuser.isMember(webuser.uuid, "cfp")) {
-                <div class="digestMessage">
-                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>@Messages("email.digest.description") <br>
-                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
-                                <td>
-                                    <select id="digest">
-                                    @Digest.allDigests.map { digest =>
-                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
-                                            <option value='@digest.value' selected>
-                                        } else {
-                                            <option value='@digest.value'>
-                                            }
-                                        @digest.value
-                                    </option>
-                                    }
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             }
         </div>
@@ -365,10 +332,9 @@
                 <br/>
                 <a href="@routes.CallForPaper.newProposal" style="border-radius: 5px" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
             } else {
-
-                <div>
-                        @*** <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal")) ***@
-                </div>
+                @*** <div>
+                        <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))
+                </div>***@
                 <div class="panel panel-success">
                     <div class="panel-heading">Information</div>
                     <div class="panel-body">@Messages("cfp.isClosed.expl")</div>

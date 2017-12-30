@@ -2,7 +2,7 @@
 
 @import org.joda.time.DateTimeZone
 @import models.ConferenceDescriptor
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
     @views.html.Publisher.devoxxUK(Messages("agenda-" + talkType),Some(s"Agenda for ${Messages("CONF.title")} for $day${Messages("day-" + day)}")) {
         <div class="large-12 columns">

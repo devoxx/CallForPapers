@@ -1,6 +1,6 @@
 @(allMyVotes:List[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @main("All my votes") {
     <div class="row">

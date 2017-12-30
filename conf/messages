@@ -498,12 +498,13 @@ fav-talk=Favour
 admin.btn.changeState=Change one proposal state
 
 sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
-admin.btn.manage.notificaion=Manage mail notification
-admin.btn.manage.notificaion.new=Content of the email:
-admin.btn.manage.notificaion.subject= Email subject
+admin.btn.manage.notification=Manage mail notification
+admin.btn.manage.notification.new=Content of the email:
+admin.btn.manage.notification.subject= Email subject
 
 sw.showDetails=See details
 sw.home=Home
+sw.all.key=All Keynotes
 sw.all.opening_key=All Opening Keynotes
 sw.all.closing_key=All Closing Keynotes
 sw.all.conf=All Conferences

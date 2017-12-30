@@ -1,7 +1,7 @@
 @(formWebuser: Form[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Option[String],
         Option[Seq[QuestionAndAnswer]])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 @import models.QuestionAndAnswer
 @import org.apache.commons.codec.digest.DigestUtils
 

@@ -1,6 +1,6 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @views.html.Publisher.devoxxUK(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
 <section id="speaker">

@@ -1,6 +1,6 @@
 @(allProposals:List[models.Proposal], confType:String,allNotiyRefese:List[String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 @import notifiers.Mails
 
 @main("ApproveOrRefuse - All votes") {
@@ -120,20 +120,20 @@
 
                                                                     @if(MailsManager.getEmailMode().get=="disable"){
 
-                                                                        <label> <h5>@Messages("admin.btn.manage.notificaion.new") </h5></label>
+                                                                        <label> <h5>@Messages("admin.btn.manage.notification.new") </h5></label>
 
                                                                         <textarea class="email" name="email">
                                                                         @views.html.Mails.acceptrefuse.sendProposalApproved(proposal,Some("note fund")).toString()</textarea>
 
 
                                                                     }@if(MailsManager.getEmailMode().get=="enable"){
-                                                                <label> <h5>@Messages("admin.btn.manage.notificaion.subject"):</h5> </label>
+                                                                <label> <h5>@Messages("admin.btn.manage.notification.subject"):</h5> </label>
                                                                 @MailsManager.getMailByTypeAndLang("approved",proposal.lang).map{reject=>
                                                                 <input  name="subject" value="@reject.Subject" style="width:100% ;left:0"/>
                                                                 }.getOrElse( <input  name="subject" value="" style="width:100% ;left:0"/>)
 
 
-                                                                <label> <h5>@Messages("admin.btn.manage.notificaion.new") </h5></label>
+                                                                <label> <h5>@Messages("admin.btn.manage.notification.new") </h5></label>
 
                                                                 @MailsManager.getMailByTypeAndLang("approved",proposal.lang).map{reject=>
                                                                 <textarea class="email" name="email">
