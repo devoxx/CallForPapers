@@ -139,7 +139,7 @@ object CronTask {
     play.Logger.debug("CronTask : creating one time scheduler task to cancel the draft reminder scheduler task...")
     val timeBetweenNowAndCloseOfCFPInMillis = Duration.create(Backoffice.cfpClosingDate().getMillis - DateMidnight.now().getMillis, TimeUnit.MILLISECONDS)
     val oneTimeScheduledTaskDraftReminderCanceller = Akka.system.scheduler.scheduleOnce(timeBetweenNowAndCloseOfCFPInMillis, ZapActor.actor, CancelDraftReminderWhenCFPCloses(scheduledReminder))
-    play.Logger.debug(s"oneTimeScheduledCanceller: ${oneTimeScheduledTaskDraftReminderCanceller.toString()}")
+    play.Logger.debug(s"oneTimeScheduledCanceller: ${oneTimeScheduledTaskDraftReminderCanceller.toString}")
     play.Logger.debug(s"CronTask : successfully created one time scheduler task to cancel the draft reminder scheduler task, will be triggered in ${timeBetweenNowAndCloseOfCFPInMillis.toMillis} ms i.e. ${timeBetweenNowAndCloseOfCFPInMillis.toDays} day(s).")
   }
 
