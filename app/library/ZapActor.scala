@@ -61,6 +61,8 @@ case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: St
 
 case class DraftReminder()
 
+case class CancelDraftReminderWhenCFPCloses(scheduledReminder: Cancellable)
+
 case class ComputeLeaderboard()
 
 case class ComputeVotesAndScore()
@@ -95,12 +97,14 @@ object ZapActor {
 }
 
 class ZapActor extends Actor {
+
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
     case SendMessageToCommittee(reporterUUID, proposal, msg) => sendMessageToCommittee(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
+    case CancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable) => cancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable)
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
@@ -163,15 +167,27 @@ class ZapActor extends Actor {
 
   def sendDraftReminder() {
     val allProposalBySpeaker = Proposal.allDrafts().groupBy(_.mainSpeaker)
+
+    if (allProposalBySpeaker.isEmpty) {
+      play.Logger.warn("Speakers do not have any pending draft proposals, no reminder will be sent.")
+      return
+    }
+
     allProposalBySpeaker.foreach {
       case (speaker: String, draftProposals: List[Proposal]) => {
         Webuser.findByUUID(speaker).map {
           speakerUser =>
             Mails.sendReminderForDraft(speakerUser, draftProposals)
         }.getOrElse {
-          play.Logger.warn("User not found")
+          play.Logger.warn(s"User '${speaker}' not found")
         }
       }
+    }
+  }
+
+  def cancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable) {
+    if (theAlreadyScheduledReminder != null && !theAlreadyScheduledReminder.isCancelled) {
+      theAlreadyScheduledReminder.cancel()
     }
   }
 
