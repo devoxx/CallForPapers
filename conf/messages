@@ -181,8 +181,6 @@ deep.dive.label=Deep Dive Sessions, 3hours, Wednesday
 deep.dive.label.simple=Deep Dive Sessions
 ignite.label=Ignite Sessions, 5minutes, Thursday evening
 ignite.label.simple=Ignite Sessions
-other.label=Other event
-other.label.simple=Other
 
 # Bug report
 Issue.report=Report an issue

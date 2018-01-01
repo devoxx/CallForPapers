@@ -45,7 +45,6 @@ object ApprovedProposal {
     , ("opening.key.label", ConferenceProposalConfigurations.OPENING_KEY.slotsCount)
     , ("closing.key.label", ConferenceProposalConfigurations.CLOSING_KEY.slotsCount)
     , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
-    , ("other.label", ConferenceProposalConfigurations.OTHER.slotsCount)
   )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
