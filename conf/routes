@@ -459,7 +459,6 @@ GET     /profilePicture/*filename                                               
 GET     /scheduler*path                                                         controllers.RestAPI.serveSchedulerWebApp(path: String)
 
 GET     /app                                                                    controllers.RestAPI.serveScheduleWebApp(path = "index.html")
-GET     /app/                                                                   controllers.RestAPI.serveScheduleWebApp(path = "index.html")
 GET     /app/speakers                                                           controllers.RestAPI.serveSpeakersWebApp(path = "index.html")
 GET     /app/speakers/                                                          controllers.RestAPI.serveSpeakersWebApp(path = "index.html")
 GET     /app/speakers/*path                                                     controllers.RestAPI.serveSpeakersWebApp(path: String)
