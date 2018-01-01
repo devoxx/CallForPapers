@@ -11,12 +11,11 @@
       </a>
     </div>
     <hr>
+
     <div class="small-12 medium-6 large-6 column">
-        <A  style="text-decoration: none" href="@routes.Publisher.showByTalkType("key")"> <h3 style="color: #ff7518">Keynotes</h3></A>
-        <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le mardi à 9h précise.
-            Autour du thème de 2017  "Unleashing The Next Wave", soyez prêt à être surpris.
-        </p>
-        <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
+        <a style="text-decoration: none" href="/2018/speakers.html">  <h3 style="color: #ff7518">The Devoxxians</h3></a>
+        <p>We're welcoming rock star speakers from around the globe, see the full list here.</p>
+        <p><a href="/2018/speakers.html">List of Speakers</a></p>
     </div>
 
     <div class="large-3 columns right">
@@ -25,67 +24,45 @@
     </div>
 
     <div class="small-12 medium-6 large-6 column">
-        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("conf")">  <h3 style="color: #ff7518">Conference</h3></A>
-        <p>Les conférences sont des présentations de 45mn, le mercredi et le jeudi. C'est le format le plus représenté, avec plus de 49 conférences pendant 2
-            jours.</p>
-        <p><A href="@routes.Publisher.showByTalkType("conf")">Liste des Conférences</A></p>
-
-
+        <a style="text-decoration: none" href="@routes.Publisher.showByTalkType("conf")">  <h3 style="color: #ff7518">Conference Sessions</h3></a>
+        <p>Conference talks are 50 minutes in duration and run throughout Thursday & Friday.</p>
+        <p><a href="@routes.Publisher.showByTalkType("conf")">List of Conference Sessions</a></p>
     </div>
     <div class="clearfix"></div>
 
-
     <div class="small-12 medium-6 large-6 column">
-        <A  style="text-decoration: none" href="@routes.Publisher.showByTalkType("uni")"> <h3 style="color: #ff7518">University</h3></A>
-        <p>Les Universités sont des sessions longues de 2h, le mercredi.</p>
-        <p>A noter qu'il y aura 9 Universités pour 2017.</p>
-        <p><A href="@routes.Publisher.showByTalkType("deep-dive")">Liste des Universités</A></p>
+        <a style="text-decoration: none" href="@routes.Publisher.showByTalkType("deep_dive")"> <h3 style="color: #ff7518">Deep Dive Sessions</h3></a>
+        <p>These are intensive 3 hour sessions where an expert delves much more extensively into a subject than is possible during regular conference sessions.</p>
+        <p>Deep Dives give attendees the chance to rapidly immerse themselves into a subject matter with an in-depth examination of a topic or technology.</p>
+        <p><a href="@routes.Publisher.showByTalkType("deep_dive")">List of Deep Dive Sessions</a></p>
     </div>
 
     <div class="small-12 medium-6 large-6 column">
-        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("tia")"><h3 style="color: #ff7518">Tools in Action</h3></A>
-        <p>Les TIA (Tools-in-Action) sont des sessions courtes de 25mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
-        <p>Pour la 3ème édition de Devoxx Morocco, les TIA auront pendant les trois jours. Il y a 20 TIA au total.</p>
-        <p><A href="@routes.Publisher.showByTalkType("tia")">Liste des Tools in Action</A></p>
-
-
+        <a style="text-decoration: none" href="@routes.Publisher.showByTalkType("lab")"> <h3 style="color: #ff7518">Hands-on Labs</h3></a>
+        <p>Practical hands-on sessions of 2 hours with maximum of 40 people per room. Attendees will need to prepare their machines for Labs in advance so that sessions get underway promptly.</p>
+        <p><a href="@routes.Publisher.showByTalkType("lab")">List of Hands-on Labs</a></p>
     </div>
-
-    <div class="small-12 medium-6 large-6 column">
-        <A  style="text-decoration: none" href="@routes.Publisher.showByTalkType("lab")"> <h3 style="color: #ff7518">Hands-on Labs</h3></A>
-        <p>Session pratique de 2h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques pendant le preumier jour qui permettent
-            de découvrir ou d'approfondir un sujet. Il faut venir avec son ordinateur. Nous avons prévu 6 Hands-on Lab pour 2017.</p>
-        <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
-    </div>
-
-
     <div class="clearfix"></div>
 
-
-
     <div class="small-12 medium-6 large-6 column">
-        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("quick")"><h3 style="color: #ff7518">Quickies</h3></A>
-        <p>Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner mardi et jeudi. C'est LE format
-            dédié aux débutants, mais aussi aux experts qui n'ont que 15mn pour vous convaincre. Le format simple et rapide permet
-            de découvrir un projet ou une idée pendant l'heure du repas. 10 Quickies animeront le mercredi.</p>
-        <p><A href="@routes.Publisher.showByTalkType("quick")">Liste des Quickies</A></p>
-
-
+        <a style="text-decoration: none" href="@routes.Publisher.showByTalkType("quick")"><h3 style="color: #ff7518">Quickie Sessions</h3></a>
+        <p>15 minute sessions held during the lunch breaks, there give the chance to present a quickfire view, explanation or delve into a particular subject.</p>
+        <p><a href="@routes.Publisher.showByTalkType("quick")">List of Quickie sessions</a></p>
     </div>
 
+    <div class="small-12 medium-6 large-6 column">
+        <a style="text-decoration: none" href="@routes.Publisher.showByTalkType("bof")"> <h3 style="color: #ff7518">BOF</h3></a>
+        <p><a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a>
+         are informal evening sessions of 1 hour designed for audience participation. A host will kick off proceedings and open the floor for audience members to provide opinions and suggest actions.</p>
+        <p><a href="@routes.Publisher.showByTalkType("bof")">List of BOF sessions</a></p>
+    </div>
+    <div class="clearfix"></div>
 
     <div class="small-12 medium-6 large-6 column">
-        <A style="text-decoration: none" href="@routes.Publisher.showByTalkType("bof")"> <h3 style="color: #ff7518">BOF</h3></A>
-        <p>Les <a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a>
-            sont des sessions mythiques de Devoxx Morocco, à partir de 14h00 le jeudi soir.
-            C'est LE point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.</p>
-        <p><A href="@routes.Publisher.showByTalkType("bof")">Liste des B.O.Fs</A></p>
-
-
-
+        <a style="text-decoration: none" href="@routes.Publisher.showByTalkType("ignite")"> <h3 style="color: #ff7518">Ignite Sessions</h3></a>
+        <p>These are 5 minute sessions held on Thursday evening, with 20 slides auto-forwarding every 15 seconds. Not for the faint-hearted, there sessions are meant to “ignite” the audience on a subject, whereby awareness, thought, and action are generated on the subjects presented.</p>
+        <p><a href="@routes.Publisher.showByTalkType("ignite")">List of Ignite sessions</a></p>
     </div>
 
     <div class="clearfix"></div>
-
-
 }
