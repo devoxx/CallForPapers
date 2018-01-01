@@ -287,13 +287,13 @@ GET           /favorites/proposal/:proposalId                                   
 
 # This is an AJAX callback triggered from devoxxUK.scala (the publisher web pages)
 POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
-GET          /favorites/add                                                    controllers.Favorites.addAsFavorite(idP:String )
-GET          /favorites/del                                                    controllers.Favorites.removefromFavorite(idP:String)
-GET          /visitor/favorites/add                                                    controllers.Favorites.addAsFavoritev2(idP:String )
-GET          /visitor/favorites/del                                                    controllers.Favorites.removefromFavoritev2(idP:String)
+GET           /favorites/add                                                     controllers.Favorites.addAsFavorite(idP:String )
+GET           /favorites/del                                                     controllers.Favorites.removefromFavorite(idP:String)
+GET           /visitor/favorites/add                                             controllers.Favorites.addAsFavoritev2(idP:String )
+GET           /visitor/favorites/del                                             controllers.Favorites.removefromFavoritev2(idP:String)
 
 # Redirect URL from MyDevoxx
-GET           /auth/jwtCallback/:token                                         controllers.Authentication.jwtCallback(token:String)
+GET           /auth/jwtCallback/:token                                          controllers.Authentication.jwtCallback(token:String)
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()

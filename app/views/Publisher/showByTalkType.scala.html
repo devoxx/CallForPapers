@@ -18,8 +18,7 @@
                 <div class="btn-group btn-group-justified" >
                     @ConferenceDescriptor.ConferenceProposalTypes.ALL.map { x =>
                         @if(talkType != x.id) {
-                            <a class="btn" href="@routes.Publisher.showByTalkType(x.id)" style="background-color: #666666;
-                                color: white" > @Messages(x.label + ".simple")  </a>
+                            <a class="btn" href="@routes.Publisher.showByTalkType(x.id)" style="background-color: #666666;color: white" > @Messages(x.label + ".simple")  </a>
 
                         } else {
                             <a class="btn btn-default " href="@routes.Publisher.showByTalkType(x.id)" > @Messages(x.label + ".simple") </a>
