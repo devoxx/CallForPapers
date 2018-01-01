@@ -7,7 +7,7 @@
             </p>
             @if(controllers.Backoffice.isScheduleInProgressMessageDisplayStatus().contains("Show") ||
                 controllers.Backoffice.isScheduleInProgressMessageDisplayStatus().isEmpty) {
-                <h4>Scheduling in full progress... it's an art form, it can take some time & iterations :)</h4>
+                <h4>@Messages("scheduling.in.progress")</h4>
             } else {
                 <div class="page-header">
                     <div class="row">
@@ -16,16 +16,15 @@
                 </div>
 
                 <div class="btn-group btn-group-justified" >
-                @ConferenceDescriptor.ConferenceProposalTypes.ALL.map { x =>
-                    @if(talkType != x.id) {
-                        <a class="btn" href="@routes.Publisher.showByTalkType(x.id)" style="background-color: #666666;
-                            color: white" > @Messages(x.label + ".simple")  </a>
+                    @ConferenceDescriptor.ConferenceProposalTypes.ALL.map { x =>
+                        @if(talkType != x.id) {
+                            <a class="btn" href="@routes.Publisher.showByTalkType(x.id)" style="background-color: #666666;
+                                color: white" > @Messages(x.label + ".simple")  </a>
 
-                    } else {
-                        <a class="btn btn-default " href="@routes.Publisher.showByTalkType(x.id)" > @Messages(x.label + ".simple") </a>
+                        } else {
+                            <a class="btn btn-default " href="@routes.Publisher.showByTalkType(x.id)" > @Messages(x.label + ".simple") </a>
+                        }
                     }
-                }
-
                 </div>
 
                 @proposals.groupBy(_.track).toList.sortWith(_._2.size > _._2.size).sliding(3, 3).map { case oneRow =>

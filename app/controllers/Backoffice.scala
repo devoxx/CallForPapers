@@ -458,7 +458,7 @@ object Backoffice extends SecureCFPController {
   def setSchedulingInProgressMessageTo(displayStatus: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       controllers.Backoffice.setScheduleInProgressMessage(displayStatus)
-      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress", displayStatus))
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress.status.changed", displayStatus))
   }
 
   def newOrUpdateCFPDates() = SecuredAction(IsMemberOf("admin")) {
