@@ -17,18 +17,18 @@ custom.email1= Custom email
 
 # -----------------
 cfp.title=Devoxx UK 2018 CFP
-delete.slot=delete slot
-delete.room=delete room
+delete.slot=Delete slot
+delete.room=Delete room
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
 email=Email
 mail.create=Create a new e-mail
-mail.delete.notif=are you sure you want to delete this email ?
-mail.delete.slot=are you sure you want to delete this slot ?
-mail.delete.room=are you sure you want to delete this room ?
-mail.notify.refused.body=are you sure you want to notify all refused proposal
-mail.notify.approved.body=are you sure you want to notify all approved proposal
+mail.delete.notif=Are you sure you want to delete this email ?
+mail.delete.slot=Are you sure you want to delete this slot ?
+mail.delete.room=Are you sure you want to delete this room ?
+mail.notify.refused.body=Are you sure you want to notify all refused proposal
+mail.notify.approved.body=Are you sure you want to notify all approved proposal
 firstName=First name
 lastName=Last name
 password=Access code
@@ -494,6 +494,14 @@ amd=Après-midi des Décideurs
 unfav-talk=Unfavour
 fav-talk=Favour
 admin.btn.changeState=Change one proposal state
+
+day=Day
+room=Room
+break=Break
+room.name=Name
+capacity=Capacity
+setup=Setup
+recorded=Recorded
 
 sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 admin.btn.manage.notification=Manage mail notification

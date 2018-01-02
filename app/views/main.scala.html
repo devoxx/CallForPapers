@@ -357,7 +357,7 @@
                                         <a href="#" class="btn btn-color-1 dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-animations="flipInX flipInY flipInX flipInY"><img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1505785227/settings_gahwua.png">
                                             Configuration <span class="caret"></span></a>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a href="@routes.CFPAdmin.manageSlots()"><i class="icon-asterisk"></i>Slots & Rooms Management</a></li>
+                                            <li><a href="@routes.CFPAdmin.manageRoom()"><i class="icon-asterisk"></i>Slots & Rooms Management</a></li>
                                             @if(SecureCFPController.hasAccessToAdmin(req)) {
                                                 <li class="divider"></li>
                                                 <li class="dropdown"><a href="@routes.CFPAdmin.manageNotification()" ><i class="icon-dashboard"></i> @Messages("admin.btn.manage.notification") </a></li>

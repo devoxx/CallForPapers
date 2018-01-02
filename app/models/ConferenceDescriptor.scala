@@ -6,9 +6,7 @@ import controllers.Backoffice
 import java.nio.file.{Files, Path, Paths}
 
 import library.Redis
-import models.ConferenceDescriptor.ConferenceProposalConfigurations.{CLOSING_KEY, OPENING_KEY}
-import models.ConferenceDescriptor.ConferenceSlotBreaks._
-import org.joda.time.{DateTime, DateTimeZone, Period}
+import org.joda.time.{DateTime, Period}
 import play.api.Play
 import play.api.libs.json.{Format, Json}
 import play.api.i18n.Messages
@@ -33,7 +31,6 @@ case class ConferenceUrls(info: String, registration: String, sponsors: String, 
       s"http://$cfpHostname"
     }
   }
-
 }
 
 case class ConferenceTiming(
@@ -164,9 +161,9 @@ object ConferenceDescriptor {
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
-    val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
-      chosablePreferredDay = true)
     val DEEP_DIVE = ProposalConfiguration(id = "deep_dive", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.DEEP_DIVE.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-anchor",
+      chosablePreferredDay = true)
+    val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
@@ -179,7 +176,7 @@ object ConferenceDescriptor {
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
 
-    val ALL = List(CONF, LAB, QUICK, BOF, OPENING_KEY, CLOSING_KEY, IGNITE)
+    val ALL = List(CONF, DEEP_DIVE, LAB, QUICK, BOF, OPENING_KEY, CLOSING_KEY, IGNITE)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -219,17 +216,7 @@ object ConferenceDescriptor {
     val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
     val UNKNOWN = TrackDesc(ConferenceTracks.UNKNOWN.id, "/assets/" + DEVOXX_CONF_URL_CODE + "/images/icon_web.png", ConferenceTracks.UNKNOWN.label, "track.unknown.desc")
 
-    val ALL = List(METHOD_ARCHI
-      , JAVA
-      , CLOUD
-      , SSJ
-      , LANG
-      , BIGDATA
-      , WEB
-      , GEEK
-      , SECURITY
-      , ARCHITECTURE
-    )
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, GEEK, SECURITY, ARCHITECTURE, UNKNOWN)
 
     def findTrackDescFor(t: Track): TrackDesc = {
       if (ALL.exists(_.id == t.id)) {
@@ -275,12 +262,11 @@ object ConferenceDescriptor {
 
     val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_BC, ROOM_DEFG, EXEC_CENTRE)
     
-    def allRooms:List[Room]={
-      var list :List[Room] = List.empty[Room]
-      Room.allRoom.map(x=>x._2 match {
-        case Some(a)=>  list = a::list
-        case None=>
-
+    def allRooms: List[Room] = {
+      var list: List[Room] = List.empty[Room]
+      Room.allRoom.map(x => x._2 match {
+        case Some(a) => list = a::list
+        case None =>
       })
       list
     }
@@ -300,11 +286,9 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    // VARIABLE CONSTANTS
-
-    private val WEDNESDAY: String = "wednesday"
-    private val THURSDAY: String = "thursday"
-    private val FRIDAY: String = "friday"
+    private val WEDNESDAY: String = "Wednesday"
+    private val THURSDAY: String = "Thursday"
+    private val FRIDAY: String = "Friday"
 
     private val WED_DATE = "2018-05-09T"
     private val THU_DATE = "2018-05-10T"
@@ -314,29 +298,25 @@ object ConferenceDescriptor {
     val secondDay = THU_DATE
     val thirdDay = FRI_DATE
 
-    val conferenceday=Seq(("tuesday","tuesday"),("wednesday","wednesday"),("thursday","thursday"))
+    val conferenceday=Seq((WEDNESDAY, WEDNESDAY),(THURSDAY, THURSDAY),(FRIDAY, FRIDAY))
 
-    def mondaySchedule: List[Slot] = { alldb.filter(x=>x.day=="monday" )  }
+    def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day.equals(WEDNESDAY)) }
 
-    def tuesdaySchedule: List[Slot] = {  alldb.filter(x=>x.day=="tuesday" ) }
+    def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day.equals(THURSDAY)) }
 
-    def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="wednesday" ) }
+    def fridaySchedule: List[Slot] = { alldb.filter(x=>x.day.equals(FRIDAY)) }
 
-    def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="thursday" ) }
-
-    def fridaySchedule: List[Slot] = { alldb.filter(x=>x.day=="friday" ) }
-
-    def alldb:List[Slot]={
-      var list :List[Slot] = List.empty[Slot]
-      Slot.allSlot.map(x=>x._2 match {
-        case Some(a)=>  list =a::list
-        case None=>
+    def alldb: List[Slot]={
+      var list: List[Slot] = List.empty[Slot]
+      Slot.allSlot.map(x => x._2 match {
+        case Some(a) => list = a::list
+        case None =>
       })
         list
     }
 
     def all: List[Slot] = {
-      mondaySchedule ++ tuesdaySchedule ++ wednesdaySchedule ++ thursdaySchedule ++ fridaySchedule
+      wednesdaySchedule ++ thursdaySchedule ++ fridaySchedule
     }
   }
 
@@ -404,7 +384,7 @@ object ConferenceDescriptor {
       cfpOpenedOn = DateTime.parse(DEVOXX_CFP_OPENED_ON_DATE),
       cfpClosedOn = DateTime.parse(DEVOXX_CFP_CLOSED_ON_DATE),
       scheduleAnnouncedOn = DateTime.parse(DEVOXX_SCHEDULE_ANNOUNCEMENT_DATE),
-      days=dateRange(fromDay, toDay,new Period().withDays(1))
+      days=dateRange(fromDay, toDay,new Period().withDays(2))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/" + DEVOXX_HASH_TAG,
     hashTag = DEVOXX_HASH_TAG,
@@ -460,10 +440,9 @@ object ConferenceDescriptor {
       CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , true)
     }
   }
+
   def isCFPOpen: Boolean = {
     Backoffice.isCFPOpen()
-    //cfpopen
-    //CfpManager.checkStatut("cfp")
   }
 
   // All timezone sensitive methods are using this constant variable.
@@ -513,18 +492,18 @@ object ConferenceDescriptor {
 
   def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 }
-case class CfpManager (id: String = "cfp" ,cfpopen: Boolean = false){
+
+case class CfpManager (id: String = "cfp" ,cfpopen: Boolean = false) {
 
 }
+
 object CfpManager {
   implicit val cfpManagerFormat: Format[CfpManager] = Json.format[CfpManager]
 
   def save(cfpManager: CfpManager) = Redis.pool.withClient {
     client =>
-
       val jsonCfpManager = Json.stringify(Json.toJson(cfpManager))
       client.hset("CfpManager", cfpManager.id, jsonCfpManager)
-
   }
 
   def checkStatut(id: String = "cfp"): Boolean = Redis.pool.withClient {
@@ -535,7 +514,6 @@ object CfpManager {
       } else {
         false
       }
-
   }
 
   def cfpKeyIsExist(): Boolean = Redis.pool.withClient {
@@ -549,22 +527,18 @@ object CfpManager {
         json: String =>
           Json.parse(json).as[CfpManager]
       }
-
   }
 
   def update(cfpManager: CfpManager) = Redis.pool.withClient {
     client =>
-
       val json = Json.stringify(Json.toJson(cfpManager.copy(id = "cfp")))
       client.hset("CfpManager", cfpManager.id, json)
-
   }
 
   def updateCfpStatut(cfpManager: CfpManager, closeOropen: Boolean) = Redis.pool.withClient {
     client =>
       val updatCfpStatut = cfpManager.copy(cfpopen = closeOropen)
       update(updatCfpStatut)
-
   }
 
   def capgeminiUsername(): String = {
