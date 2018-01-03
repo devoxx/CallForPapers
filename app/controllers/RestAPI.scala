@@ -1163,7 +1163,7 @@ object RestAPI extends Controller {
         // User does not exist, lets create
         val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
         val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-        Webuser.addToDevoxxians(uuid)
+        Webuser.addToSpeaker(uuid)
         Created(uuid)
       }
   }
@@ -1203,7 +1203,7 @@ object RestAPI extends Controller {
             // User does not exist, lets create
             val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
             val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-            Webuser.addToDevoxxians(uuid)
+            Webuser.addToSpeaker(uuid)
             Created(uuid)
           }
         } else {

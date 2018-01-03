@@ -57,8 +57,8 @@ object CallForPaper extends SecureCFPController {
 
       Speaker.findByUUID(uuid).map {
         speaker: Speaker =>
-          if (Webuser.isSpeaker(uuid) == false) {
-            Webuser.addToDevoxxians(uuid)
+          if (! Webuser.isSpeaker(uuid)) {
+            Webuser.addToSpeaker(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
           val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
@@ -93,9 +93,6 @@ object CallForPaper extends SecureCFPController {
       val defaultValues = (webuser.email, webuser.firstName, webuser.lastName, StringUtils.abbreviate("...", 750),
         None, None, None, None, None, "No experience", None, QuestionAndAnswers.empty)
       Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
-
-//      found   : (String, String, String, String, None.type,      None.type,      None.type,      None.type,      String,         None.type,              Option[Seq[models.QuestionAndAnswer]])
-//      required: (String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String,   Option[String], Option[Seq[models.QuestionAndAnswer]])
   }
 
   // Specific secured action. We need a redirect from homeForSpeaker, to be able to display flash message
@@ -168,7 +165,6 @@ object CallForPaper extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
     Ok(views.html.Application.index())
      // Redirect(routes.CallForPaper.newProposal()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> uuid)
-
   }
 
 

@@ -410,7 +410,6 @@ object Authentication extends Controller {
       }
   }
 
-
   def validateImportedSpeaker = Action {
     implicit request =>
       importSpeakerForm.bindFromRequest.fold(
@@ -443,7 +442,7 @@ object Authentication extends Controller {
           val lang = request.acceptLanguages.headOption.map(_.code)
           val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, picture, company, blog, validWebuser.firstName, qualifications, phoneNumber, questionAndAnswers)
           Speaker.save(newSpeaker)
-          Webuser.addToDevoxxians(validWebuser.uuid)
+          Webuser.addToSpeaker(validWebuser.uuid)
 
           Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
         }

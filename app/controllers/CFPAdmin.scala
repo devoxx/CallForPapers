@@ -578,10 +578,10 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.duplicateSpeakers(combinedList))
   }
 
-  def allDevoxxians() = SecuredAction(IsMemberOf("admin")) {
+  def allDevoxxians() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val devoxxians = Webuser.allDevoxxians()
-      Ok(views.html.Backoffice.allDevoxxians(devoxxians))
+      val speakers = Webuser.allSpeakers
+      Ok(views.html.Backoffice.allDevoxxians(speakers))
   }
 
   def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
