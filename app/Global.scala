@@ -130,9 +130,9 @@ object CronTask {
     val cfpClosingInHumanReadableDate = Backoffice.cfpClosingDate().toString("EEEE, dd/MM/YYYY HH:mm")
 
     if ( ! Backoffice.isCFPOpen() ) {
-      play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP has already CLOSED on ${cfpClosingInHumanReadableDate}.")
+      play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP has already CLOSED on $cfpClosingInHumanReadableDate.")
     } else if ( DateMidnight.now().plusDays(totalDelayInDays).isAfter(Backoffice.cfpClosingDate()) ) {
-      play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP will already be CLOSED in ${totalDelayInDays} days from now, on ${cfpClosingInHumanReadableDate}.")
+      play.Logger.debug(s"CronTask : reminder for draft HAS NOT been created as CFP will already be CLOSED in $totalDelayInDays days from now, on $cfpClosingInHumanReadableDate.")
     } else {
         draftTimeInDays match {
         case Some(everyX) =>
@@ -141,7 +141,7 @@ object CronTask {
           val tomorrow = DateMidnight.now().plusDays(INITIAL_DELAY_IN_DAYS)
           val interval = tomorrow.toInterval
           val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
-          play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
+          play.Logger.debug(s"CronTask : check for Draft proposals every $everyX days and send an email in ${initialDelay.toHours} hours.")
           val theScheduledDraftReminder = Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
           createOneTimeSchedulerToCancel(theScheduledDraftReminder)
           play.Logger.debug("CronTask : check for Draft proposals has been set to trigger at the above interval.")
@@ -154,8 +154,11 @@ object CronTask {
   private def createOneTimeSchedulerToCancel(scheduledReminder: Cancellable) = {
     import play.api.libs.concurrent.Execution.Implicits._
 
-    val timeBetweenNowAndCloseOfCFP = Duration.create(Backoffice.cfpClosingDate().getMillis - DateMidnight.now().getMillis, TimeUnit.MILLISECONDS)
-    Akka.system.scheduler.scheduleOnce(timeBetweenNowAndCloseOfCFP, ZapActor.actor, CancelDraftReminderWhenCFPCloses(scheduledReminder))
+    play.Logger.debug("CronTask : creating one time scheduler task to cancel the draft reminder scheduler task...")
+    val timeBetweenNowAndCloseOfCFPInMillis = Duration.create(Backoffice.cfpClosingDate().getMillis - DateMidnight.now().getMillis, TimeUnit.MILLISECONDS)
+    val oneTimeScheduledTaskDraftReminderCanceller = Akka.system.scheduler.scheduleOnce(timeBetweenNowAndCloseOfCFPInMillis, ZapActor.actor, CancelDraftReminderWhenCFPCloses(scheduledReminder))
+    play.Logger.debug(s"oneTimeScheduledCanceller: ${oneTimeScheduledTaskDraftReminderCanceller.toString}")
+    play.Logger.debug(s"CronTask : successfully created one time scheduler task to cancel the draft reminder scheduler task, will be triggered in ${timeBetweenNowAndCloseOfCFPInMillis.toMillis} ms i.e. ${timeBetweenNowAndCloseOfCFPInMillis.toDays} day(s).")
   }
 
   def doIndexElasticSearch() = {

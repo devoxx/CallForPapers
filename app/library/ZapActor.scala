@@ -215,16 +215,20 @@ class ZapActor extends Actor {
       return
     }
 
+    play.Logger.debug("Starting to send draft reminders to speakers...")
+    
     allProposalBySpeaker.foreach {
       case (speaker: String, draftProposals: List[Proposal]) => {
         Webuser.findByUUID(speaker).map {
           speakerUser =>
             Mails.sendReminderForDraft(speakerUser, draftProposals)
         }.getOrElse {
-          play.Logger.warn(s"User '${speaker}' not found")
+          play.Logger.warn(s"User '$speaker' not found")
         }
       }
     }
+
+    play.Logger.debug("...finished sending draft reminders to speakers.")
   }
 
   def sendFavoritedScheduled() {
@@ -268,7 +272,10 @@ class ZapActor extends Actor {
 
   def cancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable) {
     if (theAlreadyScheduledReminder != null && !theAlreadyScheduledReminder.isCancelled) {
+      play.Logger.debug("Cancelling draft reminder scheduler as CFP is closed...")
+      play.Logger.debug(s"theAlreadyScheduledReminder: ${theAlreadyScheduledReminder.toString()}")
       theAlreadyScheduledReminder.cancel()
+      play.Logger.debug("...finished cancelling draft reminder scheduler as CFP is closed.")
     }
   }
 
