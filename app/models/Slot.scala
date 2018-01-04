@@ -264,18 +264,16 @@ s.break match {
     "break" -> optional(text)
   )(Slot.createslot)(Slot.unapplyForm))
 
-  def getallroom: Seq[(String, String)] = {
-    val allrom = Room.allRoom.map( x=>
+  def getAllRooms: Seq[(String, String)] = {
+    val allRooms = Room.allRoom.map( x =>
       x._2 match {
         case Some(a)=>(a.id, a.name)
-
       }
      )
-    allrom.toSeq
-
+    allRooms.toSeq.sortBy(_._2)
   }
 
-  def getallSlotBeak: Seq[(String, String)] = {
+  def getAllSlotBreaks: Seq[(String, String)] = {
     val allSlotBreak = ConferenceDescriptor.ConferenceSlotBreaks.allSlotBreak.map(x => (x.id, x.nameEN))
     allSlotBreak.toSeq
   }
