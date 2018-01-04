@@ -154,8 +154,10 @@
                                     <ul class="dropdown-menu">
                                         <br>
                                         @Event.loadEvents(4, 0).map { ev: Event =>
-                                            <li> <div style="margin-left: 6%"><strong style="color: #003349">@ev.msg</strong> </div><br>
-                                                <div>&nbsp;&nbsp;@ev.date.map(s => s.withZoneRetainFields(org.joda.time.DateTimeZone.forID("Africa/Casablanca")).plusHours(1).toString("MMM dd")) at @ev.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID("Africa/Casablanca")).plusHours(1).toString("HH:mm")) </div></li>
+                                            <li>
+                                                <div style="margin-left: 6%" align="left"><strong style="color: #003349">@ev.msg</strong> by <strong>@Webuser.findByUUID(ev.uuid).get.cleanName</strong> </div><br>
+                                                <div style="margin-right: 6%" align="right">&nbsp;&nbsp;@ev.date.map(s => s.withZoneRetainFields(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZone)).plusHours(1).toString("MMM dd, YYYY")) at @ev.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZone)).plusHours(1).toString("HH:mm")) </div>
+                                            </li>
                                             <li class="divider"></li>
                                         }
                                     </ul>
