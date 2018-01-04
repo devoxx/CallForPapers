@@ -57,7 +57,7 @@ object CallForPaper extends SecureCFPController {
 
       Speaker.findByUUID(uuid).map {
         speaker: Speaker =>
-          if (! Webuser.isSpeaker(uuid)) {
+          if (!Webuser.isSpeaker(uuid)) {
             Webuser.addToSpeaker(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
@@ -100,7 +100,7 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val w = request.webuser
       val defaultValues = (w.email, w.firstName, w.lastName, StringUtils.abbreviate("...", 750),
-        None, None, None, None, None,"No experience", None, QuestionAndAnswers.empty)
+        None, None, None, None, None, "No experience", None, QuestionAndAnswers.empty)
 
       Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
   }
@@ -113,7 +113,7 @@ object CallForPaper extends SecureCFPController {
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
-    "picture" -> optional(text) ,
+    "picture" -> optional(text),
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
@@ -149,8 +149,6 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a new proposal form
-
-
   private def createCookie(webuser: Webuser) = {
     Cookie("cfp_rm"
       , value = Crypto.encryptAES(webuser.uuid)
@@ -160,25 +158,21 @@ object CallForPaper extends SecureCFPController {
   }
 
 
-  def vipProposal(uuid : String) = SecuredAction(IsMemberOf("cfp")) {
+  def vipProposal(uuid: String) = SecuredAction(IsMemberOf("cfp")) {
 
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-    Ok(views.html.Application.index())
-     // Redirect(routes.CallForPaper.newProposal()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> uuid)
+      Ok(views.html.Application.index())
+    // Redirect(routes.CallForPaper.newProposal()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> uuid)
   }
-
-
 
   def newProposal() = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
 
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(uuid)))
+      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm, request.webuser)).withSession(request.session + ("token" -> Crypto.sign(uuid)))
   }
 
-
   // Load a proposal
-
   def editProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
@@ -187,15 +181,15 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalForm.fill(proposal)
-            Ok(views.html.CallForPaper.newProposal(proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm, request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
             // Switch the mainSpeaker and the other Speakers
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm, request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.otherSpeakers.contains(uuid)) {
             // Switch the secondary speaker and this speaker
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm , request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm, request.webuser)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }
@@ -230,7 +224,7 @@ object CallForPaper extends SecureCFPController {
       }*/
 
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors , request.webuser)),
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors, request.webuser)),
         proposal => {
           // If the editor is not the owner then findProposal returns None
           Proposal.findProposal(uuid, proposal.id) match {
@@ -274,14 +268,14 @@ object CallForPaper extends SecureCFPController {
       )
   }
 
-  def autoCompleteTag(term:String) = SecuredAction {
+  def autoCompleteTag(term: String) = SecuredAction {
     implicit request => {
 
       val tagsFound = Tag.allTags()
-                         .filter(tag => tag.value.toLowerCase.contains(term.toLowerCase))
-                         .sortBy(f => f.value)
-                         .map(tag => tag.value)
-                         .take(10)
+        .filter(tag => tag.value.toLowerCase.contains(term.toLowerCase))
+        .sortBy(f => f.value)
+        .map(tag => tag.value)
+        .take(10)
 
       Ok(Json.toJson(tagsFound))
     }

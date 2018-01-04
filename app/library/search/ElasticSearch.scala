@@ -36,18 +36,18 @@ import play.api.libs.ws.WSAuthScheme.BASIC
 import com.ning.http.client.Realm.AuthScheme.BASIC
 
 /**
- * Wrapper and helper, to reuse the ElasticSearch REST API.
- *
- * Author: nicolas martignole
- * Created: 23/09/2013 12:31
- */
+  * Wrapper and helper, to reuse the ElasticSearch REST API.
+  *
+  * Author: nicolas martignole
+  * Created: 23/09/2013 12:31
+  */
 object ElasticSearch {
 
   val host = {
-    val h=Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost:9200")
-    if(h.endsWith("/")){
+    val h = Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost:9200")
+    if (h.endsWith("/")) {
       h.dropRight(1)
-    }else{
+    } else {
       h
     }
   }
@@ -195,7 +195,7 @@ object ElasticSearch {
   def doAdvancedSearch(index: String, query: Option[String], p: Option[Int]) = {
 
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
-    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}"}.getOrElse("\"match_all\" : { }")
+    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}" }.getOrElse("\"match_all\" : { }")
     val pageSize = 25
 
     val pageUpdated: Int = p match {
@@ -204,14 +204,15 @@ object ElasticSearch {
       case Some(other) => (other - 1) * 25
     }
 
-    val json: String = s"""
-        |{
-        | "from" : $pageUpdated,
-        | "size" : $pageSize,
-        | "query" : {
-        |   $zeQuery
-        | }
-        |}
+    val json: String =
+      s"""
+         |{
+         | "from" : $pageUpdated,
+         | "size" : $pageSize,
+         | "query" : {
+         |   $zeQuery
+         | }
+         |}
       """.stripMargin
 
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -239,16 +240,16 @@ object ElasticSearch {
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
     val zeQuery = someQuery.map(_.toLowerCase).map { q =>
       s"""
-        |"dis_max": {
-        |   "queries": [
-        |                { "match": { "title":"$q"}},
-        |                { "match": { "mainSpeaker":"$q"}},
-        |                { "match": { "secondarySpeaker":"$q"}},
-        |                { "match": { "summary":"$q"}},
-        |                { "match": { "otherSpeakers":"$q" }},
-        |                { "match": { "id":"$q"}}
-        |            ]
-        |}
+         |"dis_max": {
+         |   "queries": [
+         |                { "match": { "title":"$q"}},
+         |                { "match": { "mainSpeaker":"$q"}},
+         |                { "match": { "secondarySpeaker":"$q"}},
+         |                { "match": { "summary":"$q"}},
+         |                { "match": { "otherSpeakers":"$q" }},
+         |                { "match": { "id":"$q"}}
+         |            ]
+         |}
       """.stripMargin
 
     }.getOrElse("\"match_all\":{}")
@@ -259,14 +260,15 @@ object ElasticSearch {
       case Some(other) => (other - 1) * 25
     }
 
-    val json: String = s"""
-        |{
-        | "from" : $pageUpdated,
-        | "size" : $pageSize,
-        | "query" : {
-        |   $zeQuery
-        | }
-        |}
+    val json: String =
+      s"""
+         |{
+         | "from" : $pageUpdated,
+         | "size" : $pageSize,
+         | "query" : {
+         |   $zeQuery
+         | }
+         |}
       """.stripMargin
 
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -352,88 +354,88 @@ object ElasticSearch {
   def doStats(zeQuery: String, index: String, maybeUserFilter: Option[String]) = {
     val json: String =
       s"""
-        |{
-        |  "from" : 0, "size" : 10,
-        |   $zeQuery
-        |   , "facets" : {
-        |       "villeFacet" : {
-        |        "terms" : {
-        |           "field" : "ville",
-        |           "all_terms":false,
-        |           "order" : "count",
-        |           "size":50
-        |         }
-        |         ${maybeUserFilter.getOrElse("")}
-        |      },
-        |     "idRaisonAppelFacet" : {
-        |        "terms" : {
-        |          "field" : "idRaisonAppel",
-        |          "all_terms":true,
-        |          "order" : "term",
-        |          "size":50
-        |        }
-        |        ${maybeUserFilter.getOrElse("")}
-        |      },
-        |      "clotureFacet":{
-        |       "terms" : {
-        |         "field" : "cloture"
-        |       }
-        |       ${maybeUserFilter.getOrElse("")}
-        |     },
-        |      "statusFacet" : {
-        |        "terms" : {
-        |          "field" : "status",
-        |          "all_terms":true,
-        |          "order" : "term",
-        |          "size":20
-        |        }
-        |        ${maybeUserFilter.getOrElse("")}
-        |      },
-        |      "agenceFacet" : {
-        |        "terms" : {
-        |          "field" : "idAgence",
-        |          "all_terms":false,
-        |          "order" : "term",
-        |          "size":50
-        |        }
-        |       ${maybeUserFilter.getOrElse("")}
-        |      },
-        |     "histoWeek" : {
-        |        "date_histogram" : {
-        |          "field" : "dateSaisie",
-        |          "interval" : "day"
-        |        }
-        |        ${maybeUserFilter.getOrElse("")}
-        |     },
-        |     "statsTicket":{
-        |       "statistical":{
-        |         "field":"delaiIntervention"
-        |       }
-        |       ${maybeUserFilter.getOrElse("")}
-        |     },
-        |     "typeInterFacet" : {
-        |      "terms":{
-        |        "field":"delaiStatus",
-        |        "size":100
-        |       }
-        |       ${maybeUserFilter.getOrElse("")}
-        |     }
-        |     ,
-        |     "statsAgeFacet" : {
-        |      "statistical":{
-        |         "field":"age"
-        |       }
-        |       ${maybeUserFilter.getOrElse("")}
-        |     }
-        |     ,
-        |     "statsReactionFacet" : {
-        |      "statistical":{
-        |         "field":"tempsReactionToMinute"
-        |       }
-        |       ${maybeUserFilter.getOrElse("")}
-        |     }
-        |   }
-        | }
+         |{
+         |  "from" : 0, "size" : 10,
+         |   $zeQuery
+         |   , "facets" : {
+         |       "villeFacet" : {
+         |        "terms" : {
+         |           "field" : "ville",
+         |           "all_terms":false,
+         |           "order" : "count",
+         |           "size":50
+         |         }
+         |         ${maybeUserFilter.getOrElse("")}
+         |      },
+         |     "idRaisonAppelFacet" : {
+         |        "terms" : {
+         |          "field" : "idRaisonAppel",
+         |          "all_terms":true,
+         |          "order" : "term",
+         |          "size":50
+         |        }
+         |        ${maybeUserFilter.getOrElse("")}
+         |      },
+         |      "clotureFacet":{
+         |       "terms" : {
+         |         "field" : "cloture"
+         |       }
+         |       ${maybeUserFilter.getOrElse("")}
+         |     },
+         |      "statusFacet" : {
+         |        "terms" : {
+         |          "field" : "status",
+         |          "all_terms":true,
+         |          "order" : "term",
+         |          "size":20
+         |        }
+         |        ${maybeUserFilter.getOrElse("")}
+         |      },
+         |      "agenceFacet" : {
+         |        "terms" : {
+         |          "field" : "idAgence",
+         |          "all_terms":false,
+         |          "order" : "term",
+         |          "size":50
+         |        }
+         |       ${maybeUserFilter.getOrElse("")}
+         |      },
+         |     "histoWeek" : {
+         |        "date_histogram" : {
+         |          "field" : "dateSaisie",
+         |          "interval" : "day"
+         |        }
+         |        ${maybeUserFilter.getOrElse("")}
+         |     },
+         |     "statsTicket":{
+         |       "statistical":{
+         |         "field":"delaiIntervention"
+         |       }
+         |       ${maybeUserFilter.getOrElse("")}
+         |     },
+         |     "typeInterFacet" : {
+         |      "terms":{
+         |        "field":"delaiStatus",
+         |        "size":100
+         |       }
+         |       ${maybeUserFilter.getOrElse("")}
+         |     }
+         |     ,
+         |     "statsAgeFacet" : {
+         |      "statistical":{
+         |         "field":"age"
+         |       }
+         |       ${maybeUserFilter.getOrElse("")}
+         |     }
+         |     ,
+         |     "statsReactionFacet" : {
+         |      "statistical":{
+         |         "field":"tempsReactionToMinute"
+         |       }
+         |       ${maybeUserFilter.getOrElse("")}
+         |     }
+         |   }
+         | }
       """.stripMargin
 
     if (play.Logger.of("ElasticSearch").isDebugEnabled) {
@@ -451,31 +453,32 @@ object ElasticSearch {
     }
   }
 
- def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
+  def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
     val index = ApprovedProposal.elasticSearchIndex()
     val zeQuery =
       s"""
-        |"dis_max": {
-        |   "queries": [
-        |                { "match": { "title":"${query.topic.getOrElse("")}"}},
-        |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
-        |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
-        |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
-        |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
-        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
-        |                { "match": { "id":"${query.topic.getOrElse("")}"}}
-        |            ]
-        |}
+         |"dis_max": {
+         |   "queries": [
+         |                { "match": { "title":"${query.topic.getOrElse("")}"}},
+         |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
+         |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
+         |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
+         |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
+         |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
+         |                { "match": { "id":"${query.topic.getOrElse("")}"}}
+         |            ]
+         |}
       """.stripMargin
 
-    val json: String = s"""
-        |{
-        | "from" : 0,
-        | "size" : 10,
-        | "query" : {
-        |   $zeQuery
-        | }
-        |}
+    val json: String =
+      s"""
+         |{
+         | "from" : 0,
+         | "size" : 10,
+         | "query" : {
+         |   $zeQuery
+         | }
+         |}
       """.stripMargin
 
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -495,5 +498,4 @@ object ElasticSearch {
         }
     }
   }
-
 }

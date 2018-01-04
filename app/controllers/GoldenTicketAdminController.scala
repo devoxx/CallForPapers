@@ -172,13 +172,12 @@ object GoldenTicketAdminController extends SecureCFPController {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED
       }.sortBy(_._2._4.n).reverse
-
       Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))
   }
 
   def repairStatsAfterGTArchivingAction() = SecuredAction(IsMemberOf("admin")) {
     def doesNotExist(reviewerUuid: String, allGoldenTicketsWithTheirReviewer: List[(GoldenTicket, Webuser)]): Boolean = {
-      ! allGoldenTicketsWithTheirReviewer.exists(_._2.uuid.equals(reviewerUuid))
+      !allGoldenTicketsWithTheirReviewer.exists(_._2.uuid.equals(reviewerUuid))
     }
 
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>

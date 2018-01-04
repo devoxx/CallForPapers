@@ -257,16 +257,19 @@ object MobileVotingV1 extends SecureCFPController {
 
     // We can finally load the Ratings from the list of Proposals
     val allRatingsFiltered: Map[Proposal, List[Rating]] = Rating.allRatingsForTalks(proposalsToLoad)
-
     allRatingsFiltered
   }
 
-  def sortByScoreAndKeepTopVotes(ratings:Map[Proposal,List[Rating]],
-                                 floorPct:Int):List[(Proposal,List[Rating])]={
+  def sortByScoreAndKeepTopVotes(ratings: Map[Proposal, List[Rating]],
+                                 floorPct: Int): List[(Proposal, List[Rating])] = {
 
     val groupedByNumberOfVotes = ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
     val totalTalksEvaluated = groupedByNumberOfVotes.size
-    val averageNumberOfVotes = if(totalTalksEvaluated>0){ groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated} else { 0 }
+    val averageNumberOfVotes = if (totalTalksEvaluated > 0) {
+      groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated
+    } else {
+      0
+    }
 
     // println(groupedByNumberOfVotes.map(_._1).sorted.reverse)
 
@@ -289,7 +292,6 @@ object MobileVotingV1 extends SecureCFPController {
     //      case(proposal,r)=>
     //        println(s"${proposal.title} ${Rating.calculateScore(r)}")
     //    }
-
     sortedByScore
   }
 

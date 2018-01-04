@@ -125,7 +125,7 @@ object ProposalState {
       case "backup" => BACKUP
       case "ar" => ARCHIVED
       case "toreview" => TOREVIEWLATER
-      case "replylater"=>REPLYLATER
+      case "replylater" => REPLYLATER
       case other => UNKNOWN
     }
   }
@@ -153,7 +153,7 @@ case class Proposal(id: String,
                     wishlisted: Option[Boolean] = None,
                     videoLink: Option[String] = None,
                     preferences: Option[String],
-                    deadline : Option[DateTime]=None,
+                    deadline: Option[DateTime] = None,
                     tags: Option[Seq[Tag]]) {
 
   def escapedTitle: String = title match {
@@ -190,7 +190,7 @@ object Proposal {
 
   implicit val proposalFormat = Json.format[Proposal]
   ///si les jours de la conférence
-  val  conferencedays=Seq(("days1 ",ConferenceDescriptor.ConferenceSlots.firstDay),("days2",ConferenceDescriptor.ConferenceSlots.secondDay),(("days3"),ConferenceDescriptor.ConferenceSlots.thirdDay))
+  val conferencedays = Seq(("days1 ", ConferenceDescriptor.ConferenceSlots.firstDay), ("days2", ConferenceDescriptor.ConferenceSlots.secondDay), (("days3"), ConferenceDescriptor.ConferenceSlots.thirdDay))
 
   val langs = Seq(("en", "English"), ("fr", "Français"))
 
@@ -204,13 +204,12 @@ object Proposal {
     implicit client =>
       client.sismember("Proposals:ByAuthor:" + uuid, proposalId)
   }
-  def update(id: String, proposal: Proposal ) = Redis.pool.withClient {
+
+  def update(id: String, proposal: Proposal) = Redis.pool.withClient {
     client =>
-      val jsonProposal = Json.stringify(Json.toJson(proposal.copy(id = id )))
+      val jsonProposal = Json.stringify(Json.toJson(proposal.copy(id = id)))
 
       client.hset("Proposals", id, jsonProposal)
-
-
   }
 
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState): String = Redis.pool.withClient {
@@ -274,8 +273,8 @@ object Proposal {
     "demoLevel" -> optional(text),
     "userGroup" -> optional(boolean),
     "videoLink" -> optional(text),
-    "preferences"->optional(text),
-    "deadline"->optional(jodaDate),
+    "preferences" -> optional(text),
+    "deadline" -> optional(jodaDate),
     "tags" -> optional(seq(
       mapping(
         "id" -> optional(text),
@@ -309,8 +308,8 @@ object Proposal {
                           demoLevel: Option[String],
                           userGroup: Option[Boolean],
                           videoLink: Option[String] = None,
-                          preferences:Option[String],
-                          deadline : Option[DateTime],
+                          preferences: Option[String],
+                          deadline: Option[DateTime],
                           tags: Option[Seq[Tag]] = None): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
@@ -344,7 +343,7 @@ object Proposal {
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String,
-    String, String, String, Boolean, String, Option[String], Option[Boolean], Option[String], Option[String], Option[DateTime], Option[Seq[Tag]] )] = {
+    String, String, String, Boolean, String, Option[String], Option[Boolean], Option[String], Option[String], Option[DateTime], Option[Seq[Tag]])] = {
     Option((
       Option(p.id),
       p.lang,
@@ -450,7 +449,7 @@ object Proposal {
         }
 
         // Add proposal id for new tags
-        newTags.get.foreach( tag => {
+        newTags.get.foreach(tag => {
 
           play.Logger.of("models.Proposal").info("tag:" + tag.value)
           if (tag.value.nonEmpty) {
@@ -465,7 +464,7 @@ object Proposal {
           } else {
             play.Logger.of("models.Proposal").info("tag is empty")
           }
-        } )
+        })
       }
   }
 
@@ -512,12 +511,15 @@ object Proposal {
   def decline(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.DECLINED)
   }
-  def toreview (uuid: String, proposalId: String) = {
-    changeProposalState(uuid , proposalId, ProposalState.TOREVIEWLATER)
+
+  def toreview(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.TOREVIEWLATER)
   }
+
   def replylater(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.REPLYLATER)
   }
+
   def backup(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.BACKUP)
   }
@@ -609,8 +611,8 @@ object Proposal {
       for (proposalJson <- client.hget("Proposals", proposalId);
            proposal <- Json.parse(proposalJson).asOpt[Proposal];
            realState <- findProposalState(proposal.id)) yield {
-              proposal.copy(state = realState)
-           }
+        proposal.copy(state = realState)
+      }
   }
 
   def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {
@@ -632,7 +634,7 @@ object Proposal {
         isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
         isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
         isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right;
-        isNotREPLYLATER <- checkIsNotMember(client, ProposalState.REPLYLATER , proposalId).toRight(ProposalState.REPLYLATER).right
+        isNotREPLYLATER <- checkIsNotMember(client, ProposalState.REPLYLATER, proposalId).toRight(ProposalState.REPLYLATER).right
       ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
 
       thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
@@ -986,22 +988,22 @@ object Proposal {
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.keys(s"Proposals:ByAuthor:$speakerUUID").nonEmpty &&
-      client.keys(s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty &&
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
+        client.keys(s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty &&
+        client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneApprovedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.keys(s"Proposals:ByAuthor:$speakerUUID").nonEmpty &&
-      client.keys(s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty &&
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty
+        client.keys(s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty &&
+        client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.keys(s"Proposals:ByAuthor:$speakerUUID").nonEmpty &&
-      client.keys(s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty &&
-      client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
+        client.keys(s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty &&
+        client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
   def hasOnlyRejectedProposals(speakerUUID: String): Boolean = Redis.pool.withClient {

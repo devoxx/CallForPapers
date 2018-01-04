@@ -185,8 +185,8 @@ object Rating {
       val ratingsRange = (1 to 5).map(e => (e, ratings.count(rating => rating.average == e)))
 
       val feedback = ratings.map(rating => rating.details)
-                            .flatMap(rd => rd.filter(rd => rd.review.isDefined && rd.review.get.length > 0)
-                            .map(rd => (rd.rating, rd.aspect, rd.review.get)))
+        .flatMap(rd => rd.filter(rd => rd.review.isDefined && rd.review.get.length > 0)
+          .map(rd => (rd.rating, rd.aspect, rd.review.get)))
 
       val average = library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))
 
@@ -195,7 +195,7 @@ object Rating {
 
   def allRatingReviewsForTalks(allProposals: List[Proposal]): List[(Proposal, RatingReview)] = {
     allProposals.filter(p => p.state == ProposalState.ACCEPTED)
-                .map(proposal => (proposal, allRatingReviewsForSpecificTalkId(proposal.id)))
+      .map(proposal => (proposal, allRatingReviewsForSpecificTalkId(proposal.id)))
   }
 
   def allRatings(): List[Rating] = Redis.pool.withClient {
@@ -221,7 +221,7 @@ object Rating {
     } else {
       total / count
     }
-    BigDecimal(score).setScale(2,RoundingMode.HALF_EVEN).toDouble
+    BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN).toDouble
   }
 
   def deleteAll() = Redis.pool.withClient {
@@ -279,7 +279,5 @@ object Rating {
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
-
-
   }
 }

@@ -69,9 +69,12 @@ case class SendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg:
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
 case class DraftReminder()
+
 case class SendScheduledFavorites()
+
 case class SendScheduleForSpeakers()
-case class SendScheduleForSpeaker(uuid : String)
+
+case class SendScheduleForSpeaker(uuid: String)
 
 case class NotifyAllVisitorsForSchedule()
 
@@ -84,9 +87,13 @@ case class ComputeVotesAndScore()
 case class RemoveVotesForDeletedProposal()
 
 case class ProposalApproved(reporterUUID: String, proposal: Proposal)
-case class ProposalApprovedAfeterRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String])
-case class ProposalcustomRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String])
-case class allAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept:String)
+
+case class ProposalApprovedAfeterRefese(reporterUUID: String, proposal: Proposal, content: String, subject: Option[String])
+
+case class ProposalcustomRefese(reporterUUID: String, proposal: Proposal, content: String, subject: Option[String])
+
+case class allAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept: String)
+
 case class ProposalRefused(reporterUUID: String, proposal: Proposal)
 
 case class SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
@@ -105,9 +112,9 @@ case class SendHeartbeat(apiKey: String, name: String)
 
 case class NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean] = None)
 
-case class EmailDigests(digest : Digest)
+case class EmailDigests(digest: Digest)
 
-case class DoCreateTalkAfterCfp(wb : Webuser)
+case class DoCreateTalkAfterCfp(wb: Webuser)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -115,7 +122,6 @@ object ZapActor {
 }
 
 class ZapActor extends Actor {
-
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
@@ -125,15 +131,15 @@ class ZapActor extends Actor {
     case CancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable) => cancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable)
     case SendScheduledFavorites() => sendFavoritedScheduled()
     case SendScheduleForSpeakers() => sendScheduleSpeaks()
-    case SendScheduleForSpeaker(uuid:String) => sendScheduleSpeaker(uuid: String)
+    case SendScheduleForSpeaker(uuid: String) => sendScheduleSpeaker(uuid: String)
     case NotifyAllVisitorsForSchedule => sendNotificationSchedule()
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
-    case ProposalApprovedAfeterRefese(reporterUUID, proposal,content,subject) => doProposalApprovedAfeterRefese(reporterUUID, proposal,content,subject)
-    case ProposalcustomRefese(reporterUUID, proposal,content,subject) => doProposalcustomRefese(reporterUUID, proposal,content,subject)
-    case allAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept)=>doallAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept)
+    case ProposalApprovedAfeterRefese(reporterUUID, proposal, content, subject) => doProposalApprovedAfeterRefese(reporterUUID, proposal, content, subject)
+    case ProposalcustomRefese(reporterUUID, proposal, content, subject) => doProposalcustomRefese(reporterUUID, proposal, content, subject)
+    case allAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept) => doallAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept)
     case ProposalRefused(reporterUUID, proposal) => doProposalRefused(reporterUUID, proposal)
     case SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) => doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
@@ -144,13 +150,13 @@ class ZapActor extends Actor {
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]) => doNotifyMobileApps(message, scheduleUpdate)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
-    case DoCreateTalkAfterCfp(wb : Webuser) => CreateTalkAfterCfp(wb)
+    case DoCreateTalkAfterCfp(wb: Webuser) => CreateTalkAfterCfp(wb)
 
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
-  def sendNotificationSchedule(){
 
+  def sendNotificationSchedule() {
   }
 
   def publishBugReport(issue: Issue) {
@@ -221,46 +227,43 @@ class ZapActor extends Actor {
     }
   }
 
-  def sendFavoritedScheduled(){
+  def sendFavoritedScheduled() {
     val allvisitors = Webuser.allVisitors()
-    allvisitors.foreach{ (vis : Webuser) =>
-     if ( !FavoriteTalk.getAllfavTalkByVisitor(vis.uuid).isEmpty & FavoriteTalk.isFavScheduleexist(vis.uuid)){
-       val favs = FavoriteTalk.getAllfavTalkByVisitor(vis.uuid)
-       val slots = favs.flatMap {
-         talk: Proposal =>
-           ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
-       }
-       Mails.sendScheduledFavorite(slots , vis)
-
-     }
+    allvisitors.foreach { (vis: Webuser) =>
+      if (!FavoriteTalk.getAllfavTalkByVisitor(vis.uuid).isEmpty & FavoriteTalk.isFavScheduleexist(vis.uuid)) {
+        val favs = FavoriteTalk.getAllfavTalkByVisitor(vis.uuid)
+        val slots = favs.flatMap {
+          talk: Proposal =>
+            ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+        }
+        Mails.sendScheduledFavorite(slots, vis)
+      }
     }
   }
 
-  def sendScheduleSpeaks(){
+  def sendScheduleSpeaks() {
     val allSpeaks = Webuser.allSpeakers
-      allSpeaks.foreach{ (spea : Webuser)=>
-      if(Speaker.isPropScheduleexist(spea.uuid)){
+    allSpeaks.foreach { (spea: Webuser) =>
+      if (Speaker.isPropScheduleexist(spea.uuid)) {
         val props = Proposal.allMyProposals(spea.uuid)
-        val slots = props.flatMap{
+        val slots = props.flatMap {
           talk: Proposal =>
-            ScheduleConfiguration.findSlotForConfType(talk.talkType.id , talk.id)
-
+            ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
         }
-        Mails.sendScheduledSpeaksProps(slots , spea)
+        Mails.sendScheduledSpeaksProps(slots, spea)
       }
     }
   }
 
-  def sendScheduleSpeaker(uuid:String){
-      if (Speaker.isPropScheduleexist(uuid)){
-        val props = Proposal.allMyProposals(uuid)
-        val slots = props.flatMap{
-          talk: Proposal =>
-            ScheduleConfiguration.findSlotForConfType(talk.talkType.id , talk.id)
-
-        }
-        Mails.sendScheduledSpeaksProps(slots , Webuser.findByUUID(uuid).get)
+  def sendScheduleSpeaker(uuid: String) {
+    if (Speaker.isPropScheduleexist(uuid)) {
+      val props = Proposal.allMyProposals(uuid)
+      val slots = props.flatMap {
+        talk: Proposal =>
+          ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
       }
+      Mails.sendScheduledSpeaksProps(slots, Webuser.findByUUID(uuid).get)
+    }
   }
 
   def cancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable) {
@@ -295,34 +298,35 @@ class ZapActor extends Actor {
       Proposal.approve(reporterUUID, proposal.id)
     }
   }
-  def doallAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept:String){
 
-     Speaker.findByUUID(speakeruuidNotAccept).map{x=>
-       Mails.sendAcceptedtoAcceptteTermeAndCondition(x)
+  def doallAcceptedtoAcceptteTermeAndCondition(speakeruuidNotAccept: String) {
 
-     }.getOrElse{
-       play.Logger.error("Speaker not found with uuid " + speakeruuidNotAccept)
-     }
+    Speaker.findByUUID(speakeruuidNotAccept).map { x =>
+      Mails.sendAcceptedtoAcceptteTermeAndCondition(x)
+
+    }.getOrElse {
+      play.Logger.error("Speaker not found with uuid " + speakeruuidNotAccept)
+    }
   }
 
-  def doProposalApprovedAfeterRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String]) {
+  def doProposalApprovedAfeterRefese(reporterUUID: String, proposal: Proposal, content: String, subject: Option[String]) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Approved"))
-      Mails.sendProposalApprovedAfeterRefese(speaker, proposal,content,subject)
+      Mails.sendProposalApprovedAfeterRefese(speaker, proposal, content, subject)
       Proposal.approve(reporterUUID, proposal.id)
-
     }
   }
-  def doProposalcustomRefese(reporterUUID: String, proposal: Proposal,content:String,subject:Option[String]) {
+
+  def doProposalcustomRefese(reporterUUID: String, proposal: Proposal, content: String, subject: Option[String]) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Refused"))
-      Mails.sendProposalcustomRefese(speaker, proposal,content,subject)
+      Mails.sendProposalcustomRefese(speaker, proposal, content, subject)
       Proposal.reject(reporterUUID, proposal.id)
-
     }
   }
+
   def doProposalRefused(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
@@ -387,28 +391,28 @@ class ZapActor extends Actor {
     }
   }
 
-  def doNotifyGoldenTicket(gt:GoldenTicket):Unit={
+  def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {
     play.Logger.debug(s"Notify ${Messages("cfp.goldenTicket")} ${gt.ticketId} ${gt.webuserUUID}")
 
     Webuser.findByUUID(gt.webuserUUID).map {
       invitedWebuser: Webuser =>
-         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New ${Messages("cfp.goldenTicket")} for user ${invitedWebuser.cleanName}"))
-        Mails.sendGoldenTicketEmail(invitedWebuser,gt)
+        Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New ${Messages("cfp.goldenTicket")} for user ${invitedWebuser.cleanName}"))
+        Mails.sendGoldenTicketEmail(invitedWebuser, gt)
     }.getOrElse {
       play.Logger.error(s"${Messages("cfp.goldenTicket")} error : user not found with uuid ${gt.webuserUUID}")
     }
   }
-  def CreateTalkAfterCfp (wb : Webuser) : Unit = {
+
+  def CreateTalkAfterCfp(wb: Webuser): Unit = {
     play.Logger.debug(s"Notify golden ticket ${wb.uuid}")
     Webuser.findByUUID(wb.uuid).map {
       invitedWebuser: Webuser =>
-      Mails.sendCreateTalkCfpClose(invitedWebuser)
+        Mails.sendCreateTalkCfpClose(invitedWebuser)
 
 
     }.getOrElse {
-    play.Logger.error("user not found with uuid " + wb.uuid)
-  }
-
+      play.Logger.error("user not found with uuid " + wb.uuid)
+    }
 
 
   }
@@ -428,26 +432,25 @@ class ZapActor extends Actor {
     *   - targetType: ALL_DEVICES or SINGLE_DEVICE
     *   - targetDeviceToken: the device token where to push the notification, only in combination with targetType=SINGLE_DEVICE
     *   - invisible: true or false
-    *   authenticatie: Authorization header with value: "Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
+    * authenticatie: Authorization header with value: "Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
     *
     * Example silent push
     *
     * curl https://cloud.gluonhq.com/3/push/enterprise/notification -i -X POST
-    *   -H "Authorization: Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
-    *   -d "title=update"
-    *   -d "body=update"
-    *   -d "deliveryDate=0"
-    *   -d "priority=HIGH"
-    *   -d "expirationType=DAYS"
-    *   -d "expirationAmount=1"
-    *   -d "targetType=ALL_DEVICES"
-    *   -d "invisible=true"
+    * -H "Authorization: Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
+    * -d "title=update"
+    * -d "body=update"
+    * -d "deliveryDate=0"
+    * -d "priority=HIGH"
+    * -d "expirationType=DAYS"
+    * -d "expirationAmount=1"
+    * -d "targetType=ALL_DEVICES"
+    * -d "invisible=true"
     *
-    *
-    * @param message the notification message
+    * @param message        the notification message
     * @param scheduleUpdate true = invisible message
     */
-  def doNotifyMobileApps(message:String, scheduleUpdate: Option[Boolean]): Unit = {
+  def doNotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]): Unit = {
 
     play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
@@ -517,7 +520,7 @@ class ZapActor extends Actor {
         }
 
         // Handle the digest users that have a track filter
-        trackDigestUsersIDs.map{uuid =>
+        trackDigestUsersIDs.map { uuid =>
 
           // Filter the proposals based on digest tracks
           val trackFilterIDs = Digest.getTrackFilters(uuid)

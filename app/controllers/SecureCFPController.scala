@@ -165,7 +165,7 @@ trait SecureCFPController extends Controller {
     */
   object UserAwareAction extends ActionBuilder[RequestWithUser] {
     def invokeBlock[A](request: Request[A],
-                                 block: (RequestWithUser[A]) => Future[Result]): Future[Result] = {
+                       block: (RequestWithUser[A]) => Future[Result]): Future[Result] = {
       implicit val req = request
       val user = for (
         authenticator <- SecureCFPController.findAuthenticator;
@@ -215,12 +215,6 @@ object SecureCFPController {
     findAuthenticator.isDefined
   }
 
-//def hasAccessToVisitor(implicit request : RequestHeader) : Boolean = {
-//  findAuthenticator.exists(uuid =>
-//    Webuser.hasAccessToVisitor(uuid)
-//  )
-//}
-  
   def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
     findAuthenticator.exists(uuid =>
       Webuser.isSpeaker(uuid)
@@ -244,12 +238,6 @@ object SecureCFPController {
       Webuser.hasAccessToGoldenTicket(uuid)
     )
   }
-
-//  def hasAccessToAdminVis(implicit request: RequestHeader): Boolean = {
-//    findAuthenticator.exists(uuid =>
-//      Webuser.hasAccessToAdminVis(uuid)
-//    )
-//  }
 
   def getCurrentUser(implicit request: RequestHeader): Option[Webuser] = {
     findAuthenticator.flatMap(uuid => lookupWebuser(uuid))

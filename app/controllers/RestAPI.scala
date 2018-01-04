@@ -48,118 +48,44 @@ object RestAPI extends Controller {
   def profilePicture(filename: String) = Action {
     val storageFolder = current.configuration.getString("cfp.imageBase").getOrElse("storage");
     val file = new java.io.File(s"$storageFolder/$filename");
-    if(file.exists) {
+    if (file.exists) {
       Ok.sendFile(file);
     } else {
       NotFound("Sorry, File not found");
     }
   }
 
-//  def createAttendeeAccount() = Action {
-//    implicit request: Request[AnyContent] =>
-//      val requestToken = request.headers.get("Token")
-//      val configurationToken = current.configuration.getString("cfp.TrustedRequestToken")
-//      val body: AnyContent = request.body
-//      val jsonBody: Option[JsValue] = body.asJson
-//      jsonBody.map { json =>
-//        val email=(json \ "email").as[String]
-//        val registrationId=(json \ "registrationId").as[String]
-//        val name=(json \ "name").as[String]
-//
-//        if(email=="" || registrationId=="" ||name=="" ){
-//          BadRequest("not enough keys")
-//        }
-//        else {
-//
-//          if (configurationToken == requestToken) {
-//
-//            if (!Webuser.isEmailRegistered(email)) {
-//              val fullname:List[String] =name.split(" ",2).toList
-//              val firstname= if(fullname.length>=1){fullname(0)}else{""}
-//              val lastname=if (fullname.length==2){fullname(1)}else{""}
-//              val attendee = Webuser.createVisitor(email, Some(firstname), Some(lastname), Some(registrationId),None,None)
-//
-//              Webuser.saveAndValidateWebuser(attendee)
-//              val likcfp = current.configuration.getString("cfp.hostname").get + "/homeVisitor"
-//              TransactionalEmails.sendEmailtoparticipantcfpAccountInformation(attendee, email, likcfp)
-//              Ok(Json.toJson(" creates a new visitor "))
-//            }
-//            else {
-//              Webuser.findByEmail(email) match {
-//                case Some(we) =>
-//                  val webuser = we.copy(registrationId = Some(registrationId))
-//                  Webuser.update(webuser)
-//                  Ok(Json.toJson("user is already registred"))
-//                case None => Ok(Json.toJson("not found"))
-//              }
-//            }
-//          } else {
-//
-//            Ok(Json.toJson("Operation Not Authorized"))
-//          }
-//
-//        } }.getOrElse {
-//        BadRequest("not enough keys")
-//      }
-//  }
-
-
-//  def visitorHasRegId (email:String) =  Action {
-//    implicit request =>
-//      val requestToken=request.headers.get("Token")
-//      val configurationToken= current.configuration.getString("cfp.TrustedRequestToken")
-//
-//      if(configurationToken==requestToken){
-//        if(Webuser.findByEmail(email).isDefined){
-//          val wb = Webuser.findByEmail(email).get
-//          if(Webuser.hasAccessToVisitor(wb.uuid)){
-//            Webuser.ifVisitorHasRegId(email) match {
-//
-//              case true => Ok(Json.toJson(true))
-//              case false => Ok(Json.toJson(false))
-//            }
-//          }else{
-//            Ok(Json.toJson("Is not a visitor"))
-//          }}else {
-//          Ok(Json.toJson("Is not a member of CFP"))
-//        }
-//
-//      }
-//      else {
-//        Ok(Json.toJson("Operation Not Authorized"))
-//      }
-//  }
-//
-  def regIdExist (regId:String) =  Action {
+  def regIdExist(regId: String) = Action {
     implicit request =>
-      val requestToken=request.headers.get("Token")
-      val configurationToken= current.configuration.getString("cfp.TrustedRequestToken")
-      if(configurationToken==requestToken){
+      val requestToken = request.headers.get("Token")
+      val configurationToken = current.configuration.getString("cfp.TrustedRequestToken")
+      if (configurationToken == requestToken) {
         Webuser.regIdExist(regId) match {
           case true => Ok(Json.toJson(true))
-          case false => Ok(Json.toJson(false))}
+          case false => Ok(Json.toJson(false))
+        }
       }
       else {
         Ok(Json.toJson("Operation Not Authorized"))
       }
 
 
-
   }
 
 
   def serveSchedulerWebApp(path: String) = {
-    if(path.endsWith("js") || path.endsWith("css")) {
-      Assets.at(path="/public", file= "scheduler" + path)
+    if (path.endsWith("js") || path.endsWith("css")) {
+      Assets.at(path = "/public", file = "scheduler" + path)
     } else {
-      Assets.at(path= "/public", file= "scheduler/index.html")
+      Assets.at(path = "/public", file = "scheduler/index.html")
     }
   }
-  def serveSpeakersWebApp(path:String)= {
+
+  def serveSpeakersWebApp(path: String) = {
     val root = "/public/speakers/"
     Play.application(current).getFile(root.concat(path)).exists match {
-      case true => Assets.at(path=root, file=path)
-      case false => Assets.at(path=root, file="index.html")
+      case true => Assets.at(path = root, file = path)
+      case false => Assets.at(path = root, file = "index.html")
     }
   }
 
@@ -167,8 +93,8 @@ object RestAPI extends Controller {
   def serveScheduleWebApp(path: String) = {
     val root = "/public/schedule/"
     Play.application(current).getFile(root.concat(path)).exists match {
-      case true => Assets.at(path=root, file=path)
-      case false => Assets.at(path=root, file="index.html")
+      case true => Assets.at(path = root, file = path)
+      case false => Assets.at(path = root, file = "index.html")
     }
   }
 
@@ -198,19 +124,29 @@ object RestAPI extends Controller {
       <rss version="2.0">
         <channel>
           <title>Accepted proposals</title>
-          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
-          <description>Accepted Proposals</description>
-          { Proposal.allAccepted().map { proposal =>
+          <link>
+            {ConferenceDescriptor.current().conferenceUrls.cfpHostname}
+          </link>
+          <description>Accepted Proposals</description>{Proposal.allAccepted().map { proposal =>
           <item>
-            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
-              { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
-                if(speaker.cleanTwitter.nonEmpty) {
-                  "(" + speaker.cleanTwitter.get + ")"
-                }
-              }
+            <title>
+              {proposal.title}
+              by
+              {proposal.allSpeakers.map(_.cleanName).mkString(", ")}{val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
+            if (speaker.cleanTwitter.nonEmpty) {
+              "(" + speaker.cleanTwitter.get + ")"
+            }}
             </title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2018/talk/{proposal.id}</link>
-            <description>{ proposal.summary }</description>
+            <link>http
+              {if (ConferenceDescriptor.isHTTPSEnabled) "s"}
+              ://
+              {ConferenceDescriptor.current().conferenceUrls.cfpHostname}
+              /2018/talk/
+              {proposal.id}
+            </link>
+            <description>
+              {proposal.summary}
+            </description>
           </item>
         }}
         </channel>
@@ -320,7 +256,7 @@ object RestAPI extends Controller {
         case other =>
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
           val speakers = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
-          val url:String = "http://blog.xebia.fr/images/devoxxuk-2014-logo.png"
+          val url: String = "http://blog.xebia.fr/images/devoxxuk-2014-logo.png"
           val updatedSpeakers = speakers.sortBy(_.name).map {
             speaker: Speaker =>
               Map(
@@ -354,7 +290,7 @@ object RestAPI extends Controller {
 
   def showSpeaker(eventCode: String, uuid: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      val url:String = "http://blog.xebia.fr/images/devoxxuk-2014-logo.png"
+      val url: String = "http://blog.xebia.fr/images/devoxxuk-2014-logo.png"
 
       findByUUID(uuid).map {
         speaker =>
@@ -423,7 +359,7 @@ object RestAPI extends Controller {
               NotModified
 
             case other => {
-              val slot = ScheduleConfiguration.loadSlots.filter{ slot =>
+              val slot = ScheduleConfiguration.loadSlots.filter { slot =>
                 slot.proposal.isDefined && slot.proposal.get.id == proposalId
               }.map { slot =>
                 val upProposal = slot.proposal.map {
@@ -478,11 +414,11 @@ object RestAPI extends Controller {
                   , "notAllocated" -> Json.toJson(slot.notAllocated)
                 )
               }.headOption
-              slot.map(json => Ok(Json.toJson(slot)).as(JSON).withHeaders(ETAG -> eTag)).getOrElse(NotFound("Slot not found")) }
+              slot.map(json => Ok(Json.toJson(slot)).as(JSON).withHeaders(ETAG -> eTag)).getOrElse(NotFound("Slot not found"))
+            }
           }
       }.getOrElse(NotFound("Proposal not found"))
   }
-
 
 
   def showTalk(eventCode: String, proposalId: String) = UserAgentActionAndAllowOrigin {
@@ -508,7 +444,7 @@ object RestAPI extends Controller {
                   "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                   "track" -> Json.toJson(Messages(proposal.track.label)),
                   "trackId" -> Json.toJson(proposal.track.id),
-                  "videoURL" -> Json.toJson(proposal.videoLink),    // Needed by Cap Gemini MyDevoxx Dashboard
+                  "videoURL" -> Json.toJson(proposal.videoLink), // Needed by Cap Gemini MyDevoxx Dashboard
                   "speakers" -> Json.toJson(allSpeakers.map {
                     speaker =>
                       Map(
@@ -544,7 +480,7 @@ object RestAPI extends Controller {
       // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
 
       val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx UK 2016 is not valid
-      val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
+    val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
 
       val eTag = proposals.hashCode.toString
 
@@ -688,6 +624,7 @@ object RestAPI extends Controller {
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL() + ">; rel=\"profile\""))
       }
   }
+
   def showRoomsWithtalkNotBreak(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
@@ -705,7 +642,7 @@ object RestAPI extends Controller {
 
 
               Map(
-                  "roomId" -> Json.toJson(slot.room.id)
+                "roomId" -> Json.toJson(slot.room.id)
                 , "roomName" -> Json.toJson(slot.room.name)
                 , "roomSetup" -> Json.toJson(slot.room.setup)
                 , "roomCapacity" -> Json.toJson(slot.room.capacity)
@@ -720,6 +657,7 @@ object RestAPI extends Controller {
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("").absoluteURL() + ">; rel=\"profile\""))
       }
   }
+
   def showScheduleFor(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
@@ -923,6 +861,7 @@ object RestAPI extends Controller {
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL() + ">; rel=\"profile\""))
       }
   }
+
   def showSlots(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
@@ -1141,9 +1080,9 @@ object RestAPI extends Controller {
     * Verify a user account.
     * This can also create a new user when the email does not exist!
     *
-    * @param newNetworkType  the social network type (FACEBOOK, TWITTER, ...)
-    * @param newNetworkId    the network account id
-    * @param email        the user id
+    * @param newNetworkType the social network type (FACEBOOK, TWITTER, ...)
+    * @param newNetworkId   the network account id
+    * @param email          the user id
     * @return
     */
   def verifyAccount(newNetworkType: String,
@@ -1154,10 +1093,10 @@ object RestAPI extends Controller {
       val webuser = Webuser.findByEmail(email)
       if (webuser.isDefined) {
 
-            // Update users social network credentials
-            val foundUser: Webuser = webuser.get
-            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
-            Ok(foundUser.uuid)
+        // Update users social network credentials
+        val foundUser: Webuser = webuser.get
+        Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+        Ok(foundUser.uuid)
 
       } else {
         // User does not exist, lets create
@@ -1243,7 +1182,8 @@ case class Link(href: String, rel: String, title: String)
 object Link {
 
   implicit val linkFormat = Json.format[Link]
-  implicit def call2String(c : Call)(implicit requestHeader: RequestHeader ):String =  c.absoluteURL()
+
+  implicit def call2String(c: Call)(implicit requestHeader: RequestHeader): String = c.absoluteURL()
 }
 
 case class Conference(eventCode: String, label: String, locale: List[String], localisation: String, link: Link)

@@ -90,68 +90,74 @@ object Favorites extends UserCFPController {
   }
 
   def toggleProposalToAgenda(proposalId: String) = SecuredAction { implicit request =>
-    FavoriteTalk.favTalkByVisitor(proposalId , request.webuser.uuid)
+    FavoriteTalk.favTalkByVisitor(proposalId, request.webuser.uuid)
     FavoriteTalk.getAllfavTalkByVisitor(request.webuser.uuid)
-      .filter(_.id==proposalId)
+      .filter(_.id == proposalId)
       .headOption
       .map(p => Ok(JsObject(Seq("proposalId" -> JsString(proposalId), "status" -> JsString("Favorited")))))
       .getOrElse(Ok(JsObject(Seq("proposalId" -> JsString(proposalId), "status" -> JsString("Not Favorited")))))
   }
 
-  def addAsFavorite(idP:String) = SecuredAction {
+  def addAsFavorite(idP: String) = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-     FavoriteTalk.favTalkByVisitor(idP , request.webuser.uuid)
+      FavoriteTalk.favTalkByVisitor(idP, request.webuser.uuid)
 
-  Redirect(routes.Publisher.showByTalkType(Proposal.findById(idP).get.talkType.id))}
-  def removefromFavorite(idP:String) = SecuredAction {
+      Redirect(routes.Publisher.showByTalkType(Proposal.findById(idP).get.talkType.id))
+  }
+
+  def removefromFavorite(idP: String) = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      FavoriteTalk.unfavTalkByVisitor(idP , request.webuser.uuid)
-      Redirect(routes.Publisher.showByTalkType(Proposal.findById(idP).get.talkType.id))}
+      FavoriteTalk.unfavTalkByVisitor(idP, request.webuser.uuid)
+      Redirect(routes.Publisher.showByTalkType(Proposal.findById(idP).get.talkType.id))
+  }
 
-  def addAsFavoritev2(idP:String) = SecuredAction {
+  def addAsFavoritev2(idP: String) = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      FavoriteTalk.favTalkByVisitor(idP , request.webuser.uuid)
+      FavoriteTalk.favTalkByVisitor(idP, request.webuser.uuid)
 
-      Redirect(routes.Favorites.welcomeVisitor(Some(Proposal.findById(idP).get.talkType.id)))}
-  def removefromFavoritev2(idP:String) = SecuredAction {
+      Redirect(routes.Favorites.welcomeVisitor(Some(Proposal.findById(idP).get.talkType.id)))
+  }
+
+  def removefromFavoritev2(idP: String) = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      FavoriteTalk.unfavTalkByVisitor(idP , request.webuser.uuid)
-      Redirect(routes.Favorites.welcomeVisitor(Some(Proposal.findById(idP).get.talkType.id)))}
+      FavoriteTalk.unfavTalkByVisitor(idP, request.webuser.uuid)
+      Redirect(routes.Favorites.welcomeVisitor(Some(Proposal.findById(idP).get.talkType.id)))
+  }
 
 
-
-  def welcomeVisitor( talkType:Option[String]) = SecuredAction.async {
+  def welcomeVisitor(talkType: Option[String]) = SecuredAction.async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       talkType match {
-        case Some(a)=>
-      a match {
-      case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
-      Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
-      ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), a ,Webuser.newVisitorForm.fill(request.webuser))))
-      case other =>
-      Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(a), a ,Webuser.newVisitorForm.fill(request.webuser))))
+        case Some(a) =>
+          a match {
+            case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
+              Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser, Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+                ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), a, Webuser.newVisitorForm.fill(request.webuser))))
+            case other =>
+              Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser, Proposal.allAcceptedByTalkType(a), a, Webuser.newVisitorForm.fill(request.webuser))))
 
-      }
-        case None=>Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
-          ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), ConferenceDescriptor.ConferenceProposalTypes.CONF.id ,Webuser.newVisitorForm.fill(request.webuser))))
+          }
+        case None => Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser, Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+          ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), ConferenceDescriptor.ConferenceProposalTypes.CONF.id, Webuser.newVisitorForm.fill(request.webuser))))
 
       }
 
   }
-  def editProfile()  = SecuredAction{
-    implicit request:SecuredRequest[play.api.mvc.AnyContent]=>
+
+  def editProfile() = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Webuser.newVisitorForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Favorites.welcomeVisitor(request.webuser,Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id, ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), ConferenceDescriptor.ConferenceProposalTypes.CONF.id ,invalidForm)),
+        invalidForm => BadRequest(views.html.Favorites.welcomeVisitor(request.webuser, Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id, ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), ConferenceDescriptor.ConferenceProposalTypes.CONF.id, invalidForm)),
         validForm => {
           Webuser.findByEmail(validForm.email) match {
-            case Some(v)=>
-                Webuser.update(validForm)
+            case Some(v) =>
+              Webuser.update(validForm)
               Redirect(routes.Favorites.welcomeVisitor(None))
-            case None=>Redirect(routes.Favorites.welcomeVisitor(None))
+            case None => Redirect(routes.Favorites.welcomeVisitor(None))
           }
         }
       )
@@ -168,16 +174,15 @@ object Favorites extends UserCFPController {
         NoContent
       }
   }
-  def getAllfavByVisitors(webuserId : String)=SecuredAction {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent]=>
+
+  def getAllfavByVisitors(webuserId: String) = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val favs = FavoriteTalk.getAllfavTalkByVisitor(webuserId)
-
       Ok(views.html.Favorites.ListofMyFav(favs, Webuser.findByUUID(webuserId)))
-
   }
 
-  def getFavedScheduled (webuserId : String)=SecuredAction {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent]=>
+  def getFavedScheduled(webuserId: String) = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val favs = FavoriteTalk.getAllfavTalkByVisitor(webuserId)
       val slots = favs.flatMap {
         talk: Proposal =>
@@ -186,9 +191,9 @@ object Favorites extends UserCFPController {
       Ok(slots.toString())
   }
 
-  def showAllForAdmin()=SecuredAction(IsMemberOfGroups(securityGroups)){
-    implicit r:SecuredRequest[play.api.mvc.AnyContent]=>
-      val all=FavoriteTalk.allFavorites().toList.sortBy(_._2).reverse
+  def showAllForAdmin() = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit r: SecuredRequest[play.api.mvc.AnyContent] =>
+      val all = FavoriteTalk.allFavorites().toList.sortBy(_._2).reverse
       Ok(views.html.Favorites.showAllForAdmin(all))
   }
 
@@ -227,7 +232,7 @@ object Favorites extends UserCFPController {
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
         case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
-          // "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
+        // "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -235,7 +240,7 @@ object Favorites extends UserCFPController {
     * Schedule a proposal.
     * Note : you can only schedule one proposal in a time slot but have multiple favorites.
     *
-    * @param uuid the user identifier
+    * @param uuid       the user identifier
     * @param proposalId the proposal identifier
     */
   def scheduleProposal(uuid: String, proposalId: String) = BasicAuthentication {
@@ -252,10 +257,10 @@ object Favorites extends UserCFPController {
   /**
     * Remove a scheduled proposal for user.
     *
-    * @param uuid the user identifier
+    * @param uuid       the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeScheduledProposal(uuid: String, proposalId: String)  = BasicAuthentication {
+  def removeScheduledProposal(uuid: String, proposalId: String) = BasicAuthentication {
     request =>
       if (ScheduleTalk.isScheduledByThisUser(proposalId, uuid)) {
         ScheduleTalk.unscheduleTalk(proposalId, uuid)
@@ -327,7 +332,7 @@ object Favorites extends UserCFPController {
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
         case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
-          // "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
+        // "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -335,7 +340,7 @@ object Favorites extends UserCFPController {
     * Favor a proposal for user.
     * Note : you can favorite multiple proposals in one timeslot but only schedule one.
     *
-    * @param uuid the user identifier
+    * @param uuid       the user identifier
     * @param proposalId the proposal identifier
     */
   def favorProposal(uuid: String, proposalId: String) = BasicAuthentication {
@@ -352,7 +357,7 @@ object Favorites extends UserCFPController {
   /**
     * Remove a proposal favorite for given user.
     *
-    * @param uuid the user identifier
+    * @param uuid       the user identifier
     * @param proposalId the proposal identifier
     */
   def removeFavoredProposal(uuid: String, proposalId: String) = BasicAuthentication {

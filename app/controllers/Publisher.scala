@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package controllers
+
 import akka.util.Crypt
 import library.search.ElasticSearch
 import play.api.libs.json.{JsObject, Json}
@@ -32,6 +33,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.mvc._
+
 /**
   * Publisher is the controller responsible for the Web content of your conference Program.
   * Created by nicolas on 12/02/2014.
@@ -48,6 +50,7 @@ object Publisher extends Controller {
       }
       Ok(views.html.Publisher.homePublisher())
   }
+
   /*def showAllSpeakers = Action {
     implicit request =>
       // Show all speakers from accepted proposals instead of scheduled!
@@ -62,7 +65,8 @@ object Publisher extends Controller {
           Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }*/
-  def homepublisherv2 (path:String) = Action {
+
+  def homepublisherv2(path: String) = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
       val eTag = Crypt.md5(result.toString() + "dvx").toString
@@ -71,14 +75,15 @@ object Publisher extends Controller {
         case Some(oldEtag) if oldEtag == eTag => NotModified
         case other => Ok(result).withHeaders(ETAG -> eTag)
       }
-      if(path.endsWith("js") || path.endsWith("css") || path.contains("/assets/")) {
-        Assets.at(path="/public", file= "schedule" + path)
+      if (path.endsWith("js") || path.endsWith("css") || path.contains("/assets/")) {
+        Assets.at(path = "/public", file = "schedule" + path)
       } else {
-        Assets.at(path= "/public", file= "schedule/index.html")
+        Assets.at(path = "/public", file = "schedule/index.html")
       }
       Ok(views.html.Publisher.homePublisher())
 
   }
+
   def showAllSpeakers() = Action {
     implicit request =>
       // Show all speakers from accepted proposals instead of scheduled!
@@ -117,6 +122,7 @@ object Publisher extends Controller {
         case None => NotFound(views.html.Publisher.speakerNotFound())
       }
   }
+
   def showSpeaker(uuid: String, name: String) = Action {
     implicit request =>
       val maybeSpeaker = Speaker.findByUUID(uuid)
@@ -128,6 +134,7 @@ object Publisher extends Controller {
         case None => NotFound("Speaker not found")
       }
   }
+
   def showByTalkType(talkType: String) = Action {
     implicit request =>
       talkType match {
@@ -163,6 +170,7 @@ object Publisher extends Controller {
   private val wednesday: String = "wednesday"
   private val thursday: String = "thursday"
   private val friday: String = "friday"
+
   def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
     implicit request =>
       val realSlotId = slotId.orElse {
@@ -210,6 +218,7 @@ object Publisher extends Controller {
         }
       }
   }
+
   def showByDay(day: String) = Action {
     implicit request =>
       def _showDay(slots: List[Slot], day: String) = {
@@ -217,6 +226,7 @@ object Publisher extends Controller {
         val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
         Ok(views.html.Publisher.showOneDay(allSlots, rooms, day))
       }
+
       day match {
         case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
         case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
@@ -248,6 +258,7 @@ object Publisher extends Controller {
             Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg))
         }
     }
+
   def search(q: Option[String] = None, p: Option[Int] = None) = Action.async {
     implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
