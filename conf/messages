@@ -102,13 +102,13 @@ lang=Main language
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
-mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, Hands-on-Labs. Quickie speakers need to purchase a conference pass!
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full conference pass for all types of the talks for main speaker. Secondary speaker gets free conference pass only for Conference and Hands-on-Labs.
 otherSpeakers=Other speakers
 speakerQandA=Speaker Q&A
 question=Question
 answer=Answer
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="{0}#whatson" target="new">Info</a>.
+talkType.help=Each type of talk is described on the <a href="{0}/faq" target="new">Info</a>.
 
 audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -119,13 +119,13 @@ audienceLevel.help=Please, indicate the required audience level for your talk\:\
 
 
 privateMessage=Message for the program committee, motivation for your presentation
-privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk for example on Parleys.com.
+privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk.
 sponsorTalk=Is this a sponsor presentation?
 videoLinkMessage=Related video link
 videoLinkMessage.help=Share with the program committee a link to one of your related online videos on YouTube or Vimeo
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum and Gold (with additional speaking slot) sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -144,19 +144,19 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-opening.key.label=Opening Keynote, 20minutes, Thursday morning
+opening.key.label=Opening Keynote, 20minutes, Wednesday morning
 opening.key.label.simple=Opening Keynote
 closing.key.label=Closing Keynote, 50minutes, Friday afternoon
 closing.key.label.simple=Closing Keynote
-conf.label=Conference, 50minutes, Thursday and Friday
+conf.label=Conference, 50minutes, Wednesday, Thursday and Friday
 conf.label.simple=Conference
-quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
+quick.label=Quickie Sessions, 15minutes, Wednesday, Thursday and Friday lunchtimes
 quick.label.simple=Quickie Sessions
-bof.label=Birds of a Feather, 1hour, Thursday evening
+bof.label=Birds of a Feather, 1hour, Wednesday evening
 bof.label.simple=Birds of a Feather
-lab.label=Hands-on Labs, 3hours, Thursday and Friday
+lab.label=Hands-on Labs, 3hours, Wednesday, Thursday and Friday
 lab.label.simple=Hands-on Lab
-deep.dive.label=Deep Dive Sessions, 3hours, Wednesday
+deep.dive.label=Deep Dive Sessions, 3hours, Wednesday, Thursday and Friday
 deep.dive.label.simple=Deep Dive Sessions
 ignite.label=Ignite Sessions, 5minutes, Thursday evening
 ignite.label.simple=Ignite Sessions
