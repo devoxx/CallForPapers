@@ -94,8 +94,8 @@ object Global extends GlobalSettings {
       case (_, _) => super.onRouteRequest(req)
     }
   }
-}
 */
+}
 
 object CronTask {
   // postfix operator days should be enabled by making the implicit value scala.language.postfixOps visible.
