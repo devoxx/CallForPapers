@@ -500,8 +500,8 @@ object Backoffice extends SecureCFPController {
   def cfpOpeningDate(): DateTime = {
      DateTime.parse(
         CFPDates.load() match {
-          case Some(savedCFPDates) => savedCFPDates.opening ++ "T00:00:00+01:00"
-          case None => "2017-11-08T00:00:00+01:00"
+          case Some(savedCFPDates) => savedCFPDates.opening ++ "T00:00:00+02:00"
+          case None => "2018-01-05T00:00:00+02:00"
         }
      )
   }
@@ -509,8 +509,8 @@ object Backoffice extends SecureCFPController {
   def cfpClosingDate(): DateTime = {
     DateTime.parse(
         CFPDates.load() match {
-          case Some(savedCFPDates) => savedCFPDates.closing ++ "T23:59:59+01:00"
-          case None => "2018-01-09T23:59:59+01:00"
+          case Some(savedCFPDates) => savedCFPDates.closing ++ "T23:59:59+02:00"
+          case None => "2018-02-28T23:59:59+02:00"
         }
     )
   }
@@ -518,8 +518,8 @@ object Backoffice extends SecureCFPController {
   def scheduleAnnouncementDate(): DateTime = {
     DateTime.parse(
         CFPDates.load() match {
-          case Some(savedCFPDates) => savedCFPDates.scheduleAnnouncement ++ "T00:00:00+01:00"
-          case None => "2018-01-23T00:00:00+01:00"
+          case Some(savedCFPDates) => savedCFPDates.scheduleAnnouncement ++ "T00:00:00+02:00"
+          case None => "2018-03-31T00:00:00+02:00"
         }
     )
   }
