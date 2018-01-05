@@ -43,7 +43,7 @@
             return (
                 React.createElement("div", {className: "top-list-container"},
                     React.createElement("div", {className: "page-header"},
-                        React.createElement("img", {src: "http://devoxxuk.github.io/conf-2015/img/devoxx_logo.gif", alt: "Devoxx"}),
+                        React.createElement("img", {src: "http://devoxxpl.github.io/conf-2015/img/devoxx_logo.gif", alt: "Devoxx"}),
                         React.createElement("h1", null, this.state.title, " Top faved talks")
                     ),
                     React.createElement("div", {className: "talks-container"},

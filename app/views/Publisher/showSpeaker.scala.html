@@ -2,7 +2,7 @@
 
 @import play.api.templates.Html
 
-@views.html.Publisher.devoxxUK(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
+@views.html.Publisher.devoxxPL(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
 <section id="speaker">
 <div class="columns large-12 team-member row fadeInUp animated">
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>

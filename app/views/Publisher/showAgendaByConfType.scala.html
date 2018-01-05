@@ -4,7 +4,7 @@
 @import models.ConferenceDescriptor
 @import play.api.templates.Html
 
-    @views.html.Publisher.devoxxUK(Messages("agenda-" + talkType),Some(s"Agenda for ${Messages("CONF.title")} for $day${Messages("day-" + day)}")) {
+    @views.html.Publisher.devoxxPL(Messages("agenda-" + talkType),Some(s"Agenda for ${Messages("CONF.title")} for $day${Messages("day-" + day)}")) {
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;

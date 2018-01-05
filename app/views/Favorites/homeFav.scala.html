@@ -3,22 +3,22 @@
 @import org.joda.time.DateTimeZone
 @import models.ConferenceDescriptor
 
-@views.html.Publisher.devoxxUK("My Schedule") {
+@views.html.Publisher.devoxxPL("My Schedule") {
     @if(timeSlots.isEmpty){
 
     <div class="columns large-12 woocommerce">
         <h1>Build your own schedule</h1>
         <p>You don't have any schedule yet.</p>
         <p>Browse the <a href="@routes.Publisher.showByDay("thursday")">schedule</a> and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.</p>
-        <img src="/assets/devoxxuk/images/myschedule.png" alt="My schedule">
+        <img src="/assets/devoxxpl/images/myschedule.png" alt="My schedule">
     </div>
-    }
+    }F
     @timeSlots.groupBy(_.to.getDayOfWeek).toList.sortBy(_._1).map { case (day, slots:List[Slot]) =>
     <h2>Day @day</h2>
     <div class="columns large-12 woocommerce">
         <table class="agendaTable">
             <tr>
-                <th><i class="icon-time"></i> Room</th>
+                <th><i class="icon-time"></i> Room</th>F
                 @rooms.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
