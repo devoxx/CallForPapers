@@ -27,6 +27,7 @@
                     }
                 </tr>
 
+@*
                 @if(day.toLowerCase=="wednesday" && talkType.toLowerCase=="conf" ){
                     <tr>
                         <th>
@@ -38,6 +39,7 @@
                         </td>
                     </tr>
                 }
+*@
 
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>

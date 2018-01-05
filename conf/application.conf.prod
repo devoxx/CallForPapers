@@ -156,5 +156,3 @@ conference.timezone=${CONFERENCE_TIMEZONE}
 gluon.username=${GLUON_USERNAME}
 gluon.password=${GLUON_PASSWORD}
 
-capgemini.username=${CAPGEMINI_USERNAME}
-capgemini.password=${CAPGEMINI_PASSWORD}

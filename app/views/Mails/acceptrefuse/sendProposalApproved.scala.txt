@@ -49,7 +49,7 @@ As an accepted speaker you will be provided with a conference pass.
 
 For any questions regarding your talk:
 -------------------------------------
-Please, do not respond to this email. Instead send any comments through the web interface, or email info@@devoxx.co.uk, and our team will respond as quickly as possible.
+Please, do not respond to this email. Instead send any comments through the web interface, or email info@@devoxx.pl, and our team will respond as quickly as possible.
 
 @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 

@@ -1,2 +1,2 @@
-# No French content for Devoxx UK
+# No French content for Devoxx PL
 # We do not want that speakers submit talks/proposals in FR

@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx UK 2018
-CONF.subtitle=UK
+CONF.title=Devoxx PL 2018
+CONF.subtitle=PL
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx UK 2018
-longYearlyName=Devoxx United-Kingdom 2018
-shortName=Devoxx UK
-longName=Devoxx UK 2018 CFP
+shortYearlyName=Devoxx PL 2018
+longYearlyName=Devoxx Poland 2018
+shortName=Devoxx PL
+longName=Devoxx PL 2018 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=UK 2018
+longSplittedName_whiteEnd=PL 2018
 conference.dates=9th-11th May
 # -----------------
-cfp.title=Devoxx UK 2018 CFP
+cfp.title=Devoxx PL 2018 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -174,12 +174,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx UK 2017''s videos on
+video.tag=Review Devoxx PL 2017''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx United-Kingdom 2018:
+theme.track=List of tracks for Devoxx Poland 2018:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx UK 2018, 9th-11th May
+appel.conf.dates=Devoxx PL 2018, 20th-22nd June
 
 # Tracks
 
@@ -639,7 +639,7 @@ mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
 mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
-mail.question_to_speaker.subject=[{1}] New question posted on Devoxx UK Web site about {0}
+mail.question_to_speaker.subject=[{1}] New question posted on Devoxx PL Web site about {0}
 mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
 mail.notify_proposal.subject={0} submitted a proposal [{1}]
 mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
@@ -682,8 +682,8 @@ error.email=Invalid email address
 error.invalid=Invalid value
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
-menu.blog=Site DevoxxUK
-signup.long=Register as a speaker on Devoxx United-Kingdom CFP
+menu.blog=Site DevoxxPL
+signup.long=Register as a speaker on Devoxx Poland CFP
 approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
@@ -746,7 +746,7 @@ visitor.index.signup2=Sign-up as a visitor and save your Schedule, vote for the 
 
 # welcomeVisitor
 visitor.welcome.title=Welcome {0}
-visitor.welcome.text1=You are now authenticated as a Devoxx UK visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
+visitor.welcome.text1=You are now authenticated as a Devoxx PL visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
 visitor.welcome.publisher=Browse the conference schedule
 visitor.welcome.profile=See the list of talks you favourited
 
@@ -765,13 +765,13 @@ goldenTicket.help.title=Golden Ticket review
 goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
 
 gt.title=CFP for Golden ticket
-gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx UK. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
+gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx PL. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
 
 gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
 gt.intro.2=If needed, you can also
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
-gt.special.need=If you have a specific speaker you would love to see present at Devoxx UK, drop an email to program@devoxx.co.uk and we’ll do our best to get them there.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx pl, drop an email to cfp@devoxx.pl and we’ll do our best to get them there.
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
@@ -847,7 +847,7 @@ rating.default=No comment
 
 # If a speaker declined T&C
 # I don't really know what we should do but the speaker will have to contact the team if he changes its choice.
-refused.termsConditions=Warning : you declined the Devoxx UK Terms & Conditions and thus, you cannot present or talk at Devoxx UK. If needed, please contact our team by email.
+refused.termsConditions=Warning : you declined the Devoxx PL Terms & Conditions and thus, you cannot present or talk at Devoxx PL. If needed, please contact our team by email.
 
 cfpadmin.filterOn=Filter on
 admin.cfp.empty.track=There are no new submitted proposals in track {0} for the time being

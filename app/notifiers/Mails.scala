@@ -217,7 +217,7 @@ object Mails {
     val email = Email(
       subject = subjectEmail,
       from = from,
-      to = Seq("no-reply-digest@devoxx.co.uk"), // Use fake email because we use bcc instead
+      to = Seq("no-reply-digest@devoxx.pl"), // Use fake email because we use bcc instead
       bcc = emails,
       bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
       bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),

@@ -6,61 +6,61 @@
    <!-- www.check-domains.com sitemap generator -->
 
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/index.html</loc>
+      <loc>http://cfp.devoxx.pl/2018/index.html</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>1.0000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/hack/thursday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/hack/thursday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/lab/thursday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/lab/thursday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/lab/friday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/lab/friday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/bof/thursday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/bof/thursday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/quick/thursday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/quick/thursday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/quick/friday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/quick/friday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/ignite/thursday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/ignite/thursday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/conf/thursday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/conf/thursday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>
    </url>
    <url>
-      <loc>http://cfp.devoxx.co.uk/2018/agenda/conf/friday</loc>
+      <loc>http://cfp.devoxx.pl/2018/agenda/conf/friday</loc>
       <lastmod>2016-12-19T22:09:03+00:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8000</priority>

@@ -57,7 +57,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
         userGroup = None,
-        videoLink = Some("http://www.youtube.co.uk"),
+        videoLink = Some("http://www.youtube.com"),
         tags = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DELETED)
@@ -92,7 +92,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
         userGroup = None,
-        videoLink = Some("http://www.youtube.co.uk"),
+        videoLink = Some("http://www.youtube.com"),
         tags = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
@@ -130,7 +130,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
         Option("beginner"),
         userGroup = None,
-        videoLink = Some("http://www.youtube.co.uk"),
+        videoLink = Some("http://www.youtube.com"),
         tags = None)
 
       val proposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
@@ -160,7 +160,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
         Option("beginner"),
         userGroup = None,
-        videoLink = Some("http://www.youtube.co.uk"),
+        videoLink = Some("http://www.youtube.com"),
         tags = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
@@ -352,7 +352,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.ALL.head.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None
     )
 

@@ -58,7 +58,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None
     )
 
@@ -121,7 +121,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None
     )
 
@@ -156,7 +156,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None
     )
 
@@ -190,7 +190,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
@@ -220,7 +220,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
@@ -253,7 +253,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
@@ -289,7 +289,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
@@ -321,7 +321,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save(mainSpeaker, proposal, ProposalState.ACCEPTED)
@@ -355,7 +355,7 @@ class ProposalSpecs extends PlaySpecification {
       Track.parse("java"), Some("d1"),
       userGroup = None,
       wishlisted = Some(false),
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", toBeDestroyedProposal, ProposalState.DRAFT)
@@ -374,7 +374,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
@@ -416,7 +416,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
@@ -450,7 +450,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
@@ -484,7 +484,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", keepProposal, ProposalState.DELETED)
@@ -520,7 +520,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", proposalToDelete, ProposalState.DELETED)
@@ -540,7 +540,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", archivedProposal, ProposalState.ARCHIVED)
@@ -560,7 +560,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      videoLink = Some("http://www.youtube.co.uk"),
+      videoLink = Some("http://www.youtube.com"),
       tags = None)
 
     Proposal.save("user_1234", someProposal, ProposalState.SUBMITTED)
