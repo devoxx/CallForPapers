@@ -33,7 +33,7 @@ import models.ConferenceDescriptor.{ConferenceProposalConfigurations, Conference
 object ApprovedProposal {
 
   def elasticSearchIndex():String={
-    "proposals"
+    "proposals_"+ConferenceDescriptor.current().confUrlCode.toLowerCase()
   }
 
   val getTotal: Map[String, Int] = Map(
