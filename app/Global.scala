@@ -89,7 +89,7 @@ object Global extends GlobalSettings {
     */
   override def onRouteRequest(req: RequestHeader): Option[Handler] = {
     (req.method, req.headers.get("X-Forwarded-Proto")) match {
-      case ("GET", Some(protocol)) if protocol != "https" => Some(Action{ MovedPermanently("https://"+req.host+req.uri)})
+//      case ("GET", Some(protocol)) if protocol != "https" => Some(Action{ MovedPermanently("https://"+req.host+req.uri)})
       case (_, _) => super.onRouteRequest(req)
     }
   }
