@@ -44,3 +44,25 @@ libraryDependencies ++= Seq(
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
 )
 
+// Can also be done manually by
+// $ cd schedule
+// $ npm run buildProd
+// $ cp dist public/schedule
+
+////declare new task
+//lazy val compileScheduleTask = taskKey[Unit]("Build Schedule")
+//
+//// unwatch for file changes in public/schedule (changes A LOT), didn't work as expected, will fix in later versions,
+//// you'll experience it if you use sbt run, other than you have nothing to worry about
+//watchSources := watchSources.value.filter { _.getName.contains("/public/schedule") }
+//
+//// define task behaviour, which exists on ConfAppBuilder
+//compileScheduleTask := {
+//  ConfAppBuilder(baseDirectory.value).run()
+//}
+//
+//// plug-in new task to the build-flow
+//compile in Compile := {
+//  compileScheduleTask.value
+//  (compile in Compile).value
+//}

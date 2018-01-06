@@ -5,6 +5,7 @@
 # except for .gitignore
 !.gitignore
 !.htaccess
+!schedule/.angular-cli.json
 
 # Ignore Play! working directory #
 # in Dev branch, we do not want to save the application.conf file cause it contains password
@@ -64,3 +65,7 @@ app-2.11/
 storage/
 
 run.env
+
+public/schedule/
+schedule/node_modules
+schedule/dist
