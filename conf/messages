@@ -12,6 +12,7 @@ longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
 longSplittedName_whiteEnd=UK 2018
 conference.dates=9th-11th May
+conference.dates.long=Wednesday 9th to Friday 11th May 2018
 Custom.email=Custom email
 custom.email1= Custom email
 
@@ -1003,4 +1004,5 @@ invalid.phone=Invalid phone number, please use the international phone number fo
 sms.confirmationTxt=Your Devoxx confirmation code is {0}
 
 xconf.seeSchedule=See Conference Schedule
+xconf.seeScheduleByType=See all the talks grouped by event type
 

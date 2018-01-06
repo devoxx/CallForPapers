@@ -3,13 +3,23 @@
 @views.html.Publisher.devoxxUK("Schedule",Some(Messages("CONF.title") + " agenda")){
 
 <div class="large-12 columns">
-<h2>@Messages("CONF.title") Schedule</h2>
+<h2>
+    @Messages("CONF.title") Schedule
+    <small>@Messages("conference.dates.long") </small>
+</h2>
 </div>
-    <div class="small-12 medium-12 large-12 column">
+    <div class="small-12 medium-6 large-6 column">
       <a style="text-decoration: none" href="/app">
         <h3 style="color: #ff7518">@Messages("xconf.seeSchedule")</h3>
       </a>
     </div>
+    
+    <div class="small-12 medium-6 large-6 column right">
+        <a style="text-decoration: none" href="/2018/talks">
+            <h3 style="color: #ff7518">@Messages("xconf.seeScheduleByType")</h3>
+        </a>
+    </div>
+
     <hr>
 
     <div class="small-12 medium-6 large-6 column">
