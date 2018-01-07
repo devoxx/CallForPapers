@@ -6,9 +6,26 @@
     <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
 
-    <script>$(document).ready(function () {
-        $("#brea").hide();
-    });</script>
+    <script>
+        $(document).ready(function () {
+            @***
+            @if(! newSlot.hasErrors) {
+                @if((newSlot != null) && (newSlot != None)) {
+                    @if((newSlot.get != None) || newSlot.get.break.isEmpty) {
+                        $('#radioslot').attr('checked', true);
+                    } else {
+                        $('#radiobreak').attr('checked', true);
+                    }
+                    return
+                }
+            }***@
+
+            $(document).ready(function () {
+                $("#brea").hide();
+            });
+        });
+    </script>
+
     <div class="col-lg-offset-4 col-md-4">
         <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
     </div>
@@ -44,10 +61,10 @@
                     <span>Talk Slot</span>
                 </label>
 
-                <label class="radio inline" >
-                    <input id="radiobreak" type="radio" name="music" value="female">
-                    <span>Break Slot</span>
-                </label></div>
+                    <label class="radio inline" >
+                        <input id="radiobreak" type="radio" name="music" value="female">
+                        <span>Break Slot</span>
+                    </label></div>
             }
 
             <div id="slot" class="well well-sm">
@@ -61,15 +78,15 @@
                             <input type="hidden" name="id" value="@newSlot("id").value">
 
                             @tags.selectI18N(field = newSlot("name"), options = Seq(
-                                    Messages("conf") -> "conf",
-                                    Messages("deep_dive") -> "deep_dive",
-                                    Messages("lab") -> "lab",
-                                    Messages("quick") -> "quick",
-                                    Messages("bof") -> "bof",
-                                    Messages("opening_key") -> "opening_key",
-                                    Messages("closing_key") -> "closing_key",
-                                    Messages("ignite") -> "ignite"
-                                ), '_default -> "--- Please select ---", 'class -> "form-control")
+                                Messages("conf") -> "conf",
+                                Messages("deep_dive") -> "deep_dive",
+                                Messages("lab") -> "lab",
+                                Messages("quick") -> "quick",
+                                Messages("bof") -> "bof",
+                                Messages("opening_key") -> "opening_key",
+                                Messages("closing_key") -> "closing_key",
+                                Messages("ignite") -> "ignite"
+                            ), '_default -> "--- Please select ---", 'class -> "form-control")
                             @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
 
                             <dl class=" " id="from_field">
@@ -101,7 +118,8 @@
                                     });
                             </script>
                             <div class="col-lg-10 col-lg-offset-2">
-                                <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                    Cancel</button>
                                 <button type="submit" class="btn btn-success" style="border-radius: 5px">Submit</button>
                             </div>
                         </fieldset>
@@ -117,15 +135,15 @@
                                 </legend>
                                 <input type="hidden" name="id" value="@newSlot("id").value">
                                 @tags.selectI18N(field = newSlot("name"), options = Seq(
-                                        Messages("conf") -> "conf",
-                                        Messages("deep_dive") -> "deep_dive",
-                                        Messages("lab") -> "lab",
-                                        Messages("quick") -> "quick",
-                                        Messages("bof") -> "bof",
-                                        Messages("opening_key") -> "opening_key",
-                                        Messages("closing_key") -> "closing_key",
-                                        Messages("ignite") -> "ignite"
-                                    ), '_default -> "--- Please select ---", 'class -> "form-control"
+                                    Messages("conf") -> "conf",
+                                    Messages("deep_dive") -> "deep_dive",
+                                    Messages("lab") -> "lab",
+                                    Messages("quick") -> "quick",
+                                    Messages("bof") -> "bof",
+                                    Messages("opening_key") -> "opening_key",
+                                    Messages("closing_key") -> "closing_key",
+                                    Messages("ignite") -> "ignite"
+                                ), '_default -> "--- Please select ---", 'class -> "form-control"
                                 )
                                 @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
                                 <dl class=" " id="from_field">
@@ -157,7 +175,8 @@
                                 <div style="display: none"> @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")</div>
 
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
                                     <button type="submit" class="btn btn-success" style="border-radius: 5px">Update</button>
                                 </div>
                             </fieldset>
@@ -171,15 +190,15 @@
 
                                 <input type="hidden" name="id" value="@newSlot("id").value">
                                 <div style="display: none">@tags.selectI18N(field = newSlot("name"), options = Seq(
-                                        Messages("conf") -> "conf",
-                                        Messages("deep_dive") -> "deep_dive",
-                                        Messages("lab") -> "lab",
-                                        Messages("quick") -> "quick",
-                                        Messages("bof") -> "bof",
-                                        Messages("opening_key") -> "opening_key",
-                                        Messages("closing_key") -> "closing_key",
-                                        Messages("ignite") -> "ignite"
-                                    ), '_default -> "break", 'class -> "form-control")</div>
+                                    Messages("conf") -> "conf",
+                                    Messages("deep_dive") -> "deep_dive",
+                                    Messages("lab") -> "lab",
+                                    Messages("quick") -> "quick",
+                                    Messages("bof") -> "bof",
+                                    Messages("opening_key") -> "opening_key",
+                                    Messages("closing_key") -> "closing_key",
+                                    Messages("ignite") -> "ignite"
+                                ), '_default -> "break", 'class -> "form-control")</div>
                                 @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
                                 <dl class=" " id="from_field">
                                     <dt><label for="from">From</label></dt>
@@ -210,7 +229,8 @@
                                 @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
 
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
                                     <button type="submit" class="btn btn-success" style="border-radius: 5px">Update</button>
                                 </div>
                             </fieldset>
@@ -227,15 +247,15 @@
                                 </legend>
                                 <input type="hidden" name="id" value="@newSlot("id").value">
                                 @tags.selectI18N(field = newSlot("name"), options = Seq(
-                                        Messages("conf") -> "conf",
-                                        Messages("deep_dive") -> "deep_dive",
-                                        Messages("lab") -> "lab",
-                                        Messages("quick") -> "quick",
-                                        Messages("bof") -> "bof",
-                                        Messages("opening_key") -> "opening_key",
-                                        Messages("closing_key") -> "closing_key",
-                                        Messages("ignite") -> "ignite"
-                                    ),
+                                    Messages("conf") -> "conf",
+                                    Messages("deep_dive") -> "deep_dive",
+                                    Messages("lab") -> "lab",
+                                    Messages("quick") -> "quick",
+                                    Messages("bof") -> "bof",
+                                    Messages("opening_key") -> "opening_key",
+                                    Messages("closing_key") -> "closing_key",
+                                    Messages("ignite") -> "ignite"
+                                ),
                                     '_default -> "--- Please select ---", 'class -> "form-control")
                                 @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
                                 <dl class=" " id="from_field">
@@ -266,11 +286,12 @@
                                 @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
                                 <div style="display: none">@tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control") </div>
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
                                     <button type="submit" class="btn btn-success" style="border-radius: 5px">Save</button>
                                 </div>
-                            </fieldset>
-                        }
+                                </fieldset>
+                                }
                     } else {
                         @helper.form(action = routes.CFPAdmin.saveslot("clone")) {
                             <fieldset>
@@ -280,15 +301,15 @@
 
                                 <input type="hidden" name="id" value="@newSlot("id").value">
                                 <div style="display: none">@tags.selectI18N(field = newSlot("name"), options = Seq(
-                                        Messages("conf") -> "conf",
-                                        Messages("deep_dive") -> "deep_dive",
-                                        Messages("lab") -> "lab",
-                                        Messages("quick") -> "quick",
-                                        Messages("bof") -> "bof",
-                                        Messages("opening_key") -> "opening_key",
-                                        Messages("closing_key") -> "closing_key",
-                                        Messages("ignite") -> "ignite"
-                                    ),
+                                    Messages("conf") -> "conf",
+                                    Messages("deep_dive") -> "deep_dive",
+                                    Messages("lab") -> "lab",
+                                    Messages("quick") -> "quick",
+                                    Messages("bof") -> "bof",
+                                    Messages("opening_key") -> "opening_key",
+                                    Messages("closing_key") -> "closing_key",
+                                    Messages("ignite") -> "ignite"
+                                ),
                                     '_default -> "break", 'class -> "form-control")</div>
                                 @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
                                 <dl class=" " id="from_field">
@@ -320,7 +341,8 @@
                                 @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
 
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
                                     <button type="submit" class="btn btn-success" style="border-radius: 5px">Save</button>
                                 </div>
                             </fieldset>
@@ -329,17 +351,17 @@
                 }
             </div>
 
-            <div id="brea" class="well well-sm">
-                @if(action == "create") {
-                    @helper.form(action = routes.CFPAdmin.saveslot("save")) {
-                        <fieldset>
-                            <legend>
-                                Create Slot Break
-                            </legend>
+                <div id="brea" class="well well-sm">
+                    @if(action == "create") {
+                        @helper.form(action = routes.CFPAdmin.saveslot("save")) {
+                            <fieldset>
+                                <legend>
+                                    Create Slot Break
+                                </legend>
 
-                            <input type="hidden" name="id" value="@newSlot("id").value">
+                                <input type="hidden" name="id" value="@newSlot("id").value">
 
-                            <div style="display: none"> @tags.selectI18N(field = newSlot("name"), options = Seq(
+                                <div style="display: none"> @tags.selectI18N(field = newSlot("name"), options = Seq(
                                     Messages("conf") -> "conf",
                                     Messages("deep_dive") -> "deep_dive",
                                     Messages("lab") -> "lab",
@@ -349,54 +371,55 @@
                                     Messages("closing_key") -> "closing_key",
                                     Messages("ignite") -> "ignite"
                                 ),
-                                '_default -> "break", 'class -> "form-control")</div>
-                            @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
+                                    '_default -> "break", 'class -> "form-control")</div>
+                                @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
 
-                            <dl class=" " id="from_field">
-                                <dt><label for="from">From</label></dt>
-                                <dd>
-                                    <div class="input-group">
-                                        <input id="from" type="text" name="from" class="form-control input-small dateTime" value="@newSlot("from").value">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                    </div>
-                                </dd>
-                                <dd class="info">Required</dd>
-                            </dl>
-                            <dl class=" " id="to_field">
-                                <dt><label for="to">To</label></dt>
-                                <dd>
-                                    <div class="input-group">
-                                        <input id="to" type="text" name="to" class="form-control input-small dateTime" value="@newSlot("to").value">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                    </div>
-                                </dd>
-                                <dd class="info">Required</dd>
-                            </dl>
+                                <dl class=" " id="from_field">
+                                    <dt><label for="from">From</label></dt>
+                                    <dd>
+                                        <div class="input-group">
+                                            <input id="from" type="text" name="from" class="form-control input-small dateTime" value="@newSlot("from").value">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                        </div>
+                                    </dd>
+                                    <dd class="info">Required</dd>
+                                </dl>
+                                <dl class=" " id="to_field">
+                                    <dt><label for="to">To</label></dt>
+                                    <dd>
+                                        <div class="input-group">
+                                            <input id="to" type="text" name="to" class="form-control input-small dateTime" value="@newSlot("to").value">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                        </div>
+                                    </dd>
+                                    <dd class="info">Required</dd>
+                                </dl>
 
-                            @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
-                            @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
-                            <script type="text/javascript">
-                                    $('.dateTime').datetimepicker({
-                                        format: 'HH:mm'
-                                    });
-                            </script>
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
-                                <button type="submit" class="btn btn-success" style="border-radius: 5px">Submit</button>
-                            </div>
-                        </fieldset>
+                                @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
+                                @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
+                                <script type="text/javascript">
+                                        $('.dateTime').datetimepicker({
+                                            format: 'HH:mm'
+                                        });
+                                </script>
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
+                                    <button type="submit" class="btn btn-success" style="border-radius: 5px">Submit</button>
+                                </div>
+                            </fieldset>
+                        }
                     }
-                }
 
-                @if(action == "update") {
-                    @helper.form(action = routes.CFPAdmin.saveslot("update")) {
-                        <fieldset>
-                            <legend>
-                                Update Break Slot
-                            </legend>
+                    @if(action == "update") {
+                        @helper.form(action = routes.CFPAdmin.saveslot("update")) {
+                            <fieldset>
+                                <legend>
+                                    Update Break Slot
+                                </legend>
 
-                            <input type="hidden" name="id" value="@newSlot("id").value">
-                            <div style="display: none">@tags.selectI18N(field = newSlot("name"), options = Seq(
+                                <input type="hidden" name="id" value="@newSlot("id").value">
+                                <div style="display: none">@tags.selectI18N(field = newSlot("name"), options = Seq(
                                     Messages("conf") -> "conf",
                                     Messages("deep_dive") -> "deep_dive",
                                     Messages("lab") -> "lab",
@@ -406,53 +429,54 @@
                                     Messages("closing_key") -> "closing_key",
                                     Messages("ignite") -> "ignite"
                                 ),
-                                '_default -> "break", 'class -> "form-control")</div>
-                            @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
-                            <dl class=" " id="from_field">
-                                <dt><label for="from">From</label></dt>
-                                <dd>
-                                    <div class="input-group">
-                                        <input id="from" type="text" name="from" class="form-control input-small dateTime" value="@newSlot("from").value">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                    </div>
-                                </dd>
-                                <dd class="info">Required</dd>
-                            </dl>
-                            <dl class=" " id="to_field">
-                                <dt><label for="to">To</label></dt>
-                                <dd>
-                                    <div class="input-group">
-                                        <input id="to" type="text" name="to" class="form-control input-small dateTime" value="@newSlot("to").value">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                    </div>
-                                </dd>
-                                <dd class="info">Required</dd>
-                            </dl>
-                            <script type="text/javascript">
-                                    $('.dateTime').datetimepicker({
-                                        format: 'HH:mm'
-                                    });
-                            </script>
-                            @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
-                            @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
+                                    '_default -> "break", 'class -> "form-control")</div>
+                                @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
+                                <dl class=" " id="from_field">
+                                    <dt><label for="from">From</label></dt>
+                                    <dd>
+                                        <div class="input-group">
+                                            <input id="from" type="text" name="from" class="form-control input-small dateTime" value="@newSlot("from").value">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                        </div>
+                                    </dd>
+                                    <dd class="info">Required</dd>
+                                </dl>
+                                <dl class=" " id="to_field">
+                                    <dt><label for="to">To</label></dt>
+                                    <dd>
+                                        <div class="input-group">
+                                            <input id="to" type="text" name="to" class="form-control input-small dateTime" value="@newSlot("to").value">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                        </div>
+                                    </dd>
+                                    <dd class="info">Required</dd>
+                                </dl>
+                                <script type="text/javascript">
+                                        $('.dateTime').datetimepicker({
+                                            format: 'HH:mm'
+                                        });
+                                </script>
+                                @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
+                                @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
 
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
-                                <button type="submit" class="btn btn-success" style="border-radius: 5px">Update</button>
-                            </div>
-                        </fieldset>
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
+                                    <button type="submit" class="btn btn-success" style="border-radius: 5px">Update</button>
+                                </div>
+                            </fieldset>
+                        }
                     }
-                }
 
-                @if(action == "clone") {
-                    @helper.form(action = routes.CFPAdmin.saveslot("clone")) {
-                        <fieldset>
-                            <legend>
-                                Clone Break Slot
-                            </legend>
+                    @if(action == "clone") {
+                        @helper.form(action = routes.CFPAdmin.saveslot("clone")) {
+                            <fieldset>
+                                <legend>
+                                    Clone Break Slot
+                                </legend>
 
-                            <input type="hidden" name="id" value="@newSlot("id").value">
-                            <div style="display: none">@tags.selectI18N(field = newSlot("name"), options = Seq(
+                                <input type="hidden" name="id" value="@newSlot("id").value">
+                                <div style="display: none">@tags.selectI18N(field = newSlot("name"), options = Seq(
                                     Messages("conf") -> "conf",
                                     Messages("deep_dive") -> "deep_dive",
                                     Messages("lab") -> "lab",
@@ -462,184 +486,180 @@
                                     Messages("closing_key") -> "closing_key",
                                     Messages("ignite") -> "ignite"
                                 ),
-                                '_default -> "break", 'class -> "form-control")</div>
-                            @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
-                            <dl class=" " id="from_field">
-                                <dt><label for="from">From</label></dt>
-                                <dd>
-                                    <div class="input-group">
-                                        <input id="from" type="text" name="from" class="form-control input-small dateTime" value="@newSlot("from").value">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                    </div>
-                                </dd>
-                                <dd class="info">Required</dd>
-                            </dl>
-                            <dl class=" " id="to_field">
-                                <dt><label for="to">To</label></dt>
-                                <dd>
-                                    <div class="input-group">
-                                        <input id="to" type="text" name="to" class="form-control input-small dateTime" value="@newSlot("to").value">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                    </div>
-                                </dd>
-                                <dd class="info">Required</dd>
-                            </dl>
-                            <script type="text/javascript">
-                                    $('.dateTime').datetimepicker({
-                                        format: 'HH:mm'
-                                    });
-                            </script>
-                            @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
-                            @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
+                                    '_default -> "break", 'class -> "form-control")</div>
+                                @tags.selectI18N(field = newSlot("day"), options = ConferenceDescriptor.ConferenceSlots.conferenceday, '_default -> "--- Please select ---", 'class -> "form-control")
+                                <dl class=" " id="from_field">
+                                    <dt><label for="from">From</label></dt>
+                                    <dd>
+                                        <div class="input-group">
+                                            <input id="from" type="text" name="from" class="form-control input-small dateTime" value="@newSlot("from").value">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                        </div>
+                                    </dd>
+                                    <dd class="info">Required</dd>
+                                </dl>
+                                <dl class=" " id="to_field">
+                                    <dt><label for="to">To</label></dt>
+                                    <dd>
+                                        <div class="input-group">
+                                            <input id="to" type="text" name="to" class="form-control input-small dateTime" value="@newSlot("to").value">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                        </div>
+                                    </dd>
+                                    <dd class="info">Required</dd>
+                                </dl>
+                                <script type="text/javascript">
+                                        $('.dateTime').datetimepicker({
+                                            format: 'HH:mm'
+                                        });
+                                </script>
+                                @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
+                                @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
 
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
-                                <button type="submit" class="btn btn-success" style="border-radius: 5px">Save</button>
-                            </div>
-                        </fieldset>
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
+                                        Cancel</button>
+                                    <button type="submit" class="btn btn-success" style="border-radius: 5px">Save</button>
+                                </div>
+                            </fieldset>
+                        }
                     }
-                }
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="clearfix"></div>
-        &nbsp;
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3>All Slots</h3>
-            </div>
-            <div class="panel-body">
-                <table id="allSlots" class="table table-bordered table-hover table-condensed table-strippted">
-                    <thead>
-                        <tr>
-                            <th>Day</th>
-                            <th>From - To</th>
-                            <th>Slot type</th>
-                            <th>Room</th>
-                            <th>Talk Allowed</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @allslot.map { case (id, slot) =>
-                        @slot.map { slots =>
-                            <tr class="tr_@slot.get.id">
-                                <td>
+        <div class="clearfix"></div>
+            &nbsp;
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All Slots</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="allSlots" class="table table-bordered table-hover table-condensed table-strippted">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>From - To</th>
+                                <th>Slot type</th>
+                                <th>Room</th>
+                                <th>Talk Allowed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @allslot.map { case (id, slot) =>
+                            @slot.map { slots =>
+                                <tr class="tr_@slot.get.id">
+                                    <td>
                                     @slots.day
-                                </td>
+                                    </td>
 
-                                <td>
-                                    <small>
-                                        @slots.from.toString("HH:mm") to @slots.to.toString("HH:mm")
-                                    </small>
-                                </td>
+                                    <td>
+                                        <small>
+                                            @slots.from.toString("HH:mm") to @slots.to.toString("HH:mm")
+                                        </small>
+                                    </td>
 
-                                <td>
+                                    <td>
                                     @if(slots.break.isEmpty) {
                                         @Messages(slots.name).toUpperCase()
                                     } else {
                                         @slots.break.get.nameEN
                                     }
-                                </td>
+                                    </td>
 
-                                <td>
+                                    <td>
                                     @slots.room.name
-                                </td>
+                                    </td>
 
-                                <td>
+                                    <td>
                                     @if(ScheduleConfiguration.getPublishedScheduleByDay(slots.day).contains(slots)) {
                                         "No"
                                     } else {
                                         "Yes"
                                     }
-                                </td>
+                                    </td>
 
-                                <td>
-                                    <a id="update" class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>Update</a>
+                                    <td>
+                                        <a id="update" class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>
+                                            Update</a>
 
-                                    <a id="delete" class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>Delete</a>
-                                    <div id="@slots.id" class="modal fade" role="dialog" >
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                    <h4 class="modal-title"> @Messages("delete.slot")</h4> </div>
-                                                <div class ="modal-body">
-                                                @Messages("mail.delete.slot")
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" style="border-radius: 5px" data-dismiss="modal">@Messages("cancel.goBackHome")</button>
-                                                    <a type="button" class="btn btn-primary" style="border-radius: 5px" href="@routes.CFPAdmin.deleteSlot(slots.id)" onclick="selecActionType(@slots.)">@Messages("btn.enregistrer")</a>
+                                        <a id="delete" class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>
+                                            Delete</a>
+                                        <div id="@slots.id" class="modal fade" role="dialog" >
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title"> @Messages("delete.slot")</h4> </div>
+                                                    <div class ="modal-body">
+                                                    @Messages("mail.delete.slot")
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" style="border-radius: 5px" data-dismiss="modal">@Messages("cancel.goBackHome")</button>
+                                                        <a type="button" class="btn btn-primary" style="border-radius: 5px" href="@routes.CFPAdmin.deleteSlot(slots.id)" onclick="selecActionType(@slots.
+                                                        )">@Messages("btn.enregistrer")</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <a id="clone" class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneSlot(slots.id)"><i class="icon-copy"></i>Clone</a>
-                                </td>
-                            </tr>
+                                        <a id="clone" class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneSlot(slots.id)"><i class="icon-copy"></i>
+                                            Clone</a>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-}
+        }
 
 <script>
-    $( document ).ready(function() {
-        @if(newSlot.get.break.isEmpty) {
-            $('#radioslot').attr('checked', true)
-        } else {
-            $('#radiobreak').attr('checked', true)
-        }
-    });
+        $('#radioslot').change(function () {
+            if (this.checked) {
+                $('#slot').toggle();
+                $('#brea').hide();
+                console.log("Slot selected")
+            }
+        });
 
-    $('#radioslot').change(function () {
-        if (this.checked) {
-            $('#slot').toggle();
-            $('#brea').hide();
-            console.log("Slot selected")
-        }
-    });
-
-    $('#radiobreak').change(function () {
-        if (this.checked) {
-            $('#slot').show();
-            $('#brea').toggle();
-            $('#slot').hide();
-            console.log("Break selected")
-        }
-    });
+        $('#radiobreak').change(function () {
+            if (this.checked) {
+                $('#slot').show();
+                $('#brea').toggle();
+                $('#slot').hide();
+            }
+        });
 </script>
 
 <script type="text/javascript">
-    $('.datepicker').datepicker();
-    $(document).ready(function () {
-        $('#allSlots').dataTable({
-            "aaSorting": [[0, "asc"], [1, "asc"], [2, "asc"]],
-            "iDisplayLength": 20,
-            "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-            "bStateSave": true,
-            "aoColumns": [
-                {"sType": "string"},
-                {"sType": "string"},
-                {"sType": "string"},
-                {"sType": "string"},
-                {"sType": "string"},
-                {"sType": "string"}
-            ]
+        $('.datepicker').datepicker();
+        $(document).ready(function () {
+            $('#allSlots').dataTable({
+                "aaSorting": [[0, "asc"], [1, "asc"], [2, "asc"]],
+                "iDisplayLength": 20,
+                "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                "bStateSave": true,
+                "aoColumns": [
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"}
+                ]
+            });
         });
-    });
 </script>
 <script>
-    tinymce.init({
-        selector: '.email',
-        height: 400,
-        menubar: false,
-        content_css: '//www.tinymce.com/css/codepen.min.css'
-    });
+        tinymce.init({
+            selector: '.email',
+            height: 400,
+            menubar: false,
+            content_css: '//www.tinymce.com/css/codepen.min.css'
+        });
 </script>
