@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-md-6">
             <br>
-            @if(action != "update") {
+            @if((action != "update") || (action != "clone")) {
                 <p> Choose the type of slot :</p>
                 <div style="display: inline-block">  <label class="radio inline" style="margin-top: 0">
                     <input id="radioslot" type="radio" name="music" value="male" checked>
@@ -154,7 +154,7 @@
                                         });
                                 </script>
                                 @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
-                                @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
+                                <div style="display: none"> @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")</div>
 
                                 <div class="col-lg-10 col-lg-offset-2">
                                     <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
@@ -264,7 +264,7 @@
                                         });
                                 </script>
                                 @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
-                                <div style="display: none;">@tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control") </div>
+                                <div style="display: none">@tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control") </div>
                                 <div class="col-lg-10 col-lg-offset-2">
                                     <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
                                     <button type="submit" class="btn btn-success" style="border-radius: 5px">Save</button>
@@ -317,7 +317,7 @@
                                         });
                                 </script>
                                 @tags.selectI18N(field = newSlot("room"), options = Slot.getAllRooms, '_default -> "--- Please select ---", 'class -> "form-control")
-                                <div style="display: none"> @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control") </div>
+                                @tags.selectI18N(field = newSlot("break"), options = Slot.getAllSlotBreaks, '_default -> "--- Please select ---", 'class -> "form-control")
 
                                 <div class="col-lg-10 col-lg-offset-2">
                                     <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
@@ -334,7 +334,7 @@
                     @helper.form(action = routes.CFPAdmin.saveslot("save")) {
                         <fieldset>
                             <legend>
-                                Create SlotBreak
+                                Create Slot Break
                             </legend>
 
                             <input type="hidden" name="id" value="@newSlot("id").value">
@@ -527,7 +527,7 @@
                         @slot.map { slots =>
                             <tr class="tr_@slot.get.id">
                                 <td>
-                                @slots.day
+                                    @slots.day
                                 </td>
 
                                 <td>
@@ -537,29 +537,29 @@
                                 </td>
 
                                 <td>
-                                @if(slots.break.isEmpty) {
-                                    @Messages(slots.name).toUpperCase()
-                                } else {
-                                    @slots.break.get.nameEN
-                                }
+                                    @if(slots.break.isEmpty) {
+                                        @Messages(slots.name).toUpperCase()
+                                    } else {
+                                        @slots.break.get.nameEN
+                                    }
                                 </td>
 
                                 <td>
-                                @slots.room.name
+                                    @slots.room.name
                                 </td>
 
                                 <td>
-                                @if(ScheduleConfiguration.getPublishedScheduleByDay(slots.day).contains(slots)) {
-                                    "No"
-                                } else {
-                                    "Yes"
-                                }
+                                    @if(ScheduleConfiguration.getPublishedScheduleByDay(slots.day).contains(slots)) {
+                                        "No"
+                                    } else {
+                                        "Yes"
+                                    }
                                 </td>
 
                                 <td>
-                                    <a class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>Update</a>
+                                    <a id="update" class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>Update</a>
 
-                                    <a class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>Delete</a>
+                                    <a id="delete" class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>Delete</a>
                                     <div id="@slots.id" class="modal fade" role="dialog" >
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -571,13 +571,13 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default" style="border-radius: 5px" data-dismiss="modal">@Messages("cancel.goBackHome")</button>
-                                                    <a type="button" class="btn btn-primary" style="border-radius: 5px" href="@routes.CFPAdmin.deleteSlot(slots.id)">@Messages("btn.enregistrer")</a>
+                                                    <a type="button" class="btn btn-primary" style="border-radius: 5px" href="@routes.CFPAdmin.deleteSlot(slots.id)" onclick="selecActionType(@slots.)">@Messages("btn.enregistrer")</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <a class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneSlot(slots.id)"><i class="icon-copy"></i>Clone</a>
+                                    <a id="clone" class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneSlot(slots.id)"><i class="icon-copy"></i>Clone</a>
                                 </td>
                             </tr>
                         }
@@ -590,46 +590,56 @@
 }
 
 <script>
-        $('#radioslot').change(function () {
-            if (this.checked) {
-                $('#slot').toggle();
-                $('#brea').hide();
-            }
-        });
+    $( document ).ready(function() {
+        @if(newSlot.get.break.isEmpty) {
+            $('#radioslot').attr('checked', true)
+        } else {
+            $('#radiobreak').attr('checked', true)
+        }
+    });
 
-        $('#radiobreak').change(function () {
-            if (this.checked) {
-                $('#slot').show();
-                $('#brea').toggle();
-                $('#slot').hide();
-            }
-        });
+    $('#radioslot').change(function () {
+        if (this.checked) {
+            $('#slot').toggle();
+            $('#brea').hide();
+            console.log("Slot selected")
+        }
+    });
+
+    $('#radiobreak').change(function () {
+        if (this.checked) {
+            $('#slot').show();
+            $('#brea').toggle();
+            $('#slot').hide();
+            console.log("Break selected")
+        }
+    });
 </script>
 
 <script type="text/javascript">
-        $('.datepicker').datepicker();
-        $(document).ready(function () {
-            $('#allSlots').dataTable({
-                "aaSorting": [[0, "asc"], [1, "asc"], [2, "asc"]],
-                "iDisplayLength": 20,
-                "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                "bStateSave": true,
-                "aoColumns": [
-                    {"sType": "string"},
-                    {"sType": "string"},
-                    {"sType": "string"},
-                    {"sType": "string"},
-                    {"sType": "string"},
-                    {"sType": "string"}
-                ]
-            });
+    $('.datepicker').datepicker();
+    $(document).ready(function () {
+        $('#allSlots').dataTable({
+            "aaSorting": [[0, "asc"], [1, "asc"], [2, "asc"]],
+            "iDisplayLength": 20,
+            "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "bStateSave": true,
+            "aoColumns": [
+                {"sType": "string"},
+                {"sType": "string"},
+                {"sType": "string"},
+                {"sType": "string"},
+                {"sType": "string"},
+                {"sType": "string"}
+            ]
         });
+    });
 </script>
 <script>
-        tinymce.init({
-            selector: '.email',
-            height: 400,
-            menubar: false,
-            content_css: '//www.tinymce.com/css/codepen.min.css'
-        });
+    tinymce.init({
+        selector: '.email',
+        height: 400,
+        menubar: false,
+        content_css: '//www.tinymce.com/css/codepen.min.css'
+    });
 </script>
