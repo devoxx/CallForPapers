@@ -176,12 +176,14 @@
                         @if(SecureCFPController.hasAccessToCFP(req)) {
                             <li><a href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-home"></i> @Messages("nav.homeSpeaker")</a></li>
                         }
-                        @*** @if(SecureCFPController.hasAccessToVisitor(req) || (SecureCFPController.hasAccessToVisitor(req) && SecureCFPController.hasAccessToCFP(req))){ ***@
-                        @if(SecureCFPController.hasAccessToCFP(req)) {
-                            @*<li><a href="@routes.Favorites.welcomeVisitor()"><i class="icon-home"></i> Home visitor</a></li>*@
+
+                        @***
+                        @if(SecureCFPController.hasAccessToVisitor(req) || (SecureCFPController.hasAccessToVisitor(req) && SecureCFPController.hasAccessToCFP(req))){
+                            <li><a href="@routes.Favorites.welcomeVisitor()"><i class="icon-home"></i> Home visitor</a></li>
                             <li><a href="@routes.Favorites.home()"><i class="icon-star"></i> My agenda</a></li>
                             <li><a href="@routes.Publisher.homePublisher()"><i class="icon-calendar"></i> Schedule</a></li>
                         }
+                        ***@
 
                         @if(SecureCFPController.hasAccessToGoldenTicket(req)) {
                             <li><a href="@routes.GoldenTicketController.showAllProposals()"><i class="icon-ticket"></i> @Messages("gt.nav.home")</a></li>
