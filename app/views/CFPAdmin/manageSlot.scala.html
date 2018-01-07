@@ -8,21 +8,19 @@
 
     <script>
         $(document).ready(function () {
-            @***
-            @if(! newSlot.hasErrors) {
-                @if((newSlot != null) && (newSlot != None)) {
-                    @if((newSlot.get != None) || newSlot.get.break.isEmpty) {
-                        $('#radioslot').attr('checked', true);
-                    } else {
-                        $('#radiobreak').attr('checked', true);
-                    }
-                    return
-                }
-            }***@
-
             $(document).ready(function () {
                 $("#brea").hide();
             });
+            
+            @if( action == "create" ) {
+                $('#radioslot').attr('checked', true);
+            } else {
+                @if( newSlot.get.break.isEmpty ) {
+                    $('#radioslot').attr('checked', true);
+                } else {
+                    $('#radiobreak').attr('checked', true);
+                }
+            }
         });
     </script>
 
