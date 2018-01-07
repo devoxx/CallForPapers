@@ -1,171 +1,169 @@
 @(newRoom: Form[Room], allRoom: Map[String, Option[Room]], action: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@main("CFP Admin manage slots") {
-    <script type="text/javascript" charset="utf-8" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf-8" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+    @main("CFP Admin manage slots") {
+        <script type="text/javascript" charset="utf-8" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf-8" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+        <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
 
-    <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
-    </div>
-    <div class="clearfix"></div>
-    @if(flash.get("error").isDefined) {
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+        @if(flash.get("error").isDefined) {
+            <div class="col-md-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-dismissible alert-success ">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                @flash.get("success").get
+            </div>
+        }
+
+        <div style="text-align: center;" class="btn-group">
+            <a href="@routes.CFPAdmin.manageSlots()" type="button" class="btn" style="background-color: #BDBDBD;
+                color: #151515">Manage Slot</a>
+            <a href="@routes.CFPAdmin.manageRoom()" type="button" class="btn btn-default ">Manage Room</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="well well-sm">
+                    @if(action == "create") {
+                        @helper.form(action = routes.CFPAdmin.saveRoom("save")) {
+                            <fieldset>
+                                <legend>
+                                    Create Room
+                                </legend>
+                                <input type="hidden" name="id" value="@newRoom("id").value">
+                                @helper.inputText(newRoom("name"), 'class -> "form-control", '_label -> Messages("room.name"))
+                                @helper.inputText(newRoom("capacity"), 'class -> "form-control")
+                                @helper.inputText(newRoom("setup"), 'class -> "form-control")
+                                @helper.inputText(newRoom("recorded"), 'class -> "form-control")
+
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="submit" class="btn btn-success" style="border-radius: 5px">Submit</button>
+                                </div>
+                            </fieldset>
+                        }
+                    }
+
+                    @if(action == "update") {
+                        @helper.form(action = routes.CFPAdmin.saveRoom("update")) {
+                            <fieldset>
+                                <legend>
+                                    Update Room
+                                </legend>
+                                <input type="hidden" name="id" value="@newRoom("id").value">
+                                @helper.inputText(newRoom("name"), 'class -> "form-control", '_label -> Messages("room.name"))
+                                @helper.inputText(newRoom("capacity"), 'class -> "form-control")
+                                @helper.inputText(newRoom("setup"), 'class -> "form-control")
+                                @helper.inputText(newRoom("recorded"), 'class -> "form-control")
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="submit" class="btn btn-success" style="border-radius: 5px">Update</button>
+                                </div>
+                            </fieldset>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+            &nbsp;
         <div class="col-md-12">
-            <div class="alert alert-danger alert-dismissable">
-                <strong>Error :</strong>
-                @flash.get("error").get
-            </div>
-        </div>
-    }
-    @if(flash.get("success").isDefined) {
-        <div class="alert alert-dismissible alert-success ">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            @flash.get("success").get
-        </div>
-    }
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All Room</h3>
+                </div>
+                <div class="panel-body">
+                    <table id="allRooms" class="table table-bordered table-hover table-condensed table-strippted">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Capacity</th>
+                                <th>Setup</th>
+                                <th>Recorded</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @allRoom.map { case (id, room) =>
+                            @room.map { rooms =>
+                                <tr class="tr_@room.get.id">
+                                    <td>
+                                    @rooms.name
+                                    </td>
+                                    <td>
+                                        <small>@rooms.capacity</small>
+                                    </td>
+                                    <td>
+                                    @rooms.setup
+                                    </td>
+                                    <td>
+                                    @rooms.recorded
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning" style="border-radius: 5px" href ="@routes.CFPAdmin.updateRoom(rooms.id)"><i class="icon-lock"></i>Update</a>
+                                        <a class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@rooms.id"><i class="icon-lock"></i>Delete</a>
+                                        <div id="@rooms.id" class="modal fade" role="dialog" >
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title"> @Messages("delete.room")</h4> </div>
+                                                    <div class ="modal-body">
+                                                    @Messages("mail.delete.room")
+                                                    </div>
+                                                    <div class="modal-footer">
 
-    <div style="text-align: center;" class="btn-group">
-        <a href="@routes.CFPAdmin.manageRoom()" type="button" class="btn btn-default ">Manage Room</a>
-        <a href="@routes.CFPAdmin.manageSlots()" type="button" class="btn" style="background-color: #BDBDBD;
-            color: #151515">Manage Slot</a>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="well well-sm">
-                @if(action == "create") {
-                    @helper.form(action = routes.CFPAdmin.saveRoom("save")) {
-                        <fieldset>
-                            <legend>
-                                Create Room
-                            </legend>
-                            <input type="hidden" name="id" value="@newRoom("id").value">
-                            @helper.inputText(newRoom("name"), 'class -> "form-control", '_label -> Messages("room.name"))
-                            @helper.inputText(newRoom("capacity"), 'class -> "form-control")
-                            @helper.inputText(newRoom("setup"), 'class -> "form-control")
-                            @helper.inputText(newRoom("recorded"), 'class -> "form-control")
-
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button type="reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
-                                <button type="submit" class="btn btn-success" style="border-radius: 5px">Submit</button>
-                            </div>
-                        </fieldset>
-                    }
-                }
-
-                @if(action == "update") {
-                    @helper.form(action = routes.CFPAdmin.saveRoom("update")) {
-                        <fieldset>
-                            <legend>
-                                Update Room
-                            </legend>
-                            <input type="hidden" name="id" value="@newRoom("id").value">
-                            @helper.inputText(newRoom("name"), 'class -> "form-control", '_label -> Messages("room.name"))
-                            @helper.inputText(newRoom("capacity"), 'class -> "form-control")
-                            @helper.inputText(newRoom("setup"), 'class -> "form-control")
-                            @helper.inputText(newRoom("recorded"), 'class -> "form-control")
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button type="reset" class="btn btn-primary">Cancel</button>
-                                <button type="submit" class="btn btn-success">Update</button>
-                            </div>
-                        </fieldset>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="clearfix"></div>
-        &nbsp;
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3>All Room</h3>
-            </div>
-            <div class="panel-body">
-                <table id="allRooms" class="table table-bordered table-hover table-condensed table-strippted">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Capacity</th>
-                            <th>Setup</th>
-                            <th>Recorded</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @allRoom.map { case (id, room) =>
-                        @room.map { rooms =>
-                            <tr class="tr_@room.get.id">
-                                <td>
-                                @rooms.name
-                                </td>
-                                <td>
-                                    <small>@rooms.capacity</small>
-                                </td>
-                                <td>
-                                @rooms.setup
-                                </td>
-                                <td>
-                                @rooms.recorded
-                                </td>
-                                <td>
-                                    <a class="btn btn-sm btn-warning" href  ="@routes.CFPAdmin.updateRoom(rooms.id)"><i class="icon-lock"></i>
-                                        Update</a>
-                                    <a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#@rooms.id"><i class="icon-lock"></i>
-                                        Delete</a>
-                                    <div id="@rooms.id" class="modal fade" role="dialog" >
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                    <h4 class="modal-title"> @Messages("delete.room")</h4> </div>
-                                                <div class ="modal-body">
-                                                @Messages("mail.delete.room")
-                                                </div>
-                                                <div class="modal-footer">
-
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("cancel.goBackHome")</button>
-                                                    <a type="button" class="btn btn-primary" href="@routes.CFPAdmin.deleteRoom(rooms.id)">@Messages("btn.enregistrer")</a>
+                                                        <button type="button" class="btn btn-default" style="border-radius: 5px" data-dismiss="modal">@Messages("cancel.goBackHome")</button>
+                                                        <a type="button" class="btn btn-primary" style="border-radius: 5px" href="@routes.CFPAdmin.deleteRoom(rooms.id)">@Messages("btn.enregistrer")</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script type="text/javascript">
-            $('.datepicker').datepicker();
-            $(document).ready(function () {
-                $('#allRooms').dataTable({
-                    "aaSorting": [[0, "asc"]],
-                    "iDisplayLength": 20,
-                    "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                    "bStateSave": true,
-                    "aoColumns": [
-                        {"sType": "string"},
-                        {"sType": "string"},
-                        {"sType": "string"},
-                        {"sType": "string"},
-                        {"sType": "string"}
-                    ]
+        <script type="text/javascript">
+                $('.datepicker').datepicker();
+                $(document).ready(function () {
+                    $('#allRooms').dataTable({
+                        "aaSorting": [[0, "asc"]],
+                        "iDisplayLength": 20,
+                        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                        "bStateSave": true,
+                        "aoColumns": [
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"}
+                        ]
+                    });
                 });
-            });
-    </script>
-    <script>
-            tinymce.init({
-                selector: '.email',
-                height: 400,
-                menubar: false,
-                content_css: '//www.tinymce.com/css/codepen.min.css'
-            });
-    </script>
-}
+        </script>
+        <script>
+                tinymce.init({
+                    selector: '.email',
+                    height: 400,
+                    menubar: false,
+                    content_css: '//www.tinymce.com/css/codepen.min.css'
+                });
+        </script>
+    }

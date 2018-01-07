@@ -926,7 +926,6 @@ object CFPAdmin extends SecureCFPController {
       )
   }
 
-
   def saveProposal() = SecuredAction {
     implicit request =>
 
@@ -944,10 +943,7 @@ object CFPAdmin extends SecureCFPController {
                 val newUUID = Webuser.saveAndValidateWebuser(newWebuser)
 
                 Speaker.save(speaker)
-
-
             }
-
           }
 
           // If the editor is not the owner then findProposal returns None
@@ -979,14 +975,11 @@ object CFPAdmin extends SecureCFPController {
 
                 Redirect(routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code)).withSession(request.session - "validSpeaker")
                 Redirect(routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code)).withSession(request.session - "validSpeaker")
-
-
                 //Redirect(routes.Backoffice.allProposals()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
                 Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
-
               }
             }
           }
@@ -1011,10 +1004,7 @@ object CFPAdmin extends SecureCFPController {
                 val newUUID = Webuser.saveAndValidateWebuser(newWebuser)
 
                 Speaker.save(speaker)
-
-
             }
-
           }
 
           // If the editor is not the owner then findProposal returns None
@@ -1046,14 +1036,12 @@ object CFPAdmin extends SecureCFPController {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
                 Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
-
               }
             }
           }
         }
       )
   }
-
 
   /* def saveNewSpeaker() = SecuredAction(IsMemberOf("cfp")) {
 implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -1114,7 +1102,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       )
   }
 
-
   def managecfp() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       if (ConferenceDescriptor.isCFPOpen) {
@@ -1125,8 +1112,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was opened by " + request.webuser.cleanName + ""))
       }
       Redirect(routes.CFPAdmin.index())
-
-
   }
 
   def saveNewSpeaker() = Action(parse.multipartFormData) {
@@ -1222,13 +1207,11 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
                 //Event.storeEvent(Event(validSpeaker.cleanName, request.webuser.uuid, "updated a speaker [" + validSpeaker.uuid + "]"))
                 Redirect(routes.CFPAdmin.showSpeakerAndTalks(existingUUID)).flashing("success" -> "Profile updated")
 
-
               }.getOrElse {
                 Speaker.save(validSpeaker)
                 //Event.storeEvent(Event(validSpeaker.cleanName, request.webuser.uuid, "updated a speaker [" + validSpeaker.uuid + "]"))
                 Redirect(routes.CFPAdmin.showSpeakerAndTalks(existingUUID)).flashing("success" -> "Profile updated")
               }
-
 
             case None =>
               val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname"))
@@ -1242,7 +1225,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       )
   }
 
-
   def retour() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
@@ -1251,7 +1233,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         val jsValuevalidspeaker: JsValue = Json.parse(validSpeaker)
         Json.fromJson(jsValuevalidspeaker).map { speaker =>
           speakerr = Some(speaker)
-
         }
       }
       speakerr match {
@@ -1264,10 +1245,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         case None => {
           Ok(views.html.CFPAdmin.newSpeakerAndTalk(speakerForm))
         }
-
       }
-
-
   }
 
   def setPreferredDay(proposalId: String, day: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -1453,42 +1431,38 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
   def verifyRegId(regId: String) = Action {
     implicit request =>
-
-
       Ok(Webuser.regIdExist(regId).toString)
-
   }
 
   def manageSlots() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allslot = Slot.allSlot
       Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1, allslot, "create"))
-
   }
 
   def saveslot(action: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allslot = Slot.allSlot
       Slot.SlotForm1.bindFromRequest.fold(
-        invalidForm => if (action == "update") {
-          BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "update")).flashing("error" -> "Form invalid")
-        } else {
-          BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "create")).flashing("error" -> "Form invalid")
-        },
+        invalidForm =>
+          action match {
+            case "update" => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "update")).flashing("error" -> "Form invalid")
+            case "create" => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "create")).flashing("error" -> "Form invalid")
+            case "clone" => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "clone")).flashing("error" -> "Form invalid")
+          },
         validForm => {
-          if (action == "update") {
-            Slot.updateSlot(validForm.id, validForm)
-            Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully updated")
-          }
-          else {
-
-
-            Slot.saveslot(validForm)
-            Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully saved")
+          action match {
+            case "update" =>
+              Slot.updateSlot(validForm.id, validForm)
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully updated")
+            case "create" =>
+              Slot.saveslot(validForm)
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully saved")
+            case "clone" =>
+              Slot.saveslot(validForm)
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully cloned and saved")
           }
         }
-
-
       )
   }
 
@@ -1498,6 +1472,16 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         case Some(a) =>
           val allslot = Slot.allSlot
           Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1.fill(a), allslot, "update"))
+        case None => Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> " slot not found")
+      }
+  }
+
+  def cloneSlot(slotid: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Slot.findSlotByUUID(slotid) match {
+        case Some(a) =>
+          val allslot = Slot.allSlot
+          Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1.fill(a), allslot, "clone"))
         case None => Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> " slot not found")
       }
   }
@@ -1512,8 +1496,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
           Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "the slot was  successfully deleted")
         case None => Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> " slot does not exist")
       }
-
-
   }
 
   def manageRoom() = SecuredAction(IsMemberOf("cfp")) {
@@ -1522,7 +1504,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       Ok(views.html.CFPAdmin.manageRoom(Room.RoomForm, allroom, "create"))
   }
-
 
   def saveRoom(action: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -1567,16 +1548,12 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
           Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> "the room was  successfully deleted")
         case None => Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> " room does not exist")
       }
-
-
   }
 
   def changeEmailConfiguration(statut: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       MailsManager.changeEmailMode(statut)
       Redirect(routes.CFPAdmin.index())
-
-
   }
 
   def notifyVisitors = SecuredAction((IsMemberOfGroups(securityGroups))) {

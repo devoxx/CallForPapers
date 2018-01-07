@@ -227,6 +227,7 @@ GET           /admin/manageSlots                                                
 POST          /admin/saveslot                                                   controllers.CFPAdmin.saveslot(action:String)
 GET           /admin/deleteSlot                                                 controllers.CFPAdmin.deleteSlot(slotid:String)
 GET           /admin/updateslot                                                 controllers.CFPAdmin.updateslot(slotid :String)
+GET           /admin/cloneslot                                                  controllers.CFPAdmin.cloneSlot(slotid: String)
 GET           /admin/manageRoom                                                 controllers.CFPAdmin.manageRoom()
 POST          /admin/saveroom                                                   controllers.CFPAdmin.saveRoom(action:String)
 GET           /admin/deleteRoom                                                 controllers.CFPAdmin.deleteRoom(roomid:String)
