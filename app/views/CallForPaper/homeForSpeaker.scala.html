@@ -5,8 +5,26 @@
   ratings:Map[Proposal,List[Rating]],
   needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import org.apache.commons.lang3.StringUtils
+@import scala.concurrent.ExecutionContext.Implicits.global
 @main(Messages("cfp.title")){
+    <style>.viewport {
+        display: table-row-group;
+
+        left: 0px;
+        align-items: inherit;
+        justify-content: center;
+        height: 100vh;
+        background-color: $mdBlueGrey;
+    }
+    .dropdown-inline {
+        display: inline-block;
+        position: relative;
+    }
+    .error-notice {
+        margin: 5px 5px; /* Making sure to keep some distance from all side */
+    }</style>
     <div class="row">
+
         <div class="col-md-4">
             <h3><i class="icon-magic"></i> @Messages("your.profile")</h3>
 
@@ -169,8 +187,89 @@
                         </tr>
                     </tbody>
                 </table>
-                </div>
-            }
+
+                </div>}
+                <br>
+@if(SecureCFPController.hasAccessToCFPAdmin(req)) {
+    <div class="digestMessage">
+        <h3><i class="icon-bell"></i> Manage Notifications </h3>
+
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td> <div class="dropdown dropdown-inline">
+                        <a href="#" class="btn btn-color-1 dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-animations="flipInX flipInY flipInX flipInY">
+                            Enable/Disable notifications By type <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@if(NotificationService.isSubscribed(webuser.uuid, "proposal")) {
+                                <a href="@routes.CFPAdmin.unsubscribeTonotif(webuser.uuid, "proposal")"><i class="icon-lock"></i>
+                                    Disable talks notifications </a>
+                            } else {
+                                <a href="@routes.CFPAdmin.subscribeTonotif(webuser.uuid, "proposal")"><i class="icon-unlock"></i>
+                                    Enable talks notifications </a>
+                            }</li>
+
+                            <li class="divider"></li>
+                            <li class="dropdown"> @if(NotificationService.isSubscribed(webuser.uuid, "vote")) {
+                                <a href="@routes.CFPAdmin.unsubscribeTonotif(webuser.uuid, "vote")"><i class="icon-lock"></i>
+                                    Disable votes notifications </a>
+                            } else {
+                                <a href="@routes.CFPAdmin.subscribeTonotif(webuser.uuid, "vote")"><i class="icon-unlock"></i>
+                                    Enable votes notifications </a>
+                            }
+                            </li>
+                            <li class="divider"> </li>
+
+
+                            <li>
+                            @if(NotificationService.isSubscribed(webuser.uuid, "InternalMessages")) {
+                                <a href="@routes.CFPAdmin.unsubscribeTonotif(webuser.uuid, "InternalMessages")"><i class="icon-lock"></i>
+                                    Disable Internal messages notifications </a>
+                            } else {
+                                <a href="@routes.CFPAdmin.subscribeTonotif(webuser.uuid, "InternalMessages")"><i class="icon-unlock"></i>
+                                    Enable Internal messages notifications </a>
+                            }
+                            </li>
+                            <li class="divider"> </li>
+
+                            <li>
+                            @if(NotificationService.isSubscribed(webuser.uuid, "Emails")) {
+                                <a href="@routes.CFPAdmin.unsubscribeTonotif(webuser.uuid, "Emails")"><i class="icon-lock"></i>
+                                    Disable Emails notifications </a>
+                            } else {
+                                <a href="@routes.CFPAdmin.subscribeTonotif(webuser.uuid, "Emails")"><i class="icon-unlock"></i>
+                                    Enable Emails notifications </a>
+                            }
+                            </li>
+                            <li class="divider"> </li>
+
+                            <li>
+                            @if(NotificationService.isSubscribed(webuser.uuid, "ManageUsers")) {
+                                <a href="@routes.CFPAdmin.unsubscribeTonotif(webuser.uuid, "ManageUsers")"><i class="icon-lock"></i>
+                                    Disable Manage Users notifications </a>
+                            } else {
+                                <a href="@routes.CFPAdmin.subscribeTonotif(webuser.uuid, "ManageUsers")"><i class="icon-unlock"></i>
+                                    Enable Manage Users notifications </a>
+                            }
+                            </li>
+
+
+                        </ul>
+                    </div></td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+}
+
+
+
+
+
 
 
         </div>

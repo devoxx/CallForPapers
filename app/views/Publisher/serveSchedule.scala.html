@@ -2,7 +2,19 @@
 
 @views.html.Publisher.layout("Schedule", Some("DevoxxMA - Schedule")) {
 	<base href="@routes.Publisher.serveSchedule("").url">
+	<meta property="og:image" content="@routes.Assets.at(path="/public",file="schedule/assets/imgs/logo.png")"/>
+	<meta property="og:url" content="https://cfp.devoxx.ma"/>
+	<meta property="og:title" content="Devoxx.ma Schedule"/>
+	<meta property="og:site_name" content="Devoxx.ma"/>
+	<meta property="og:description" content="The annual Devoxx Morocco conference in Casablanca by developers for developers."/>
+	<meta name="twitter:site" content="https://cfp.devoxx.ma">
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:creator" content="Devoxx.ma"/>
+	<meta name="twitter:image" content="@routes.Assets.at(path="/public",file="schedule/assets/imgs/logo.png")"/>
+	<meta name="twitter:title" content="Devoxx.ma Schedule">
+	<meta name="twitter:description" content="The annual Devoxx Morocco conference in Casablanca by developers for developers.">
 	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js" integrity="sha256-zG8v+NWiZxmjNi+CvUYnZwKtHzFtdO8cAKUIdB8+U9I=" crossorigin="anonymous"></script>
 	<link href='//fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />

@@ -224,6 +224,8 @@ class ZapActor extends Actor {
             ScheduleConfiguration.findSlotForConfType(talk.talkType.id , talk.id)
 
         }
+        CFPAdmin.postNotification("Some of your talks have been scheduled , For more details please check your Emails" ,"Emails", "admin" , spea.uuid ,"one")
+
         Mails.sendScheduledSpeaksProps(slots , spea)
       }
     }
@@ -240,6 +242,8 @@ class ZapActor extends Actor {
             ScheduleConfiguration.findSlotForConfType(talk.talkType.id , talk.id)
 
         }
+        CFPAdmin.postNotification("Some of your talks have been scheduled , For more details please check your Emails" ,"Emails", "admin" , uuid ,"one")
+
         Mails.sendScheduledSpeaksProps(slots , Webuser.findByUUID(uuid).get)
       }
 

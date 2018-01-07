@@ -25,10 +25,11 @@ package controllers
 
 import models.Speaker._
 import models._
+import models.Webuser
 import notifiers._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
-import play.api.libs.json.{JsNull, JsObject, JsValue, Json}
+import play.api.libs.json.{JsNull, JsObject, JsValue, Json, Writes}
 import play.api.mvc.{SimpleResult, _}
 import Link.call2String
 import controllers.Publisher.Ok
@@ -41,19 +42,103 @@ import play.api.Play
   * A real REST api for men.
   * Created by Nicolas Martignole on 25/02/2014.
   */
-object RestAPI extends Controller {
+object  RestAPI extends Controller {
+
+  def eventDetails = Action {
+    implicit request =>
+    Ok(
+      Json.obj(
+        "name" -> "Devoxx 2017",
+        "code" -> "Devoxx2017",
+        "description" -> "Provide the best tech conference for passionate developers to network, hack, be inspired, lear and, of course, have a lot of fun in a pragmatic way!",
+        "image" -> "https://devoxx.ma/assets/images/logos/logo.png",
+        "location" -> Json.obj("latitude" -> 33.595577, "longitude" -> -7.6001186),
+        "locationName" -> "GRAND MOGADOR CASABLANCA",
+        "startDate" -> "Nov 14",
+        "endDate" -> "Nov 16",
+        "website" -> "http://devoxx.ma",
+        "baseUrl" -> ConferenceDescriptor.getFullRoutePath(routes.Application.index.url)
+      )
+    )
+  }
+
+  def currentUser = Action {
+    implicit request =>
+      implicit val webuserWrites: Writes[Webuser] = Webuser.webuserWrites
+      request.session.get("uuid") match {
+        case Some(validUUID) =>
+          Webuser.findByUUID(validUUID) match {
+            case Some(webuser) => Ok(
+              Json.obj(
+                "uuid" -> webuser.uuid,
+                "email" -> webuser.email,
+                "firstName" -> webuser.firstName,
+                "lastName" -> webuser.lastName,
+                "pictureurl" -> Speaker.findByUUID(webuser.uuid).get.avatarUrl.get,
+                "tel" -> webuser.tel,
+                "company" -> Speaker.findByUUID(webuser.uuid).get.company.getOrElse(null)
+              )
+            )
+            case None => Unauthorized(
+              Json.obj("error" -> "No Such User")
+            )
+          }
+        case None => Unauthorized(
+          Json.obj("error" -> "No Such User")
+        )
+      }
+  }
 
   def index = UserAgentActionAndAllowOrigin(implicit request => Ok(views.html.RestAPI.index()))
 
   def profilePicture(filename: String) = Action {
     val storageFolder = current.configuration.getString("cfp.imageBase").getOrElse("storage");
     val file = new java.io.File(s"$storageFolder/$filename");
-    if(file.exists) {
+    if(file.exists ){
       Ok.sendFile(file);
     } else {
       NotFound("Sorry, File not found");
     }
   }
+
+def getNotifReceiversBytype( typ:String) = UserAgentActionAndAllowOrigin {
+  implicit request =>
+
+    val allspeakersUuids = Speaker.allSpeakersUUID()
+    val alladminUuids = Webuser.allAdminUUID()
+    val allvisitorUuids = Webuser.allVisitorUUID()
+    var uuids = Set[Map[String , JsValue]]()
+
+    if(typ.equals("speaker")) {
+             uuids = allspeakersUuids.map {
+              id: String =>
+                Map(
+                  "uuid" -> Json.toJson(id)
+
+                )
+            }
+        }
+    if(typ.equals("admin")){
+      uuids = alladminUuids.map {
+        id: String =>
+          Map(
+            "uuid" -> Json.toJson(id)
+
+          )
+      }
+    }
+    if(typ.equals("visitor")){
+    uuids = allvisitorUuids.map {
+      id: String =>
+        Map(
+          "uuid" -> Json.toJson(id)
+
+        )
+    }}
+        val jsonObject = Json.toJson(uuids)
+
+        Ok(jsonObject).as(JSON)
+}
 
   def createAttendeeAccount() = Action {
     implicit request: Request[AnyContent] =>
@@ -167,12 +252,9 @@ object RestAPI extends Controller {
   }
 
 
-  def serveScheduleWebApp(path: String) = {
-    val root = "/public/schedule/"
-    Play.application(current).getFile(root.concat(path)).exists match {
-      case true => Assets.at(path=root, file=path)
-      case false => Assets.at(path=root, file="index.html")
-    }
+
+  def serveScheduleWebApp(path: String) = UserAgentActionAndAllowOrigin {
+    implicit request => Redirect(routes.Publisher.serveSchedule(""))
   }
 
   def profile(docName: String) = Action {
@@ -725,6 +807,7 @@ object RestAPI extends Controller {
   def showScheduleFor(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
+      implicit val userLinkFormat = UserLink.userLinkFormat
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
       val newEtag = "v2_" + finalListOfSlots.hashCode().toString
@@ -751,10 +834,11 @@ object RestAPI extends Controller {
                         speaker =>
                           Map(
                             "link" -> Json.toJson(
-                              Link(
+                              UserLink(
                                 routes.RestAPI.showSpeaker(eventCode, speaker.uuid),
                                 routes.RestAPI.profile("speaker"),
-                                speaker.cleanName
+                                speaker.cleanName,
+                                speaker.uuid
                               )
                             ),
                             "name" -> Json.toJson(speaker.cleanName)
@@ -1169,6 +1253,12 @@ object Link {
 
   implicit val linkFormat = Json.format[Link]
   implicit def call2String(c : Call)(implicit requestHeader: RequestHeader ):String =  c.absoluteURL()
+}
+
+case class UserLink(href: String, rel: String, title: String, uuid: String)
+
+object UserLink {
+  implicit val userLinkFormat = Json.format[UserLink]
 }
 
 case class Conference(eventCode: String, label: String, locale: List[String], localisation: String, link: Link)

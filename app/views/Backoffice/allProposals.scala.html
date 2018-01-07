@@ -49,7 +49,7 @@
 
                         <thead>
                             <tr>
-                                <th>Proposal id</th>
+                                <th>Edit</th>
                                 <th>Title</th>
                                 <th>Author</th>
                                 <th>Status</th>
@@ -62,11 +62,12 @@
                                 @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
                                     <tr class="preselected_@approved refused_@refused">
                                         <td>
-                                            <a href="@routes.CFPAdmin.editProposalByAdmin(proposal.id , proposal.mainSpeaker)" title="@Messages("table.pres.edit")"><img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1506785394/edit_g2elwa.png"></a><br>
-                                            <small><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a></small>
+                                            <a style="border-radius: 5px ; margin-bottom: 5px" class="btn btn-sm btn-primary" href="@routes.CFPAdmin.editProposalByAdmin(proposal.id , proposal.mainSpeaker)" >
+                                                <img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1506785394/edit_g2elwa.png"></a><br>
                                         </td>
                                         <td>
-                                            <small>@proposal.title</small>
+                                            <a  href="@routes.CFPAdmin.openForReview(proposal.id)"><small>@proposal.title</small></a>
+
                                         </td>
                                         <td>
                                         @tags.renderGravatar(proposal.mainSpeaker, showPhoto = false)
@@ -75,7 +76,7 @@
                                             <span class="label label-@proposal.state.code">@proposal.state.code</span>
                                         </td>
                                         <td>
-                                            <small><a style="border-radius: 15px" href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code)" class="btn btn-sm btn-primary">
+                                           <p style="margin-bottom: 2px"><small><a style="border-radius: 15px" href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code)" class="btn btn-sm btn-primary">
                                                 Submitted</a> </small>
                                             <small><a style="border-radius: 15px" href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.TOREVIEWLATER.code)" class="btn btn-sm btn-color-2">
                                                 To review later</a> </small>
@@ -84,12 +85,12 @@
                                             <small><a  style="border-radius: 15px" href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code)" class="btn btn-sm btn-success">
                                                 Accepted</a> </small>
                                             <small><a  style="border-radius: 15px" href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.BACKUP.code)" class="btn btn-sm btn-warning">
-                                                Backup</a> </small>
+                                                Backup</a> </small></p>
                                             <small><a style="border-radius: 15px" href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.DECLINED.code)" class="btn btn-sm btn-color-10">
                                                 Declined</a> </small>
-                                            <p style="padding-top: 7px"><small ><a style="border-radius: 15px " href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.REJECTED.code)" class="btn btn-sm btn-danger">
+                                            <small ><a style="border-radius: 15px " href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.REJECTED.code)" class="btn btn-sm btn-danger">
 
-                                                Rejected</a> </small></p>
+                                                Rejected</a> </small>
 
                                         </td>
                                     </tr>

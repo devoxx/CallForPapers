@@ -234,13 +234,14 @@ object ConferenceDescriptor {
     val Room8 = Room("room_08", "Musk", 26, "classroom", "rien")
 
     def allRooms:List[Room]={
-      var list :List[Room] = List.empty[Room]
-      Room.allRoom.map(x=>x._2 match {
-        case Some(a)=>  list = a::list
-        case None=>
+      //var list :List[Room] = List.empty[Room]
+      //Room.allRoom.map(x=>x._2 match {
+      //  case Some(a)=>  list = a::list
+      //  case None=>
 
-      })
-      list
+      //})
+      //list
+      List(Room1, Room2, Room3, Room4, Room5, Room6, Room7, Room8)
     }
 
   }
@@ -268,15 +269,414 @@ object ConferenceDescriptor {
 
 val conferenceday=Seq(("tuesday","tuesday"),("wednesday","wednesday"),("thursday","thursday"))
 
-    def mondaySchedule: List[Slot] = { alldb.filter(x=>x.day=="monday" )  }
+    val tuesdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registration, "tuesday",
+        new DateTime(s"${firstDay}T07:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "tuesday",
+        new DateTime(s"${firstDay}T12:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "tuesday",
+        new DateTime(s"${firstDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)))
+    )
 
-    def tuesdaySchedule: List[Slot] = {  alldb.filter(x=>x.day=="tuesday" ) }
+    // Registration, coffee break, lunch etc
+    val wednesdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
+        new DateTime(s"${secondDay}T07:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T09:00:00.000+00:00"))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
+        new DateTime(s"${secondDay}T12:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:00:00.000+00:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
+        new DateTime(s"${secondDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T16:30:00.000+00:00"))
+    )
 
-    def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="wednesday" ) }
+    val thursdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
+        new DateTime(s"${thirdDay}T07:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T09:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
+        new DateTime(s"${thirdDay}T12:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
+        new DateTime(s"${thirdDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)))
+    )
 
-    def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="thursday" ) }
+    val tuesdayScheduleMock: List[Slot] = List(
+      // 9:30 - 11:30
+      SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday",
+        new DateTime(s"${firstDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday",
+        new DateTime(s"${firstDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      // 11:40 - 12:10
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T11:40:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T12:10:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T11:40:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T12:10:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T11:40:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T12:10:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T11:40:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T12:10:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      // 13:15 - 13:45
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday",
+        new DateTime(s"${firstDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      // 14:00 - 16:00
+      , SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday",
+        new DateTime(s"${firstDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday",
+        new DateTime(s"${firstDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T16:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      // 16:30 - 18:30
+      , SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday",
+        new DateTime(s"${firstDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T18:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T18:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T18:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday",
+        new DateTime(s"${firstDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T18:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      // 08:00 - 18:30
+       , SlotBuilder(ConferenceProposalTypes.TRN.id, "tuesday",
+        new DateTime(s"${firstDay}T08:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T18:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room7)
+       , SlotBuilder(ConferenceProposalTypes.TRN.id, "tuesday",
+        new DateTime(s"${firstDay}T08:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${firstDay}T18:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room8)
+    )
 
-    def fridaySchedule: List[Slot] = { alldb.filter(x=>x.day=="friday" ) }
+    val wednesdayScheduleMock: List[Slot] = List(
+      // 09:30 - 09:50
+      SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+        new DateTime(s"${secondDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T09:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 09:55 - 10:15
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+        new DateTime(s"${secondDay}T09:55:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T10:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 10:20 - 10:40
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+        new DateTime(s"${secondDay}T10:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T10:40:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 10:45 - 11:05
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+        new DateTime(s"${secondDay}T10:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T11:05:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 11:10 - 11:30
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+        new DateTime(s"${secondDay}T11:10:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+
+      // 11:30 - 12:20
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 13:15 - 13:45
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
+        new DateTime(s"${secondDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
+        new DateTime(s"${secondDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
+        new DateTime(s"${secondDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
+        new DateTime(s"${secondDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
+        new DateTime(s"${secondDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      // 14:00 - 14:50
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 15:00 - 15:50
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 16:30 - 17:20
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday",
+        new DateTime(s"${secondDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 17:30 - 17:50
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+        new DateTime(s"${secondDay}T17:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T17:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 18:00 - 18:15
+      , SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday",
+        new DateTime(s"${secondDay}T18:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday",
+        new DateTime(s"${secondDay}T18:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday",
+        new DateTime(s"${secondDay}T18:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday",
+        new DateTime(s"${secondDay}T18:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday",
+        new DateTime(s"${secondDay}T18:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      // 18:15 - 19:15
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday",
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T19:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday",
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T19:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday",
+        new DateTime(s"${secondDay}T18:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T19:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday",
+        new DateTime(s"${secondDay}T18:15:00.00+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T19:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday",
+        new DateTime(s"${secondDay}T18:15:00.00+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${secondDay}T19:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+    )
+
+    val thursdayScheduleMock: List[Slot] = List(
+      // 9:30 - 9:50
+      SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
+        new DateTime(s"${thirdDay}T09:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T09:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 10:00 - 10:20
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
+        new DateTime(s"${thirdDay}T10:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T10:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 10:30 - 11:20
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T10:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T11:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T10:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T11:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T10:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T11:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T10:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T11:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T10:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T11:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T10:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T11:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 11:30 - 12:20
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T11:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T12:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      // 13:15 - 13:45
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
+        new DateTime(s"${thirdDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
+        new DateTime(s"${thirdDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
+        new DateTime(s"${thirdDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
+        new DateTime(s"${thirdDay}T13:15:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T13:45:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      // 14:00 - 14:50
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T14:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T14:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room7)
+      // 15:00 - 15:50
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T15:00:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T15:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room7)
+      // 16:30 - 17:20
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room1)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room2)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room3)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room4)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room5)
+      , SlotBuilder(ConferenceProposalTypes.BOF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      , SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday",
+        new DateTime(s"${thirdDay}T16:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:20:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room7)
+      // 17:30 - 18:10
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
+        new DateTime(s"${thirdDay}T17:30:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T17:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+      , SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
+        new DateTime(s"${thirdDay}T17:50:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)),
+        new DateTime(s"${thirdDay}T18:10:00.000+00:00").toDateTime(DateTimeZone.forID(timezone)), ConferenceRooms.Room6)
+    )
+
+    def mondaySchedule: List[Slot] = { List.empty/** alldb.filter(x=>x.day=="monday" ) **/ }
+
+    def tuesdaySchedule: List[Slot] = { tuesdayScheduleMock/** alldb.filter(x=>x.day=="tuesday" ) **/ }
+
+    def wednesdaySchedule: List[Slot] = { wednesdayScheduleMock/** alldb.filter(x=>x.day=="wednesday" ) **/ }
+
+    def thursdaySchedule: List[Slot] = { thursdayScheduleMock/** alldb.filter(x=>x.day=="thursday" ) **/ }
+
+    def fridaySchedule: List[Slot] = { List.empty/** alldb.filter(x=>x.day=="friday" ) **/ }
 
     def alldb:List[Slot]={
       var list :List[Slot] = List.empty[Slot]

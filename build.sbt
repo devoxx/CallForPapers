@@ -1,6 +1,6 @@
 name := "cfp-devoxxMA"
 
-version := "3.0.6"
+version := "3.0.8"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
   ws
 )
 
+
 import com.typesafe.sbt.packager.MappingsHelper._
 mappings in Universal ++= directory(baseDirectory.value / "public")
 
@@ -29,6 +30,7 @@ val elasticSearchV = "1.3.2"
 
 // Coursier
 libraryDependencies ++= Seq(
+  "javax.inject" % "javax.inject" % "1",
   "redis.clients" % "jedis" % "2.1.0"
   , "com.typesafe.play" %% "play-mailer" % "2.4.1"
   , "org.apache.commons" % "commons-lang3" % "3.1"
@@ -43,4 +45,17 @@ libraryDependencies ++= Seq(
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
 )
+/*
+lazy val compileScheduleTask = taskKey[Unit]("Build Schedule")
 
+watchSources := watchSources.value.filter { _.getName.contains("/public/schedule") }
+
+compileScheduleTask := {
+  ConfAppBuilder(baseDirectory.value).run()
+}
+
+compile in Compile := {
+  compileScheduleTask.value
+  (compile in Compile).value
+}
+*/

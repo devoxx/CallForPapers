@@ -14,6 +14,7 @@
             }
             <th>@Messages("tag.proposal.type")</th>
             <th>@Messages("tag.proposal.track")</th>
+            <th>Edit</th>
         </tr>
     </thead>
 
@@ -60,6 +61,7 @@
             }
         <td>@Messages(proposal.talkType.id)</td>
         <td>@Messages(proposal.track.label)</td>
+                <td><a href="@routes.CFPAdmin.editProposalByAdmin(proposal.id , Proposal.findById(proposal.id).get.mainSpeaker )" style="border-radius: 5px" class="btn btn-sm btn-info" ><i class="icon-edit"></i></a></td>
         </tr>
         }
     }

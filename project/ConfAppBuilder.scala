@@ -22,7 +22,7 @@ case class ConfAppBuilder(base: File) {
         val sourceFile = new File(buildFolder, fileName)
         val destinationFile = new File(publicFolder, fileName)
         if(sourceFile.isFile()) {
-          Process(sourceFile) #> destinationFile ! 
+          IO.copyFile(sourceFile, destinationFile)
         } else {
           IO.copyDirectory(sourceFile, destinationFile, overwrite = true) 
         }

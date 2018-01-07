@@ -1,0 +1,68 @@
+@(QRCodeData: String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main(Messages("cfp.title")){
+    <style>
+        #authQR-container {
+            padding: 34px;
+            border-radius: 5px;
+            background-color: #d93;
+            -webkit-box-shadow: 1px 1px 5px 1px rgba(138,100,38,1);
+            -moz-box-shadow: 1px 1px 5px 1px rgba(138,100,38,1);
+            box-shadow: 1px 1px 5px 1px rgba(138,100,38,1);
+        }
+        #authQR-demo {
+            display: flex;
+            justify-content: center;
+        }
+        #authQR-demo img {
+            height: 610px;
+            max-width: 100%;
+        }
+        #authQRCode {
+            padding: 5px;
+            border-radius: 5px;
+            background-color: white;
+            border: 2px solid black;
+        }
+        #authQRCode img {
+            width: 100%;
+        }
+        #autQR-info {
+            padding: 5px;
+            background-color: rgba(255, 255, 255,0.5);
+            margin-top: 13px;
+        }
+    </style>
+    <div id="authQR-container">
+        <div class="row">
+            <div class="col-md-4">
+                <div id="authQRCode"></div>
+                <div id="autQR-info">
+                    <div style="font-size: 21px;font-weight: bold;">
+                        Use conf.io Reviewer app on your phone to scan the code.
+                    </div>
+                    <div style="margin-top:8px;">
+                        The app will have to sync with the server, so make sure to connect your phone to WI-FI to reduce mobile data usage.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div id="authQR-demo">
+                    <img src="@routes.Assets.at(path="/public",file="images/authQR-demo.gif")">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            new QRCode(document.getElementById('authQRCode'), {
+                text: '@QRCodeData',
+                colorDark: '#EC7357',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+            $('#authQRCode').attr('title', 'QR Code');
+        });
+    </script>
+    <script src="@routes.Assets.at(path="/public",file="js/qrcode.min.js")" type="text/javascript"></script>
+}

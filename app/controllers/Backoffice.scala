@@ -33,9 +33,12 @@ object Backoffice extends SecureCFPController {
           if (Webuser.hasAccessToCFP(uuidSpeaker)) {
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"removed ${webuser.cleanName} from CFP group"))
             Webuser.removeFromCFPAdmin(uuidSpeaker)
+            CFPAdmin.postNotification("You have been removed from CFP group " , "ManageUsers", "admin" , webuser.uuid , "one")
           } else {
             Webuser.addToCFPAdmin(uuidSpeaker)
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"added ${webuser.cleanName} to CFP group"))
+            CFPAdmin.postNotification("You have been added to CFP group" ,"ManageUsers", "admin" , webuser.uuid , "one")
+
           }
           Redirect(routes.CFPAdmin.allWebusers())
       }.getOrElse {
@@ -119,7 +122,7 @@ object Backoffice extends SecureCFPController {
         }
       }
 
-
+     CFPAdmin.postNotification(s"${Proposal.findById(proposalId).get.title} was ${state}" , "proposal", "admin" , request.webuser.uuid , "one" )
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
   }
 

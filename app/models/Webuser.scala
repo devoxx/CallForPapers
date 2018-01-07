@@ -27,7 +27,7 @@ import library.Redis
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import play.api.libs.Crypto
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Writes, Json}
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
@@ -52,8 +52,10 @@ case class Webuser(uuid: String,
 
 object Webuser {
   implicit val webuserFormat: Format[Webuser] = Json.format[Webuser]
+  implicit val webuserWrites: Writes[Webuser] = Json.writes[Webuser]
 
   val Internal = Webuser("internal", ConferenceDescriptor.current().fromEmail, "CFP", "Program Committee", RandomStringUtils.random(64), "visitor")
+
 
   def activeVip(webuser: Webuser , Avip : Boolean) = Redis.pool.withClient {
     client =>
@@ -385,6 +387,15 @@ def addToAdminVisitors(uuid:String) = Redis.pool.withClient{
     client =>
       !client.exists("Webuser:UUID:" + uuid)
   }
+  def allAdminUUID(): Set[String] = Redis.pool.withClient {
+    client =>
+      client.smembers("Webuser:admin")
+  }
+  def allVisitorUUID(): Set[String] = Redis.pool.withClient {
+    client =>
+      client.smembers("Webuser:visitor")
+  }
+
   val newVisitorForm: Form[Webuser] = Form(
     mapping(
       "email" ->  (email verifying nonEmpty),
