@@ -1455,10 +1455,10 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
               Slot.updateSlot(validForm.id, validForm)
               Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully updated")
             case "create" =>
-              Slot.saveslot(validForm)
+              Slot.saveSlot(validForm)
               Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully saved")
             case "clone" =>
-              Slot.saveslot(validForm)
+              Slot.saveSlot(validForm)
               Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully cloned and saved")
           }
         }

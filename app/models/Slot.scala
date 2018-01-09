@@ -230,7 +230,7 @@ object Slot {
     ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)
   }
 
-  def createslot(id: String, name: String, day: String, from: DateTime, to: DateTime,
+  def createSlot(id: String, name: String, day: String, from: DateTime, to: DateTime,
                  room: String, break: Option[String]): Slot = {
     break match {
       case Some(a) => Slot(id, name, day, from, to, Room.findRoomByUUID(room).get, None, findSlotbreakByid(a))
@@ -257,7 +257,7 @@ object Slot {
     "to" -> jodaDate("HH:mm"),
     "room" -> nonEmptyText,
     "break" -> optional(text)
-  )(Slot.createslot)(Slot.unapplyForm))
+  )(Slot.createSlot)(Slot.unapplyForm))
 
   def getAllRooms: Seq[(String, String)] = {
     val allRooms = Room.allRoom.map(x =>
@@ -293,7 +293,7 @@ object Slot {
     newdate
   }
 
-  def saveslot(slot: Slot): String = Redis.pool.withClient {
+  def saveSlot(slot: Slot): String = Redis.pool.withClient {
     client =>
       var f = Slot.changeDate(slot.from, slot.day)
       var t = Slot.changeDate(slot.to, slot.day)
@@ -363,7 +363,7 @@ object Slot {
   }
 }
 
-case class RoomImport(id: String, commaSeparatedValues: String) {
+case class AnyFieldImport(id: String, commaSeparatedValues: String) {
 
   def index: Int = {
     val regexp = "[\\D\\s]+(\\d+)".r
@@ -386,37 +386,28 @@ case class RoomImport(id: String, commaSeparatedValues: String) {
   }
 }
 
-object RoomImport {
-  val roomImportForm = Form(mapping(
+object AnyFieldImport {
+  val anyFieldImportForm = Form(mapping(
     "id" -> optional(text),
     "commaSeparatedValues" -> text
-  )(validateNewRoom)(unapplyRoomImportForm))
+  )(validateAnyField)(unapplyAnyFieldImportForm))
 
-  def validateNewRoom(
-                       id: Option[String],
-                       commaSeparatedValues: String): RoomImport = {
-    RoomImport(
-      id.getOrElse(generateId()),
+  def validateAnyField(id: Option[String],
+                       commaSeparatedValues: String): AnyFieldImport = {
+    AnyFieldImport(
+      id.getOrElse(generateID(commaSeparatedValues)),
       commaSeparatedValues
     )
   }
 
-  def unapplyRoomImportForm(roomImport: RoomImport): Option[(Option[String], String)] = {
+  def unapplyAnyFieldImportForm(anyFieldImport: AnyFieldImport): Option[(Option[String], String)] = {
     Option(
-      Option(roomImport.id),
-      roomImport.commaSeparatedValues
+      Option(anyFieldImport.id),
+      anyFieldImport.commaSeparatedValues
     )
   }
 
-  def generateId(): String = Redis.pool.withClient {
-    implicit client =>
-      val newId = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(4)
-      if (client.hexists("Room", newId)) {
-        play.Logger.of("room").warn(s"room ID collision with $newId")
-        generateId()
-      } else {
-        newId
-      }
+  def generateID(value: String): String = {
+    value.toLowerCase.trim.hashCode.toString
   }
 }
-

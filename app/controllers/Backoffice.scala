@@ -2,19 +2,17 @@ package controllers
 
 import scala.concurrent.duration._
 import library.search.{DoIndexProposal, _}
-import library.{DraftReminder, Redis, ZapActor }
+import library.{DraftReminder, Redis, ZapActor}
 import models.{Tag, _}
-import org.joda.time.{DateTime, Instant}
+import org.joda.time.{DateMidnight, DateTime, DateTimeZone, Instant}
 import play.api.Play
 import library._
 import models._
-import org.joda.time.{DateMidnight, DateTime, Instant}
 import play.api.cache.EhCachePlugin
 import play.api.data._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
-
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Akka
@@ -421,7 +419,7 @@ object Backoffice extends SecureCFPController {
 
   def importRooms = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      Ok(views.html.Backoffice.importRooms(RoomImport.roomImportForm))
+      Ok(views.html.Backoffice.importRooms(AnyFieldImport.anyFieldImportForm))
   }
 
   def saveImportRooms() = SecuredAction(IsMemberOf("admin")) {
@@ -431,16 +429,12 @@ object Backoffice extends SecureCFPController {
       val ROOM_SETUP = 2
       val ROOM_RECORDED = 3
 
-      RoomImport.roomImportForm.bindFromRequest.fold(
+      AnyFieldImport.anyFieldImportForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.Backoffice.importRooms(hasErrors)),
         roomImportData => {
-          play.Logger.info(roomImportData.commaSeparatedValues)
           val rooms = roomImportData.commaSeparatedValues.split(";")
-          play.Logger.info(rooms.toString)
           rooms.foreach(
             eachRoom => {
-              play.Logger.info(eachRoom)
-              
               val roomToken = eachRoom.split(",")
               Room.saveRoom(
                 Room.createRoom(
@@ -457,6 +451,56 @@ object Backoffice extends SecureCFPController {
       )
 
       Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> Messages("rooms.imported"))
+  }
+
+  def importTalkSlots = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.importTalkSlots(AnyFieldImport.anyFieldImportForm))
+  }
+
+  def getRoomUUIDfrom(roomName: String) = {
+    val list = Room.allAsId.find(
+            roomPairs => roomPairs._2.contains(roomName.trim)
+    )
+    list.get._1
+  }
+
+  def saveImportTalkSlots() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val SLOT_NAME = 0
+      val SLOT_DAY = 1
+      val SLOT_FROM = 2
+      val SLOT_TO = 3
+      val SLOT_ROOM = 4
+
+      AnyFieldImport.anyFieldImportForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importTalkSlots(hasErrors)),
+        talkSlotImportData => {
+          val talkSlots = talkSlotImportData.commaSeparatedValues.split(";")
+          talkSlots.foreach(
+            eachTalkSlot => {
+              val talkSlotToken = eachTalkSlot.split(",")
+              Slot.saveSlot(
+                Slot.createSlot(
+                  "",
+                  talkSlotToken(SLOT_NAME),
+                  talkSlotToken(SLOT_DAY),
+                  convertStringToFormattedDateTime(talkSlotToken(SLOT_FROM).trim, talkSlotToken),
+                  convertStringToFormattedDateTime(talkSlotToken(SLOT_TO).trim, talkSlotToken),
+                  getRoomUUIDfrom(talkSlotToken(SLOT_ROOM)),
+                  None
+                )
+              )
+            }
+          )
+        }
+      )
+
+      Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> Messages("talk.slots.imported"))
+  }
+
+  private def convertStringToFormattedDateTime(stringValue:String, talkSlotToken: Array[String]) = {
+    new DateTime(s"1970-01-01T$stringValue:00Z")
   }
 
   def doDailyDigests = SecuredAction(IsMemberOf("admin")) {

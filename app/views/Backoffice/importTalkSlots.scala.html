@@ -1,19 +1,19 @@
-@(newRoomImport: Form[models.AnyFieldImport])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(newSlotImport: Form[models.AnyFieldImport])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-@main("Import Rooms") {
+@main("Import Talk Slots") {
   <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
   <div class="row">
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h2>Import Rooms</h2>
-          <p>Provide a semi colon (;) delimited list of Rooms to import.</p>
-          <p>Each line should have room specific information separated by commas (,):</p>
-          <p>Room A, 100, Yes, Yes;</p>
-          <p>Room B, 120, Yes, Yes;</p>
-          <p>Room C, 150, Yes, Yes;</p>
-          <p>(Room name, capacity, setup, recorded)</p>
+          <h2>Import Talk Slots</h2>
+          <p>Provide a semi colon (;) delimited list of Talk Slots to import.</p>
+            <p>Each line should have slot specific information separated by commas (,):</p>
+          <p>Conference, Wednesday, 10:00, 10:50, Room A;</p>
+          <p>Quickie, Wednesday, 14:00, 14:15, Room B;</p>
+          <p>Birds of a Feather, Thursday, 10:00, 10:50, Room C;</p>
+          <p>(Slot name, Day, From, To, Room)</p>
         </div>
       </div>
     </div>
@@ -28,11 +28,11 @@
         @flash.get("success").get
         </div>
       }
-      @helper.form(action = routes.Backoffice.saveImportRooms) {
+      @helper.form(action = routes.Backoffice.saveImportTalkSlots) {
 
         @helper.textarea(
-          newRoomImport("commaSeparatedValues"),
-          args = 'label -> "Semi-colon delimited rooms",
+          newSlotImport("commaSeparatedValues"),
+          args = 'label -> "Semi-colon delimited talk slots",
                  'class->"form-control",
                  'rows -> 10,
                  'cols -> 60

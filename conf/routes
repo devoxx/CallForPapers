@@ -30,7 +30,7 @@ POST          /newspeaker/validImported                                         
 POST          /newvisitor                                                       controllers.Authentication.saveNewVisitor
 GET           /visitors/validateeMail                                           controllers.Authentication.validateYourEmailForVisitor(t:String,a:String)
 POST          /visitors/validImported                                           controllers.Authentication.validateImportedVisitor
-POST           /visitor/updateprofile                                           controllers.Favorites.editProfile()
+POST          /visitor/updateprofile                                            controllers.Favorites.editProfile()
 
 # Turn a user to an admin if and only if there is no other ADMIN on your system (or if you deleted all admins)
 GET           /admin/bootstrapAdminUser                                         controllers.Backoffice.bootstrapAdminUser(uuid:String)
@@ -53,8 +53,8 @@ GET           /cfp/backoffice/triggerDailyDigest                                
 GET           /cfp/backoffice/triggerWeeklyDigest                               controllers.Backoffice.doWeeklyDigests()
 
 
-POST           /cfp/profile/phoneNumber                                         controllers.CallForPaper.updatePhoneNumber()
-POST           /cfp/profile/phoneNumber/confirm                                 controllers.CallForPaper.confirmPhone()
+POST          /cfp/profile/phoneNumber                                          controllers.CallForPaper.updatePhoneNumber()
+POST          /cfp/profile/phoneNumber/confirm                                  controllers.CallForPaper.confirmPhone()
 
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
@@ -118,7 +118,7 @@ GET           /cfpadmin/allEagerSpeakers                                        
 
 GET           /cfpadmin/notifyForSched                                          controllers.CFPAdmin.notifySpeakerForSchedule(uuid:String)
 GET           /cfpadmin/notifyAllForSchedule                                    controllers.CFPAdmin.notifyAllSpeakersForSchedule
-GET          /cfpadmin/allWebusers/sendForTalk                                  controllers.CFPAdmin.sendEmailForTalk(uuid:String)
+GET           /cfpadmin/allWebusers/sendForTalk                                 controllers.CFPAdmin.sendEmailForTalk(uuid:String)
 
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks
@@ -126,7 +126,7 @@ GET           /cfpadmin/speaker/:uuidSpeaker                                    
 GET           /cfpadmin/sponsorTalk/remove/:proposalId                          controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
 GET           /cfpadmin/compareReviewer                                         controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 
-GET            /cfpadmin/allvisitors                                            controllers.CFPAdmin.allVisitiors()
+GET           /cfpadmin/allvisitors                                             controllers.CFPAdmin.allVisitiors()
 GET           /cfpadmin/allWebusers                                             controllers.CFPAdmin.allWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeadersAndReviewers                    controllers.CFPAdmin.updateTrackLeadersAndReviewers()
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
@@ -170,7 +170,7 @@ POST          /cfpadmin/saveSpeakerAndTalk                                      
 GET           /cfpadmin/newspeakerOnly                                          controllers.CFPAdmin.newSpeakerOnly(speakerUUID:Option[String])
 POST          /cfpadmin/newvisitor                                              controllers.CFPAdmin.saveNewVisitoByAdmin
 GET           /cfpadmin/validatevisitor                                         controllers.CFPAdmin.validateYourEmailForVisitorByAdmin(t:String,a:String)
-POST           /cfpadmin/savewithstate                                          controllers.CFPAdmin.saveProposalWithState(state : String)
+POST          /cfpadmin/savewithstate                                           controllers.CFPAdmin.saveProposalWithState(state : String)
 #GET          /cfpadmin/favByVisitor                                             controllers.CFPAdmin.favoriteTalkByVisitor(id : String)
 POST          /admin/propupdate                                                 controllers.CFPAdmin.saveproposalByAdmin(ids : String)
 GET           /admin/propsedit                                                  controllers.CFPAdmin.editProposalByAdmin(proposalId: String , id:String)
@@ -184,10 +184,10 @@ GET           /admin/proposals/changeState/:proposalId                          
 GET           /admin/generateEmails                                             controllers.CFPAdmin.generateTemplateEmailsFromStatics()
 GET           /admin/notification/manage                                        controllers.CFPAdmin.manageNotification()
 POST          /admin/notification/manage                                        controllers.CFPAdmin.saveManageNotification()
-POST           /admin/notification/updateMails                                  controllers.CFPAdmin.updateManageNotification()
-GET            /admin/notification/saveOrEdit                                   controllers.CFPAdmin.saveOrUpdateNotification(eventType:String,MailsId:Option[String]?=None)
-GET            /admin/notification/deleted                                      controllers.CFPAdmin.deleteMail(id:String)
-GET            /cfpadmin/allWebusersm                                           controllers.CFPAdmin.disablecreatetalk(uuid:String)
+POST          /admin/notification/updateMails                                   controllers.CFPAdmin.updateManageNotification()
+GET           /admin/notification/saveOrEdit                                    controllers.CFPAdmin.saveOrUpdateNotification(eventType:String,MailsId:Option[String]?=None)
+GET           /admin/notification/deleted                                       controllers.CFPAdmin.deleteMail(id:String)
+GET           /cfpadmin/allWebusersm                                            controllers.CFPAdmin.disablecreatetalk(uuid:String)
 POST          /admin/deleteSpeaker/:speakerUUIDToDelete                         controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
 GET           /admin/cleanUpVotesIfUserWasDeleted                               controllers.Backoffice.cleanUpVotesIfUserWasDeleted
 GET           /admin/deleteAllVotes                                             controllers.Backoffice.deleteVotesForPropal(proposalId:String)
@@ -455,22 +455,24 @@ GET           /sms/welcome                                                      
 GET           /sms/callback                                                     controllers.SMSController.testCallback()
 POST          /sms/callback                                                     controllers.SMSController.callback()
 
-GET     /profilePicture/*filename                                               controllers.RestAPI.profilePicture(filename: String)
+GET           /profilePicture/*filename                                         controllers.RestAPI.profilePicture(filename: String)
 
-GET     /scheduler*path                                                         controllers.RestAPI.serveSchedulerWebApp(path: String)
+GET           /scheduler*path                                                   controllers.RestAPI.serveSchedulerWebApp(path: String)
 
-GET     /app                                                                    controllers.RestAPI.serveScheduleWebApp(path = "index.html")
-GET     /app/speakers                                                           controllers.RestAPI.serveSpeakersWebApp(path = "index.html")
-GET     /app/speakers/                                                          controllers.RestAPI.serveSpeakersWebApp(path = "index.html")
-GET     /app/speakers/*path                                                     controllers.RestAPI.serveSpeakersWebApp(path: String)
-GET     /app/*path                                                              controllers.RestAPI.serveScheduleWebApp(path: String)
+GET           /app                                                              controllers.RestAPI.serveScheduleWebApp(path = "index.html")
+GET           /app/speakers                                                     controllers.RestAPI.serveSpeakersWebApp(path = "index.html")
+GET           /app/speakers/                                                    controllers.RestAPI.serveSpeakersWebApp(path = "index.html")
+GET           /app/speakers/*path                                               controllers.RestAPI.serveSpeakersWebApp(path: String)
+GET           /app/*path                                                        controllers.RestAPI.serveScheduleWebApp(path: String)
 
-GET     /speakers*path                                                          controllers.RestAPI.serveSpeakersWebApp(path : String)
+GET           /speakers*path                                                    controllers.RestAPI.serveSpeakersWebApp(path : String)
 
-GET     /schedule                                                               controllers.Publisher.serveSchedule(path = "")
-GET     /schedule/                                                              controllers.Publisher.serveSchedule(path = "")
-GET     /schedule/*path                                                         controllers.Publisher.serveSchedule(path: String)
+GET           /schedule                                                         controllers.Publisher.serveSchedule(path = "")
+GET           /schedule/                                                        controllers.Publisher.serveSchedule(path = "")
+GET           /schedule/*path                                                   controllers.Publisher.serveSchedule(path: String)
 
 GET           /admin/rooms/import                                               controllers.Backoffice.importRooms()
 #GET           /admin/rooms/export                                               controllers.Backoffice.exportRooms()
 POST          /admin/rooms/saveAll                                              controllers.Backoffice.saveImportRooms()
+GET           /admin/talk/slots/import                                          controllers.Backoffice.importTalkSlots()
+POST          /admin/talk/slots/saveAll                                         controllers.Backoffice.saveImportTalkSlots()
