@@ -123,7 +123,6 @@
                                                     @Messages("mail.delete.room")
                                                     </div>
                                                     <div class="modal-footer">
-
                                                         <button type="button" class="btn btn-default" style="border-radius: 5px" data-dismiss="modal">@Messages("cancel.goBackHome")</button>
                                                         <a type="button" class="btn btn-primary" style="border-radius: 5px" href="@routes.CFPAdmin.deleteRoom(rooms.id)">@Messages("btn.enregistrer")</a>
                                                     </div>
@@ -140,11 +139,11 @@
             </div>
         </div>
 
+        @***
         <div style="text-align: center;" class="btn-group">
             <a href="@routes.Backoffice.importRooms()" type="button" style="border-radius: 5px" class="btn btn-success btn-lg"><i class="icon-save"></i>Import Rooms</a>
-            @*<a href="@routes.Backoffice.exportRooms()" type="button" class="btn" style="background-color: #BDBDBD;*@
-                @*color: #151515">Export Rooms</a>*@
         </div>
+        ***@
 
     <script type="text/javascript">
                 $('.datepicker').datepicker();
