@@ -1006,5 +1006,7 @@ xconf.seeScheduleByType=See all the talks grouped by event type
 
 rooms.imported=Room(s) imported
 rooms.exported=Room(s) exported
-talk.slots.imported=Slot(s) imported
-talk.slots.exported=Slot(s) exported
+talk.slots.imported=Talk Slot(s) imported
+talk.slots.exported=Talk Slot(s) exported
+break.slots.imported=Break Slot(s) imported
+break.slots.exported=Break Slot(s) exported

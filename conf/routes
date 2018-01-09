@@ -476,3 +476,5 @@ GET           /admin/rooms/import                                               
 POST          /admin/rooms/saveAll                                              controllers.Backoffice.saveImportRooms()
 GET           /admin/talk/slots/import                                          controllers.Backoffice.importTalkSlots()
 POST          /admin/talk/slots/saveAll                                         controllers.Backoffice.saveImportTalkSlots()
+GET           /admin/break/slots/import                                         controllers.Backoffice.importBreakSlots()
+POST          /admin/break/slots/saveAll                                        controllers.Backoffice.saveImportBreakSlots()

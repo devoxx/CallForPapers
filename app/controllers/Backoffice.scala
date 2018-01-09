@@ -499,6 +499,53 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> Messages("talk.slots.imported"))
   }
 
+  def importBreakSlots = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.importBreakSlots(AnyFieldImport.anyFieldImportForm))
+  }
+
+  def getSlotUUIDFrom(breakSlotName: String) = {
+    val list = ConferenceDescriptor.ConferenceSlotBreaks.allSlotBreak.find(
+      slotPairs => slotPairs.nameEN.contains(breakSlotName.trim)
+    )
+    list.get.id
+  }
+
+  def saveImportBreakSlots() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val BREAK_DAY = 0
+      val BREAK_FROM = 1
+      val BREAK_TO = 2
+      val BREAK_ROOM = 3
+      val BREAK_NAME = 4
+
+      AnyFieldImport.anyFieldImportForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importBreakSlots(hasErrors)),
+        breakSlotImportData => {
+          play.Logger.info(breakSlotImportData.toString)
+          val breakSlots = breakSlotImportData.commaSeparatedValues.split(";")
+          breakSlots.foreach(
+            eachBreakSlot => {
+              val breakSlotToken = eachBreakSlot.split(",")
+              Slot.saveSlot(
+                Slot.createSlot(
+                  "",
+                  "",
+                  breakSlotToken(BREAK_DAY),
+                  convertStringToFormattedDateTime(breakSlotToken(BREAK_FROM).trim, breakSlotToken),
+                  convertStringToFormattedDateTime(breakSlotToken(BREAK_TO).trim, breakSlotToken),
+                  getRoomUUIDfrom(breakSlotToken(BREAK_ROOM)),
+                  Some(getSlotUUIDFrom(breakSlotToken(BREAK_NAME)))
+                )
+              )
+            }
+          )
+        }
+      )
+
+      Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> Messages("break.slots.imported"))
+  }
+
   private def convertStringToFormattedDateTime(stringValue:String, talkSlotToken: Array[String]) = {
     new DateTime(s"1970-01-01T$stringValue:00Z")
   }

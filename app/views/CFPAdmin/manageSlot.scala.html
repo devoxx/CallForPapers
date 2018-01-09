@@ -116,8 +116,7 @@
                                         });
                                 </script>
                                 <div class="col-lg-10 col-lg-offset-2">
-                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">
-                                        Cancel</button>
+                                    <button type="reset" value="Reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
                                     <button type="submit" class="btn btn-success" style="border-radius: 5px">Submit</button>
                                 </div>
                             </fieldset>
@@ -580,11 +579,9 @@
                                         </td>
 
                                         <td>
-                                            <a id="update" class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>
-                                                Update</a>
+                                            <a id="update" class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>Update</a>
 
-                                            <a id="delete" class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>
-                                                Delete</a>
+                                            <a id="delete" class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>Delete</a>
                                             <div id="@slots.id" class="modal fade" role="dialog" >
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
@@ -614,9 +611,11 @@
                 </div>
             </div>
 
-            <div style="text-align: center;" class="btn-group">
+            <div style="text-align: center;" class="btn btn-group">
                 <a href="@routes.Backoffice.importTalkSlots()" type="button" style="border-radius: 5px" class="btn btn-success btn-lg"><i class="icon-save"></i>Import Talk Slots</a>
-                @*<a href="@routes.Backoffice.exportSlots()" type="button" class="btn" style="background-color: #BDBDBD;*@ @*color: #151515">Export Slots</a>*@
+                @*<a href="@routes.Backoffice.exportSlots()" type="button" class="btn" style="background-color: #BDBDBD;*@ @*color: #151515">Export Talk Slots</a>*@
+                <a href="@routes.Backoffice.importBreakSlots()" type="button" style="border-radius: 5px" class="btn btn-success btn-lg"><i class="icon-save"></i>Import Break Slots</a>
+                @*<a href="@routes.Backoffice.exportBreakSlots()" type="button" class="btn" style="background-color: #BDBDBD;*@ @*color: #151515">Export Break Slots</a>*@
             </div>
         </div>
 
