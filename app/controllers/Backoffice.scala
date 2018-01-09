@@ -393,7 +393,6 @@ object Backoffice extends SecureCFPController {
 
   def saveImportTags() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-
       Tag.tagForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.Backoffice.importTags(hasErrors)),
         tagData => {
@@ -418,6 +417,46 @@ object Backoffice extends SecureCFPController {
           BadRequest("Tag ID doesn't exist")
         }
       }
+  }
+
+  def importRooms = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.importRooms(RoomImport.roomImportForm))
+  }
+
+  def saveImportRooms() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val ROOM_NAME = 0
+      val ROOM_CAPACITY = 1
+      val ROOM_SETUP = 2
+      val ROOM_RECORDED = 3
+
+      RoomImport.roomImportForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importRooms(hasErrors)),
+        roomImportData => {
+          play.Logger.info(roomImportData.commaSeparatedValues)
+          val rooms = roomImportData.commaSeparatedValues.split(";")
+          play.Logger.info(rooms.toString)
+          rooms.foreach(
+            eachRoom => {
+              play.Logger.info(eachRoom)
+              
+              val roomToken = eachRoom.split(",")
+              Room.saveRoom(
+                Room.createRoom(
+                  Room.generateId(),
+                  roomToken(ROOM_NAME),
+                  roomToken(ROOM_CAPACITY).trim.toInt,
+                  roomToken(ROOM_SETUP),
+                  roomToken(ROOM_RECORDED)
+                )
+              )
+            }
+          )
+        }
+      )
+
+      Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> Messages("rooms.imported"))
   }
 
   def doDailyDigests = SecuredAction(IsMemberOf("admin")) {

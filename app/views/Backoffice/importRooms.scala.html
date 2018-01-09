@@ -1,0 +1,45 @@
+@(newRoomImport: Form[models.RoomImport])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main("Import Rooms") {
+  <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2>Import Rooms</h2>
+          <p>Provide a semi colon (;) delimited list of Rooms to import.</p>
+          <p>Each line should have room specific information separated by commas (,):</p>
+          <p>Room A, 100, Yes, Yes;</p>
+          <p>Room B, 120, Yes, Yes;</p>
+          <p>Room C, 150, Yes, Yes;</p>
+          <p>(Room name, capacity, setup, recorded)</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable">
+        @flash.get("error").get
+        </div>
+      }
+      @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable">
+        @flash.get("success").get
+        </div>
+      }
+      @helper.form(action = routes.Backoffice.saveImportRooms) {
+
+        @helper.textarea(
+          newRoomImport("commaSeparatedValues"),
+          args = 'label -> "Semi-colon delimited rooms",
+                 'class->"form-control",
+                 'rows -> 10,
+                 'cols -> 60
+        )
+
+        <button type="submit" class="btn btn-success btn-lg"><i class="icon-save"></i> Import</button>
+      }
+    </div>
+  </div>
+}

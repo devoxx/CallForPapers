@@ -658,7 +658,6 @@ tag.placeholder3=Related tag
 tag.placeholder4=Nice to have tag
 tag.placeholder5=The full Monty tag
 
-
 tag.edit=Edit Tag
 tag.new=New Tag
 tag.saved=Tag saved
@@ -670,7 +669,6 @@ tag.placeholder2=Secondary tag
 tag.placeholder3=Related tag
 tag.placeholder4=Nice to have tag
 tag.placeholder5=The full Monty tag
-
 
 wishList.title=WishList
 wishList.menu=Menu
@@ -1006,3 +1004,5 @@ sms.confirmationTxt=Your Devoxx confirmation code is {0}
 xconf.seeSchedule=See Conference Schedule
 xconf.seeScheduleByType=See all the talks grouped by event type
 
+rooms.imported=Room(s) imported
+rooms.exported=Room(s) exported

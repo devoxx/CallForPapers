@@ -104,12 +104,10 @@ object Room {
 
   def createRoom(id: String, name: String, capacity: Int, setup: String, recorded: String): Room = {
     Room(id, name, capacity, setup, recorded)
-
   }
 
   def unapplyRoom(r: Room): Option[(String, String, Int, String, String)] = {
     Some(r.id, r.name, r.capacity, r.setup, r.recorded)
-
   }
 
   val RoomForm = play.api.data.Form(mapping(
@@ -118,10 +116,9 @@ object Room {
     "capacity" -> number,
     "setup" -> text,
     "recorded" -> text
-
   )(createRoom)(unapplyRoom))
 
-  def saveroom(room: Room): String = Redis.pool.withClient {
+  def saveRoom(room: Room): String = Redis.pool.withClient {
     client =>
       val roomupdate = room.copy(id = generateId())
       val json = Json.toJson(roomupdate).toString()
@@ -365,3 +362,61 @@ object Slot {
       }
   }
 }
+
+case class RoomImport(id: String, commaSeparatedValues: String) {
+
+  def index: Int = {
+    val regexp = "[\\D\\s]+(\\d+)".r
+    id match {
+      case regexp(x) => x.toInt
+      case _ => 0
+    }
+  }
+
+  def compare(that: Room): Int = {
+    // TODO a virer apres Devoxx FR 2016
+    // Hack for Devoxx France => I cannot change the Room IDs so I fix the order in an IndexedSeq here
+    if (Room.fixedOrderForRoom.indexOf(this.id) < Room.fixedOrderForRoom.indexOf(that.id)) {
+      return -1
+    }
+    if (Room.fixedOrderForRoom.indexOf(this.id) > Room.fixedOrderForRoom.indexOf(that.id)) {
+      return 1
+    }
+    return 0
+  }
+}
+
+object RoomImport {
+  val roomImportForm = Form(mapping(
+    "id" -> optional(text),
+    "commaSeparatedValues" -> text
+  )(validateNewRoom)(unapplyRoomImportForm))
+
+  def validateNewRoom(
+                       id: Option[String],
+                       commaSeparatedValues: String): RoomImport = {
+    RoomImport(
+      id.getOrElse(generateId()),
+      commaSeparatedValues
+    )
+  }
+
+  def unapplyRoomImportForm(roomImport: RoomImport): Option[(Option[String], String)] = {
+    Option(
+      Option(roomImport.id),
+      roomImport.commaSeparatedValues
+    )
+  }
+
+  def generateId(): String = Redis.pool.withClient {
+    implicit client =>
+      val newId = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(4)
+      if (client.hexists("Room", newId)) {
+        play.Logger.of("room").warn(s"room ID collision with $newId")
+        generateId()
+      } else {
+        newId
+      }
+  }
+}
+

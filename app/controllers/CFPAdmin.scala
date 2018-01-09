@@ -841,7 +841,6 @@ object CFPAdmin extends SecureCFPController {
 
   def updateTrackLeadersAndReviewers() = SecuredAction(IsMemberOf("cfp")) {
     implicit req: SecuredRequest[play.api.mvc.AnyContent] =>
-
       var leadersPerTrack = req.request.body.asFormUrlEncoded.map {
         perTrack =>
           ConferenceDescriptor.ConferenceTracks.ALL.map {
@@ -1520,7 +1519,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
             Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> "Room was successfully updated")
           }
           else {
-            Room.saveroom(validForm)
+            Room.saveRoom(validForm)
             Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> "Room was successfully saved")
           }
 

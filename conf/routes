@@ -232,7 +232,7 @@ GET           /admin/manageRoom                                                 
 POST          /admin/saveroom                                                   controllers.CFPAdmin.saveRoom(action:String)
 GET           /admin/deleteRoom                                                 controllers.CFPAdmin.deleteRoom(roomid:String)
 GET           /admin/updateRoom                                                 controllers.CFPAdmin.updateRoom(roomid :String)
-GET          /admin/changeStatus                                                controllers.CFPAdmin.changeEmailConfiguration(statut:String)
+GET           /admin/changeStatus                                               controllers.CFPAdmin.changeEmailConfiguration(statut:String)
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)
@@ -241,7 +241,7 @@ GET           /ar/cancelPrerefuse/:proposalId                                   
 POST          /ar/notifyApprovecustom/:talkType                                 controllers.ApproveOrRefuse.notifycustomemailapproved(talkType:String, proposalId:String)
 POST          /ar/notifyRefusecustom/:talkType                                  controllers.ApproveOrRefuse.notifycustomemailrefused(talkType:String, proposalId:String)
 GET           /ar/notifyRefuedAll/:talkType                                     controllers.ApproveOrRefuse.notifyrefusedAll(talkType:String)
-POST         /ar/notifyApprovedAll/:talkType                                    controllers.ApproveOrRefuse.notifyApproveddAll(talkType:String)
+POST          /ar/notifyApprovedAll/:talkType                                   controllers.ApproveOrRefuse.notifyApproveddAll(talkType:String)
 GET           /ar/allApproved/:talkType                                         controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
 GET           /ar/allRefused/:talkType                                          controllers.ApproveOrRefuse.allRefusedByTalkType(talkType:String)
 POST          /ar/notifyApprove/:talkType                                       controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
@@ -340,7 +340,7 @@ POST          /api/search/talks                                                 
 
 #POST          /api/attendee/account                                              controllers.RestAPI.createAttendeeAccount()
 #GET          /api/visitorHasRegId/:email                                        controllers.RestAPI.visitorHasRegId(email:String)
-GET          /api/regIdExist/:regId                                             controllers.RestAPI.regIdExist(regId:String)
+GET           /api/regIdExist/:regId                                            controllers.RestAPI.regIdExist(regId:String)
 
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)
@@ -470,3 +470,7 @@ GET     /speakers*path                                                          
 GET     /schedule                                                               controllers.Publisher.serveSchedule(path = "")
 GET     /schedule/                                                              controllers.Publisher.serveSchedule(path = "")
 GET     /schedule/*path                                                         controllers.Publisher.serveSchedule(path: String)
+
+GET           /admin/rooms/import                                               controllers.Backoffice.importRooms()
+#GET           /admin/rooms/export                                               controllers.Backoffice.exportRooms()
+POST          /admin/rooms/saveAll                                              controllers.Backoffice.saveImportRooms()
