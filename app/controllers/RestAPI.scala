@@ -48,15 +48,15 @@ object RestAPI extends Controller {
     implicit request =>
       Ok(
         Json.obj(
-          "name" -> "Devoxx 2017",
-          "code" -> "Devoxx2017",
+          "name" -> "Devoxx UK 2018",
+          "code" -> "DevoxxUK2018",
           "description" -> "Provide the best tech conference for passionate developers to network, hack, be inspired, lear and, of course, have a lot of fun in a pragmatic way!",
-          "image" -> "https://devoxx.ma/assets/images/logos/logo.png",
-          "location" -> Json.obj("latitude" -> 33.595577, "longitude" -> -7.6001186),
-          "locationName" -> "GRAND MOGADOR CASABLANCA",
-          "startDate" -> "Nov 14",
-          "endDate" -> "Nov 16",
-          "website" -> "http://devoxx.ma",
+          "image" -> "https://devoxx.co.uk/assets/images/logos/logo.png",
+          "location" -> Json.obj("latitude" -> 51.509865, "longitude" -> -0.118092),
+          "locationName" -> "London, UK",
+          "startDate" -> "May 9",
+          "endDate" -> "May 11",
+          "website" -> "http://devoxx.co.uk",
           "baseUrl" -> ConferenceDescriptor.getFullRoutePath(routes.Application.index.url)
         )
       )
