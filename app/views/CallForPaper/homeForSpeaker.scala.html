@@ -7,9 +7,27 @@
 
 @import org.apache.commons.lang3.StringUtils
 @import play.twirl.api.Html
+@import scala.concurrent.ExecutionContext.Implicits.global
 
-@main(Messages("cfp.title")) {
+@main(Messages("cfp.title")){
+    <style>.viewport {
+        display: table-row-group;
+
+        left: 0px;
+        align-items: inherit;
+        justify-content: center;
+        height: 100vh;
+        background-color: $mdBlueGrey;
+    }
+    .dropdown-inline {
+        display: inline-block;
+        position: relative;
+    }
+    .error-notice {
+        margin: 5px 5px; /* Making sure to keep some distance from all side */
+    }</style>
     <div class="row">
+
         <div class="col-md-4">
             <h3><i class="icon-magic"></i> @Messages("your.profile")</h3>
 
@@ -124,48 +142,29 @@
 
             @if(Webuser.isMember(webuser.uuid, "cfp")) {
                 <div class="digestMessage">
-                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>@Messages("email.digest.description") <br>
-                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
-                                <td>
-                                    <select id="digest">
-                                    @Digest.allDigests.map { digest =>
-                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
-                                            <option value='@digest.value' selected>
-                                        } else {
-                                            <option value='@digest.value'>
-                                            }
-                                        @digest.value
-                                    </option>
-                                    }
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
-                                    <div class="filterTracks">
-                                    @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
-                                        @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
-                                            @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
-                                                <input type="checkbox" id="@track.id" checked/>
-                                            } else {
-                                                <input type="checkbox" id="@track.id"/>
-                                            }
-                                        } else {
-                                            <input type="checkbox" id="@track.id"/>
+                <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>@Messages("email.digest.description")<br>
+                                <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
+                            <td>
+                                <select id="digest">
+                                @Digest.allDigests.map { digest =>
+                                    @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                        <option value='@digest.value' selected>
+                                    }else {
+                                        <option value='@digest.value'>
                                         }
-                                        &nbsp;
-                                        @Html(Messages(track.label)) <br>
-                                    }
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    @digest.value
+                                </option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
             }
 

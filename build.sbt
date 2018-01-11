@@ -1,6 +1,6 @@
 name := "cfp-devoxxUK"
 
-version := "3.0.6"
+version := "3.0.8"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
   ws
 )
 
+
 import com.typesafe.sbt.packager.MappingsHelper._
 mappings in Universal ++= directory(baseDirectory.value / "public")
 
@@ -29,6 +30,7 @@ val elasticSearchV = "1.3.2"
 
 // Coursier
 libraryDependencies ++= Seq(
+  "javax.inject" % "javax.inject" % "1",
   "redis.clients" % "jedis" % "2.1.0"
   , "com.typesafe.play" %% "play-mailer" % "2.4.1"
   , "org.apache.commons" % "commons-lang3" % "3.1"
@@ -43,26 +45,24 @@ libraryDependencies ++= Seq(
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
 )
-
 // Can also be done manually by
 // $ cd schedule
 // $ npm run buildProd
 // $ cp dist public/schedule
 
 ////declare new task
-//lazy val compileScheduleTask = taskKey[Unit]("Build Schedule")
-//
-//// unwatch for file changes in public/schedule (changes A LOT), didn't work as expected, will fix in later versions,
-//// you'll experience it if you use sbt run, other than you have nothing to worry about
-//watchSources := watchSources.value.filter { _.getName.contains("/public/schedule") }
-//
-//// define task behaviour, which exists on ConfAppBuilder
-//compileScheduleTask := {
-//  ConfAppBuilder(baseDirectory.value).run()
-//}
-//
-//// plug-in new task to the build-flow
-//compile in Compile := {
-//  compileScheduleTask.value
-//  (compile in Compile).value
-//}
+/*
+lazy val compileScheduleTask = taskKey[Unit]("Build Schedule")
+
+watchSources := watchSources.value.filter { _.getName.contains("/public/schedule") }
+
+compileScheduleTask := {
+  ConfAppBuilder(baseDirectory.value).run()
+}
+
+compile in Compile := {
+  compileScheduleTask.value
+  (compile in Compile).value
+}
+*/
+

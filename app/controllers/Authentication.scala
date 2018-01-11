@@ -24,6 +24,7 @@ import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.mvc._
 import play.api.templates.HtmlFormat
+import services.QRCodeAuthService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -85,7 +86,6 @@ object Authentication extends Controller {
 
   }
 
-
   def login(visitor: Boolean) = Action {
     implicit request =>
       loginForm.bindFromRequest.fold(
@@ -115,6 +115,24 @@ object Authentication extends Controller {
               Redirect(routes.Application.home()).flashing("error" -> Messages("login.error"))
           }
       )
+  }
+
+  def loginWithAuthToken() = Action(parse.json) {
+    implicit request =>
+      (request.body \ "token").asOpt[String].map { token =>
+        val uuid = QRCodeAuthService.decryptTokenAndGetUUID(token)
+        Webuser.findByUUID(uuid) match {
+          case Some(user) => {
+            val cookie = createCookie(user)
+            Ok("Authentication Success").withSession("uuid" -> uuid).withCookies(cookie)
+          }
+          case None => {
+            BadRequest("User not found")
+          }
+        }
+      }.getOrElse {
+        BadRequest("Missing parameter token")
+      }
   }
 
   def logout = Action {

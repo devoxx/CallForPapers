@@ -37,9 +37,15 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, JsResult, JsValue, Json}
+import play.api.libs.ws.{WS, WSResponse}
 import play.api.mvc.Cookie
+import play.api.Play.current
 
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.util.parsing.json.{JSONArray, JSONObject}
 import scala.concurrent.Future
 import views.html
 
@@ -96,6 +102,31 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Specific secured action. We need a redirect from homeForSpeaker, to be able to display flash message
+  case class Notification(typ:String ,subject:String , receiver:String , receiverType:String , date:String , checked:Boolean){}
+
+
+
+
+  implicit val context = play.api.libs.concurrent.Execution.Implicits.defaultContext
+  def getnotifs(id:String) = SecuredAction.async{
+    implicit request =>
+     WS.url(s"http://localhost:${NotificationService.port}/notifications/${id.toString}").get().map( res => Ok(views.html.CFPAdmin.notifications(res.json.as[JsArray].value.toList , id)))
+       .recover{ case e:java.net.ConnectException => Ok( "Failed to connect" )}
+      /*val futureResponse: Future[JsResult[Notification]]= WS.url(s"http://localhost:7080/notifs/receiver/${id.toString}").get()
+        .map {
+          response => (response.json \ "").validate[Notification]
+        }*/
+
+
+     /* val result = Await.result(futureResponse, Duration.Inf)
+
+
+      var j = result.json.as[JsArray]*/
+
+      //Ok(result.toString)
+
+    //Ok(views.html.CFPAdmin.notifications(j.value.toList))
+  }
   def newSpeakerForExistingWebuser = SecuredAction {
     implicit request =>
       val w = request.webuser
@@ -226,7 +257,15 @@ object CallForPaper extends SecureCFPController {
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors, request.webuser)),
         proposal => {
-          // If the editor is not the owner then findProposal returns None
+          CFPAdmin.postNotification(s"Proposal created by ${Webuser.getName(uuid)}" , "proposal" , "speaker" , "" ,"admins")
+         /* val data = Json.obj(
+            "type" -> ,
+            "subject" -> "speaker",
+            "receiver" -> "b8114a07156aec70e3cb1de7f1c62d8c2cfd6b2f" ,
+            "receiver-type" -> "admins"
+          )
+          val futureResponse: Future[WSResponse] = WS.url("http://localhost:7070/notif").post(data.toString())
+          */// If the editor is not the owner then findProposal returns None
           Proposal.findProposal(uuid, proposal.id) match {
             case Some(existingProposal) =>
               // This is an edit operation

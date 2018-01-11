@@ -216,7 +216,7 @@ class ZapActor extends Actor {
     }
 
     play.Logger.debug("Starting to send draft reminders to speakers...")
-    
+
     allProposalBySpeaker.foreach {
       case (speaker: String, draftProposals: List[Proposal]) => {
         Webuser.findByUUID(speaker).map {
@@ -254,6 +254,8 @@ class ZapActor extends Actor {
           talk: Proposal =>
             ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
         }
+        CFPAdmin.postNotification("Some of your talks have been scheduled , For more details please check your Emails", "Emails", "admin", spea.uuid, "one")
+
         Mails.sendScheduledSpeaksProps(slots, spea)
       }
     }
@@ -266,6 +268,8 @@ class ZapActor extends Actor {
         talk: Proposal =>
           ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
       }
+      CFPAdmin.postNotification("Some of your talks have been scheduled , For more details please check your Emails", "Emails", "admin", uuid, "one")
+
       Mails.sendScheduledSpeaksProps(slots, Webuser.findByUUID(uuid).get)
     }
   }

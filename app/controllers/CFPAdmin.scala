@@ -13,7 +13,7 @@ import controllers.Authentication.{BadRequest, Ok, Redirect}
 import controllers.Backoffice.{NotFound, Redirect}
 import controllers.CallForPaper.{Ok, Redirect}
 import sun.misc.{BASE64Decoder, BASE64Encoder}
-import library.search.ElasticSearch
+import library.search.{DoIndexProposal, ElasticSearch, ElasticSearchActor}
 import library.{ComputeVotesAndScore, DoCreateTalkAfterCfp, SendMessageInternal, SendMessageToSpeaker, SendScheduledFavorites, ZapActor, _}
 import models.Review._
 import models._
@@ -29,8 +29,14 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
-import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.mvc.Action._
+import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
+import play.api.libs.ws.{WS, WSResponse}
+import play.api.Play.current
+import play.api.mvc._
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Cookie
@@ -242,6 +248,7 @@ object CFPAdmin extends SecureCFPController {
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageToSpeaker(uuid, proposal, validMsg)
+              postNotification(s"Message from CFP Comity : ${validMsg.toString()}", "InternalMessages", "", uuid, "one")
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to speaker.")
             }
           )
@@ -266,6 +273,8 @@ object CFPAdmin extends SecureCFPController {
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageInternal(uuid, proposal, validMsg)
+              postNotification(s"Message from CFP Comity : ${validMsg.toString()}", "InternalMessages", "", uuid, "one")
+
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to program committee.")
             }
           )
@@ -744,6 +753,8 @@ object CFPAdmin extends SecureCFPController {
         // Webuser.activeVip(wb , true)
         ZapActor.actor ! DoCreateTalkAfterCfp(wb)
         Event.storeEvent(Event(Webuser.findByUUID(uuid).get.email, request.webuser.uuid, "invited speaker [" + Webuser.findByUUID(uuid).get.cleanName + "]"))
+        postNotification("You are invited to create talk  , CFP is open for you ", "Emails", "admin", wb.uuid, "one")
+
         Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> s"Invitation sent for ${wb.email}")
       }.getOrElse(NotFound("userNotfound"))
 
@@ -752,12 +763,10 @@ object CFPAdmin extends SecureCFPController {
   def disablecreatetalk(uuid: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Webuser.findByUUID(uuid).map { wb: Webuser =>
-
-        // Webuser.activeVip(wb , false)
-
+        //Webuser.activeVip(wb , false)
+        //postNotification("Your invitation for creating talks was expired" ,"Emails", "admin" , wb.uuid, "one")
       }
       Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> s"Blocking access to create talk for ${Webuser.findByUUID(uuid).get.email}")
-
   }
 
   val newVisitorForm: Form[Webuser] = Form(
@@ -902,6 +911,7 @@ object CFPAdmin extends SecureCFPController {
         Ok(views.html.CFPAdmin.newSpeakerAndTalk(speakerForm))
       } else {
         Ok(views.html.CFPAdmin.newProposal(Proposal.proposalForm))
+
       }
   }
 
@@ -970,6 +980,7 @@ object CFPAdmin extends SecureCFPController {
                 // This is a "create new" operation
 
                 Proposal.save(uuid, proposal, ProposalState.ACCEPTED)
+                CallForPaper.saveOtherSpeakers(proposal.id).wait()
                 Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
                 Redirect(routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code)).withSession(request.session - "validSpeaker")
@@ -1035,6 +1046,7 @@ object CFPAdmin extends SecureCFPController {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
                 Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
+
               }
             }
           }
@@ -1072,6 +1084,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
     }
   )
 }*/
+
   def saveSpeakerAndTalk() = Action(parse.multipartFormData) {
     implicit request =>
       speakerForm.bindFromRequest.fold(
@@ -1101,14 +1114,55 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       )
   }
 
-  def managecfp() = SecuredAction(IsMemberOf("admin")) {
+  //implicit val context = play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+  def subscribeTonotif(uuid: String, event: String) = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      if (ConferenceDescriptor.isCFPOpen) {
-        CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get, false)
-        Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was closed by " + request.webuser.cleanName + ""))
-      } else {
-        CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get, true)
-        Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was opened by " + request.webuser.cleanName + ""))
+
+      val data = Json.obj(
+        "user" -> uuid,
+        "event-type" -> event
+      )
+
+      WS.url(s"http://localhost:${NotificationService.port}/subscribe").post(data).map( res => Redirect(routes.CallForPaper.homeForSpeaker()))
+        .recover{ case e:java.net.ConnectException => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Failed to connect to the Notifications Service ")}
+  }
+
+  def unsubscribeTonotif(uuid: String, event: String) = SecuredAction(IsMemberOf("admin")).async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val data = Json.obj(
+        "user" -> uuid,
+        "event-type" -> event
+      )
+
+      WS.url(s"http://localhost:${NotificationService.port}/unsubscribe").post(data).map(res => Redirect(routes.CallForPaper.homeForSpeaker()))
+        .recover { case e: java.net.ConnectException => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Failed to connect to the Notifications Service ") }
+  }
+
+  def postNotification(message: String, eventType: String, subject: String, receiverUUID: String, receiverType: String): Any = {
+    val data = Json.obj(
+      "message" -> message,
+      "event-type" -> eventType,
+      "subject" -> subject,
+      "receiver-uuid" -> receiverUUID,
+      "receiver-type" -> receiverType
+    )
+    val futureResponse: Future[WSResponse] = WS.url(s"http://localhost:${NotificationService.port}/notif").post(data.toString())
+    futureResponse.recover { case e: java.net.ConnectException => Ok("") }
+  }
+
+  def managecfp () = SecuredAction(IsMemberOf("admin")){
+    implicit request : SecuredRequest[play.api.mvc.AnyContent] =>
+
+
+      if (ConferenceDescriptor.isCFPOpen){
+        CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , false)
+        Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was closed by "+ request.webuser.cleanName+""))
+       postNotification("The CFP was closed", "closing","admin","b8114a07156aec70e3cb1de7f1c62d8c2cfd6b2f","speakers")
+      }else{
+        CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , true)
+        Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was opened by "+ request.webuser.cleanName+""))
+        postNotification("The CFP was opened", "closing","admin","b8114a07156aec70e3cb1de7f1c62d8c2cfd6b2f","speakers")
       }
       Redirect(routes.CFPAdmin.index())
   }
@@ -1446,7 +1500,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         invalidForm =>
           action match {
             case "update" => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "update")).flashing("error" -> "Form invalid")
-            case "clone"  => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "clone")).flashing("error" -> "Form invalid")
+            case "clone" => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "clone")).flashing("error" -> "Form invalid")
             case "create" | _ => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "create")).flashing("error" -> "Form invalid")
           },
         validForm => {
