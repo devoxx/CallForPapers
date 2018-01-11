@@ -201,7 +201,7 @@
 
     createTopTalksTable('devoxx-top-talks', '2015', TOP_TALKS_URL);
 
-    _.forEach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'], function(dow){
+    _.forEach(['wednesday', 'thursday', 'friday'], function(dow){
         createTopTalksTable(
             'devoxx-top-talks' + dow,
             '2017 ' + capitalizeFirstLetter(dow) + "'s",

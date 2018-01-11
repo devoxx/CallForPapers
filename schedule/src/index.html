@@ -21,7 +21,6 @@
         RoomUrl: apiBaseUrl.concat("/api/conferences/{eventcode}/rooms/").replace("{eventcode}",eventCode),
         Tracks: apiBaseUrl.concat("/api/conferences/{eventcode}/tracks").replace("{eventcode}",eventCode),
         Talks: apiBaseUrl.concat("/api/conferences/{eventcode}/proposalTypes").replace("{eventcode}",eventCode),
-        Training: apiBaseUrl.concat("/api/conferences/{eventcode}/schedules/tuesday/trn").replace("{eventcode}",eventCode),
         Occupiedrooms:apiBaseUrl.concat("/api/conferences/{eventcode}/occupiedrooms").replace("{eventcode}",eventCode)
       },
       talkLink: apiBaseUrl.concat("/2017/talk"),
@@ -42,7 +41,7 @@
           "lunch":"/assets/imgs/lunch.png",
           "coffee":"/assets/imgs/coffee.png"
       },
-      days: ['tuesday', 'wednesday', 'thursday'],
+      days: ['wednesday', 'thursday', 'friday'],
       logoImg: '/assets/imgs/logo.png',
       loadingImg: '/assets/imgs/loading.gif'
     }

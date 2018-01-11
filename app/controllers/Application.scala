@@ -27,6 +27,8 @@ import models._
 import play.api.i18n.Messages
 import play.api.mvc._
 import views._
+import services._
+import play.api.libs.json.Json
 
 /**
  * Call For Paper main application.
@@ -53,6 +55,20 @@ object Application extends Controller {
     implicit request =>
       Ok(html.Application.homeVisitor(Authentication.loginForm)).withNewSession
   }
+
+  def mobileAuth = Action {
+    implicit request =>
+      request.session.get("uuid") match {
+        case Some(uuid) => {
+          val QRCode = QRCodeAuthService.generate(uuid)
+          Ok(html.Application.mobileAuth(QRCode))
+        }
+        case None => {
+          Redirect(routes.Application.home()).withNewSession
+        }
+      }
+  }
+
 
   def index = Action {
     implicit request =>

@@ -23,9 +23,9 @@ import {ComponentRoot} from "./app.component";
 var routes: Route[] = [
   {path :"day",component:ScheduleNormalComponent,
     children:[{path: ":day", component: ScheduleComponent},
-      {path: "**", pathMatch: 'full',redirectTo: "/day/tuesday"}]},
+      {path: "**", pathMatch: 'full',redirectTo: "/day/wednesday"}]},
   {path:"training",component:ScheduleTrainingComponent},
-  {path: "**", pathMatch: 'full',redirectTo: "/day/tuesday"}
+  {path: "**", pathMatch: 'full',redirectTo: "/day/wednesday"}
 
 ]
 @NgModule({

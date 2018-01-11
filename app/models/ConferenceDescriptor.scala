@@ -261,14 +261,15 @@ object ConferenceDescriptor {
     val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_BC, ROOM_DEFG, EXEC_CENTRE)
 
     val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_BC, ROOM_DEFG, EXEC_CENTRE)
-    
+
     def allRooms: List[Room] = {
-      var list: List[Room] = List.empty[Room]
-      Room.allRoom.map(x => x._2 match {
-        case Some(a) => list = a::list
-        case None =>
-      })
-      list
+//      var list: List[Room] = List.empty[Room]
+//      Room.allRoom.map(x => x._2 match {
+//        case Some(a) => list = a::list
+//        case None =>
+//      })
+//      list
+      List(GALLERY_HALL, HALL_EXPO, EXEC_CENTRE, ROOM_A, ROOM_BC, ROOM_DEFG, LAB_ROOM_A, LAB_ROOM_B, LAB_ROOM_C, LAB_ROOM_D)
     }
   }
 
@@ -286,6 +287,8 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
+    val conferenceday=Seq(("wednesday","wednesday"),("thursday","thursday"), ("friday","friday"))
+
     private val WEDNESDAY: String = "Wednesday"
     private val THURSDAY: String = "Thursday"
     private val FRIDAY: String = "Friday"
@@ -298,13 +301,11 @@ object ConferenceDescriptor {
     val secondDay = THU_DATE
     val thirdDay = FRI_DATE
 
-    val conferenceday=Seq((WEDNESDAY, WEDNESDAY),(THURSDAY, THURSDAY),(FRIDAY, FRIDAY))
+    def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="wednesday" ) }
 
-    def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day.equals(WEDNESDAY)) }
+    def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="thursday" ) }
 
-    def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day.equals(THURSDAY)) }
-
-    def fridaySchedule: List[Slot] = { alldb.filter(x=>x.day.equals(FRIDAY)) }
+    def fridaySchedule: List[Slot] = { alldb.filter(x=>x.day=="friday" ) }
 
     def alldb: List[Slot]={
       var list: List[Slot] = List.empty[Slot]
@@ -453,7 +454,7 @@ object ConferenceDescriptor {
 
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
   def isTagSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.tags.active").getOrElse(false)
-  
+
   def isHTTPSEnabled: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 
   // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated

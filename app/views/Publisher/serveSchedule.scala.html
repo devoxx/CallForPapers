@@ -2,7 +2,19 @@
 
 @views.html.Publisher.layout("Schedule", Some("DevoxxUK - Schedule")) {
 	<base href="@routes.Publisher.serveSchedule("").url">
+	<meta property="og:image" content="@routes.Assets.at(path="/public",file="schedule/assets/imgs/logo.png")"/>
+	<meta property="og:url" content="https://cfp.devoxx.co.uk"/>
+	<meta property="og:title" content="Devoxx.co.uk Schedule"/>
+	<meta property="og:site_name" content="Devoxx.co.uk"/>
+	<meta property="og:description" content="The annual Devoxx UK conference in London, UK by developers for developers."/>
+	<meta name="twitter:site" content="https://cfp.devoxx.co.uk">
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:creator" content="Devoxx.co.uk"/>
+	<meta name="twitter:image" content="@routes.Assets.at(path="/public",file="schedule/assets/imgs/logo.png")"/>
+	<meta name="twitter:title" content="Devoxx.co.uk Schedule">
+	<meta name="twitter:description" content="The annual Devoxx UK conference in London, UK by developers for developers.">
 	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js" integrity="sha256-zG8v+NWiZxmjNi+CvUYnZwKtHzFtdO8cAKUIdB8+U9I=" crossorigin="anonymous"></script>
 	<link href='//fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
@@ -19,7 +31,6 @@
             RoomUrl: apiBaseUrl.concat('/api/conferences/{eventcode}/rooms/').replace('{eventcode}',eventCode),
             Tracks: apiBaseUrl.concat('/api/conferences/{eventcode}/tracks').replace('{eventcode}',eventCode),
             Talks: apiBaseUrl.concat('/api/conferences/{eventcode}/proposalTypes').replace('{eventcode}',eventCode),
-            Training: apiBaseUrl.concat('/api/conferences/{eventcode}/schedules/tuesday/trn').replace('{eventcode}',eventCode),
             Occupiedrooms:apiBaseUrl.concat('/api/conferences/{eventcode}/occupiedrooms').replace('{eventcode}',eventCode)
           },
           talkLink: apiBaseUrl.concat("/2017/talk"),
@@ -40,7 +51,7 @@
               'lunch':'@routes.Assets.at(path="/public",file="schedule/assets/imgs/lunch.png")',
               'coffee':'@routes.Assets.at(path="/public",file="schedule/assets/imgs/cofee.png")'
           },
-          days: ['tuesday', 'wednesday', 'thursday'],
+          days: ['wednesday', 'thursday', 'friday'],
           logoImg: '@routes.Assets.at(path="/public",file="schedule/assets/imgs/logo.png")',
           loadingImg: '@routes.Assets.at(path="/public",file="schedule/assets/imgs/loading.gif")'
         }

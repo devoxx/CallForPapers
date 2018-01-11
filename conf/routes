@@ -4,6 +4,12 @@ GET           /                                                                 
 GET           /home                                                             controllers.Application.home
 GET           /homeVisitor                                                      controllers.Application.homeVisitor
 
+#
+GET           /eventDetails                                                     controllers.RestAPI.eventDetails
+GET           /cfp/profile.json                                                 controllers.RestAPI.currentUser
+GET           /mobileAuth                                                       controllers.Application.mobileAuth
+POST          /mobileAuth                                                       controllers.Authentication.loginWithAuthToken
+
 # Used for Ops-Genie
 GET           /status                                                           controllers.Status.index()
 
@@ -35,7 +41,7 @@ POST          /visitor/updateprofile                                            
 # Turn a user to an admin if and only if there is no other ADMIN on your system (or if you deleted all admins)
 GET           /admin/bootstrapAdminUser                                         controllers.Backoffice.bootstrapAdminUser(uuid:String)
 GET           /admin/clearCaches                                                controllers.Backoffice.clearCaches()
-
+GET           /notifs/:id                                                       controllers.CallForPaper.getnotifs(id:String)
 GET           /cfp/home/vip/:uuid                                               controllers.CallForPaper.vipProposal(uuid:String)
 GET           /cfp/home                                                         controllers.CallForPaper.homeForSpeaker
 GET           /cfp/profile                                                      controllers.CallForPaper.editProfile
@@ -74,7 +80,9 @@ GET           /cfp/proposal/undelete/:proposalId                                
 GET           /cfp/proposal/submit/:proposalId                                  controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                                          controllers.CallForPaper.showCommentForProposal(proposalId:String)
 POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommittee(proposalId:String)
-
+#Notification
+GET           /notif/subscribeToEvent                                           controllers.CFPAdmin.subscribeTonotif(uuid :String , event:String)
+GET           /notif/unsubscribeToEvent                                         controllers.CFPAdmin.unsubscribeTonotif(uuid:String , event:String)
 # Password
 GET           /forget                                                           controllers.Authentication.forgetPassword
 POST          /forget/validate                                                  controllers.Authentication.doForgetPassword()
@@ -299,6 +307,7 @@ GET           /auth/jwtCallback/:token                                          
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
+GET           /api/notif/receivers/:typ                                         controllers.RestAPI.getNotifReceiversBytype(typ:String)
 GET           /api/conferences/                                                 controllers.RestAPI.redirectToConferences()
 GET           /api/conferences                                                  controllers.RestAPI.showAllConferences()
 GET           /api/conferences/:eventCode                                       controllers.RestAPI.showConference(eventCode:String)
