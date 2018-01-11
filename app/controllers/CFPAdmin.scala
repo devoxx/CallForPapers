@@ -1527,6 +1527,16 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       )
   }
 
+  def cloneRoom(roomid: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Room.findRoomByUUID(roomid) match {
+        case Some(a) =>
+          val allrooms = Room.allRoom
+          Ok(views.html.CFPAdmin.manageRoom(Room.RoomForm.fill(a), allrooms, "clone"))
+        case None => Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> " room not found")
+      }
+  }
+
   def updateRoom(roomid: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Room.findRoomByUUID(roomid) match {

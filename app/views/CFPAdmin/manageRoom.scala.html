@@ -72,6 +72,25 @@
                             </fieldset>
                         }
                     }
+
+                    @if(action == "clone") {
+                        @helper.form(action = routes.CFPAdmin.saveRoom("clone")) {
+                            <fieldset>
+                                <legend>
+                                    Clone Room
+                                </legend>
+                                <input type="hidden" name="id" value="@newRoom("id").value">
+                                @helper.inputText(newRoom("name"), 'class -> "form-control", '_label -> Messages("room.name"))
+                                @helper.inputText(newRoom("capacity"), 'class -> "form-control")
+                                @helper.inputText(newRoom("setup"), 'class -> "form-control")
+                                @helper.inputText(newRoom("recorded"), 'class -> "form-control")
+                                <div class="col-lg-10 col-lg-offset-2">
+                                    <button type="reset" class="btn btn-primary" style="border-radius: 5px">Cancel</button>
+                                    <button type="submit" class="btn btn-success" style="border-radius: 5px">Save</button>
+                                </div>
+                            </fieldset>
+                        }
+                    }
                 </div>
             </div>
         </div>
@@ -112,6 +131,7 @@
                                     </td>
                                     <td>
                                         <a class="btn btn-sm btn-warning" style="border-radius: 5px" href ="@routes.CFPAdmin.updateRoom(rooms.id)"><i class="icon-lock"></i>Update</a>
+                                        <a id="clone" class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneRoom(rooms.id)"><i class="icon-copy"></i>Clone</a>
                                         <a class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@rooms.id"><i class="icon-lock"></i>Delete</a>
                                         <div id="@rooms.id" class="modal fade" role="dialog" >
                                             <div class="modal-dialog">

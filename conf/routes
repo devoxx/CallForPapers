@@ -232,6 +232,7 @@ GET           /admin/manageRoom                                                 
 POST          /admin/saveroom                                                   controllers.CFPAdmin.saveRoom(action:String)
 GET           /admin/deleteRoom                                                 controllers.CFPAdmin.deleteRoom(roomid:String)
 GET           /admin/updateRoom                                                 controllers.CFPAdmin.updateRoom(roomid :String)
+GET           /admin/cloneRoom                                                  controllers.CFPAdmin.cloneRoom(roomid: String)
 GET           /admin/changeStatus                                               controllers.CFPAdmin.changeEmailConfiguration(statut:String)
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
