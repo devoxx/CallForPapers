@@ -580,7 +580,7 @@
 
                                         <td>
                                             <a id="update" class="btn btn-sm btn-warning" style="border-radius: 5px" href="@routes.CFPAdmin.updateslot(slots.id)"><i class="icon-lock"></i>Update</a>
-
+                                            <a id="clone" class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneSlot(slots.id)"><i class="icon-copy"></i>Clone</a>
                                             <a class="btn btn-sm btn-danger" style="border-radius: 5px" data-toggle="modal" data-target="#@slots.id"><i class="icon-lock"></i>Delete</a>
                                             <div id="@slots.id" class="modal fade" role="dialog" >
                                                 <div class="modal-dialog">
@@ -598,8 +598,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            @*<a id="clone" class="btn btn-sm btn-default" style="border-radius: 5px" href="@routes.CFPAdmin.cloneSlot(slots.id)"><i class="icon-copy"></i>Clone</a>*@
                                         </td>
                                     </tr>
                                 }
