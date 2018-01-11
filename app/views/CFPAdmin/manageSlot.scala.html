@@ -540,7 +540,7 @@
                                     <th>From - To</th>
                                     <th>Slot type</th>
                                     <th>Room</th>
-                                    <th>Talk Allowed</th>
+                                    @*<th>Talk Allowed</th>*@
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -568,14 +568,6 @@
 
                                         <td>
                                         @slots.room.name
-                                        </td>
-
-                                        <td>
-                                        @if(ScheduleConfiguration.getPublishedScheduleByDay(slots.day).contains(slots)) {
-                                            "No"
-                                        } else {
-                                            "Yes"
-                                        }
                                         </td>
 
                                         <td>
@@ -646,7 +638,6 @@
                     "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     "bStateSave": true,
                     "aoColumns": [
-                        {"sType": "string"},
                         {"sType": "string"},
                         {"sType": "string"},
                         {"sType": "string"},
