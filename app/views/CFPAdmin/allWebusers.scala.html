@@ -117,7 +117,16 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Digest</th>
-                        <th>Action</th>
+                        <th>Track Filter</th>
+                        @if(!ConferenceDescriptor.isCFPOpen){<th>Invite to Create Talk</th>}
+                        <th>Authenticate As</th>
+                        <th>Authenticate as & Create talk</th>
+                        @if(SecureCFPController.hasAccessToAdmin(req)) {
+                            <th>Add to/Remove from CFP users</th>
+                        }
+                        @if(!ConferenceDescriptor.isCFPOpen && speakers.map{w => Speaker.isPropScheduleexist(w.uuid)}) {
+                            <th>Notify for scheduled talks</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -159,30 +168,6 @@
                                 }
                            </td>
                            }
-
-                            @***
-                            @if(SecureCFPController.hasAccessToAdmin(req)){
-                            @if(Webuser.hasAccessToAdminVis(webuser.uuid)){
-                                <a style="border-radius: 5px" class="btn btn-sm btn-color-2" href="@routes.CFPAdmin.switchToAdminVis(webuser.uuid)"><i class="icon-trash icon-large"></i> Remove from AdminVis</a>
-                            }else{
-                                <a  style="border-radius: 5px" class="btn btn-sm btn-color-9" href="@routes.CFPAdmin.switchToAdminVis(webuser.uuid)">Add to AdminVis</a>
-                            } ***@
-
-                        @***
-                        @if(!ConferenceDescriptor.isCFPOpen) {
-                            @if( webuser.vip == Some(true)) {
-                                <td align="center">
-                                    <a style="border-radius: 5px" class="btn btn-sm btn-color-7" title="Disable Create talk" href="@routes.CFPAdmin.disablecreatetalk(webuser.uuid)"> <i class="icon-minus-sign"></i>
-                                    </a>
-                                </td>
-                            } else { <td></td>}
-                            @if(Speaker.isPropScheduleexist(webuser.uuid)) {
-                                <td align="center">
-                                    <a style="border-radius: 5px " class="btn btn-sm btn-color-2" title="Notify About Scheduled Talks" href="@routes.CFPAdmin.notifySpeakerForSchedule(webuser.uuid)"><i class="icon-bullhorn"></i></a>
-                                </td>
-                            } else {<td></td>}
-                        }
-                        ***@
                     </tr>
                 }
                 </tbody>
