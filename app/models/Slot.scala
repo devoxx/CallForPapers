@@ -281,14 +281,11 @@ object Slot {
     var newdate = dat
 
     if (day.equals("wednesday")) {
-      newdate = dat.withDate(2017, 11, 15)
-      newdate = dat.withDate(2017, 11, 15)
+      newdate = dat.withDate(2018, 5, 9)
     } else if (day.equals("thursday")) {
-      newdate = dat.withDate(2017, 11, 16)
-      newdate = dat.withDate(2017, 11, 16)
-    } else if (day.equals("tuesday")) {
-      newdate = dat.withDate(2017, 11, 14)
-      newdate = dat.withDate(2017, 11, 14)
+      newdate = dat.withDate(2018, 5, 10)
+    } else if (day.equals("friday")) {
+      newdate = dat.withDate(2018, 5, 11)
     }
     newdate
   }
