@@ -158,7 +158,6 @@ object RestAPI extends Controller {
 
   }
 
-
   def serveSchedulerWebApp(path: String) = {
     if (path.endsWith("js") || path.endsWith("css")) {
       Assets.at(path = "/public", file = "scheduler" + path)

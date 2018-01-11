@@ -190,7 +190,7 @@ object Proposal {
 
   implicit val proposalFormat = Json.format[Proposal]
   ///si les jours de la conférence
-  val conferencedays = Seq(("days1 ", ConferenceDescriptor.ConferenceSlots.firstDay), ("days2", ConferenceDescriptor.ConferenceSlots.secondDay), (("days3"), ConferenceDescriptor.ConferenceSlots.thirdDay))
+  val conferencedays = Seq(("days1", ConferenceDescriptor.ConferenceSlots.firstDay), ("days2", ConferenceDescriptor.ConferenceSlots.secondDay), (("days3"), ConferenceDescriptor.ConferenceSlots.thirdDay))
 
   val langs = Seq(("en", "English"), ("fr", "Français"))
 

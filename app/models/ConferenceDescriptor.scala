@@ -301,10 +301,6 @@ object ConferenceDescriptor {
     val secondDay = THU_DATE
     val thirdDay = FRI_DATE
 
-    def mondaySchedule: List[Slot] = { alldb.filter(x=>x.day=="monday" )  }
-
-    def tuesdaySchedule: List[Slot] = {  alldb.filter(x=>x.day=="tuesday" ) }
-
     def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="wednesday" ) }
 
     def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="thursday" ) }
