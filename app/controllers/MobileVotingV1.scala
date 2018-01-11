@@ -232,10 +232,11 @@ object MobileVotingV1 extends SecureCFPController {
         }
 
         val proposalsForThisDay: List[Proposal] = specifiedDay match {
+          case d if Set("wed", "wednesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
           case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
           case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
           case other => {
-            play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected thursday/friday...")
+            play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected wednesday/thursday/friday...")
             Nil
           }
         }
@@ -256,16 +257,19 @@ object MobileVotingV1 extends SecureCFPController {
 
     // We can finally load the Ratings from the list of Proposals
     val allRatingsFiltered: Map[Proposal, List[Rating]] = Rating.allRatingsForTalks(proposalsToLoad)
-
     allRatingsFiltered
   }
 
-  def sortByScoreAndKeepTopVotes(ratings:Map[Proposal,List[Rating]],
-                                 floorPct:Int):List[(Proposal,List[Rating])]={
+  def sortByScoreAndKeepTopVotes(ratings: Map[Proposal, List[Rating]],
+                                 floorPct: Int): List[(Proposal, List[Rating])] = {
 
     val groupedByNumberOfVotes = ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
     val totalTalksEvaluated = groupedByNumberOfVotes.size
-    val averageNumberOfVotes = if(totalTalksEvaluated>0){ groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated} else { 0 }
+    val averageNumberOfVotes = if (totalTalksEvaluated > 0) {
+      groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated
+    } else {
+      0
+    }
 
     // println(groupedByNumberOfVotes.map(_._1).sorted.reverse)
 
@@ -288,7 +292,6 @@ object MobileVotingV1 extends SecureCFPController {
     //      case(proposal,r)=>
     //        println(s"${proposal.title} ${Rating.calculateScore(r)}")
     //    }
-
     sortedByScore
   }
 

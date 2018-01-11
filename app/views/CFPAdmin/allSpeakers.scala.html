@@ -46,7 +46,7 @@
                 @speakers.map{ speaker: Speaker =>
                     <tr>
                        <td>
-                            @tags.renderGravatar(speaker.uuid, showName = Some(true))
+                           @tags.renderGravatar(speaker.uuid, showName=true, showPhoto=false)
                        </td>
                         <td>
                             @speaker.cleanLang
@@ -58,8 +58,8 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                           <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+                           <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary" style="border-radius: 5px">@Messages("sp.editSpeaker")</a>
+                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" style="border-radius: 5px"><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
                         </td>
 
                     </tr>

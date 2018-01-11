@@ -1,7 +1,5 @@
 @(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-@import play.api.templates.Html
-
 @main("Create a new speaker") {
 
 <style>
@@ -65,7 +63,7 @@
 
             @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "en")
             @helper.checkbox(speakerForm("acceptTermsConditions"))
-            <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
+            <button class="btn btn-success" style="border-radius: 5px" type="submit">@Messages("editProfile.save")</button>
 
             <div>
                 <br/>
@@ -78,10 +76,10 @@
     </div>
 </div>
 
-<script type="text/javascript" src="/assets/js/maxlength.js"></script>
-<script type="text/javascript">
-$(document).ready(function($){
-    setformfieldsize($('#bio'), 750, 'charsremain');
-});
-</script>
+    <script type="text/javascript" src="/assets/js/maxlength.js"></script>
+    <script type="text/javascript">
+            $(document).ready(function($){
+                setformfieldsize($('#bio'), 750, 'charsremain');
+            });
+    </script>
 }

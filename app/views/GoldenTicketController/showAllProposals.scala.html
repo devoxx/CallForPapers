@@ -4,7 +4,7 @@
   ascdesc:Option[String],
   track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @main("CFP Admin") {
     <div class="row">
@@ -44,7 +44,7 @@
                     @if(allProposalsForReview.nonEmpty) {
                         <i class="icon-filter"></i> @Messages("cfpadmin.filterOn")
                         @Track.allIDs.map{idTrack=>
-                            <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Messages(idTrack+".label").replace("&amp;", "&")</a>
+                            <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm" style="border-radius: 5px">@Messages(idTrack+".label").replace("&amp;", "&")</a>
                         }
                         <br>
                         <br>
@@ -84,7 +84,7 @@
                                     </td>
                                     <td>@Messages(proposal.talkType.id)</td>
                                     <td>
-                                        <a href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                                        <a href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Open for review" class="btn btn-primary btn-sm" style="border-radius: 5px">@Messages("admin.btn.review")</a>
                                     </td>
                                 </tr>
                             }

@@ -1,0 +1,23 @@
+@(speaker:Speaker)
+
+<strong  style="margin-left: 550px">«Version  Française en bas »</strong>
+<p>Hi @speaker.firstName ,</p>
+
+<p> First we would like to thank you for submitting quality proposals!, </p>
+<p> We invite you to accept the Terms and Conditions, and also don't forget to tidy up your profile! a good bio is needed since your profile is going to be public</p>
+<p>Please validate the general terms and conditions by following this link in your browser</p>
+<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
+
+<p>The conference selection team @Messages("longYearlyName") team</p>
+
+<hr>
+
+<p>salut @speaker.firstName ,</p>
+<p>Tout d'abord, nous tenons à vous remercier d'avoir soumis des propositions de qualité! </p>
+<p>Nous vous invitons à accepter les termes et conditions, et n'oubliez pas de modifier votre profil! Une bonne bio est nécessaire car votre profil sera public</p>
+<p>Veuillez valider les termes et conditions générales en suivant ce lien dans votre navigateur</p>
+<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
+
+<br>
+
+<p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>

@@ -103,12 +103,12 @@ object LeaderboardController extends SecureCFPController {
 
       def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
 
-      Ok(views.html.CFPAdmin.leaderBoard(getLeaderBoardParams, goldenTicketParam))
+      Ok(views.html.LeaderboardController.leaderBoard(getLeaderBoardParams, goldenTicketParam))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.CFPAdmin.allReviewersAndStatsAsChart(Review.allReviewersAndStats()))
+      Ok(views.html.LeaderboardController.allReviewersAndStatsAsChart(isHTTPS=play.Play.application().isProd))
   }
 
   def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
@@ -156,6 +156,11 @@ object LeaderboardController extends SecureCFPController {
       Redirect(routes.CFPAdmin.allVotes("conf", None)).flashing("success" -> "Recomputing votes and scores...")
   }
 
+  def statsAppAcc() = SecuredAction(IsMemberOf("cfp")){
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.CFPAdmin.statsAcceptedAndSubmitted( getLeaderBoardParams ))
+  }
+
   def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
@@ -186,12 +191,12 @@ object LeaderboardController extends SecureCFPController {
         .sortBy(p => p._2.size)
         .reverse
 
-      Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
+      Ok(views.html.LeaderboardController.allProposalsByCompany(companiesAndProposals))
   }
 
   def allProposalsByCompanyAsGraph() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("Test")
+      Ok(views.html.LeaderboardController.allProposalsByCompanyAsGraph(isHTTPS=play.Play.application().isProd))
   }
 
   def dataForAllProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
@@ -199,7 +204,7 @@ object LeaderboardController extends SecureCFPController {
 
       val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
 
-      val allInterestingProposals: Set[Proposal] = Proposal.loadAndParseProposals(allInteresting).values.toSet
+      val allInterestingProposals: Set[Proposal] = Proposal.loadAndParseProposals(allInteresting).values.toSet.filter(p=> p.state == ProposalState.SUBMITTED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.APPROVED)
 
       val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.flatMap(p => p.allSpeakerUUIDs)
 
@@ -207,33 +212,56 @@ object LeaderboardController extends SecureCFPController {
 
       val allSpeakers: List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
 
-      val speakers = allSpeakers
+      val companyAndSpeakersUUID = allSpeakers
         .groupBy(_.company.map(_.toUpperCase.trim).getOrElse("No Company"))
-        .toList
-        .sortBy(_._2.size)
-        .reverse
+        .map{
+          case(company,listOfSpeakers)=>
+            (company, listOfSpeakers.map(_.uuid).toSet)
+        }
 
-      val companiesAndProposals2: List[(String, Set[(String, Double)])] = speakers.map {
-        case (company, speakerList) =>
-          val setOfProposals = speakerList.flatMap {
+      val companiesAndProposals2: List[(String,Int, Set[Double], Int)] = companyAndSpeakersUUID.map {
+        case (company, setOfSpeakerUUID) =>
+
+          val submittedProposals= setOfSpeakerUUID.flatMap {
             s =>
-              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).filterNot(_._2.state == ProposalState.DELETED).filterNot(_._2.state == ProposalState.DRAFT).values.map(_.id)
-          }.toSet
-
-          val withScore: Set[(String, Double)] = setOfProposals.map {
-            proposalId =>
-              (proposalId, Review.averageScore(proposalId))
+              Proposal.allProposalsByAuthor(s).filter(p=> p._2.state == ProposalState.SUBMITTED || p._2.state == ProposalState.ACCEPTED || p._2.state == ProposalState.APPROVED)
           }
 
-          (company, withScore)
-      }.filterNot(_._2.isEmpty)
-        .sortBy(p => p._2.size)
-        .reverse
+          val validSpeakersUUID= submittedProposals.flatMap(_._2.allSpeakerUUIDs.toSet)
+          val onlySpeakersThatSubmitted = validSpeakersUUID.intersect(setOfSpeakerUUID)
+          val withScore = submittedProposals.map {
+            prop =>
+              Review.averageScore(prop._1)
+          }
+          val nbOfProposals = submittedProposals.size
+          (company, nbOfProposals, withScore, onlySpeakersThatSubmitted.size)
+      }.filter(nbOfProposals => nbOfProposals._2>7) // show only companies with at least 7 proposals
+        .toList
+        .sortBy(_._4).reverse
 
-      println("Test 2 " + companiesAndProposals2.size)
+      val data = companiesAndProposals2.map {
+        case (company,nbProposals, proposalIDandScore, totalSpeakers) =>
+          val nbReview = proposalIDandScore.size
+          val total=proposalIDandScore.sum
 
+          val average = total / nbReview
 
-      Ok("Test")
+          s"{c:[{v:'$company'},{v:$nbProposals},{v:$average},{v:'$company'},{v:$totalSpeakers}]}"
+
+      }.mkString("[", ",", "]")
+
+      val response: String =
+        s"""google.visualization.Query.setResponse(
+           |{version:'0.6',
+           |reqId:'0',
+           |status:'ok',sig:'5982206968295329967',
+           |table:{
+           |cols:[{label:'Company',type:'string'},{label:'Nb of talks',type:'number'},{label:'Average Score',type:'number'},{label:'Company name',type:'string'},{label:'Nb speakers',type:'number'}],
+           |rows:$data
+           |}});
+        """.stripMargin
+
+      Ok(response).as(JSON)
   }
 }
 

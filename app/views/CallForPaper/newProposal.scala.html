@@ -1,7 +1,4 @@
-@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
-@import helper.twitterBootstrap._
-@import org.apache.commons.lang3.StringUtils
+@(newProposal:Form[models.Proposal] , webuser: Webuser)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("New proposal") {
 <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
@@ -23,6 +20,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-7">
             @if(flash.get("error").isDefined){
                 <div class="alert alert-danger alert-dismissable">
@@ -42,6 +40,8 @@
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
                 @helper.inputText(newProposal("videoLink"), 'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
+                    <!--  ce colum pour preferences -->
+                <input type="hidden" name="preferences" value="@newProposal("preferences").value">
                 @if(ConferenceDescriptor.current().frLangEnabled) {
                     @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
                 }else{
@@ -53,33 +53,52 @@
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,'_default->"--- Please select ---",  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,'_default->"--- Please select ---",  'class->"form-control")
 
-                <label for="tag1">@Messages("tag.title")</label><br>
+                @if(ConferenceDescriptor.isGoldenTicketActive) {
+                    @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
+                }
 
-                @views.html.bootstrap3.input(newProposal("tags[0].value"),
-                    placeholder = Messages("tag.placeholder1"))
+                @if(ConferenceDescriptor.isTagSystemActive){
 
-                @views.html.bootstrap3.input(newProposal("tags[1].value"),
-                    placeholder = Messages("tag.placeholder2"))
+                    <label for="tag1">@Messages("tag.title")</label><br>
 
-                @views.html.bootstrap3.input(newProposal("tags[2].value"),
-                    placeholder = Messages("tag.placeholder3"))
+                    @views.html.bootstrap3.input(newProposal("tags[0].value"),
+                        placeholder = Messages("tag.placeholder1"))
 
-                @views.html.bootstrap3.input(newProposal("tags[3].value"),
-                    placeholder = Messages("tag.placeholder4"))
+                    @views.html.bootstrap3.input(newProposal("tags[1].value"),
+                        placeholder = Messages("tag.placeholder2"))
 
-                @views.html.bootstrap3.input(newProposal("tags[4].value"),
-                    placeholder = Messages("tag.placeholder5"))
+                    @views.html.bootstrap3.input(newProposal("tags[2].value"),
+                        placeholder = Messages("tag.placeholder3"))
 
-                @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
+                    @views.html.bootstrap3.input(newProposal("tags[3].value"),
+                        placeholder = Messages("tag.placeholder4"))
+
+                    @views.html.bootstrap3.input(newProposal("tags[4].value"),
+                        placeholder = Messages("tag.placeholder5"))
+
+                    @views.html.bootstrap3.input(newProposal("tags[1].value"),
+                        placeholder = Messages("tag.placeholder2"))
+
+                    @views.html.bootstrap3.input(newProposal("tags[2].value"),
+                        placeholder = Messages("tag.placeholder3"))
+
+                    @views.html.bootstrap3.input(newProposal("tags[3].value"),
+                        placeholder = Messages("tag.placeholder4"))
+
+                    @views.html.bootstrap3.input(newProposal("tags[4].value"),
+                        placeholder = Messages("tag.placeholder5"))
+                }
+
+                <!--@if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                     @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
                     <div id="sponsorTalkMsg" class="alert alert-info">
                         <p>@Messages("sponsorTalk.help")</p>
                         <p>@Messages("sponsor.name.plz")</p>
                     </div>
-                }
+                }-->
                 <hr>
-                <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
-                <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
+                <a style="border-radius: 5px" class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
+                <button style="border-radius: 5px" type="submit" class="btn btn-success btn-sm"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
             }
         </div>
 
@@ -94,8 +113,7 @@
 
             @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                 <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
-            }
-            <p><label>@Messages("goldenTicket.help.title")</label><br> @Html(Messages("goldenTicket.help.txt", Messages("shortYearlyName")))</p>
+            }-->
 
         </div>
 

@@ -1,6 +1,6 @@
 @(proposals:List[Proposal], track:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @main(track + ", All submitted proposals") {
 
@@ -20,7 +20,7 @@
                         <div class="col-md-12">
 
                             @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
-                                <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Html(Messages(track.label))</a>
+                                <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm" style="border-radius: 5px">@Html(Messages(track.label))</a>
                             }
 
                             @if(flash.get("error").isDefined) {

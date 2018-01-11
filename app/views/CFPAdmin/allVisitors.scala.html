@@ -1,0 +1,184 @@
+@(speakers:List[Webuser] , formWebuser: Form[Webuser])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin webuser") {
+  <head><style>
+  .btn-circle, .btn-circle-3d{
+    border-radius: 50% !important;
+  }
+
+  .btn-primary.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #245580;
+    -moz-box-shadow:    0px 0px 3px 1px #245580;
+    box-shadow:         0px 0px 3px 1px #245580;
+  }
+
+  .btn-info.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #28a4c9;
+    -moz-box-shadow:    0px 0px 3px 1px #28a4c9;
+    box-shadow:         0px 0px 3px 1px #28a4c9;
+  }
+
+  .btn-success.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #3e8f3e;
+    -moz-box-shadow:    0px 0px 3px 1px #3e8f3e;
+    box-shadow:         0px 0px 3px 1px #3e8f3e;
+  }
+
+  .btn-danger.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #b92c28;
+    -moz-box-shadow:    0px 0px 3px 1px #b92c28;
+    box-shadow:         0px 0px 3px 1px #b92c28;
+  }
+
+  .btn-warning.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #e38d13;
+    -moz-box-shadow:    0px 0px 3px 1px #e38d13;
+    box-shadow:         0px 0px 3px 1px #e38d13;
+  }
+
+  .btn-default.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #ccc;
+    -moz-box-shadow:    0px 0px 3px 1px #ccc;
+    box-shadow:         0px 0px 3px 1px #ccc;
+  }
+  .error-notice {
+    margin: 5px 5px; /* Making sure to keep some distance from all side */
+  }
+
+  .oaerror {
+    width: 90%; /* Configure it fit in your design  */
+    margin: 0 auto; /* Centering Stuff */
+    background-color: #FFFFFF; /* Default background */
+    padding: 20px;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+    margin: 0 auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+  }
+
+  .danger {
+    border-left-color: #d9534f; /* Left side border color */
+    background-color: rgba(217, 83, 79, 0.1); /* Same color as the left border with reduced alpha to 0.1 */
+  }
+
+  .danger strong {
+    color:  #d9534f;
+  }
+
+  .warning {
+    border-left-color: #f0ad4e;
+    background-color: rgba(240, 173, 78, 0.1);
+  }
+
+  .warning strong {
+    color: #f0ad4e;
+  }
+
+  .info {
+    border-left-color: #5bc0de;
+    background-color: rgba(91, 192, 222, 0.1);
+  }
+
+  .info strong {
+    color: #5bc0de;
+  }
+
+  .success {
+    border-left-color: #2b542c;
+    background-color: rgba(67, 161, 70, 0.54);
+  }
+
+  .success strong {
+    color: #2b542c;
+  }
+  </style>
+   </head>
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="oaerror warning" style="max-width: 300px">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="oaerror success" style="max-width: 300px"><strong>Success: </strong>
+        @flash.get("success").get
+      </div><br>
+    }
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Manage visitors</h3>
+
+            <a href="@routes.Favorites.showAllForAdmin()"  class="btn btn-sm btn-primary"><i class="icon-calendar"></i> All talks faved</a>
+          <a href="@routes.CFPAdmin.notifyVisitors()"  class="btn btn-sm btn-warning"><i class="icon-envelope"></i> Notify visitors </a>
+
+        </div>
+
+        <div class="panel-body">
+          <div class="panel-heading" >
+          @helper.form(action = routes.CFPAdmin.saveNewVisitoByAdmin()) {
+
+
+              @helper.inputText(formWebuser("email"))
+              @helper.inputText(formWebuser("firstName"))
+              @helper.inputText(formWebuser("lastName"))
+              @helper.inputText(formWebuser("tel"))
+              <button class="btn btn-success " type="submit">@Messages("signup.visitor")</button>
+          }
+            @if(speakers.nonEmpty){
+              <div class="panel-heading"><h3>All visitors</h3>
+                @*** <span class="label label-info">@speakers.count(w => Webuser.hasAccessToVisitor(w.uuid)) Visitors</span><br></div> ***@
+                <span class="label label-info">@speakers.count(w => Webuser.hasAccessToGoldenTicket(w.uuid)) Visitors</span><br></div>
+          <table class="table table-bordered table-strippted">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Tel</th>
+
+                <th>Action</th>
+               <!-- <th>HasRegId</th>-->
+              </tr>
+            </thead>
+            <tbody>
+            @*** @speakers.sortBy(w=>Webuser.hasAccessToVisitor(w.uuid)).reverse.map{ webuser: Webuser => ***@
+            @speakers.sortBy(w=>Webuser.hasAccessToGoldenTicket(w.uuid)).reverse.map{ webuser: Webuser =>
+              <tr>
+                <td>
+                  @webuser.firstName @webuser.lastName
+                </td>
+                <td>
+                  <small>@webuser.email</small>
+                </td>
+                <td>
+                  @*** @webuser.tel ***@
+                  @webuser.networkId
+                </td>
+                <td >
+
+                  <a class="btn btn-sm btn-danger btn-circle" href="@routes.CFPAdmin.deleteVisitor(webuser.uuid)"><i class="icon-trash "></i></a>
+                  <!--<a class="btn btn-sm btn-success" href="@routes.CFPAdmin.deleteVisitor(webuser.uuid)"><i class="glyphicon-envelope"></i> Notify </a>-->
+
+                </td>
+                @*** <td>@webuser.registrationId.getOrElse("Not yet")</td> ***@
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There is no visitors</P>
+        }
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

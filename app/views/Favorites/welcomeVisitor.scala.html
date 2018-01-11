@@ -1,16 +1,110 @@
-@(webuser:Webuser)(implicit flash:Flash, lang:Lang, req: RequestHeader)
+@(webuser:Webuser,proposals: Iterable[Proposal], talkType: String,formWebuser:Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader)
 
-@mainVisitor("Welcome"){
-    <div class="row">
-        <div class="col-md-12 page-header">
-            <h3><i class="icon-user"></i> @Messages("visitor.welcome.title",webuser.firstName)</h3>
+@mainVisitor("Welcome",Some(webuser)){
+
+        <div class="page-header">
+            <div class="row">
+               <div class="col-md-2">
+                   <div  style="font-size:20px ;text-align: center">@*** @webuser.pictureurl.map{x=>
+                       <img src="@x"  style="width:75px;height:75px;  border-top-left-radius: 50% 50%;border-top-right-radius: 50% 50%;border-bottom-right-radius: 50% 50%;border-bottom-left-radius: 50% 50%;">
+                   }.getOrElse{***@
+                           <img src="https://www.gravatar.com/avatar/"  style="width:75px;height:75px;  border-top-left-radius: 50% 50%;border-top-right-radius: 50% 50%;border-bottom-right-radius: 50% 50%;border-bottom-left-radius: 50% 50%;">
+
+                   @***} ***@ @Messages("visitor.welcome.title",webuser.firstName)
+                       <a data-toggle="modal" data-target="#update-profile"  id="profile">
+                           <span class="glyphicon glyphicon-pencil" style="font-size:15px"> @Messages("edit.profile")</span>
+                       </a>
+                    </div>
+               </div>
+            <div class="col-md-10" style="margin-top: 16px">
+                @Messages("visitor.welcome.text1",Messages("longYearlyName"))
+            </div>
+            </div>
         </div>
-        <div class="col-md-12">
-            <p>@Messages("visitor.welcome.text1",Messages("longYearlyName"))</p>
-            <p><a href="@routes.Publisher.homePublisher()" class="btn btn-primary"><i class="icon-calendar"></i> @Messages("visitor.welcome.publisher")</a> </p>
-            <p><a href="@routes.Favorites.home()" class="btn btn-default"><i class="icon-star"></i> @Messages("visitor.welcome.profile")</a> </p>
 
+    <div   id="update-profile"class="modal fade" role="dialog" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"> @Messages("edit.profile")</h4>
+                </div>
+                @helper.form(action = routes.Favorites.editProfile()) {
+                    <div class="modal-body">
+                        <input type="hidden" name="email" value="@formWebuser("email").value">
+
+                        @helper.inputText(formWebuser("firstName" ), 'class->"form-control")
+                    @helper.inputText(formWebuser("lastName"),'class->"form-control")
+                    @helper.inputText(formWebuser("tel"),'class->"form-control", 'placeholder->"EX: +212 000000000")
+                            @helper.inputText(formWebuser("pictureurl"),'class->"form-control",'_label->Messages("url.photo"))
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                        <button type="submit" class="btn btn-primary">@Messages("repy.later.button.save")</button>
+                    </div>
+
+                }
+
+
+            </div>
         </div>
     </div>
+
+    <div class="btn-group btn-group-justified"  >
+        @ConferenceDescriptor.ConferenceProposalTypes.ALL.map { x =>
+                @if(talkType!=x.id){
+                    <a class="btn" href="@routes.Favorites.welcomeVisitor(Some(x.id))" style="background-color: #666666;color: white" > @Messages(x.label+".simple")  </a>
+
+                }else{
+            <a class="btn btn-default " href="@routes.Favorites.welcomeVisitor(Some(x.id))" > @Messages(x.label+".simple") </a>
+        }}
+
+    </div>
+
+    @proposals.groupBy(_.track).toList.sortWith(_._2.size>_._2.size).sliding(3,3).map { case oneRow =>
+    <div class="row">
+        @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
+        <div class="col-md-4">
+            @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+        <ul>
+        @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
+            <li>
+               <h5> <a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)" class="blackLink">@proposal.title</a>
+                @if(!FavoriteTalk.isFavByThisVisitor(proposal.id , req.session.get("uuid").getOrElse(""))) {
+
+                <a href="@routes.Favorites.addAsFavoritev2(proposal.id)">
+                    <img style="height: 20px; width: 20px;"  src="https://image.flaticon.com/icons/png/128/149/149220.png" style="height: 40px ; width: 40px"/>
+                </a>
+            }else{
+                <a href="@routes.Favorites.removefromFavoritev2(proposal.id)">
+                    <img style="height: 20px; width: 20px;"  src="https://image.flaticon.com/icons/png/128/148/148839.png" style="height: 40px ; width: 40px"/>
+                </a>
+
+            }
+               </h5>
+
+                @proposal.allSpeakerUUIDs.map { speakerUUID =>
+                    @tags.publisher.renderSpeaker(speakerUUID)
+                }
+            </li>
+        }
+        </ul>
+        </div>
+
+        }
+    </div>
+        <div class="clearfix"><hr></div>
+
+    }
+
+}
+
+@if(formWebuser.hasErrors){
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $("#profile").trigger("click");
+            });
+    </script>
 
 }

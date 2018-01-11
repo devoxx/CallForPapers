@@ -1,6 +1,6 @@
 @(tagName: String, proposals: Iterable[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @views.html.Publisher.devoxxUK("Proposals by Tag") {
   <div class="large-12">

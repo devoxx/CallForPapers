@@ -24,9 +24,11 @@
 package models
 
 import com.github.rjeschke.txtmark.Processor
+import com.twilio.`type`.PhoneNumber
 import library.{Benchmark, Redis, ZapJson}
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.{DateTime, Instant}
+import play.api.i18n.Lang
 import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
@@ -45,16 +47,20 @@ case class Speaker(uuid: String
                    , lang: Option[String]
                    , twitter: Option[String]
                    , avatarUrl: Option[String]
+                   , picture: Option[String]
                    , company: Option[String]
                    , blog: Option[String]
                    , firstName: Option[String]
                    , qualifications: Option[String]
-                   , questionAndAnswers: Option[Seq[QuestionAndAnswer]]) {
+                   , phoneNumber:Option[String]
+                   , questionAndAnswers: Option[Seq[QuestionAndAnswer]]
+                  ) {
 
-  val MAX_NUMBER_OF_QUESTIONS = 5
+    val MAX_NUMBER_OF_QUESTIONS = 5
 
-  def cleanName: String = {
+    def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
+
   }
 
   def cleanShortName: String = {
@@ -100,7 +106,7 @@ case class Speaker(uuid: String
   def hasBlog = StringUtils.trimToEmpty(blog.getOrElse("")).nonEmpty
 
   lazy val bioAsHtml: String = {
-    val escapedHtml = HtmlFormat.escape(bio).body // escape HTML code and JS
+    val escapedHtml = play.twirl.api.HtmlFormat.escape(bio).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
@@ -144,22 +150,25 @@ case class Speaker(uuid: String
 }
 
 object Speaker {
-
+  implicit  val read = Json.reads[Speaker]
+  implicit  val write = Json.writes[Speaker]
   implicit val speakerFormat = Json.format[Speaker]
   implicit val speakerFormatWriter = Json.writes[Speaker]
   implicit val speakerFormatReader = Json.reads[Speaker]
 
-  def createSpeaker(webuserUUID: String,
+  def createSpeaker(webuserUUID:String,
                     email: String,
                     name: String,
                     bio: String,
                     lang: Option[String],
                     twitter: Option[String],
                     avatarUrl: Option[String],
+                    picture: Option[String],
                     company: Option[String],
                     blog: Option[String],
                     firstName: String,
                     qualifications: String,
+                    phoneNumber: Option[String],
                     questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker = {
     Speaker(webuserUUID,
       email.trim().toLowerCase,
@@ -168,10 +177,12 @@ object Speaker {
       lang,
       twitter,
       avatarUrl,
+      picture,
       company,
       blog,
       Some(firstName),
       Option(qualifications),
+      phoneNumber,
       questionAndAnswers)
   }
 
@@ -182,32 +193,39 @@ object Speaker {
                           lang: Option[String],
                           twitter: Option[String],
                           avatarUrl: Option[String],
+                          picture: Option[String],
                           company: Option[String],
                           blog: Option[String],
                           firstName: String,
+                          acceptTerms: Boolean,
                           qualifications: String,
-                          questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker   = {
+                          phoneNumber: Option[String],
+                          questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker = {
     uuid match {
       case None =>
         val newUUID = Webuser.generateUUID(email)
-        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog,
-          Option(firstName), Option(qualifications), questionAndAnswers)
+        if (acceptTerms) {
+          doAcceptTerms(newUUID)
+        } else {
+          refuseTerms(newUUID)
+        }
+        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, picture, company, blog, Option(firstName), Option(qualifications), phoneNumber, questionAndAnswers)
       case Some(validUuid) =>
-        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog,
-          Option(firstName), Option(qualifications), questionAndAnswers)
+        if (acceptTerms) {
+          doAcceptTerms(validUuid)
+        } else {
+          refuseTerms(validUuid)
+        }
+        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, picture, company, blog, Option(firstName), Option(qualifications), phoneNumber, questionAndAnswers)
     }
   }
 
-  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String],
-    Option[String], Option[String], String, String, Option[Seq[QuestionAndAnswer]])] = {
-    Some("xxx", s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""),
-      s.qualifications.getOrElse("No experience"), s.questionAndAnswers)
+  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], String, String, Option[String], Option[Seq[QuestionAndAnswer]])] = {
+    Some("xxx",s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.picture, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.phoneNumber, s.questionAndAnswers)
   }
 
-  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String],
-    Option[String], Option[String], Option[String], String, String, Option[Seq[QuestionAndAnswer]])] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog,
-      s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.questionAndAnswers)
+  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String, Option[String], Option[Seq[QuestionAndAnswer]])] = {
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.picture, s.company, s.blog, s.firstName.getOrElse(""), !needsToAccept(s.uuid), s.qualifications.getOrElse("No experience"), s.phoneNumber, s.questionAndAnswers)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -219,6 +237,13 @@ object Speaker {
     client =>
       val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid = uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
+  }
+
+  def updatePhone(uuid: String, thePhone: String, maybeLang:Option[Lang]) = {
+    for(speaker <- findByUUID(uuid)){
+      val speakerLang = maybeLang.map(_.code).getOrElse("en")
+      Speaker.update(uuid,speaker.copy(phoneNumber = Option(thePhone), lang=Option(speakerLang)))
+    }
   }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
@@ -292,10 +317,12 @@ object Speaker {
       speaker.lang,
       speaker.twitter,
       speaker.avatarUrl,
+      speaker.picture,
       speaker.company,
       speaker.blog,
       speaker.firstName.getOrElse(""),
       speaker.qualifications.getOrElse(""),
+      speaker.phoneNumber,
       QuestionAndAnswers.empty
     )
     save(prunedSpeaker)
@@ -328,10 +355,72 @@ object Speaker {
       client.hlen("Speaker")
   }
 
+  def needsToAccept(speakerId: String) = Redis.pool.withClient {
+    client =>
+      !client.hexists("TermsAndConditions", speakerId)
+  }
+
   def allSpeakersFromPublishedSlots: List[Speaker] = {
     val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
     val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
     val speakers: List[Speaker] = loadSpeakersFromSpeakerIDs(allSpeakersIDs)
     speakers.sortBy(_.name.getOrElse(""))
+  }
+
+  def doAcceptTerms(speakerId: String) = Redis.pool.withClient {
+    client =>
+      client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
+  }
+
+  def refuseTerms(speakerId: String) = Redis.pool.withClient {
+    client =>
+      client.hdel("TermsAndConditions", speakerId)
+  }
+
+  def getAcceptedDate(speakerId: String): Option[DateTime] = Redis.pool.withClient {
+    client =>
+      client.hget("TermsAndConditions", speakerId).map {
+        dateStr: String =>
+          new org.joda.time.Instant(dateStr).toDateTime
+      }
+  }
+
+  def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
+    client =>
+
+      val termKeys = Benchmark.measure(()=>
+        client.hkeys("TermsAndConditions")
+        ,"termKeys")
+
+      val speakerIDs = Benchmark.measure(() =>
+        termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
+        ,"speakerIDs")
+
+      val allSpeakers = Benchmark.measure(() =>
+        client.hmget("Speaker", speakerIDs).flatMap {
+        json: String =>
+          Json.parse(json).validate[Speaker].fold(invalid => {
+            play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
+            None
+          }, validSpeaker => Some(validSpeaker))
+      },"allSpeakers")
+      allSpeakers
+  }
+
+  def allThatDidNotAcceptedTerms(): Set[String] = Redis.pool.withClient {
+    client =>
+      val allSpeakerIDs = client.keys("ApprovedSpeakers:*").map(s => s.substring("ApprovedSpeakers:".length))
+      val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
+      allSpeakerIDs.diff(allThatAcceptedConditions)
+  }
+
+  def isPropScheduleexist(webuserId: String): Boolean = {
+
+    val props = Proposal.allMyProposals(webuserId)
+    val slots = props.flatMap {
+      talk: Proposal =>
+        ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+    }
+    !slots.isEmpty
   }
 }

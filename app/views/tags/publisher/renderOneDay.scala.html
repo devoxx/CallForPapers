@@ -4,11 +4,11 @@
 @import models.ConferenceDescriptor
 
 <tr>
-<th class="timeSlot">
-    @subSlots.head.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
-    - @subSlots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
-</th>
-@slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
-    @tags.publisher.tagRenderRow(subSlots, room, rooms.size)
-}
+    <th class="timeSlot">
+        @subSlots.head.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
+        - @subSlots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
+    </th>
+    @slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+        @tags.publisher.tagRenderRow(subSlots, room, rooms.size, false)
+    }
 </tr>

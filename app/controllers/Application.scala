@@ -36,7 +36,7 @@ object Application extends Controller {
 
   def home = Action {
     implicit request =>
-      session.get("uuid") match {
+      request.session.get("uuid") match {
         case Some(validUUID) =>
           Webuser.findByUUID(validUUID) match {
             case Some(webuser) =>
@@ -56,6 +56,8 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
+      //ConferenceDescriptor.verifyopeningcfp
+
       Ok(html.Application.index())
   }
 
@@ -73,4 +75,5 @@ object Application extends Controller {
           Redirect(routes.Application.index()).flashing("success" -> Messages("bugReport.sent"))
         })
   }
+
 }

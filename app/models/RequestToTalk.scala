@@ -192,4 +192,5 @@ object RequestToTalk {
       allReq.foreach{k:String=> tx2.del(k)}
       tx2.exec()
   }
+
 }

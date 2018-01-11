@@ -2,7 +2,7 @@
 
 @import helper.twitterBootstrap._
 
-@mainVisitor(Messages("home.visitor.header")){
+@mainVisitor(Messages("home.visitor.header"),None){
             <div class="bs-docs-section clearfix">
                 <div class="row">
                     <div class="col-md-12">
@@ -35,7 +35,7 @@
                                 @helper.form(action = routes.Authentication.login(visitor=true)) {
                                     @helper.inputText(loginForm("email"))
                                     @helper.inputPassword(loginForm("password"))
-                                    <button class="btn btn-default" type="submit">@Messages("btn.login")</button>
+                                    <button class="btn btn-default" style="border-radius: 5px" type="submit">@Messages("btn.login")</button>
                                     <a href="@routes.Authentication.forgetPassword()">@Messages("forget.password")</a>
                                 }
 
@@ -56,6 +56,7 @@
                             <div class="panel-heading">
                                 <h3><i class="icon-user"></i> @Html(Messages("visitor.register"))</h3>
                             </div>
+
                             <div class="panel-body">
                                 <p>@Html(Messages("visitor.index.signup2", Messages("longName")))</p>
                                 <a class="btn btn-default" href="@routes.Authentication.prepareSignup(visitor=true)">@Messages("index.signup.btn")</a>

@@ -558,7 +558,119 @@ class TestVotingSpecs extends PlaySpecification {
 
     }
 
+    "store only one vote if the vote does already exists" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      emptyRedis()
+
+      val proposalId = createProposal()
+
+      val validVote = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 1,
+        "user" -> "123456-2222-aaa"
+      )
+      val validVote2 = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 3,
+        "user" -> "123456-2222-aaa"
+      )
+      val validVote3 = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 5,
+        "user" -> "123456-2222-aaa"
+      )
+      // WHEN
+      val response = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // 201 Created
+      status(response) must be equalTo 201
+      contentType(response) must beSome.which(_ == "application/json")
+      contentAsJson(response).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":1,\"v\":null}]")
+
+      // Do a 2nd vote
+      val response2 = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote2).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // It should returns a 202
+      status(response2) must be equalTo 202
+      contentType(response2) must beSome.which(_ == "application/json")
+      contentAsJson(response2).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":3,\"v\":null}]")
+
+      // Do a 3nd vote
+      val response3 = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote3).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // It should returns a 202
+      status(response3) must be equalTo 202
+      contentType(response3) must beSome.which(_ == "application/json")
+      contentAsJson(response3) must be equals validVote3
+      contentAsJson(response3).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":5,\"v\":null}]")
+
+    }
+
     "returns a HTTP 204 for top talks when there are no votes" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      emptyRedis()
+
+      // WHEN
+      val response = route(
+        FakeRequest(GET,
+          s"/api/voting/v1/top/talks?day=monday&talkType=bof&track=java&limit=10"
+        ).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // THEN
+      status(response) must be equalTo 204
+      contentType(response) must beSome.which(_ == "application/json")
+    }
+
+    "returns a HTTP 200 for top talks when there is some votes with no HTTP parameteres" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      emptyRedis()
+
+      val testProposalOne = createProposal()
+      val testProposalTwo = createProposal()
+      val testProposalThree = createProposal()
+      val testProposalFour = createProposal()
+
+      createVote(testProposalOne, 1, "userId1")
+      createVote(testProposalOne, 2, "userId2")
+
+      createVote(testProposalTwo, 1, "userId1")
+      createVote(testProposalTwo, 2, "userId2")
+
+      createVote(testProposalThree, 3, "userId1")
+      createVote(testProposalThree, 4, "userId2")
+
+      createVote(testProposalFour, 5, "userId1")
+      createVote(testProposalFour, 4, "userId2")
+
+      // WHEN
+      val response = route(
+        FakeRequest(GET,
+          s"/api/voting/v1/top/talks"
+        ).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+
+      // THEN
+      status(response) must be equalTo 200
+      contentType(response) must beSome.which(_ == "application/json")
+      contentAsJson(response).\("result").\("totalResults") must be_==(JsNumber(4))
+    }
+
+
+    "returns a HTTP 204 for top talks when there is no votes" in new WithApplication(app = appWithTestRedis()) {
       // GIVEN
       emptyRedis()
 

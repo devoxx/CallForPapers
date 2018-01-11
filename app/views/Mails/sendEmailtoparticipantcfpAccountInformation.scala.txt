@@ -1,0 +1,22 @@
+@(validationLink:String, conferenceName:String,participant:Webuser)
+
+Welcome to @conferenceName
+Thanks for joining @conferenceName . We created an account for you on the CFP website @validationLink
+ ,here are the details to access your account
+Email: @participant.email
+  password:@participant.password
+
+
+L'équipe @Messages("longName")
+
+@if(ConferenceDescriptor.current().frLangEnabled) {
+    Bienvenue à @conferenceName!
+    <p>Merci de vous être inscrit sur le site du @conferenceName .nous avons créé un compte pour vous sur le site CFP  @validationLink
+        , voici les coordonnées pour accéder à votre compte
+     Email: @participant.email
+      password:@participant.password
+
+
+    L'équipe @Messages("longName")
+
+}

@@ -12,12 +12,24 @@ longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
 longSplittedName_whiteEnd=UK 2018
 conference.dates=9th-11th May
+conference.dates.long=Wednesday 9th to Friday 11th May 2018
+Custom.email=Custom email
+custom.email1= Custom email
+
 # -----------------
 cfp.title=Devoxx UK 2018 CFP
+delete.slot=Delete slot
+delete.room=Delete room
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
 email=Email
+mail.create=Create a new e-mail
+mail.delete.notif=Are you sure you want to delete this email ?
+mail.delete.slot=Are you sure you want to delete this slot ?
+mail.delete.room=Are you sure you want to delete this room ?
+mail.notify.refused.body=Are you sure you want to notify all refused proposal
+mail.notify.approved.body=Are you sure you want to notify all approved proposal
 firstName=First name
 lastName=Last name
 password=Access code
@@ -90,6 +102,7 @@ github.importprofile.error.namenotfound=Your name is not found.
 github.importprofile.error.advice=You might want to change your github settings on https://github.com/settings/profile.
 
 # CFP New
+New.proposal.admin=Step 2/2 : New proposal
 New.proposal=New proposal - step 1/2
 New.proposal2=New proposal - step 2/2
 Edit.proposal=Edit proposal - step 1/2
@@ -97,8 +110,10 @@ Edit.proposal2=Edit proposal - step 2/2
 title=Presentation title
 title.help=Think carefully and try to create a title that is descriptive enough. Most Devoxxians selects a talk at the very last minute only based on its title.
 summary=Summary of your presentation, for the attendee
+picture=Upload picture
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
+phoneNumber=cell phone number
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
@@ -109,6 +124,7 @@ question=Question
 answer=Answer
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="{0}#whatson" target="new">Info</a>.
+videoLink=Related video link
 
 audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -127,7 +143,7 @@ sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
 sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
-
+speakerExist = This user already exists
 helpAndTips=More info
 moreSpeakerLater=You can add more speakers later, once the proposal is submitted.
 btn.home=Back to home without saving
@@ -142,6 +158,12 @@ summary.preview=Preview
 preview.warn=Do no forget to submit your proposal to the program committee, using the icon
 preview.warn2=in the main CFP screen.
 next.action=Select next action:
+repy.later.button=I will reply later
+repy.later.button.save=Save
+repy.later.button.close=Close
+repy.later.button.Notify=Notify
+notify.all.refused=Notify all Refused proposal
+notify.all.Approved=Notify all Approved proposal
 
 # Proposal type
 opening.key.label=Opening Keynote, 20minutes, Thursday morning
@@ -180,6 +202,10 @@ theme.track=List of tracks for Devoxx United-Kingdom 2018:
 track.title=Title
 track.description=Description
 appel.conf.dates=Devoxx UK 2018, 9th-11th May
+Notify.approved.after.refused= Talk rejected and speaker has been already notified
+give.the.explanation= give the explanation
+Notify.again= Notify again
+Notify.again.notify= Notify
 
 # Tracks
 
@@ -223,27 +249,39 @@ track.unknown.desc=Unknown track
 all.label=All
 track.all.desc=All tracks
 
+track.lang.title=Programing Languages
+track.lang.desc=Ruby, Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
+lang.label=Programing Languages
+lang.leaderboard=Programing Languages
+
+track.Startup.label.title=Startup, Innovation & Creativity
+Startup.label=Startup, Innovation & Creativity
+Startup.label.leaderboard=Startup, Innovation & Creativity
+track.Startup.label.title.desc=Lean startup, VCs, Angels and new trends in startups & Creativity .
 # confirm import
+btn.etape1sur2.admin=back
+Edit.proposal.admin=Confirmation
 confirm.import.title=Create your Speaker''s profile
 confirm.import.save=Save and send an email
 avatarUrl.isEmpty=URL to your picture is empty, so we will try to use your
 avatarUrl.defined=Your photo (recommended width 150px)
-
+Speaker.reply.later.notification=Speaker will reply at the latest:
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
 created.text2=Your access code is generated and is displayed once you validate your email.
 created.text3=You will then be able to log-in and start to use the {0} CFP web site.
-
 # prepareSignup
 signup.title=Speaker''s registration
 signup.txt1=Sign up to submit a talk for {0} conference :
 signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated.
-
+informations.mails.manager=Information
+informations.mails.manager.content.liste=Parameters list:
+informations.mails.manager.content= For defining dynamic parameters,You can copy the parameter in the content of the email if it exists in the parameters list
 # edit profile
 editProfile.title=Your profile
 editProfile.help=Take the time to complete your profile. This content will then be published on the site if you are selected as a speaker, as well as in the conference program. 
 editProfile.save=Save
-
+editProfile.save.admin=Create a Talk for this Speaker
 # Home
 table.pres.title=Title
 table.pres.edit=Edit
@@ -314,7 +352,10 @@ editWebuser.title=Edit your firstname and lastname
 
 cfp.isOpen=CFP is open
 cfp.open.enter=Create your speaker''s profile or sign-in
-
+cfp.visitor.enter=Create your visitor''s profile or sign-in
+invite.cfp.close = Manage webusers
+closecfp= Close CFP
+opencfp= Open CFP
 admin.proposals.th.title=Title
 admin.proposals.th.track=Track
 admin.proposals.th.mainSpeaker=Speaker
@@ -339,7 +380,7 @@ admin.cfp.msg=Message
 admin.cfp.totalEvents=Total events
 previous.page=Previous page
 next.page=Next page
-
+events.history= History of events
 admin.proposal=Proposal
 admin.proposals.th.lang=Lang
 admin.proposals.th.abstract=Abstract
@@ -408,7 +449,8 @@ approve.title={0}, Speaker Consent Form
 accept.chk=I accept the Terms and Conditions
 acceptTerm.pleaseRead=Please read and accept {0} Terms and Conditions
 accept.term.checked=Please check this box if you agree with the Terms and Conditions
-
+accept.preference.days=Please select a date if you agree to submit this topic
+accept.preference.days.ms=preferences slots for scheduling
 acceptedProposals.title=List of accepted/refused proposals for {0}
 ar.approved=Approved proposals
 ar.rejected=Refused proposals
@@ -423,7 +465,9 @@ ar.proposalNotFound=Proposal not found
 ar.choiceRecorded=Your choice for proposal {0} has been updated to {1}
 ar.checkMyProposals=Accept or decline approved proposals
 ar.goBackHome=Go back to home page
-
+ar.deadline.talks= I will reply later if I agree to present the talks{0} at the latest :
+ar.deadline.talks.ms=reply later
+ar.deadline.replylater.ms=Thank you for not exceeding the deadline :
 sw.proposal.title=Title
 sw.proposal.talkType=Type of presentation
 sw.proposal.summary=Summary
@@ -446,12 +490,28 @@ closing_key=Closing Keynote
 all=All
 ignite=Ignite Sessions
 
-sw.proposal.speaker=Presented by    
+sw.proposal.speaker=Presented by
+amd=Après-midi des Décideurs
+unfav-talk=Unfavour
+fav-talk=Favour
 admin.btn.changeState=Change one proposal state
 
+day=Day
+room=Room
+break=Break
+room.name=Name
+capacity=Capacity
+setup=Setup
+recorded=Recorded
+
 sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
+admin.btn.manage.notification=Manage mail notification
+admin.btn.manage.notification.new=Content of the email:
+admin.btn.manage.notification.subject= Email subject
+
 sw.showDetails=See details
 sw.home=Home
+sw.all.key=All Keynotes
 sw.all.opening_key=All Opening Keynotes
 sw.all.closing_key=All Closing Keynotes
 sw.all.conf=All Conferences
@@ -471,9 +531,10 @@ admin.btn.webuser=Administer CFP users
 editSpeakerName=Edit Speaker name
 admin.btn.createNewspeaker=Create a new speaker
 admin.btn.tracklead=Track leaders & reviewers
-
+newSpeaker.title.admin= Step 1/2 : Create a new speaker
 newSpeaker.title=Create a new speaker
 avatarUrl2=URL of speaker''s photo
+picture=Upload an image from your desktop
 name=Full name
 bio2=BIO
 twitter2=Twitter''s handle
@@ -492,6 +553,7 @@ calendar.pref.friday=Friday
 calendar.pref.reset=No preferences
 sw.all.other=Other kind of presentation
 acceptTermsConditions=Accept Terms/Conditions to display this bio on the web site
+notify.accepted.terms=Notify acceptance terms/conditions
 sp.authenticateAndCreate=Authenticate as this speaker and create a new talk
 day-deep-dive=Wednesday
 day-deep-dives=Wednesday
@@ -505,6 +567,12 @@ day-tuesday=Tuesday, 8th May
 day-wednesday=Wednesday, 9th May
 day-thursday=Thursday, 10th May
 day-friday=Friday, 11th May
+
+day-mon=Monday, 7th May
+day-tue=Tuesday, 8th May
+day-wed=Wednesday, 9th May
+day-thu=Thursday, 10th May
+day-fri=Friday, 11th May
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -546,7 +614,8 @@ sw.endOfDay=End of day, exhibition floor closing
 sw.cocktail=Meet and Greet party until 10:30pm in the main exhibition hall
 sw.showAllDay=Show complete agenda for this day
 not.published=The agenda for this conference is not yet published
-scheduling.in.progress=Status has changed to {0} the `Scheduling-in-progress` message.
+scheduling.in.progress.status.changed=Status has changed to {0} the `Scheduling-in-progress` message.
+scheduling.in.progress=Scheduling in full progress... it's an art form, it can take some time & iterations :)
 
 day-wed=Wednesday
 day-thu=Thursday
@@ -570,11 +639,13 @@ demoLevel1.label=Slides only
 demoLevel2.label=Slides and code
 demoLevel3.label=Code only
 demoLevel4.label=No slides & code
-
+btn.saveDraft.admin=Save as accepted
 btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
-
+speaker.create.only=Create speaker only
+Stats.talk.type=Stats Accepted/Approved talk
+Gestion.Talks=Talks Management
 tag.edit=Edit Tag
 tag.new=New Tag
 tag.saved=Tag saved
@@ -587,6 +658,17 @@ tag.placeholder3=Related tag
 tag.placeholder4=Nice to have tag
 tag.placeholder5=The full Monty tag
 
+tag.edit=Edit Tag
+tag.new=New Tag
+tag.saved=Tag saved
+tag.removed=Tag "{0}" removed
+tag.imported=Tags imported
+tag.title=Please select min. 3 tags related to your proposal
+tag.placeholder1=Primary tag
+tag.placeholder2=Secondary tag
+tag.placeholder3=Related tag
+tag.placeholder4=Nice to have tag
+tag.placeholder5=The full Monty tag
 
 wishList.title=WishList
 wishList.menu=Menu
@@ -630,13 +712,15 @@ contacted=Speaker has been contacted
 unknown=Unknown
 
 # The abstention button
-Abs=0
+Abs=Abs
 trackAndUUIDs=
 
 mail.reset_password_link.subject=You asked to reset your {1}''s access code at {0}
 mail.access_code.subject=Your {0}''s access code
 mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
+mail.Account_Information.subject=Welcome to {0}
+
 mail.issue_reported.subject=New issue reported on CFP web site
 mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
 mail.question_to_speaker.subject=[{1}] New question posted on Devoxx UK Web site about {0}
@@ -645,6 +729,7 @@ mail.notify_proposal.subject={0} submitted a proposal [{1}]
 mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
+mail.proposal_approved.subject2=Your proposal has been approved {0},The maximum deadline for acceptance is{1}
 mail.proposal_approved.subject=Your proposal has been approved {0}
 mail.proposal_refused.subject=Your proposal has been declined {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
@@ -684,6 +769,7 @@ lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxUK
 signup.long=Register as a speaker on Devoxx United-Kingdom CFP
+sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
@@ -743,8 +829,9 @@ home.welcome.txt=Welcome to {0}, please authenticate or create a new visitor pro
 visitor.signin=Sign-in
 visitor.register=Sign-up as a visitor
 visitor.index.signup2=Sign-up as a visitor and save your Schedule, vote for the best talks, and share your interests with other attendees.
-
+signup.visitor=Add as a visitor
 # welcomeVisitor
+visitor.manage = Manage visitors
 visitor.welcome.title=Welcome {0}
 visitor.welcome.text1=You are now authenticated as a Devoxx UK visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
 visitor.welcome.publisher=Browse the conference schedule
@@ -876,3 +963,50 @@ wl_trackCode=Track
 wl_travel=Travel & hotel
 wl_travel.checkbox=Yes, cover travel expenses
 wl_unknown=Unknown
+
+cfp.filter.on=Filter on :
+cfp.filter.off=Remove filter
+
+cfpadmin.totalReviewed={0} reviewed
+cfpadmin.totalVoted={0} voted
+
+publisher.room.disclaimer=The designated room for a presentation can be changed 48 hours before the beginning of Devoxx.
+
+cfp.showAgenda.title=Agenda
+cfp.showAgenda.txt=The agenda is now online, see the list of conferences.
+
+# Favorites and My Agenda
+fav.title=Build your own schedule
+fav.noAgenda=You don't have any schedule yet.
+fav.txt1=Browse the
+fav.schedule=schedule"
+fav.txt2=and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.
+fav.day.1=Monday
+fav.day.2=Tuesday
+fav.day.3=Wednesday
+fav.day.4=Thursday
+fav.day.5=Friday
+
+mydevoxx.authenticated=You are now authenticated through MyDevoxx, you can browser the Agenda and add talks to your Schedule
+
+sms.text1=Want to be notified by SMS of the scheduled time for your talk? Should your presentation''s room change ? Fill in your phone number:
+sms.explanation=Cell phone number, international format (eg : 1661708090)
+confirm.phone=Confirm your cell phone number
+confirm.shortExplanation=Can you please enter the verification code we just sent to {0} ?
+confirm.entercode=Confirmation code:
+confirm.button=Verify token
+phonenumber.updated.success=Your phone number is valid and is now ready to receive SMS / text messages from the Devoxx team.
+confirm.phone.error=Sorry, the confirmation code is not correct
+invalid.confirmation.code=Invalid confirmation code
+invalid.phone=Invalid phone number, please use the international phone number format.
+sms.confirmationTxt=Your Devoxx confirmation code is {0}
+
+xconf.seeSchedule=See Conference Schedule
+xconf.seeScheduleByType=See all the talks grouped by event type
+
+rooms.imported=Room(s) imported
+rooms.exported=Room(s) exported
+talk.slots.imported=Talk Slot(s) imported
+talk.slots.exported=Talk Slot(s) exported
+break.slots.imported=Break Slot(s) imported
+break.slots.exported=Break Slot(s) exported
