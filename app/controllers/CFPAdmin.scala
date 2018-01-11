@@ -1444,18 +1444,22 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allslot = Slot.allSlot
       Slot.SlotForm1.bindFromRequest.fold(
         invalidForm =>
-          if (action=="update") {
-            BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "update")).flashing("error" -> "Form invalid")
-          } else {
-              BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "create")).flashing("error" -> "Form invalid")
+          action match {
+            case "update" => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "update")).flashing("error" -> "Form invalid")
+            case "clone"  => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "clone")).flashing("error" -> "Form invalid")
+            case "create" | _ => BadRequest(views.html.CFPAdmin.manageSlot(invalidForm, allslot, "create")).flashing("error" -> "Form invalid")
           },
         validForm => {
-          if (action=="update") {
+          action match {
+            case "update" =>
               Slot.updateSlot(validForm.id, validForm)
               Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully updated")
-          } else {
-            Slot.saveSlot(validForm)
-            Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully saved")
+            case "clone" =>
+              Slot.saveSlot(validForm)
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully cloned and saved")
+            case "create" | _ =>
+              Slot.saveSlot(validForm)
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully saved")
           }
         }
       )

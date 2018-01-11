@@ -271,6 +271,7 @@ class ZapActor extends Actor {
   }
 
   def cancelDraftReminderWhenCFPCloses(theAlreadyScheduledReminder: Cancellable) {
+    play.Logger.debug("Attempting to cancel draft reminder scheduler as CFP is closed...: " + theAlreadyScheduledReminder)
     if (theAlreadyScheduledReminder != null && !theAlreadyScheduledReminder.isCancelled) {
       play.Logger.debug("Cancelling draft reminder scheduler as CFP is closed...")
       play.Logger.debug(s"theAlreadyScheduledReminder: ${theAlreadyScheduledReminder.toString()}")
