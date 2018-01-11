@@ -41,7 +41,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   public dayChangeSubscription: Subscription;
   public Speaker: any;
   public Detail: any;
-  @Input() public day = 'tuesday';
+  @Input() public day = 'wednesday';
   @ViewChild('detailModal', {read: ViewContainerRef}) detailModal: ViewContainerRef;
   public placeHolderItem;
 

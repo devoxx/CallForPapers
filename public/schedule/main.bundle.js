@@ -296,7 +296,7 @@ var ScheduleComponent = /** @class */ (function () {
         this.talks = [];
         this.Keynotes = [];
         this.Breaks = [];
-        this.day = 'tuesday';
+        this.day = 'wednesday';
         this.Imgs = window['config'].tracksImg || {};
         this.BreakImgs = window['config'].breaksImg || {};
     }
@@ -769,9 +769,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var routes = [
     { path: "day", component: __WEBPACK_IMPORTED_MODULE_18__schedule_normal_schedule_normal_component__["a" /* ScheduleNormalComponent */],
         children: [{ path: ":day", component: __WEBPACK_IMPORTED_MODULE_6__schedule_schedule_component__["a" /* ScheduleComponent */] },
-            { path: "**", pathMatch: 'full', redirectTo: "/day/tuesday" }] },
+            { path: "**", pathMatch: 'full', redirectTo: "/day/wednesday" }] },
     { path: "training", component: __WEBPACK_IMPORTED_MODULE_17__schedule_training_schedule_training_component__["a" /* ScheduleTrainingComponent */] },
-    { path: "**", pathMatch: 'full', redirectTo: "/day/tuesday" }
+    { path: "**", pathMatch: 'full', redirectTo: "/day/wednesday" }
 ];
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -1169,8 +1169,12 @@ var ScheduleTrainingComponent = /** @class */ (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
+// The file contents for the current environment will overwrite these during build.
+// The build system defaults to the dev environment which uses `environment.ts`, but if you do
+// `ng build --env=prod` then `environment.prod.ts` will be used instead.
+// The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
-    production: true
+    production: false
 };
 //# sourceMappingURL=environment.js.map
 
@@ -1307,7 +1311,7 @@ module.exports = module.exports.toString();
 /***/ 314:
 /***/ (function(module, exports) {
 
-module.exports = "<header id=\"header\" class=\"nav-stacked affix\" data-spy=\"affix\" data-offset-top=\"15\">\n  <!-- Navigation -->\n  <nav id=\"navigation_bar\" class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <div class=\"logo\">\n            <a href=\"https://devoxx.co.uk\"><img [src]=\"logoImg\" alt=\"image\" /></a>\n        </div> <!-- /Logo -->\n        <button (click)=\"slide()\" id=\"menu_slide\" data-target=\"#navigation\" aria-expanded=\"false\" data-toggle=\"collapse\" class=\"navbar-toggle collapsed\" type=\"button\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n      </div>\n      <div class=\"follow_us\">\n        <ul>\n          <li><a title=\"facebook\" target=\"_blank\" href=\"https://www.facebook.com/DevoxxUK\"><i class=\"fa fa-facebook \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"twitter\" target=\"_blank\" href=\"https://twitter.com/DevoxxUK\"><i class=\"fa fa-twitter \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"youtube\" target=\"_blank\" href=\"https://www.youtube.com/channel/UCxIamwHotqAAdmecaKT9WpA\"><i class=\"fa fa-youtube\" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"flickr\" target=\"_blank\" href=\"https://www.flickr.com/photos/steveonjava/sets/72157633171525257/\"><i class=\"fa fa-flickr\" aria-hidden=\"true\"></i></a></li>\n        </ul>\n      </div>\n\n      <div #navigation class=\"collapse navbar-collapse\" id=\"navigation\">\n        <ul class=\"nav navbar-nav\">\n          <li><a href=\"https://cfp.devoxx.co.uk/2018/index.html\" class=\"js-target-scroll\">Home</a></li>\n          <li><a [routerLinkActive]=\"['selected']\" [routerLink]=\"['']\" class=\"js-target-scroll\">Schedule</a></li>\n          <li [ngClass]=\"{'hidden':!showScheduleTraining}\"><a [routerLinkActive]=\"['selected']\"  [routerLink]=\"['training']\" class=\"js-target-scroll\">Training Schedule</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- Navigation end -->\n\n</header>\n<div style=\"margin-top: 100px;\" class=\"container-fluid\">\n  <router-outlet></router-outlet>\n</div>\n<div #arrowTop   class=\"arrow-top\">\n  <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i>\n</div>\n\n"
+module.exports = "<header id=\"header\" class=\"nav-stacked affix\" data-spy=\"affix\" data-offset-top=\"15\">\n  <!-- Navigation -->\n  <nav id=\"navigation_bar\" class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <div class=\"logo\">\n            <a href=\"https://devoxx.co.uk\"><img [src]=\"logoImg\" alt=\"image\" /></a>\n        </div> <!-- /Logo -->\n        <button (click)=\"slide()\" id=\"menu_slide\" data-target=\"#navigation\" aria-expanded=\"false\" data-toggle=\"collapse\" class=\"navbar-toggle collapsed\" type=\"button\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n      </div>\n      <div class=\"follow_us\">\n        <ul>\n          <li><a title=\"facebook\" target=\"_blank\" href=\"https://www.facebook.com/DevoxxUK\"><i class=\"fa fa-facebook \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"twitter\" target=\"_blank\" href=\"https://twitter.com/DevoxxUK\"><i class=\"fa fa-twitter \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"youtube\" target=\"_blank\" href=\"https://www.youtube.com/channel/UCxIamwHotqAAdmecaKT9WpA\"><i class=\"fa fa-youtube\" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"flickr\" target=\"_blank\" href=\"https://www.flickr.com/photos/steveonjava/sets/72157633171525257/\"><i class=\"fa fa-flickr\" aria-hidden=\"true\"></i></a></li>\n        </ul>\n      </div>\n\n      <div #navigation class=\"collapse navbar-collapse\" id=\"navigation\">\n        <ul class=\"nav navbar-nav\">\n          <li><a href=\"https://cfp.devoxx.co.uk/2018/index.html\" class=\"js-target-scroll\">Home</a></li>\n          <li><a [routerLinkActive]=\"['selected']\" [routerLink]=\"['']\" class=\"js-target-scroll\">Schedule</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- Navigation end -->\n\n</header>\n<div style=\"margin-top: 100px;\" class=\"container-fluid\">\n  <router-outlet></router-outlet>\n</div>\n<div #arrowTop   class=\"arrow-top\">\n  <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i>\n</div>\n\n"
 
 /***/ }),
 
