@@ -46,7 +46,6 @@ object Backoffice extends SecureCFPController {
             Webuser.addToCFPAdmin(uuidSpeaker)
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"added ${webuser.cleanName} to CFP group"))
             CFPAdmin.postNotification("You have been added to CFP group" ,"ManageUsers", "admin" , webuser.uuid , "one")
-
           }
           Redirect(routes.CFPAdmin.allWebusers())
       }.getOrElse {
@@ -88,8 +87,6 @@ object Backoffice extends SecureCFPController {
           val proposals = Proposal.allProposals().sortBy(_.state.code)
           Ok(views.html.Backoffice.allProposals(proposals))
       }
-
-
   }
 
   // This endpoint is deliberately *not* secured in order to transform a user into an admin

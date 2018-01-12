@@ -1,194 +1,223 @@
 @(speakers:List[Webuser] , newWebuserForm: Form[Webuser])(implicit lang: Lang, flash: Flash, req:RequestHeader )
 
 @main("CFP Admin webuser") {
-<head>
-    <style>
-    .error-notice {
-        margin: 5px 5px; /* Making sure to keep some distance from all side */
-    }
+    <head>
+        <script type="text/javascript" charset="utf-8" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf-8" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+        <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
 
-    .oaerror {
-        width: 90%; /* Configure it fit in your design  */
-        margin: 0 auto; /* Centering Stuff */
-        background-color: #FFFFFF; /* Default background */
-        padding: 20px;
-        border: 1px solid #eee;
-        border-left-width: 5px;
-        border-radius: 3px;
-        margin: 0 auto;
-        font-family: 'Open Sans', sans-serif;
-        font-size: 16px;
-    }
-
-    .danger {
-        border-left-color: #d9534f; /* Left side border color */
-        background-color: rgba(217, 83, 79, 0.1); /* Same color as the left border with reduced alpha to 0.1 */
-    }
-
-    .danger strong {
-        color:  #d9534f;
-    }
-
-    .warning {
-        border-left-color: #f0ad4e;
-        background-color: rgba(240, 173, 78, 0.1);
-    }
-
-    .warning strong {
-        color: #f0ad4e;
-    }
-
-    .info {
-        border-left-color: #5bc0de;
-        background-color: rgba(91, 192, 222, 0.1);
-    }
-
-    .info strong {
-        color: #5bc0de;
-    }
-
-    .success {
-        border-left-color: #2b542c;
-        background-color: rgba(67, 161, 70, 0.54);
-    }
-
-    .success strong {
-        color: #2b542c;
-    }
-</style>
-
-</head>
-    <div class="row">
-    <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
-    </div>
-    <div class="clearfix"></div>
-
-        @if(flash.get("error").isDefined){
-            <div class="oaerror danger" style="max-width: 300px">
-                <strong>Error :</strong>
-                @flash.get("error").get
-            </div>
+        <style>
+        .error-notice {
+            margin: 5px 5px; /* Making sure to keep some distance from all side */
         }
-        @if(flash.get("success").isDefined){
-            <div class="oaerror success" style="max-width: 300px"><strong>Success: </strong>
-                @flash.get("success").get
-            </div><br>
+
+        .oaerror {
+            width: 90%; /* Configure it fit in your design  */
+            margin: 0 auto; /* Centering Stuff */
+            background-color: #FFFFFF; /* Default background */
+            padding: 20px;
+            border: 1px solid #eee;
+            border-left-width: 5px;
+            border-radius: 3px;
+            margin: 0 auto;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
         }
-    <br/>
-        <div class="container">
-            <button type="button" class="btn" style="border-radius: 5px ; background-color: #1c94c4" data-toggle="collapse" data-target="#demo"><strong style="color: whitesmoke">Create a Speaker</strong></button>
-            <div id="demo" class="collapse">
-                <br/>
-                <br/>
-                <div class="col-md-12" style="border-radius:10px; width: 330px">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                           <div> <button type="button" class="close" aria-label="Close" data-toggle="collapse" data-target="#demo">
-                                <span aria-hidden="true">&times;</span>
-                            </button></div>
-                            @helper.form(action = routes.CFPAdmin.saveNewSpeakerByAdmin) {
-                                @helper.inputText(newWebuserForm("email"))
-                                @helper.inputText(newWebuserForm("firstName"))
-                                @helper.inputText(newWebuserForm("lastName"))
-                                <button style="border-radius: 160px" class="btn btn-success" type="submit"><i class="fa fa-plus" ></i>Add & Invite "CFP close"</button>
-                            }</div></div></div>
-            </div>
+
+        .danger {
+            border-left-color: #d9534f; /* Left side border color */
+            background-color: rgba(217, 83, 79, 0.1); /* Same color as the left border with reduced alpha to 0.1 */
+        }
+
+        .danger strong {
+            color:  #d9534f;
+        }
+
+        .warning {
+            border-left-color: #f0ad4e;
+            background-color: rgba(240, 173, 78, 0.1);
+        }
+
+        .warning strong {
+            color: #f0ad4e;
+        }
+
+        .info {
+            border-left-color: #5bc0de;
+            background-color: rgba(91, 192, 222, 0.1);
+        }
+
+        .info strong {
+            color: #5bc0de;
+        }
+
+        .success {
+            border-left-color: #2b542c;
+            background-color: rgba(67, 161, 70, 0.54);
+        }
+
+        .success strong {
+            color: #2b542c;
+        }
+    </style>
+
+    </head>
+        <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
         </div>
-        <br/>
-        <br/>
+        <div class="clearfix"></div>
 
-        <div class="col-md-12">
-        <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>All speakers </h3>
-
-            <span class="label label-info">@speakers.size users</span>
-            <span class="label label-info">@speakers.count(w => Webuser.hasAccessToCFP(w.uuid)) CFP users</span>
-
-        </div>
-        <div class="panel-body">
-           <div style="margin-: 10px"> <a style=" border-radius: 5px ;alignment: center" class="btn btn-sm btn-color-2" href="@routes.CFPAdmin.notifyAllSpeakersForSchedule()"><i class="icon-bullhorn"></i> Notify speakers about their scheduled talks </a> </div><br>
-
-            @if(speakers.nonEmpty){
-            <table class="table table-bordered table-strippted" style="width: 80%">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Digest</th>
-                        <th>Track Filter</th>
-                        @if(!ConferenceDescriptor.isCFPOpen){<th>Invite to Create Talk</th>}
-                        <th>Authenticate As</th>
-                        <th>Authenticate as & Create talk</th>
-                        @if(SecureCFPController.hasAccessToAdmin(req)) {
-                            <th>Add to/Remove from CFP users</th>
-                        }
-                        @if(!ConferenceDescriptor.isCFPOpen && speakers.map{w => Speaker.isPropScheduleexist(w.uuid)}) {
-                            <th>Notify for scheduled talks</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
-                    <tr>
-                        <td align="center">
-                            <a style="text-decoration: none" href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)"> @webuser.firstName @webuser.lastName</a>
-                        </td>
-                         <td align="center">
-                             <small>@webuser.email</small>
-                        </td>
-                        <td align="center" >
-                        @if(Webuser.isMember(webuser.uuid, "cfp")) {
-                            @Digest.retrieve(webuser.uuid)
-                        }else {
-                            N/A
-                        }
-                        </td>
-                        <td>
-                        @if(Webuser.isMember(webuser.uuid, "cfp")) {
-                            @Digest.getTrackFilters(webuser.uuid).mkString(", ")
-                        }else {
-                            N/A
-                        }
-                        </td>
-
-                            @if(!ConferenceDescriptor.isCFPOpen){<td align="center">
-                            <a style="border-radius: 5px ; margin-bottom: 2px"  class="btn btn-sm btn-primary" title="Invite this speaker to create talk" href="@routes.CFPAdmin.sendEmailForTalk(webuser.uuid)">
-                                <i class="icon-envelope"></i></a>
-                            </td> }
-                        <td align="center">  <a style="border-radius: 5px" class="btn btn-sm btn-warning" title="Authenticate as this speaker" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-unlock"></i></a></td>
-                          <td align="center">    <a style="border-radius: 5px " href="@routes.Backoffice.authenticateAndCreateTalk(webuser.uuid)" class="btn btn-sm btn-info" title="Authenticate as & create talk" ><i class="icon-unlock"></i></a>
-                          </td>
-                           @if(SecureCFPController.hasAccessToAdmin(req)){<td align="center">
-                                @if(Webuser.hasAccessToCFP(webuser.uuid)){
-                                    <a style="border-radius: 5px" class="btn btn-sm btn-danger" title="remove from CFP Users " href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)"><i class="icon-trash icon-large"></i></a>
-                                }else{
-                                    <a style="border-radius: 5px" class="btn btn-sm btn-success" title="Add to CFP Users" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)"><i class="icon-plus "></i></a>
-                                }
-                           </td>
-                           }
-                    </tr>
-                }
-                </tbody>
-            </table>
-            }else{
-                <P>There are no web users</P>
+            @if(flash.get("error").isDefined){
+                <div class="oaerror danger" style="max-width: 300px">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
             }
-        </div>
+            @if(flash.get("success").isDefined){
+                <div class="oaerror success" style="max-width: 300px"><strong>Success: </strong>
+                    @flash.get("success").get
+                </div><br>
+            }
+        <br/>
+            <div class="container">
+                <button type="button" class="btn" style="border-radius: 5px ; background-color: #1c94c4" data-toggle="collapse" data-target="#demo"><strong style="color: whitesmoke">Create a Speaker</strong></button>
+                <div id="demo" class="collapse">
+                    <br/>
+                    <br/>
+                    <div class="col-md-12" style="border-radius:10px; width: 330px">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                               <div> <button type="button" class="close" aria-label="Close" data-toggle="collapse" data-target="#demo">
+                                    <span aria-hidden="true">&times;</span>
+                                </button></div>
+                                @helper.form(action = routes.CFPAdmin.saveNewSpeakerByAdmin) {
+                                    @helper.inputText(newWebuserForm("email"))
+                                    @helper.inputText(newWebuserForm("firstName"))
+                                    @helper.inputText(newWebuserForm("lastName"))
+                                    <button style="border-radius: 160px" class="btn btn-success" type="submit"><i class="fa fa-plus" ></i>Add & Invite "CFP close"</button>
+                                }</div></div></div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+
+            <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All speakers </h3>
+
+                    <span class="label label-info">@speakers.size users</span>
+                    <span class="label label-info">@speakers.count(w => Webuser.hasAccessToCFP(w.uuid)) CFP users</span>
+                </div>
+                <div class="panel-body">
+                   <div style="margin-: 10px"> <a style=" border-radius: 5px ;alignment: center" class="btn btn-sm btn-color-2" href="@routes.CFPAdmin.notifyAllSpeakersForSchedule()"><i class="icon-bullhorn"></i> Notify speakers about their scheduled talks </a> </div><br>
+                    <div class="panel-body">
+                        @if(speakers.nonEmpty){
+                        <table id="allWebusers" class="table table-hover table-condensed table-bordered table-strippted" >
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Digest</th>
+                                    <th>Track Filter</th>
+                                    @if(!ConferenceDescriptor.isCFPOpen){<th>Invite to Create Talk</th>}
+                                    <th>Authenticate As</th>
+                                    <th>Authenticate as & Create talk</th>
+                                    @if(SecureCFPController.hasAccessToAdmin(req)) {
+                                        <th>Add to/Remove from CFP users</th>
+                                    }
+                                    @if(!ConferenceDescriptor.isCFPOpen && speakers.map{w => Speaker.isPropScheduleexist(w.uuid)}) {
+                                        <th>Notify for scheduled talks</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
+                                <tr>
+                                    <td align="left">
+                                        <a style="text-decoration: none" href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)"> @webuser.firstName @webuser.lastName</a>
+                                    </td>
+                                     <td align="left">
+                                         <small>@webuser.email</small>
+                                    </td>
+                                    <td align="center" >
+                                    @if(Webuser.isMember(webuser.uuid, "cfp")) {
+                                        @Digest.retrieve(webuser.uuid)
+                                    }else {
+                                        N/A
+                                    }
+                                    </td>
+                                    <td>
+                                    @if(Webuser.isMember(webuser.uuid, "cfp")) {
+                                        @Digest.getTrackFilters(webuser.uuid).mkString(", ")
+                                    }else {
+                                        N/A
+                                    }
+                                    </td>
+
+                                        @if(!ConferenceDescriptor.isCFPOpen){<td align="center">
+                                        <a style="border-radius: 5px ; margin-bottom: 2px"  class="btn btn-sm btn-primary" title="Invite this speaker to create talk" href="@routes.CFPAdmin.sendEmailForTalk(webuser.uuid)">
+                                            <i class="icon-envelope"></i></a>
+                                        </td> }
+                                    <td align="center">  <a style="border-radius: 5px" class="btn btn-sm btn-warning" title="Authenticate as this speaker" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-unlock"></i></a></td>
+                                      <td align="center">    <a style="border-radius: 5px " href="@routes.Backoffice.authenticateAndCreateTalk(webuser.uuid)" class="btn btn-sm btn-info" title="Authenticate as & create talk" ><i class="icon-unlock"></i></a>
+                                      </td>
+                                       @if(SecureCFPController.hasAccessToAdmin(req)){<td align="center">
+                                            @if(Webuser.hasAccessToCFP(webuser.uuid)){
+                                                <a style="border-radius: 5px" class="btn btn-sm btn-danger" title="remove from CFP Users " href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)"><i class="icon-trash icon-large"></i></a>
+                                            }else{
+                                                <a style="border-radius: 5px" class="btn btn-sm btn-success" title="Add to CFP Users" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)"><i class="icon-plus "></i></a>
+                                            }
+                                       </td>
+                                       }
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                        }else{
+                            <P>There are no web users</P>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <script type="text/javascript">
+        $('.datepicker').datepicker();
+        $(document).ready(function () {
+            $('#allWebusers').dataTable({
+                "aaSorting": [],
+                "iDisplayLength": 25,
+                "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                "bStateSave": false,
+                "aoColumns": [
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"},
+                    {"sType": "string"}
+                ]
+            });
+        });
+    </script>
+
+    <script>
+            tinymce.init({
+                selector: '#content',
+                height: 400,
+                menubar: true,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table contextmenu paste code'
+                ],
+                toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                content_css: '//www.tinymce.com/css/codepen.min.css'
+            });
+    </script>
 }
-<script>tinymce.init({
-    selector: '#content',
-    height: 400,
-    menubar: true,
-    plugins: [
-        'advlist autolink lists link image charmap print preview anchor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table contextmenu paste code'
-    ],
-    toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-    content_css: '//www.tinymce.com/css/codepen.min.css'
-});</script>
