@@ -127,7 +127,7 @@
 
             function notificationHandler() {
                 var id = document.getElementById("uuid");
-                var eventBus = new EventBus('http://localhost:'.concat(@NotificationService.port.toString()).concat('/eventbus'));
+                var eventBus = new EventBus('https://localhost:'.concat(@NotificationService.port.toString()).concat('/eventbus'));
                 eventBus.onopen = function () {
                     eventBus.registerHandler(id.value, function (error, message) {
                         if ('Notification' in window) {
