@@ -107,12 +107,11 @@
 
             <script src="@routes.Assets.at(path = "/public", file = "js/vertx-eventbus.js")" type="text/javascript"></script>
 
-                <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-                <!--[if lt IE 9]>
-<script src="/assets/js/html5shiv.js" type="text/javascript"></script>
-<script src="/assets/js/respond.min.js" type="text/javascript"></script>
-
-<![endif]-->
+            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+            <!--[if lt IE 9]>
+              <script src="/assets/js/html5shiv.js" type="text/javascript"></script>
+              <script src="/assets/js/respond.min.js" type="text/javascript"></script>
+            <![endif]-->
             <meta name="generator" content="Play! 2.3 Scala"/>
             <link rel="shortcut icon" href="/favicon.ico">
         </head>
@@ -121,7 +120,6 @@
             @if(SecureCFPController.isLoggedIn(req)) {
                 <input id="uuid" type="hidden" value="@SecureCFPController.findAuthenticator.get"/>
             }
-
         <script>
             function init() {
                 notificationHandler();
@@ -194,47 +192,60 @@
                         @if(SecureCFPController.hasAccessToCFPAdmin(req)) {
                             <li><a href="@routes.Attic.atticHome()"><i class="icon-magnet"></i> Attic</a></li>
                         }
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right" id="recentEvents"
-                            @if(!SecureCFPController.hasAccessToCFP(req) ||
-                                !SecureCFPController.hasAccessToCFPAdmin(req) ||
-                                !SecureCFPController.hasAccessToAdmin(req)) {
-                                style="display: none"
-                            }>
-                            <li class="dropdown dropdown-notifications">
-                                <a href="#notifications-panel" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1509389519/notifications-bell-button_nvowki.png">
-                                </a>
 
-                                <div class="dropdown-container dropdown-position-bottomright">
-                                    <div style="background-color: #1a1a1a " class="dropdown-toolbar">
-                                        <h3 style="color: #fafafa " class="dropdown-toolbar-title">
-                                            <strong>Recent events</strong>
-                                        </h3>
-                                        <div class="dropdown-toolbar-actions"></div>
-                                    </div>
-                                        <!-- /dropdown-toolbar -->
-                                    <ul class="dropdown-menu">
-                                        <br>
-                                        @Event.loadEvents(4, 0).map { ev: Event =>
-                                            <li>
-                                                <div style="margin-left: 6%" align="left"><strong style="color: #003349">@ev.msg</strong>
-                                                    by <strong>@Webuser.findByUUID(ev.uuid).get.cleanName</strong> </div><br>
-                                                <div style="margin-right: 6%" align="right">&nbsp;&nbsp;@ev.date.map(s => s.withZoneRetainFields(org.joda.time.DateTimeZone.forID("Africa/Casablanca")).plusHours(1).toString("MMM dd")) at @ev.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID("Africa/Casablanca")).plusHours(1).toString("HH:mm")) </div>
-                                            </li>
-                                            <li class="divider"></li>
-                                        }
-                                    </ul>
-
-                                    <div class="dropdown-footer text-center">
-                                        <a href="@routes.CFPAdmin.seeEvents(0, None, None, None)">View All</a>
-                                    </div>
-                                        <!-- /dropdown-footer -->
+                        @if(SecureCFPController.hasAccessToCFP(req)){
+                            <form id="searchForm" class="navbar-form navbar-right" role="search">
+                                <div class="form-group">
+                                    <label for="searchBox" class="sr-only">Search</label>
+                                    <input name="q" type="text" class="searchBox form-control search-box" placeholder="Search" autocomplete="off">
                                 </div>
-                                <!-- /dropdown-container -->
-                            </li>
-                            <!-- /dropdown -->
+                                <div class="searchResult"></div>
+                            </form>
+                        }
                     </ul>
+
+                    <div>
+                        <ul class="nav navbar-nav navbar-right" id="recentEvents"
+                                @if(!SecureCFPController.hasAccessToCFP(req) ||
+                                    !SecureCFPController.hasAccessToCFPAdmin(req) ||
+                                    !SecureCFPController.hasAccessToAdmin(req)) {
+                                    style="display: none"
+                                }>
+                                <li class="dropdown dropdown-notifications">
+                                    <a href="#notifications-panel" class="dropdown-toggle" data-toggle="dropdown">
+                                        <img src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1509389519/notifications-bell-button_nvowki.png">
+                                    </a>
+
+                                    <div class="dropdown-container dropdown-position-bottomright">
+                                        <div style="background-color: #1a1a1a " class="dropdown-toolbar">
+                                            <h3 style="color: #fafafa " class="dropdown-toolbar-title">
+                                                <strong>Recent events</strong>
+                                            </h3>
+                                            <div class="dropdown-toolbar-actions"></div>
+                                        </div>
+                                            <!-- /dropdown-toolbar -->
+                                        <ul class="dropdown-menu">
+                                            <br>
+                                            @Event.loadEvents(4, 0).map { ev: Event =>
+                                                <li>
+                                                    <div style="margin-left: 6%" align="left"><strong style="color: #003349">@ev.msg</strong>
+                                                        by <strong>@Webuser.findByUUID(ev.uuid).get.cleanName</strong> </div><br>
+                                                    <div style="margin-right: 6%" align="right">&nbsp;&nbsp;@ev.date.map(s => s.withZoneRetainFields(org.joda.time.DateTimeZone.forID("Africa/Casablanca")).plusHours(1).toString("MMM dd")) at @ev.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID("Africa/Casablanca")).plusHours(1).toString("HH:mm")) </div>
+                                                </li>
+                                                <li class="divider"></li>
+                                            }
+                                        </ul>
+
+                                        <div class="dropdown-footer text-center">
+                                            <a href="@routes.CFPAdmin.seeEvents(0, None, None, None)">View All</a>
+                                        </div>
+                                            <!-- /dropdown-footer -->
+                                    </div>
+                                    <!-- /dropdown-container -->
+                                </li>
+                                <!-- /dropdown -->
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -426,75 +437,76 @@
             </div>
         </footer>
 
-            <!-- ****************************************************************************** //-->
+        <!-- ****************************************************************************** //-->
 
-        <script>
-            function myFunction() {
-                document.getElementById("event").removeAttribute("data-count");
-            }
-        </script>
-            @if(SecureCFPController.hasAccessToCFP(req)) {
-                <script type="text/javascript">
-                        $("#searchForm").on("submit", function (e) {
-                            e.preventDefault();
-                            var form = $(this);
-                            $(".searchBox", form).addClass("searching");
+        @if(SecureCFPController.hasAccessToCFP(req)) {
+            <script type="text/javascript">
+                    $("#searchForm").on("submit", function(e) {
+                        e.preventDefault();
+                        var form = $(this);
+                        $(".searchBox", form).addClass("searching");
+                        $.ajax({
+                            url: "/cfpadmin/advancedsearch",
+                            type: "GET",
+                            dataType: "html",
+                            data: $(form).serialize(),
+                            success: function (data, textStatus) {
+                                $(".searchResult", form).html(data);
+                                $(".searchResult", form).show();
+                                $(".searchBox", form).removeClass("searching");
+                            },
+                            error: function (err) {
+                                console.log("Error ");
+                                console.log(err);
+                                $(".searchBox", form).addClass("search-error");
+                            }
+                        });
+                        return false;
+                    });
+
+                    <!-- Invitation system - see also checkInvited tags -->
+                    $(".ajax-cancelInvitation").on("click", function (e) {
+                        e.preventDefault();
+                        var zeButton = $(this);
+                        var speakerUUID = zeButton.data("speaker");
+                        if (typeof speakerUUID != 'undefined') {
+
                             $.ajax({
-                                url: "/cfpadmin/advancedsearch",
-                                type: "GET",
-                                dataType: "html",
-                                data: $(form).serialize(),
-                                success: function (data, textStatus) {
-                                    $(".searchResult", form).html(data);
-                                    $(".searchResult", form).show();
-                                    $(".searchBox", form).removeClass("searching");
-                                },
-                                error: function (err) {
-                                    console.log("Error ");
-                                    console.log(err);
-                                    $(".searchBox", form).addClass("search-error");
+                                url: "/cfpadmin/invitations/cancel?speakerUUID=" + speakerUUID,
+                                success: function (e) {
+                                    zeButton.removeClass("btn-warning").addClass("btn-success");
+                                    zeButton.text("Invitation cancelled");
                                 }
                             });
-                            return false;
-                        });
 
-                        <!-- Invitation system - see also checkInvited tags -->
-                        $(".ajax-cancelInvitation").on("click", function (e) {
-                            e.preventDefault();
-                            var zeButton = $(this);
-                            var speakerUUID = zeButton.data("speaker");
-                            if (typeof speakerUUID != 'undefined') {
+                        } else {
+                            console.log("Unable to retrieve speaker UUID in HTML HREF");
+                        }
+                    });
 
-                                $.ajax({
-                                    url: "/cfpadmin/invitations/cancel?speakerUUID=" + speakerUUID,
-                                    success: function (e) {
-                                        zeButton.removeClass("btn-warning").addClass("btn-success");
-                                        zeButton.text("Invitation cancelled");
-                                    }
-                                });
+                    $(".ajax-invite").on("click", function (e) {
+                        var zeButton = $(this);
+                        e.preventDefault();
+                        var speakerUUID = zeButton.data("speaker");
+                        if (typeof speakerUUID != 'undefined') {
+                            $.ajax({
+                                url: "/cfpadmin/invitations/invite?speakerUUID=" + speakerUUID,
+                                success: function (e) {
+                                    zeButton.removeClass("btn-primary").addClass("btn-success");
+                                    zeButton.text("Invited!");
+                                }
+                            });
+                        } else {
+                            console.log("Unable to retrieve speaker UUID in HTML HREF");
+                        }
+                    });
+            </script>
+        }
 
-                            } else {
-                                console.log("Unable to retrieve speaker UUID in HTML HREF");
-                            }
-                        });
-
-                        $(".ajax-invite").on("click", function (e) {
-                            var zeButton = $(this);
-                            e.preventDefault();
-                            var speakerUUID = zeButton.data("speaker");
-                            if (typeof speakerUUID != 'undefined') {
-                                $.ajax({
-                                    url: "/cfpadmin/invitations/invite?speakerUUID=" + speakerUUID,
-                                    success: function (e) {
-                                        zeButton.removeClass("btn-primary").addClass("btn-success");
-                                        zeButton.text("Invited!");
-                                    }
-                                });
-                            } else {
-                                console.log("Unable to retrieve speaker UUID in HTML HREF");
-                            }
-                        });
-                </script>
-            }
+            <script>
+                function myFunction() {
+                    document.getElementById("event").removeAttribute("data-count");
+                }
+            </script>
         </body>
     </html>
