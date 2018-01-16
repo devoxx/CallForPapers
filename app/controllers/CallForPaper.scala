@@ -428,17 +428,23 @@ object CallForPaper extends SecureCFPController {
   def submitProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findDraft(uuid, proposalId)
-      maybeProposal match {
-        case Some(proposal) =>
-          Proposal.submit(uuid, proposalId)
-          if (ConferenceDescriptor.notifyProposalSubmitted) {
-            // This generates too many emails for France and is useless
-            ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
-          }
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
-        case None =>
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
+      if (Backoffice.isCFPOpen() ||
+          (Webuser.isMember(uuid, "cfp") ||
+           Webuser.isMember(uuid, "admin"))) {
+        val maybeProposal = Proposal.findDraft(uuid, proposalId)
+        maybeProposal match {
+          case Some(proposal) =>
+            Proposal.submit(uuid, proposalId)
+            if (ConferenceDescriptor.notifyProposalSubmitted) {
+              // This generates too many emails for France and is useless
+              ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
+            }
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
+          case None =>
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
+        }
+      } else {
+        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("cfp.isClosed.expl"))
       }
   }
 
