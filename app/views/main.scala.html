@@ -116,41 +116,42 @@
             <link rel="shortcut icon" href="/favicon.ico">
         </head>
 
-        <body onload="init();">
-            @if(SecureCFPController.isLoggedIn(req)) {
-                <input id="uuid" type="hidden" value="@SecureCFPController.findAuthenticator.get"/>
-            }
-        <script>
-            function init() {
-                notificationHandler();
-            };
+        <body>
+            @*  <body onload="init();">
+           @if(SecureCFPController.isLoggedIn(req)) {*@
+                @*<input id="uuid" type="hidden" value="@SecureCFPController.findAuthenticator.get"/>*@
+            @*}*@
+        @*<script>*@
+            @*function init() {*@
+                @*notificationHandler();*@
+            @*};*@
 
-            function notificationHandler() {
-                var id = document.getElementById("uuid");
-                var eventBus = new EventBus('https://localhost:'.concat(@NotificationService.port.toString()).concat('/eventbus'));
-                eventBus.onopen = function () {
-                    eventBus.registerHandler(id.value, function (error, message) {
-                        if ('Notification' in window) {
-                            var ask = Notification.requestPermission();
-                            ask.then(function (permission) {
-                                if (permission === "granted") {
-                                    var msg = new Notification("Notification CFP", {
-                                        body: JSON.stringify(message.body.message).replace(JSON.stringify(message.body.message).substring(0, 1), "").replace(JSON.stringify(message.body.message).slice(-1), ""),
-                                        icon: 'http://blog.xebia.fr/images/devoxxuk-2014-logo.png'
+            @*function notificationHandler() {*@
+                @*var id = document.getElementById("uuid");*@
+                @*var eventBus = new EventBus('https://localhost:'.concat(@NotificationService.port.toString()).concat('/eventbus'));*@
+                @*eventBus.onopen = function () {*@
+                    @*eventBus.registerHandler(id.value, function (error, message) {*@
+                        @*if ('Notification' in window) {*@
+                            @*var ask = Notification.requestPermission();*@
+                            @*ask.then(function (permission) {*@
+                                @*if (permission === "granted") {*@
+                                    @*var msg = new Notification("Notification CFP", {*@
+                                        @*body: JSON.stringify(message.body.message).replace(JSON.stringify(message.body.message).substring(0, 1), "").replace(JSON.stringify(message.body.message).slice(-1), ""),*@
+                                        @*icon: 'http://blog.xebia.fr/images/devoxxuk-2014-logo.png'*@
 
 
-                                    });
-                                    msg.addEventListener("click", function (event) {
-                                        alert("Click received");
-                                    });
-                                }
-                            });
-                        }
-                        //alert(JSON.stringify(message.body.type));
-                    });
-                }
-            };
-    </script>
+                                    @*});*@
+                                    @*msg.addEventListener("click", function (event) {*@
+                                        @*alert("Click received");*@
+                                    @*});*@
+                                @*}*@
+                            @*});*@
+                        @*}*@
+                        @*//alert(JSON.stringify(message.body.type));*@
+                    @*});*@
+                @*}*@
+            @*};*@
+    @*</script>*@
         <div class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
