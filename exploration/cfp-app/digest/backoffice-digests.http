@@ -1,0 +1,6 @@
+GET http://{{host}}:{{port}}/cfp/backoffice/digests
+
+
+
+
+###
