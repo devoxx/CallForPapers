@@ -329,6 +329,47 @@ object RestAPI extends Controller {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
+  def showArchivedTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
+      implicit request =>
+        import models.Proposal.proposalFormat
+
+        val proposals = ArchiveProposal.getArchivedProposals(eventCode)
+
+        val eTag = proposals.hashCode.toString
+
+        request.headers.get(IF_NONE_MATCH) match {
+          case Some(tag) if tag == eTag =>
+            NotModified
+
+          case other =>
+            val proposalsWithSpeaker = proposals.map {
+              p: Proposal =>
+                val mainWebuser = findByUUID(p.mainSpeaker)
+                val secWebuser = p.secondarySpeaker.flatMap(findByUUID)
+                val oSpeakers = p.otherSpeakers.map(findByUUID)
+                val preferredDay = Proposal.getPreferredDay(p.id)
+
+                // Transform speakerUUID to Speaker name, this simplify Angular Code
+                p.copy(
+                  mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+                  , secondarySpeaker = secWebuser.map(_.cleanName)
+                  , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+                  , privateMessage = preferredDay.getOrElse("")
+                )
+            }
+
+            val finalJson = Map(
+              "talks" -> Json.toJson(proposalsWithSpeaker.filter(_.state == ProposalState.ARCHIVED))
+            )
+
+            val jsonObject = Json.toJson(finalJson)
+
+            Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+              "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL() + ">; rel=\"profile\"")
+            )
+        }
+    }
+
   def redirectToTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Redirect(routes.RestAPI.showApprovedTalks(eventCode))
