@@ -617,6 +617,7 @@ sw.showAllDay=Show complete agenda for this day
 not.published=The agenda for this conference is not yet published
 scheduling.in.progress.status.changed=Status has changed to {0} the `Scheduling-in-progress` message.
 scheduling.in.progress=Scheduling in full progress... it's an art form, it can take some time & iterations :)
+submit.proposal.status.changed=Status has changed to {0} submitting of proposals after CFP is closed. Only CFP or Admin users can submit proposals.
 
 day-wed=Wednesday
 day-thu=Thursday
