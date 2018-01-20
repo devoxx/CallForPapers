@@ -428,9 +428,12 @@ object CallForPaper extends SecureCFPController {
   def submitProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      if (Backoffice.isCFPOpen() ||
-          (Webuser.isMember(uuid, "cfp") ||
-           Webuser.isMember(uuid, "admin"))) {
+      val allowSubmittingProposal =
+            Backoffice.isCFPOpen() ||
+            (!Backoffice.isCFPOpen() && Backoffice.isSubmittingProposalAfterCFPClosed().contains("Allow")) ||
+            (Webuser.hasAccessToCFP(uuid) || Webuser.hasAccessToAdmin(uuid))
+
+      if (allowSubmittingProposal) {
         val maybeProposal = Proposal.findDraft(uuid, proposalId)
         maybeProposal match {
           case Some(proposal) =>
