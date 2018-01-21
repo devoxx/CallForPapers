@@ -23,11 +23,10 @@
 
 package library.search
 
-import models.{ApprovedProposal, ConferenceDescriptor, ProposalType, Track}
+import models.{ApprovedProposal, ProposalType, Track}
 import org.joda.time.DateTime
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
-
 import controllers.AdvancedSearchParam
 
 import scala.util.{Failure, Success, Try}
@@ -196,7 +195,7 @@ object ElasticSearch {
   def doAdvancedSearch(index: String, query: Option[String], p: Option[Int]) = {
 
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
-    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}" }.getOrElse("\"match_all\" : { }")
+    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}"}.getOrElse("\"match_all\" : { }")
     val pageSize = 25
 
     val pageUpdated: Int = p match {

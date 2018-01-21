@@ -1324,7 +1324,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "No preferences")
   }
 
-
   def showProposalsWithNoVotes() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val proposals = Review.allProposalsWithNoVotes

@@ -36,7 +36,7 @@ libraryDependencies ++= Seq(
   , "org.apache.commons" % "commons-lang3" % "3.1"
   , "commons-io" % "commons-io" % "2.4"
   , "commons-logging" % "commons-logging" % "1.2"
-  , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
+  , "commons-codec" % "commons-codec" % "1.9" // for new Base64 that has support for String
   , "com.typesafe.play" %% "play-cache" % "2.2.0"
   , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
   , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
