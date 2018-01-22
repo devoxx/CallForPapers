@@ -75,7 +75,6 @@ object RestAPI extends Controller {
                 "firstName" -> webuser.firstName,
                 "lastName" -> webuser.lastName,
                 "pictureurl" -> Speaker.findByUUID(webuser.uuid).get.avatarUrl.get,
-                //                "tel" -> webuser.tel,
                 "company" -> Speaker.findByUUID(webuser.uuid).get.company.getOrElse(null)
               )
             )
@@ -601,7 +600,7 @@ object RestAPI extends Controller {
       // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
 
       val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx UK 2016 is not valid
-    val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
+      val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
 
       val eTag = proposals.hashCode.toString
 
@@ -989,14 +988,13 @@ object RestAPI extends Controller {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-      val allSlots = ConferenceDescriptor.ConferenceSlots.all.map {
+      val allSlots = ConferenceDescriptor.ConferenceSlots.allSlots.map {
         slot =>
           Json.toJson {
             Map(
               "id" -> Json.toJson(slot.id)
               , "name" -> Json.toJson(slot.name)
               , "day" -> Json.toJson(slot.day)
-
             )
           }
       }
@@ -1021,7 +1019,6 @@ object RestAPI extends Controller {
 
   def showRooms(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val allRooms = ConferenceDescriptor.ConferenceRooms.allRooms.map {
         room =>
@@ -1031,6 +1028,7 @@ object RestAPI extends Controller {
               , "name" -> Json.toJson(room.name)
               , "capacity" -> Json.toJson(room.capacity)
               , "setup" -> Json.toJson(room.setup)
+              , "recorded" -> Json.toJson(room.recorded)
             )
           }
       }
@@ -1305,7 +1303,6 @@ case class Link(href: String, rel: String, title: String)
 object Link {
 
   implicit val linkFormat = Json.format[Link]
-
   implicit def call2String(c: Call)(implicit requestHeader: RequestHeader): String = c.absoluteURL()
 }
 

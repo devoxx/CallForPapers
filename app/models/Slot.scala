@@ -227,7 +227,7 @@ object Slot {
   implicit val write = Json.writes[Speaker]
 
   def byType(proposalType: ProposalType): Seq[Slot] = {
-    ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)
+    ConferenceDescriptor.ConferenceSlots.allSlots.filter(s => s.name == proposalType.id)
   }
 
   def createSlot(id: String, name: String, day: String, from: DateTime, to: DateTime,
