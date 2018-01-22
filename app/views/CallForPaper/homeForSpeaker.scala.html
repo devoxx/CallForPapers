@@ -143,7 +143,6 @@
             @if(Webuser.isMember(webuser.uuid, "cfp")) {
                 <div class="digestMessage">
                 <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-
                 <table class="table">
                     <tbody>
                         <tr>
@@ -161,6 +160,26 @@
                                 </option>
                                 }
                                 </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
+                                <div class="filterTracks">
+                                @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
+                                    @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
+                                        @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
+                                            <input type="checkbox" id="@track.id" checked/>
+                                        } else {
+                                            <input type="checkbox" id="@track.id"/>
+                                        }
+                                    } else {
+                                        <input type="checkbox" id="@track.id"/>
+                                    }
+                                    &nbsp;
+                                    @Html(Messages(track.label)) <br>
+                                }
+                                </div>
                             </td>
                         </tr>
                     </tbody>
