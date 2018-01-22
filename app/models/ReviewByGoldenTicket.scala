@@ -29,6 +29,8 @@ import org.joda.time.{DateTime, Instant}
 import play.api.i18n.Messages
 
 import scala.collection.immutable.Set
+import org.joda.time.{DateTime, Instant}
+
 import scala.math.BigDecimal.RoundingMode
 
 /**
@@ -50,7 +52,6 @@ object ReviewByGoldenTicket {
       tx.zadd(s"ReviewGT:Votes:$proposalId", secureMaxVote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + secureMaxVote) // Store when this user voted for this talk
       tx.exec()
-
       ZapActor.actor ! ComputeVotesAndScore()
   }
 

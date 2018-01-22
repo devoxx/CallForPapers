@@ -41,8 +41,6 @@
                                       <th>@Messages("svp.average") :</th>
                                       <td class="alert alert-danger">@library.Stats.average(groupedRatings.flatMap(_.details.map(_.rating.toDouble))) for @groupedRatings.size vote(s)</td>
                                   </tr>
-
-
                                       @groupedRatings.map{rat=>
                                         <tr>
                                           <td>@rat.details.map{d:RatingDetail=>

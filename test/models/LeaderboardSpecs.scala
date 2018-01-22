@@ -26,17 +26,13 @@ package models
 import library.Redis
 import play.api.test.{WithApplication, FakeApplication, PlaySpecification}
 import org.apache.commons.lang3.RandomStringUtils
-/**
- * Leader board tests.
- * Created by nicolas martignole on 10/07/2014.
- */
+
 class LeaderboardSpecs extends PlaySpecification {
 
-  // Use a different Redis Database than the PROD one
+
   val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
 
-  // To avoid Play Cache Exception during tests, check this
-  // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
+
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)
 
   "Leaderboard" should {
@@ -85,7 +81,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , demoLevel = Some("l1")
         , userGroup = Some(false)
         , wishlisted = None
-        , tags = None)
+        , tags = None
+        , preferences = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 

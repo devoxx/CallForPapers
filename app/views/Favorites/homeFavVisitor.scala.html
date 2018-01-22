@@ -1,0 +1,37 @@
+@(timeSlots: List[Slot], rooms:List[Room])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import org.joda.time.DateTimeZone
+
+@views.html.Publisher.devoxxFR2017("My Favs Schedule") {
+  @if(timeSlots.isEmpty){
+<h5>@Messages("fav.notyet.sched")</h5>}
+  @timeSlots.groupBy(_.to.getDayOfWeek).toList.sortBy(_._1).map { case (day, slots:List[Slot]) =>
+  <h2>@Messages("fav.day."+day)</h2>
+  <div class="columns large-12 woocommerce">
+    <table class="agendaTable">
+      @if(ConferenceDescriptor.isShowRoom) {
+        <tr>
+          <th><i class="icon-time"></i> Room</th>
+          @rooms.sorted.map { roomName: Room =>
+            <td>@roomName.name</td>
+          }
+        </tr>
+      }
+
+      @slots.groupBy(s => s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
+      <tr >
+        <th class="timeSlot">
+          @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+          - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+        </th>
+        @rooms.sorted.map { room =>
+          @tags.publisher.tagRenderRow(subSlots, room, rooms.size,showEndTime=true)
+        }
+      </tr>
+      }
+
+
+  </table>
+  </div>
+  }
+}

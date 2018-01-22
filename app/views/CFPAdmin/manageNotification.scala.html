@@ -1,0 +1,96 @@
+@(notificationform:Form[MailsManager],eventType:String )(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@main("CFP Admin-manage notification") {
+    @if(flash.get("error").isDefined) {
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-dismissable">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        </div>
+    }
+    @if(flash.get("success").isDefined) {
+        <div class="col-md-12">
+            <div class="alert alert-warning alert-dismissable">
+            @flash.get("success").get
+            </div>
+        </div>}
+    @if(eventType=="save"){
+    @helper.form(action = routes.CFPAdmin.saveManageNotification()){
+        <input type="hidden" name="id" value="@MailsManager.generateId()">
+        <div class="row">
+            <div class="col-md-3">   @helper.select(field =notificationform("Etype"),options = MailsManager.ListofMail,'_default -> "Event Type", '_label -> ("" ),'class->"form-control")
+            </div>
+            <div class="col-md-3">@helper.select(field=notificationform("lang"),options = Seq(
+                "en" -> "en",
+                "fr" -> "fr"
+            ),'_default -> "Email Lang",'_label -> ("" ), 'class->"form-control")
+            </div>
+
+        </div>
+
+        <h4>@Messages("admin.btn.manage.notification.subject") </h4>
+        @helper.textarea(notificationform("Subject"), '_label -> ("" ),'cols->140, 'rows->3)
+
+        <h4>@Messages("admin.btn.manage.notification.new") </h4>
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">@Messages("informations.mails.manager")</h3>
+            </div>
+            <div class="panel-body">
+                <p>@Messages("informations.mails.manager.content")</p>
+                <h6>@Messages("informations.mails.manager.content.liste") Speaker.email , Speaker.firstName  ,proposal.title,proposal.deadline </h6>
+            </div>
+        </div>
+
+        @helper.textarea(notificationform("content"), '_label -> ("" ), 'id->"content")
+        <div style="text-align: center;"> <a name="new"  type="button" class="btn btn-default " href="@routes.CFPAdmin.manageNotification()">Cancel</a>
+            <button name="new"  type="submit" class="btn btn-primary ">Save</button>
+        </div>
+    }}
+    @if(eventType=="update"){
+        @helper.form(action = routes.CFPAdmin.updateManageNotification()){
+            <input type="hidden" name="id" value="@notificationform("id").value">
+            <div class="row">
+                <div class="col-md-3">   @helper.select(field =notificationform("Etype"),options = MailsManager.ListofMail,'_default -> "Event Type", '_label -> ("" ),'class->"form-control")
+                </div>
+                <div class="col-md-3">@helper.select(field=notificationform("lang"),options = Seq(
+                    "en" -> "en",
+                    "fr" -> "fr"
+                ),'_default -> "Email Lang",'_label -> ("" ), 'class->"form-control")
+                </div>
+
+            </div>
+            <h4>@Messages("admin.btn.manage.notification.subject") </h4>
+            @helper.textarea(notificationform("Subject"), '_label -> ("" ),'cols->140, 'rows->3)
+            <h4>@Messages("admin.btn.manage.notification.new") </h4>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">@Messages("informations.mails.manager")</h3>
+                </div>
+                <div class="panel-body">
+                    <p>@Messages("informations.mails.manager.content")</p>
+                    <h6>@Messages("informations.mails.manager.content.liste") Speaker.email , Speaker.firstName , Speaker.lastName ,
+                        url.cfp ,proposal.title,proposal.deadline</h6>
+                </div>
+            </div>
+            @helper.textarea(notificationform("content"), '_label -> ("" ), 'id->"content" )
+            <div style="text-align: center;"> <a name="new"  type="button" class="btn btn-default " href="@routes.CFPAdmin.manageNotification()">Cancel</a>
+                <button name="new"  type="submit" class="btn btn-primary ">Update</button>
+            </div>
+        }}
+
+}
+<script>tinymce.init({
+    init_instance_callback: "insert_contents",
+    selector: '#content',
+    height: 400,
+    menubar: true,
+    plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table contextmenu paste code'
+    ],
+    toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+    content_css: '//www.tinymce.com/css/codepen.min.css'
+});
+</script>

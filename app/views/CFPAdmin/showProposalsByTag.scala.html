@@ -1,6 +1,6 @@
 @(tag:Tag, proposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @main("Proposals by Tag"){
   <div class="row">
@@ -41,7 +41,8 @@
                     </td>
                     <td>@Messages(proposal._2.talkType.id)</td>
                     <td>
-                        <a href="@routes.CFPAdmin.openForReview(proposal._2.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                        <a href="@routes.CFPAdmin.openForReview(proposal._2.id)" title="Open for review" class="btn btn-primary btn-sm" style="border-radius: 5px">@Messages("admin.btn.review")</a>
+                        <a href="@routes.CFPAdmin.editProposalByAdmin(proposal._2.id, proposal._2.mainSpeaker)" title="Edit proposal" class="btn btn-primary btn-sm" style="border-radius: 5px">@Messages("admin.btn.edit.proposal")</a>
                     </td>
 
                 </tr>

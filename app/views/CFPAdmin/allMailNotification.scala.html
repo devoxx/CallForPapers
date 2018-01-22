@@ -1,0 +1,88 @@
+@(mailsmanagers : List[(String , Option[MailsManager])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin notification") {
+  @if(flash.get("error").isDefined) {
+    <div class="col-md-12">
+      <div class="alert alert-danger alert-dismissable">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    </div>
+  }
+  @if(flash.get("success").isDefined) {
+    <div class="col-md-12">
+      <div class="alert alert-warning alert-dismissable">
+      @flash.get("success").get
+      </div>
+    </div>}
+  &nbsp;
+  <div style="text-align: center;">
+    <a href="@routes.CFPAdmin.saveOrUpdateNotification("save")"  type="button" class="btn btn-success" style="border-radius: 5px">@Messages("mail.create")</a>
+  </div>
+  <div class="clearfix"></div>
+    &nbsp;
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>All Mails</h3><a href="@routes.CFPAdmin.generateTemplateEmailsFromStatics()"  type="button" class="btn btn-primary" style="border-radius: 5px"><i class="icon-building"></i>  Generate Emails templates from statics ones</a>
+
+      </div>
+      <div class="panel-body">
+
+        <table class="table table-bordered table-strippted">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Language</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          @mailsmanagers.map { case (id , mail) =>
+            @mail.map{ mails=>
+          <tr>
+            <td>
+              @mails.id
+            </td>
+            <td>
+              <small>@mails.Etype</small>
+            </td>
+            <td>
+            @mails.Lang
+            </td>
+
+            <td>
+
+              <a class="btn btn-sm btn-warning" href="@routes.CFPAdmin.saveOrUpdateNotification("update" ,Some(mails.id))"><i class="icon-pencil"></i> Update</a>
+
+              <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#@mails.id"><i class="icon-trash"></i> delete</button>
+              <div id="@mails.id" class="modal fade" role="dialog" >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title"> delete email</h4> </div>
+                      <div class ="modal-body">
+                        @Messages("mail.delete.notif")
+                      </div>
+                      <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <a name="dec"  type="button" class="btn btn-primary"  href="@routes.CFPAdmin.deleteMail(mails.id)">delete</a>
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+          </td>
+          </tr>
+            }}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+}

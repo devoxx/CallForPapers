@@ -2,7 +2,7 @@
 <span class="tagLabel">
     @if(cfpAdmin){
         <a href="@routes.CFPAdmin.showProposalsByTagId(tag.id)">
-    }else{
+    } else {
         <a href="@routes.Publisher.showByTag(tag.id)">
     }
     <i class="icon-tag">&nbsp;</i>@tag.value</a>

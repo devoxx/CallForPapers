@@ -1,6 +1,6 @@
 @(proposals:List[(String, List[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @views.html.Publisher.devoxxUK("All Talks") {
   <p class="breadcrumb">

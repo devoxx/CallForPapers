@@ -27,6 +27,8 @@ import models._
 import play.api.i18n.Messages
 import play.api.mvc._
 import views._
+import services._
+import play.api.libs.json.Json
 
 /**
  * Call For Paper main application.
@@ -36,7 +38,7 @@ object Application extends Controller {
 
   def home = Action {
     implicit request =>
-      session.get("uuid") match {
+      request.session.get("uuid") match {
         case Some(validUUID) =>
           Webuser.findByUUID(validUUID) match {
             case Some(webuser) =>
@@ -54,8 +56,24 @@ object Application extends Controller {
       Ok(html.Application.homeVisitor(Authentication.loginForm)).withNewSession
   }
 
+  def mobileAuth = Action {
+    implicit request =>
+      request.session.get("uuid") match {
+        case Some(uuid) => {
+          val QRCode = QRCodeAuthService.generate(uuid)
+          Ok(html.Application.mobileAuth(QRCode))
+        }
+        case None => {
+          Redirect(routes.Application.home()).withNewSession
+        }
+      }
+  }
+
+
   def index = Action {
     implicit request =>
+      //ConferenceDescriptor.verifyopeningcfp
+
       Ok(html.Application.index())
   }
 
@@ -73,4 +91,5 @@ object Application extends Controller {
           Redirect(routes.Application.index()).flashing("success" -> Messages("bugReport.sent"))
         })
   }
+
 }

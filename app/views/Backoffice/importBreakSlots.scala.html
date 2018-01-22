@@ -1,0 +1,45 @@
+@(newSlotImport: Form[models.AnyFieldImport])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main("Import Break Slots") {
+  <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2>Import Break Slots</h2>
+          <p>Provide a semi colon (;) delimited list of Break Slots to import.</p>
+          <p>Each line should have slot specific information separated by commas (,):</p>
+          <p>Wednesday, 10:00, 10:50, Room A, Coffee;</p>
+          <p>Wednesday, 14:00, 14:15, Room B, Breakfast;</p>
+          <p>Thursday, 10:00, 10:50, Room C, Reception;</p>
+          <p>(Day, From, To, Room, Break name)</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable">
+        @flash.get("error").get
+        </div>
+      }
+      @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable">
+        @flash.get("success").get
+        </div>
+      }
+      @helper.form(action = routes.Backoffice.saveImportBreakSlots) {
+
+        @helper.textarea(
+          newSlotImport("commaSeparatedValues"),
+          args = 'label -> "Semi-colon delimited Break Slots",
+                 'class->"form-control",
+                 'rows -> 10,
+                 'cols -> 60
+        )
+
+        <button type="submit" class="btn btn-success btn-lg"><i class="icon-save"></i> Import</button>
+      }
+    </div>
+  </div>
+}

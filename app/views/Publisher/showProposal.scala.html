@@ -1,7 +1,7 @@
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @import org.joda.time.DateTimeZone
-@import play.api.templates.Html
+@import play.twirl.api.Html
 @import models.ConferenceDescriptor
 
 @views.html.Publisher.devoxxUK(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {

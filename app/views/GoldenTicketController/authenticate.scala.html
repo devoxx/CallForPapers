@@ -33,7 +33,7 @@
                                 @helper.form(action = routes.GoldenTicketController.doAuthenticate) {
                                     @helper.inputText(loginForm("email"))
                                     @helper.inputPassword(loginForm("password"))
-                                    <button class="btn btn-default" type="submit">@Messages("btn.login")</button>
+                                    <button class="btn btn-default" style="border-radius: 5px" type="submit">@Messages("btn.login")</button>
                                     <a href="@routes.Authentication.forgetPassword()">@Messages("forget.password")</a>
                                 }
 

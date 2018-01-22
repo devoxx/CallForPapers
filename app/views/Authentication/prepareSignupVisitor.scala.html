@@ -2,7 +2,7 @@
 
 @import helper.twitterBootstrap._
 
-@mainVisitor(Messages("longYearlyName")+ " - " + Messages("signup.title")) {
+@mainVisitor(Messages("longYearlyName")+ " - " + Messages("signup.title"),None) {
 <div class="row">
     <div class="col-md-12 page-header">
         <h1><i class="icon-signin"></i> @Messages("visitor.registration.title")</h1>
@@ -22,6 +22,7 @@
             @helper.inputText(formWebuser("email"))
             @helper.inputText(formWebuser("firstName"))
             @helper.inputText(formWebuser("lastName"))
+            <!--@helper.inputText(formWebuser("regId"))-->
 
             <p>@Messages("visitor.signup.txt2")</p>
             <button class="btn btn-success" type="submit">@Messages("signup")</button>

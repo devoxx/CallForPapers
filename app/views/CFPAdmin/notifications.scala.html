@@ -1,0 +1,69 @@
+@import play.api.libs.json.JsValue
+@import play.api.libs.json.JsArray
+@(notifis:List[JsValue] , typ:String)(implicit  lang: Lang , req:RequestHeader)
+@main(typ +" Events") {
+  <div class="dropdown dropdown-inline">
+    <a href="#" class="btn dropdown-toggle" style="background-color: #22a27f" data-toggle="dropdown" data-hover="dropdown" data-animations="flipInX flipInY flipInX flipInY"> <strong style="color: whitesmoke"> See Events Type</strong> <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="@routes.CallForPaper.getnotifs("Emails")"> Emails Events</a></li>
+
+      <li class="divider"></li>
+      <li class="dropdown">
+        <a href="@routes.CallForPaper.getnotifs("proposal")"> Proposals Events</a>
+      </li>
+      <li class="divider"></li>
+
+      <li>
+        <a href="@routes.CallForPaper.getnotifs("vote")"> Votes Events</a>
+
+      </li>
+      <li class="divider"> </li>
+
+      <li>
+        <a href="@routes.CallForPaper.getnotifs("closing")"> Closing Events</a>
+
+      </li>
+      <li class="divider"> </li>
+
+      <li>
+        <a href="@routes.CallForPaper.getnotifs("InternalMessages")"> Internal Messages Events</a>
+
+      </li>
+      <li class="divider"> </li>
+
+      <li>
+        <a href="@routes.CallForPaper.getnotifs("ManageUsers")"> Manage Users Events</a>
+
+      </li>
+
+
+
+    </ul>
+  </div>
+  <h3>@typ Events</h3>
+  <table class="table table-bordered table-strippted" style="border-radius: 7px">
+    <thead style="background-color: #7dc0d0">
+      <tr>
+        <th>Date</th>
+        <th>Message</th>
+        <th>Receiver</th>
+        <th>Subject</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    @notifis.reverse.map { n: JsValue =>
+      <tr class="active">
+
+        <td>@(n.\("date").toString().replace(n.\("date").toString().substring(0, 1), ""))</td>
+        <td>@(n.\("message").toString().replace(n.\("message").toString().substring(0, 1), ""))</td>
+        <td>@Webuser.getName((n.\("receiver-uuid").toString().replace(n.\("receiver-uuid").toString().substring(0, 1), "")))</td>
+        <td>@(n.\("subject").toString().replace(n.\("subject").toString().substring(0, 1), ""))</td>
+
+
+      </tr>
+    }
+
+    </tbody>
+  </table>
+}

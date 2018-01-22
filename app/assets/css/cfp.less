@@ -196,6 +196,12 @@ dd.info {
 .label-rejected {
   background-color: #b63133;
 }
+.label-toreview {
+  background-color: #235d7b;
+}
+.label-replylater {
+  background-color: #3a0b07;
+}
 
 .label-refused {
   background-color: #b63133;
@@ -674,6 +680,7 @@ progress:after {
   border-color: #4adf2a;
   border-width: 3px;
 }
+.tr
 .tr_declined{
   border-color: #f8c70d !important;
   background-color: #f8c70d;
@@ -700,17 +707,6 @@ table.speakerTable tfoot tr td{
   margin-bottom: 0;
 }
 
-div.commentCfp{
-  border-bottom: 1px solid @lightgrey;
-  border-right: 1px solid @lightgrey;
-  background-color: rgba(101, 100, 100, 0.13);
-  padding-bottom: 2px;
-}
-
-.commentDate{
-  color: @lightgrey;
-}
-
 .tagLabel {
   background-color: lightgray;
   padding-left: 10px;
@@ -727,84 +723,22 @@ div.commentCfp{
   padding-left: 10px;
   border: 1px solid lightgray;
 }
-.dropdown {
-  position: absolute;
-}
-.dropdown dd,
-.dropdown dt {
-  margin: 0px;
-  padding: 0px;
-}
-.dropdown ul {
-  margin: -1px 0 0 0;
-}
-.dropdown dd {
-  position: relative;
-}
-.dropdown a,
-.dropdown a:visited {
-  color: #fff;
-  text-decoration: none;
-  outline: none;
-  font-size: 12px;
+
+th.proposalTitle {
+  width: 55%;
 }
 
-.dropdown dt a {
-  background-color: #006bd6;
-  display: block;
-  padding: 8px 20px 5px 10px;
-  min-height: 25px;
-  line-height: 24px;
-  overflow: hidden;
-  border: 0;
-  width: 330px;
+div.commentCfp{
+  border-bottom: 1px solid @lightgrey;
+  border-right: 1px solid @lightgrey;
+  background-color: rgba(101, 100, 100, 0.13);
+  padding-bottom: 2px;
 }
 
-.dropdown dt a span,
-.multiSel span {
-  cursor: pointer;
-  display: inline-block;
-  padding: 0 3px 2px 0;
+.commentDate{
+  color: @lightgrey;
 }
 
-.dropdown dd ul {
-  background-color: #006bd6;
-  border: 0;
-  color: #fff;
-  display: none;
-  left: 0;
-  padding: 2px 15px 2px 5px;
-  position: absolute;
-  top: 2px;
-  width: 100%;
-  list-style: none;
-  height: 120px;
-  overflow: auto;
-  z-index: 1;
-}
-
-.dropdown span.value {
-  display: none;
-}
-
-.dropdown dd ul li a {
-  padding: 5px;
-  display: block;
-}
-
-.dropdown dd ul li a:hover {
-  background-color: #fff;
-}
-.dropdown button {
-  background-color: #e45c00;
-  width: 330px;
-  border: 0;
-  padding: 10px 0;
-  margin: 5px 0;
-  text-align: center;
-  color: #fff;
-  font-weight: bold;
-}
 .starProposal {
   padding-top: 5px;
   width: 50%;
@@ -813,4 +747,14 @@ div.commentCfp{
 .starListProposal {
   width: 10%;
   padding-bottom: 5px;
+}
+
+#slotsForm #roomsForm {
+  margin-left:10px;
+  float: left;
+}
+
+#slotsList, #roomsList{
+  margin-right:10px;
+  float: right;
 }

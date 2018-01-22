@@ -20,39 +20,57 @@
           </div>
         }
 @if(SecureCFPController.hasAccessToCFP(req)){
-    <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-    <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
-    <a href="@routes.Backoffice.authenticateAndCreateTalk(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAndCreate")</a>
+    <a style="border-radius: 5px " href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" title="Edit Profile" class="btn btn-sm btn-primary"><i class="icon-edit"></i></a>
+    <a style="border-radius: 5px " href="@routes.Backoffice.authenticateAs(speaker.uuid)" title="Authenticate As" class="btn btn-sm btn-warning" ><i class="icon-signin"></i></a>
+    <a style="border-radius: 5px " href="@routes.Backoffice.authenticateAndCreateTalk(speaker.uuid)" title="Authenticate As & create talk" class="btn btn-sm btn-info" ><i class="icon-unlock"></i> </a>
 }
-@if(SecureCFPController.hasAccessToAdmin(req)){
+@if(SecureCFPController.hasAccessToAdmin(req)) {
+
+    @if(!ConferenceDescriptor.isCFPOpen) {
+        <a style="border-radius: 5px ; margin-bottom: 2px " class="btn btn-sm btn-color-10" title=" Invite to create talk 'CFP closed' " href="@routes.CFPAdmin.sendEmailForTalk(speaker.uuid)">
+            <i class="icon-envelope"></i></a>
+    }
+    @if(Speaker.isPropScheduleexist(speaker.uuid)) {
+        <a style="border-radius: 5px ; margin-bottom: 2px  " class="btn btn-sm btn-color-2" title=" Notify about scheduled talks " href="@routes.CFPAdmin.notifySpeakerForSchedule(speaker.uuid)"><i class="icon-bullhorn"></i>
+           </a>
+    }
     @tags.checkInvited(speaker.uuid)
+
 }
                 <table class="table">
                     <tbody>
                         <tr>
                             <td>
-                            @if(speaker.avatarUrl.isEmpty) {
+                            @if(speaker.avatarUrl.isEmpty && speaker.picture.isEmpty) {
                                 <div class="media">
-                                    <a class="pull-left" href="#">
-                                        <img class="media-object"
-                                        src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=75"
-                                        alt="@speaker.cleanName"
-                                        title="@speaker.cleanName" />
-                                    </a>
+                                    <img class="media-object"
+                                    src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=75"
+                                    alt="@speaker.firstName"
+                                    title="This is you" />
                                     <div class="media-body">
                                         <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
                                             Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
                                     </div>
                                 </div>
-                            } else {
-                                <div class="media">
-                                    <a class="pull-left" href="#">
-                                        <img class="media-object" width="75"
+                            } else{
+
+                                @if(speaker.avatarUrl.isDefined){
+                                    <div class="media">
+                                        <img class="media-object"
+                                        width="75"
                                         src="@speaker.avatarUrl.get"
-                                        alt="@speaker.cleanName"/>
-                                    </a>
-                                </div>
-                            }
+                                        alt="@speaker.firstName "
+                                        title="This is you" />
+                                    </div>
+                                }else {
+
+                                    <div class="media">
+                                        <img class="media-object"
+                                        width="75"
+                                        src="@speaker.picture.get"
+                                        alt="@speaker.firstName"
+                                        title="This is you" />
+                                    </div>}}
                             </td>
                         </tr>
 

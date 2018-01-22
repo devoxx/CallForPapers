@@ -23,29 +23,32 @@
 
 package library.search
 
-import models.ApprovedProposal
+import models.{ApprovedProposal, ProposalType, Track}
+import org.joda.time.DateTime
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
-
 import controllers.AdvancedSearchParam
+
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.Future
 import play.api.Play
-import com.ning.http.client.Realm.AuthScheme.BASIC
+import play.api.Play.current
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.WSAuthScheme.BASIC
 
 /**
- * Wrapper and helper, to reuse the ElasticSearch REST API.
- *
- * Author: nicolas martignole
- * Created: 23/09/2013 12:31
- */
+  * Wrapper and helper, to reuse the ElasticSearch REST API.
+  *
+  * Author: nicolas martignole
+  * Created: 23/09/2013 12:31
+  */
 object ElasticSearch {
 
   val host = {
-    val h=Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost:9200")
-    if(h.endsWith("/")){
+    val h = Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost:9200")
+    if (h.endsWith("/")) {
       h.dropRight(1)
-    }else{
+    } else {
       h
     }
   }
@@ -156,7 +159,6 @@ object ElasticSearch {
         }
     }
   }
-
 
   def deleteIndex(indexName: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -449,7 +451,7 @@ object ElasticSearch {
     }
   }
 
- def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
+  def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
     val index = ApprovedProposal.elasticSearchIndex()
     val zeQuery =
       s"""
@@ -493,5 +495,24 @@ object ElasticSearch {
         }
     }
   }
+}
 
+case class ESSchedule(name:String,day:String,from:DateTime,to:DateTime,
+                      room:String,title:String,summary:String,track:Track,talkType:ProposalType,
+                      mainSpeaker:String,secondarySpeaker:Option[String])
+
+
+
+case class ESResult(_score:Double, _type:String,_index:String,_id:String,_source:JsValue)
+case class ESHits(max_score:Option[Double], total:Long,hits:List[ESResult] )
+case class ESSearchResult(took:Int,timed_out:Boolean,hits:ESHits)
+
+object ESSchedule{
+  implicit val esScheduleFormat=Json.format[ESSchedule]
+
+  implicit val esResult= Json.format[ESResult]
+
+  implicit val esHits=Json.format[ESHits]
+
+  implicit  val esSearchResult=Json.format[ESSearchResult]
 }

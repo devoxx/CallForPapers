@@ -178,7 +178,6 @@ class IndexMaster extends ESActor {
       play.Logger.of("application.IndexMaster").debug(s"Indexing ${allAccepted.size} accepted proposals")
       play.Logger.of("application.IndexMaster").debug(s"Indexing ${allSubmitted.size} submitted proposals")
     }
-
     // We cannot index all proposals, if the size > 1mb then Elasticsearch on clevercloud
     // returns a 413 Entity too large
     allAccepted.sliding(200, 200).foreach { gop =>
@@ -251,7 +250,7 @@ class IndexMaster extends ESActor {
     val slots = allAgendas.flatMap(_.slots).filterNot(_.break.isDefined)
     val indexName = "schedule_" + ConferenceDescriptor.current().eventCode
 
-     play.Logger.of("application.IndexMaster").debug(s"Index ${slots.size} slots for schedule")
+    play.Logger.of("application.IndexMaster").debug(s"Index ${slots.size} slots for schedule")
     val sb = new StringBuilder
     slots.foreach {
       slot: Slot =>
@@ -558,45 +557,45 @@ class IndexMaster extends ESActor {
     // This is important for French content
     // Leave it, even if your CFP is in English
     def settingsFrench =
-    """
-      |    {
-      |    	"settings" : {
-      |    		"index":{
-      |    			"analysis":{
-      |    				"analyzer":{
-      |              "analyzer_keyword":{
-      |                 "tokenizer":"keyword",
-      |                 "filter":"lowercase"
-      |              },
-      |              "analyzer_startswith":{
-      |                      "tokenizer":"keyword",
-      |                      "filter":"lowercase"
-      |             },
-      |    					"francais":{
-      |    						"type":"custom",
-      |    						"tokenizer":"standard",
-      |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
-      |    					}
-      |    				},
-      |    				"filter":{
-      |    					"stop_francais":{
-      |    						"type":"stop",
-      |    						"stopwords":["_french_"]
-      |    					},
-      |    					"fr_stemmer" : {
-      |    						"type" : "stemmer",
-      |    						"name" : "french"
-      |    					},
-      |    					"elision" : {
-      |    						"type" : "elision",
-      |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
-      |    					}
-      |    				}
-      |    			}
-      |    		}
-      |    	}
-      | }
-    """.stripMargin
+      """
+        |    {
+        |    	"settings" : {
+        |    		"index":{
+        |    			"analysis":{
+        |    				"analyzer":{
+        |              "analyzer_keyword":{
+        |                 "tokenizer":"keyword",
+        |                 "filter":"lowercase"
+        |              },
+        |              "analyzer_startswith":{
+        |                      "tokenizer":"keyword",
+        |                      "filter":"lowercase"
+        |             },
+        |    					"francais":{
+        |    						"type":"custom",
+        |    						"tokenizer":"standard",
+        |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+        |    					}
+        |    				},
+        |    				"filter":{
+        |    					"stop_francais":{
+        |    						"type":"stop",
+        |    						"stopwords":["_french_"]
+        |    					},
+        |    					"fr_stemmer" : {
+        |    						"type" : "stemmer",
+        |    						"name" : "french"
+        |    					},
+        |    					"elision" : {
+        |    						"type" : "elision",
+        |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
+        |    					}
+        |    				}
+        |    			}
+        |    		}
+        |    	}
+        | }
+      """.stripMargin
 
     def settingsProposalsEnglish =
       s"""

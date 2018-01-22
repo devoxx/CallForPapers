@@ -2,11 +2,17 @@ package controllers
 
 import scala.concurrent.duration._
 import library.search.{DoIndexProposal, _}
+import library.{DraftReminder, Redis, ZapActor}
+import models.{Tag, _}
+import org.joda.time.{DateMidnight, DateTime, DateTimeZone, Instant}
+import play.api.Play
 import library._
 import models._
-import org.joda.time.{DateMidnight, DateTime, Instant}
 import play.api.cache.EhCachePlugin
 import play.api.data._
+import play.api.i18n.Messages
+import play.api.libs.json.Json
+import play.api.mvc.Action
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Akka
@@ -21,6 +27,7 @@ import play.api.Play
   */
 object Backoffice extends SecureCFPController {
   implicit val SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD = "status";
+  implicit val CFPCLOSED_SUBMIT_PROPOSALS_STATUS_FIELD = "submit_proposal_status";
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -35,9 +42,11 @@ object Backoffice extends SecureCFPController {
           if (Webuser.hasAccessToCFP(uuidSpeaker)) {
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"removed ${webuser.cleanName} from CFP group"))
             Webuser.removeFromCFPAdmin(uuidSpeaker)
+            CFPAdmin.postNotification("You have been removed from CFP group " , "ManageUsers", "admin" , webuser.uuid , "one")
           } else {
             Webuser.addToCFPAdmin(uuidSpeaker)
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"added ${webuser.cleanName} to CFP group"))
+            CFPAdmin.postNotification("You have been added to CFP group" ,"ManageUsers", "admin" , webuser.uuid , "one")
           }
           Redirect(routes.CFPAdmin.allWebusers())
       }.getOrElse {
@@ -79,8 +88,6 @@ object Backoffice extends SecureCFPController {
           val proposals = Proposal.allProposals().sortBy(_.state.code)
           Ok(views.html.Backoffice.allProposals(proposals))
       }
-
-
   }
 
   // This endpoint is deliberately *not* secured in order to transform a user into an admin
@@ -105,6 +112,7 @@ object Backoffice extends SecureCFPController {
   def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
+
       if (state == ProposalState.ACCEPTED.code) {
         Proposal.findById(proposalId).foreach {
           proposal =>
@@ -119,6 +127,8 @@ object Backoffice extends SecureCFPController {
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
         }
       }
+
+     CFPAdmin.postNotification(s"${Proposal.findById(proposalId).get.title} was ${state}" , "proposal", "admin" , request.webuser.uuid , "one" )
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
   }
 
@@ -209,28 +219,56 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val publishedTalksExceptBOF = allPublishedProposals.filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
-      val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val declined = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val approved = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.APPROVED)
+      val accepted = allPublishedProposals.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val approved = publishedConf.filter(_.proposal.get.state == ProposalState.APPROVED)
+      val allSpeakersIDs = allPublishedProposals.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      
+      // For Terms&Conditions we focus on all talks except BOF
+      val allSpeakersExceptBOF = allPublishedProposals.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersExceptBOF.filter(uuid => Speaker.needsToAccept(uuid)).filter {
+        speakerUUID =>
+          // Keep only speakers with at least one accepted or approved talk
+          approved.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID)) || accepted.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID))
+      }
 
-      val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
-
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-
-      // val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
-
-      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersIDs)
+      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
         slot: Slot =>
           val proposal = slot.proposal.get
-          Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
+          !Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))
+      // ALL Talks for Conflict search
+      val approvedOrAccepted = allPublishedProposals.filter(p => p.proposal.get.state == ProposalState.ACCEPTED || p.proposal.get.state == ProposalState.APPROVED)
+
+      val specialSpeakers = allSpeakersIDs
+
+      // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
+      val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
+        for (speakerId <- specialSpeakers) yield {
+        val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
+        val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
+        val conflict = groupedByDate.filter(_._2.size > 1)
+        val speaker = Speaker.findByUUID(speakerId).get
+        (speaker, conflict)
+      }
+
+      Ok(
+        views.html.Backoffice.sanityCheckSchedule(
+          declined,
+          approved,
+          acceptedThenChangedToOtherState,
+          allSpeakers,
+          allWithConflicts.filter(_._2.nonEmpty)
+        )
+      )
 
   }
 
@@ -261,7 +299,7 @@ object Backoffice extends SecureCFPController {
 
       maybeUpdated.map {
         newListOfSlots =>
-          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
+          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser )
           ScheduleConfiguration.publishConf(newID, talkType)
 
           Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
@@ -288,13 +326,12 @@ object Backoffice extends SecureCFPController {
       val allDeclined = Proposal.allDeclinedProposals()
       //      Proposal.decline(request.webuser.uuid, proposalId)
       Ok(views.html.Backoffice.showAllDeclined(allDeclined))
-
   }
 
-  def showAllAgendaForInge = SecuredAction(IsMemberOf("admin")) {
+  def exportAgenda = Action {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
-      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+      Ok(views.html.Backoffice.exportAgenda(publishedConf))
   }
 
   // Tag related controllers
@@ -304,6 +341,8 @@ object Backoffice extends SecureCFPController {
       val allTags = Tag.allTags().sortBy(t => t.value)
       Ok(views.html.Backoffice.showAllTags(allTags))
   }
+
+  // Tag related controllers
 
   def newTag = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
@@ -353,7 +392,6 @@ object Backoffice extends SecureCFPController {
 
   def saveImportTags() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-
       Tag.tagForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.Backoffice.importTags(hasErrors)),
         tagData => {
@@ -380,48 +418,137 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
+  def importRooms = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val allProposalsByTags = Tags.allProposals()
-
-      Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
+      Ok(views.html.Backoffice.importRooms(AnyFieldImport.anyFieldImportForm))
   }
 
-  def getCloudTag = SecuredAction(IsMemberOf("admin")) {
+  def saveImportRooms() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val termCounts = Tags.countProposalTags()
-      if (termCounts.nonEmpty) {
-        Ok(views.html.CallForPaper.cloudTags(termCounts))
-      } else {
-        NotFound("No proposal tags found")
-      }
+      val ROOM_NAME = 0
+      val ROOM_CAPACITY = 1
+      val ROOM_SETUP = 2
+      val ROOM_RECORDED = 3
+
+      AnyFieldImport.anyFieldImportForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importRooms(hasErrors)),
+        roomImportData => {
+          val rooms = roomImportData.commaSeparatedValues.split(";")
+          rooms.foreach(
+            eachRoom => {
+              val roomToken = eachRoom.split(",")
+              Room.saveRoom(
+                Room.createRoom(
+                  Room.generateId(),
+                  roomToken(ROOM_NAME),
+                  roomToken(ROOM_CAPACITY).trim.toInt,
+                  roomToken(ROOM_SETUP),
+                  roomToken(ROOM_RECORDED)
+                )
+              )
+            }
+          )
+        }
+      )
+
+      Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> Messages("rooms.imported"))
   }
 
-  def showDigests = SecuredAction(IsMemberOf("admin")) {
+  def importTalkSlots = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
+      Ok(views.html.Backoffice.importTalkSlots(AnyFieldImport.anyFieldImportForm))
+  }
 
-      // TODO Can this be condensed in Scala ?  (Stephan)
+  def getRoomUUIDfrom(roomName: String) = {
+    val list = Room.allAsId.find(
+            roomPairs => roomPairs._2.contains(roomName.trim)
+    )
+    list.get._1
+  }
 
-      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
-      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
-      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
+  def saveImportTalkSlots() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val SLOT_NAME = 0
+      val SLOT_DAY = 1
+      val SLOT_FROM = 2
+      val SLOT_TO = 3
+      val SLOT_ROOM = 4
 
-      val realTime = realTimeDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
+      AnyFieldImport.anyFieldImportForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importTalkSlots(hasErrors)),
+        talkSlotImportData => {
+          val talkSlots = talkSlotImportData.commaSeparatedValues.split(";")
+          talkSlots.foreach(
+            eachTalkSlot => {
+              val talkSlotToken = eachTalkSlot.split(",")
+              Slot.saveSlot(
+                Slot.createSlot(
+                  "",
+                  talkSlotToken(SLOT_NAME),
+                  talkSlotToken(SLOT_DAY),
+                  convertStringToFormattedDateTime(talkSlotToken(SLOT_FROM).trim, talkSlotToken),
+                  convertStringToFormattedDateTime(talkSlotToken(SLOT_TO).trim, talkSlotToken),
+                  getRoomUUIDfrom(talkSlotToken(SLOT_ROOM)),
+                  None
+                )
+              )
+            }
+          )
+        }
+      )
 
-      val daily = dailyDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
+      Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> Messages("talk.slots.imported"))
+  }
 
-      val weekly = weeklyDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
+  def importBreakSlots = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.importBreakSlots(AnyFieldImport.anyFieldImportForm))
+  }
 
-      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
+  def getSlotUUIDFrom(breakSlotName: String) = {
+    val list = ConferenceDescriptor.ConferenceSlotBreaks.allSlotBreak.find(
+      slotPairs => slotPairs.nameEN.contains(breakSlotName.trim)
+    )
+    list.get.id
+  }
+
+  def saveImportBreakSlots() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val BREAK_DAY = 0
+      val BREAK_FROM = 1
+      val BREAK_TO = 2
+      val BREAK_ROOM = 3
+      val BREAK_NAME = 4
+
+      AnyFieldImport.anyFieldImportForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importBreakSlots(hasErrors)),
+        breakSlotImportData => {
+          play.Logger.info(breakSlotImportData.toString)
+          val breakSlots = breakSlotImportData.commaSeparatedValues.split(";")
+          breakSlots.foreach(
+            eachBreakSlot => {
+              val breakSlotToken = eachBreakSlot.split(",")
+              Slot.saveSlot(
+                Slot.createSlot(
+                  "",
+                  "",
+                  breakSlotToken(BREAK_DAY),
+                  convertStringToFormattedDateTime(breakSlotToken(BREAK_FROM).trim, breakSlotToken),
+                  convertStringToFormattedDateTime(breakSlotToken(BREAK_TO).trim, breakSlotToken),
+                  getRoomUUIDfrom(breakSlotToken(BREAK_ROOM)),
+                  Some(getSlotUUIDFrom(breakSlotToken(BREAK_NAME)))
+                )
+              )
+            }
+          )
+        }
+      )
+
+      Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> Messages("break.slots.imported"))
+  }
+
+  private def convertStringToFormattedDateTime(stringValue:String, talkSlotToken: Array[String]) = {
+    new DateTime(s"1970-01-01T$stringValue:00Z")
   }
 
   def doDailyDigests = SecuredAction(IsMemberOf("admin")) {
@@ -455,14 +582,28 @@ object Backoffice extends SecureCFPController {
     implicit client => client.hget("InProgress:Schedule", SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD)
   }
 
-  def setScheduleInProgressMessage(value: String) = Redis.pool.withClient {
+  def saveScheduleInProgressMessageSetting(value: String) = Redis.pool.withClient {
     implicit client => client.hset("InProgress:Schedule", SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD, value)
   }
 
   def setSchedulingInProgressMessageTo(displayStatus: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      controllers.Backoffice.setScheduleInProgressMessage(displayStatus)
-      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress", displayStatus))
+      controllers.Backoffice.saveScheduleInProgressMessageSetting(displayStatus)
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress.status.changed", displayStatus))
+  }
+
+  def isSubmittingProposalAfterCFPClosed(): Option[String] = Redis.pool.withClient {
+    implicit client => client.hget("CFPClosed:SubmitProposals", CFPCLOSED_SUBMIT_PROPOSALS_STATUS_FIELD)
+  }
+
+  def saveSubmittingProposalAfterCFPClosedSetting(value: String) = Redis.pool.withClient {
+    implicit client => client.hset("CFPClosed:SubmitProposals", CFPCLOSED_SUBMIT_PROPOSALS_STATUS_FIELD, value)
+  }
+
+  def setSubmittingProposalAfterCFPClosedTo(toggleFacility: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      controllers.Backoffice.saveSubmittingProposalAfterCFPClosedSetting(toggleFacility)
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("submit.proposal.status.changed", toggleFacility))
   }
 
   def newOrUpdateCFPDates() = SecuredAction(IsMemberOf("admin")) {
@@ -537,5 +678,49 @@ object Backoffice extends SecureCFPController {
       }.getOrElse {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
+  }
+
+  def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allProposalsByTags = Tags.allProposals()
+
+      Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
+  }
+
+  def getCloudTag = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val termCounts = Tags.countProposalTags()
+      if (termCounts.nonEmpty) {
+        Ok(views.html.CallForPaper.cloudTags(termCounts))
+      } else {
+        NotFound("No proposal tags found")
+      }
+  }
+  
+  def showDigests = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      // TODO Can this be condensed in Scala ?  (Stephan)
+
+      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
+      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
+      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
+
+      val realTime = realTimeDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val daily = dailyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val weekly = weeklyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 }

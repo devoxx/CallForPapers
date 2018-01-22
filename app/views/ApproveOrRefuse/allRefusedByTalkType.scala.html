@@ -1,116 +1,191 @@
-@(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allProposals: List[models.Proposal], confType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@import play.api.templates.Html
+@import play.twirl.api.Html
 
 @main("All refused talks") {
-
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
-            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
+                </div>
 
-            <div class="panel-body">
                 <div class="panel-body">
-                    <div class="col-md-12">
-                        @if(flash.get("error").isDefined) {
-                            <div class="alert alert-danger alert-dismissable">
-                                <strong>Error :</strong>
-                                @flash.get("error").get
-                            </div>
-                        }
-                        @if(flash.get("success").isDefined) {
-                            <div class="alert alert-success alert-dismissable">
-                                @flash.get("success").get
-                            </div>
-                        }
-                   </div>
-
-
-                <div class="col-md-12">
-                    <h3>@defining(allProposals.size){refusedSize=>
-                        @refusedSize proposal@if(refusedSize>1){s} refused</h3>
-                    }
-                       <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
-                       <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
-
-
-                    @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
-                        <span class="label label-info">@listOfProps.size @Html(Messages(track.label))</span>
-                    }
-
-                    <br>
-                    <small>If proposal's state = REJECTED then the speaker has been notified.</small>
-
-                    <table id="allProposals" class="table table-bordered table-condensed">
-                        <thead>
-                            <tr>
-                                <th>Proposal title</th>
-                                <th>Proposal id</th>
-                                <th>All speakers</th>
-                                <th>Track</th>
-                                <th>Status</th>
-                                <th>Notify</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @allProposals.map { proposal =>
-                                <tr class="tr_@proposal.state.code">
-                                    <td>
-                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
-                                    </td>
-                                    <td>@proposal.id</td>
-                                    <td>
-                                        @tags.renderGravatar(proposal.mainSpeaker, showName = Some(true))
-                                    @proposal.secondarySpeaker.map { sp =>
-                                        @tags.renderGravatar(sp, showName = Some(true))
-                                    }
-                                    @proposal.otherSpeakers.map{ sp2=>
-                                        @tags.renderGravatar(sp2, showName = Some(true))
-                                    }
-                                    </td>
-                                    <td>
-                                        @Html(Messages(proposal.track.label))
-                                    </td>
-                                    <td>
-                                        @Messages(proposal.state.code)
-                                    </td>
-                                    <td>
-                                        <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="label label-danger"><i class="icon-warning-sign"></i> Notify refused</a>
-                                    </td>
-                                </tr>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            @if(flash.get("error").isDefined) {
+                                <div class="alert alert-danger alert-dismissable">
+                                    <strong>Error :</strong>
+                                    @flash.get("error").get
+                                </div>
                             }
-                        </tbody>
-                    </table>
+                            @if(flash.get("success").isDefined) {
+                                <div class="alert alert-success alert-dismissable">
+                                @flash.get("success").get
+                                </div>
+                            }
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <h3>@defining(allProposals.size) { refusedSize =>
+                                @refusedSize proposal@if(refusedSize > 1) {s} refused</h3>
+                            }
+                            <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
+                            <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
+                            @allProposals.groupBy(_.track).map { case (track, listOfProps) =>
+                            <span class="label label-info">@listOfProps.size @Html(Messages(track.label))
+                            </span>
+                            }
+
+                            <br>
+                            <small>If proposal's state = REJECTED then the speaker has been notified.</small>
+                            @if(allProposals.length != 0) {
+                                <a class="label btn btn-danger" data-toggle="modal" data-target="#notifyAll"> @Messages("notify.all.refused")</a>
+                            }
+
+                            <div id="notifyAll" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title">@Messages("notify.all.refused")</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>@Messages("mail.notify.refused.body") </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                            <a type="button" class="btn btn-primary" href="@routes.ApproveOrRefuse.notifyrefusedAll(confType)">@Messages("repy.later.button.Notify")</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="allProposals" class="table table-bordered table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Proposal title</th>
+                                        <th>Proposal id</th>
+                                        <th>All speakers</th>
+                                        <th>Track</th>
+                                        <th>Status</th>
+                                        <th>Notify</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @allProposals.map { proposal =>
+                                    <tr class="tr_@proposal.state.code">
+                                        <td>
+                                            <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
+                                        </td>
+                                        <td>@proposal.id</td>
+                                        <td>
+                                            @tags.renderGravatar(proposal.mainSpeaker, showName = Some(true))
+                                            @proposal.secondarySpeaker.map { sp =>
+                                                @tags.renderGravatar(sp, showName = Some(true))
+                                            }
+                                            @proposal.otherSpeakers.map { sp2 =>
+                                                @tags.renderGravatar(sp2, showName = Some(true))
+                                            }
+                                        </td>
+                                        <td>
+                                        @Html(Messages(proposal.track.label))
+                                        </td>
+                                        <td>
+                                        @Messages(proposal.state.code)
+                                        </td>
+                                        <td>
+                                            <a class="label btn btn-default" data-toggle="modal" data-target="#@(proposal.id)c" >
+                                            @Messages("custom.email1")</a>
+                                            <div id="@(proposal.id)c" class="modal fade" role="dialog" >
+                                                <div class="modal-dialog" style="width: 80% ;
+                                                    left: 0">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header" >
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title">@Messages("Custom.email")</h4>
+                                                        </div>
+
+                                                        <form action="@routes.ApproveOrRefuse.notifycustomemailrefused(confType, proposal.id)" method="POST">
+
+
+                                                            @if(MailsManager.getEmailMode().get == "disable") {
+
+                                                                <label> <h5>@Messages("admin.btn.manage.notification.new") </h5></label>
+
+                                                                <textarea class="email" name="email">
+                                                                @views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()</textarea>
+
+                                                            }@if(MailsManager.getEmailMode().get == "enable") {
+                                                            <label> <h5>@Messages("admin.btn.manage.notification.subject")
+                                                                :</h5> </label>
+                                                            @MailsManager.getMailByTypeAndLang("rejected", proposal.lang).map { reject =>
+                                                            <input name="subject" value="@reject.Subject" style="width: 100% ;
+                                                                left: 0"/>
+                                                            }.getOrElse(<input name="subject" value="" style="width:100% ;left:0"/>)
+
+
+                                                            <label> <h5>@Messages("admin.btn.manage.notification.new") </h5></label>
+
+                                                            @MailsManager.getMailByTypeAndLang("rejected", proposal.lang).map { reject =>
+                                                            <textarea class="email" name="email">
+                                                                @reject.content
+                                                                ,Webuser.findByUUID(proposal.mainSpeaker).get,proposal)
+                                                            </textarea>
+                                                            }.getOrElse(<textarea class="email" name="email"></textarea>)
+
+                                                        }
+
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
+                                                                <button type="submit" class="btn btn-primary" >@Messages("repy.later.button.Notify") </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="label label-danger"><i class="icon-warning-sign"></i>
+                                                Notify refused</a>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#allProposals').dataTable({
+                        "aaSorting": [[0, "desc"]],
+                        "iDisplayLength": 50,
+                        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                        "bStateSave": true,
+                        "aoColumns": [
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"},
+                            {"sType": "string"}
+                        ]
+                    });
+                });
+        </script>
+
+        <script>tinymce.init({
+            selector: '.email',
+            height: 400,
+            menubar: false,
+            content_css: '//www.tinymce.com/css/codepen.min.css'
+        });</script>
     </div>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-    $('#allProposals').dataTable({
-    "aaSorting": [[ 0, "desc" ]],
-    "iDisplayLength": 50,
-    "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-    "bStateSave": true,
-    "aoColumns": [
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"}
-        ]
-    });
-    } );
-</script>
-
 }
