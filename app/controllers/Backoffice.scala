@@ -27,6 +27,7 @@ import play.api.Play
   */
 object Backoffice extends SecureCFPController {
   implicit val SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD = "status";
+  implicit val CFPCLOSED_SUBMIT_PROPOSALS_STATUS_FIELD = "submit_proposal_status";
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -46,7 +47,6 @@ object Backoffice extends SecureCFPController {
             Webuser.addToCFPAdmin(uuidSpeaker)
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"added ${webuser.cleanName} to CFP group"))
             CFPAdmin.postNotification("You have been added to CFP group" ,"ManageUsers", "admin" , webuser.uuid , "one")
-
           }
           Redirect(routes.CFPAdmin.allWebusers())
       }.getOrElse {
@@ -88,8 +88,6 @@ object Backoffice extends SecureCFPController {
           val proposals = Proposal.allProposals().sortBy(_.state.code)
           Ok(views.html.Backoffice.allProposals(proposals))
       }
-
-
   }
 
   // This endpoint is deliberately *not* secured in order to transform a user into an admin
@@ -584,14 +582,28 @@ object Backoffice extends SecureCFPController {
     implicit client => client.hget("InProgress:Schedule", SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD)
   }
 
-  def setScheduleInProgressMessage(value: String) = Redis.pool.withClient {
+  def saveScheduleInProgressMessageSetting(value: String) = Redis.pool.withClient {
     implicit client => client.hset("InProgress:Schedule", SCHEDULE_IN_PROGRESS_DISPLAY_STATUS_FIELD, value)
   }
 
   def setSchedulingInProgressMessageTo(displayStatus: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      controllers.Backoffice.setScheduleInProgressMessage(displayStatus)
+      controllers.Backoffice.saveScheduleInProgressMessageSetting(displayStatus)
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("scheduling.in.progress.status.changed", displayStatus))
+  }
+
+  def isSubmittingProposalAfterCFPClosed(): Option[String] = Redis.pool.withClient {
+    implicit client => client.hget("CFPClosed:SubmitProposals", CFPCLOSED_SUBMIT_PROPOSALS_STATUS_FIELD)
+  }
+
+  def saveSubmittingProposalAfterCFPClosedSetting(value: String) = Redis.pool.withClient {
+    implicit client => client.hset("CFPClosed:SubmitProposals", CFPCLOSED_SUBMIT_PROPOSALS_STATUS_FIELD, value)
+  }
+
+  def setSubmittingProposalAfterCFPClosedTo(toggleFacility: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      controllers.Backoffice.saveSubmittingProposalAfterCFPClosedSetting(toggleFacility)
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("submit.proposal.status.changed", toggleFacility))
   }
 
   def newOrUpdateCFPDates() = SecuredAction(IsMemberOf("admin")) {

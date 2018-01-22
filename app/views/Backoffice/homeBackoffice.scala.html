@@ -42,6 +42,13 @@
             <h4><i class="icon-road"></i> Proposals</h4>
             <a style="border-radius: 7px" href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Proposals by Company</a>
             <a style="border-radius: 7px" href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-warning btn-sm"><i class="icon-ticket"></i> Approved by Company</a>
+            @if(controllers.Backoffice.isSubmittingProposalAfterCFPClosed().equals(Some("Disallow"))) {
+                <a href="@routes.Backoffice.setSubmittingProposalAfterCFPClosedTo("Allow")" class="btn btn-sm btn-primary" style="border-radius: 5px"><i class="icon-info-sign"></i>
+                    Allow Submitting Proposal After CFP is Closed</a>
+            } else {
+                <a href="@routes.Backoffice.setSubmittingProposalAfterCFPClosedTo("Disallow")" class="btn btn-sm btn-primary" style="border-radius: 5px"><i class="icon-remove-sign"></i>
+                    Disallow Submitting Proposal After CFP is Closed</a>
+            }
 
             <h4><i class="icon-ticket"></i> @Messages("cfp.goldenTickets")</h4>
             <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm" style="border-radius: 5px"><i class="icon-ticket"></i> All @Messages("cfp.goldenTickets")</a>

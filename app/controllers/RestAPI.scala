@@ -48,15 +48,15 @@ object RestAPI extends Controller {
     implicit request =>
       Ok(
         Json.obj(
-          "name" -> "Devoxx 2017",
-          "code" -> "Devoxx2017",
+          "name" -> "Devoxx UK 2018",
+          "code" -> "DevoxxUK2018",
           "description" -> "Provide the best tech conference for passionate developers to network, hack, be inspired, lear and, of course, have a lot of fun in a pragmatic way!",
-          "image" -> "https://devoxx.ma/assets/images/logos/logo.png",
-          "location" -> Json.obj("latitude" -> 33.595577, "longitude" -> -7.6001186),
-          "locationName" -> "GRAND MOGADOR CASABLANCA",
-          "startDate" -> "Nov 14",
-          "endDate" -> "Nov 16",
-          "website" -> "http://devoxx.ma",
+          "image" -> "https://devoxx.co.uk/assets/images/logos/logo.png",
+          "location" -> Json.obj("latitude" -> 51.509865, "longitude" -> -0.118092),
+          "locationName" -> "London, UK",
+          "startDate" -> "May 9",
+          "endDate" -> "May 11",
+          "website" -> "http://devoxx.co.uk",
           "baseUrl" -> ConferenceDescriptor.getFullRoutePath(routes.Application.index.url)
         )
       )
@@ -544,6 +544,47 @@ object RestAPI extends Controller {
           }
       }.getOrElse(NotFound("Proposal not found"))
   }
+
+  def showArchivedTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
+      implicit request =>
+        import models.Proposal.proposalFormat
+
+        val proposals = ArchiveProposal.getArchivedProposals(eventCode)
+
+        val eTag = proposals.hashCode.toString
+
+        request.headers.get(IF_NONE_MATCH) match {
+          case Some(tag) if tag == eTag =>
+            NotModified
+
+          case other =>
+            val proposalsWithSpeaker = proposals.map {
+              p: Proposal =>
+                val mainWebuser = findByUUID(p.mainSpeaker)
+                val secWebuser = p.secondarySpeaker.flatMap(findByUUID)
+                val oSpeakers = p.otherSpeakers.map(findByUUID)
+                val preferredDay = Proposal.getPreferredDay(p.id)
+
+                // Transform speakerUUID to Speaker name, this simplify Angular Code
+                p.copy(
+                  mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+                  , secondarySpeaker = secWebuser.map(_.cleanName)
+                  , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+                  , privateMessage = preferredDay.getOrElse("")
+                )
+            }
+
+            val finalJson = Map(
+              "talks" -> Json.toJson(proposalsWithSpeaker.filter(_.state == ProposalState.ARCHIVED))
+            )
+
+            val jsonObject = Json.toJson(finalJson)
+
+            Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+              "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL() + ">; rel=\"profile\"")
+            )
+        }
+    }
 
   def redirectToTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>

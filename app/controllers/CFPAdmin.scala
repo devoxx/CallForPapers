@@ -1,20 +1,11 @@
 package controllers
 
-
 import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 import java.io._
 import javax.swing.text.html.HTML
 
-import play.api.mvc.{SimpleResult, _}
-import controllers.CFPAdmin.Redirect
-import java.io.{File, FileInputStream, FileOutputStream}
-
-import controllers.Authentication.{BadRequest, Ok, Redirect}
-import controllers.Backoffice.{NotFound, Redirect}
-import controllers.CallForPaper.{Ok, Redirect}
-import sun.misc.{BASE64Decoder, BASE64Encoder}
-import library.search.{DoIndexProposal, ElasticSearch, ElasticSearchActor}
-import library.{ComputeVotesAndScore, DoCreateTalkAfterCfp, SendMessageInternal, SendMessageToSpeaker, SendScheduledFavorites, ZapActor, _}
+import library.search.ElasticSearch
+import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
 import notifiers.TransactionalEmails
@@ -101,6 +92,16 @@ object CFPAdmin extends SecureCFPController {
       val orderer = proposalOrder(ascdesc)
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
 
+      // Get a default track to filter on and save it in cookie
+      var trackValue : String = Track.allIDs.take(1).last
+      val trackCookie = request.cookies.  get("track")
+
+      if (track.isDefined) {
+        trackValue = track.get
+      } else if (trackCookie.isDefined) {
+        trackValue = trackCookie.get.value
+      }
+
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
 
@@ -111,17 +112,27 @@ object CFPAdmin extends SecureCFPController {
       val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
       val twentyEvents = Event.loadEvents(20, page)
 
-      val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
+      // How can this if/else statement be written more compact in scala? (Stephan)
+      if ((trackCookie.isDefined && trackCookie.get.value.equals("all")) ||
+          (track.isDefined && track.get.equals("all"))) {
+        val allProposalsForReview = sortProposals(allNotReviewed, sorter, orderer)
 
-      track.map {
-        trackValue: String =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
-            .withHeaders("ETag" -> etag)
-      }.getOrElse {
+        val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
+
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
+          .withHeaders("ETag" -> etag)
+          .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+
+      } else {
+        val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
+        val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
+
+        val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
+
         Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted))
           .withHeaders("ETag" -> etag)
+          .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
       }
-
   }
 
   def seeEvents(page: Int,
@@ -1312,7 +1323,6 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.resetPreferredDay(proposalId: String)
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "No preferences")
   }
-
 
   def showProposalsWithNoVotes() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>

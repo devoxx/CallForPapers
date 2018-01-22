@@ -35,16 +35,24 @@ libraryDependencies ++= Seq(
   , "com.typesafe.play" %% "play-mailer" % "2.4.1"
   , "org.apache.commons" % "commons-lang3" % "3.1"
   , "commons-io" % "commons-io" % "2.4"
-  , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
+  , "commons-logging" % "commons-logging" % "1.2"
+  , "commons-codec" % "commons-codec" % "1.9" // for new Base64 that has support for String
+  , "com.typesafe.play" %% "play-cache" % "2.2.0"
   , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
   , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
   //, "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
+  , "org.scalaz" %% "scalaz-core" % "7.1.0"
   , "com.sksamuel.elastic4s" %% "elastic4s" % elastic4sV
   , "org.elasticsearch" % "elasticsearch" % elasticSearchV
   , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
+  , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
+  , "org.apache.httpcomponents" % "httpclient" % "4.1.1"
+  , "org.apache.httpcomponents" % "httpcore" % "4.1.1"
+  , "org.scalaz" %% "scalaz-core" % "7.1.0"
 )
+
 // Can also be done manually by
 // $ cd schedule
 // $ npm run buildProd

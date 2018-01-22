@@ -23,8 +23,9 @@
 
 package library.search
 
-import models.ApprovedProposal
-import play.api.libs.ws.{WS, WSAuthScheme}
+import models.{ApprovedProposal, ProposalType, Track}
+import org.joda.time.DateTime
+import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
 import controllers.AdvancedSearchParam
 
@@ -32,8 +33,8 @@ import scala.util.{Failure, Success, Try}
 import scala.concurrent.Future
 import play.api.Play
 import play.api.Play.current
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSAuthScheme.BASIC
-import com.ning.http.client.Realm.AuthScheme.BASIC
 
 /**
   * Wrapper and helper, to reuse the ElasticSearch REST API.
@@ -59,7 +60,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Indexing to $index $json")
     }
     val futureResponse = WS.url(host + "/" + index)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .put(json)
     futureResponse.map {
       response =>
@@ -77,7 +78,7 @@ object ElasticSearch {
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -103,7 +104,7 @@ object ElasticSearch {
     }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(settings)
     futureResponse.map {
       response =>
@@ -129,7 +130,7 @@ object ElasticSearch {
   def createMapping(index: String, mapping: String) = {
     val url = s"$host/$index/_mapping?ignore_conflicts=true"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .withRequestTimeout(6000)
       .put(mapping)
     futureResponse.map {
@@ -147,7 +148,7 @@ object ElasticSearch {
     val url = s"$host/_refresh"
     val futureResponse = WS.url(url)
       .withRequestTimeout(6000)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post("{}")
     futureResponse.map {
       response =>
@@ -159,13 +160,12 @@ object ElasticSearch {
     }
   }
 
-
   def deleteIndex(indexName: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
       play.Logger.of("library.ElasticSearch").debug(s"Deleting index $indexName")
     }
     val futureResponse = WS.url(host + "/" + indexName + "/")
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .delete()
     futureResponse.map {
       response =>
@@ -181,7 +181,7 @@ object ElasticSearch {
   def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
     val futureResponse = WS.url(host + "/_search")
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
@@ -195,7 +195,7 @@ object ElasticSearch {
   def doAdvancedSearch(index: String, query: Option[String], p: Option[Int]) = {
 
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
-    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}" }.getOrElse("\"match_all\" : { }")
+    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}"}.getOrElse("\"match_all\" : { }")
     val pageSize = 25
 
     val pageUpdated: Int = p match {
@@ -204,15 +204,14 @@ object ElasticSearch {
       case Some(other) => (other - 1) * 25
     }
 
-    val json: String =
-      s"""
-         |{
-         | "from" : $pageUpdated,
-         | "size" : $pageSize,
-         | "query" : {
-         |   $zeQuery
-         | }
-         |}
+    val json: String = s"""
+        |{
+        | "from" : $pageUpdated,
+        | "size" : $pageSize,
+        | "query" : {
+        |   $zeQuery
+        | }
+        |}
       """.stripMargin
 
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -224,7 +223,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -240,16 +239,16 @@ object ElasticSearch {
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
     val zeQuery = someQuery.map(_.toLowerCase).map { q =>
       s"""
-         |"dis_max": {
-         |   "queries": [
-         |                { "match": { "title":"$q"}},
-         |                { "match": { "mainSpeaker":"$q"}},
-         |                { "match": { "secondarySpeaker":"$q"}},
-         |                { "match": { "summary":"$q"}},
-         |                { "match": { "otherSpeakers":"$q" }},
-         |                { "match": { "id":"$q"}}
-         |            ]
-         |}
+        |"dis_max": {
+        |   "queries": [
+        |                { "match": { "title":"$q"}},
+        |                { "match": { "mainSpeaker":"$q"}},
+        |                { "match": { "secondarySpeaker":"$q"}},
+        |                { "match": { "summary":"$q"}},
+        |                { "match": { "otherSpeakers":"$q" }},
+        |                { "match": { "id":"$q"}}
+        |            ]
+        |}
       """.stripMargin
 
     }.getOrElse("\"match_all\":{}")
@@ -260,15 +259,14 @@ object ElasticSearch {
       case Some(other) => (other - 1) * 25
     }
 
-    val json: String =
-      s"""
-         |{
-         | "from" : $pageUpdated,
-         | "size" : $pageSize,
-         | "query" : {
-         |   $zeQuery
-         | }
-         |}
+    val json: String = s"""
+        |{
+        | "from" : $pageUpdated,
+        | "size" : $pageSize,
+        | "query" : {
+        |   $zeQuery
+        | }
+        |}
       """.stripMargin
 
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -280,7 +278,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -339,7 +337,7 @@ object ElasticSearch {
       """.stripMargin
 
     val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -354,88 +352,88 @@ object ElasticSearch {
   def doStats(zeQuery: String, index: String, maybeUserFilter: Option[String]) = {
     val json: String =
       s"""
-         |{
-         |  "from" : 0, "size" : 10,
-         |   $zeQuery
-         |   , "facets" : {
-         |       "villeFacet" : {
-         |        "terms" : {
-         |           "field" : "ville",
-         |           "all_terms":false,
-         |           "order" : "count",
-         |           "size":50
-         |         }
-         |         ${maybeUserFilter.getOrElse("")}
-         |      },
-         |     "idRaisonAppelFacet" : {
-         |        "terms" : {
-         |          "field" : "idRaisonAppel",
-         |          "all_terms":true,
-         |          "order" : "term",
-         |          "size":50
-         |        }
-         |        ${maybeUserFilter.getOrElse("")}
-         |      },
-         |      "clotureFacet":{
-         |       "terms" : {
-         |         "field" : "cloture"
-         |       }
-         |       ${maybeUserFilter.getOrElse("")}
-         |     },
-         |      "statusFacet" : {
-         |        "terms" : {
-         |          "field" : "status",
-         |          "all_terms":true,
-         |          "order" : "term",
-         |          "size":20
-         |        }
-         |        ${maybeUserFilter.getOrElse("")}
-         |      },
-         |      "agenceFacet" : {
-         |        "terms" : {
-         |          "field" : "idAgence",
-         |          "all_terms":false,
-         |          "order" : "term",
-         |          "size":50
-         |        }
-         |       ${maybeUserFilter.getOrElse("")}
-         |      },
-         |     "histoWeek" : {
-         |        "date_histogram" : {
-         |          "field" : "dateSaisie",
-         |          "interval" : "day"
-         |        }
-         |        ${maybeUserFilter.getOrElse("")}
-         |     },
-         |     "statsTicket":{
-         |       "statistical":{
-         |         "field":"delaiIntervention"
-         |       }
-         |       ${maybeUserFilter.getOrElse("")}
-         |     },
-         |     "typeInterFacet" : {
-         |      "terms":{
-         |        "field":"delaiStatus",
-         |        "size":100
-         |       }
-         |       ${maybeUserFilter.getOrElse("")}
-         |     }
-         |     ,
-         |     "statsAgeFacet" : {
-         |      "statistical":{
-         |         "field":"age"
-         |       }
-         |       ${maybeUserFilter.getOrElse("")}
-         |     }
-         |     ,
-         |     "statsReactionFacet" : {
-         |      "statistical":{
-         |         "field":"tempsReactionToMinute"
-         |       }
-         |       ${maybeUserFilter.getOrElse("")}
-         |     }
-         |   }
-         | }
+        |{
+        |  "from" : 0, "size" : 10,
+        |   $zeQuery
+        |   , "facets" : {
+        |       "villeFacet" : {
+        |        "terms" : {
+        |           "field" : "ville",
+        |           "all_terms":false,
+        |           "order" : "count",
+        |           "size":50
+        |         }
+        |         ${maybeUserFilter.getOrElse("")}
+        |      },
+        |     "idRaisonAppelFacet" : {
+        |        "terms" : {
+        |          "field" : "idRaisonAppel",
+        |          "all_terms":true,
+        |          "order" : "term",
+        |          "size":50
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |      },
+        |      "clotureFacet":{
+        |       "terms" : {
+        |         "field" : "cloture"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     },
+        |      "statusFacet" : {
+        |        "terms" : {
+        |          "field" : "status",
+        |          "all_terms":true,
+        |          "order" : "term",
+        |          "size":20
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |      },
+        |      "agenceFacet" : {
+        |        "terms" : {
+        |          "field" : "idAgence",
+        |          "all_terms":false,
+        |          "order" : "term",
+        |          "size":50
+        |        }
+        |       ${maybeUserFilter.getOrElse("")}
+        |      },
+        |     "histoWeek" : {
+        |        "date_histogram" : {
+        |          "field" : "dateSaisie",
+        |          "interval" : "day"
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |     },
+        |     "statsTicket":{
+        |       "statistical":{
+        |         "field":"delaiIntervention"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     },
+        |     "typeInterFacet" : {
+        |      "terms":{
+        |        "field":"delaiStatus",
+        |        "size":100
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |     ,
+        |     "statsAgeFacet" : {
+        |      "statistical":{
+        |         "field":"age"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |     ,
+        |     "statsReactionFacet" : {
+        |      "statistical":{
+        |         "field":"tempsReactionToMinute"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |   }
+        | }
       """.stripMargin
 
     if (play.Logger.of("ElasticSearch").isDebugEnabled) {
@@ -457,28 +455,27 @@ object ElasticSearch {
     val index = ApprovedProposal.elasticSearchIndex()
     val zeQuery =
       s"""
-         |"dis_max": {
-         |   "queries": [
-         |                { "match": { "title":"${query.topic.getOrElse("")}"}},
-         |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
-         |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
-         |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
-         |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
-         |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
-         |                { "match": { "id":"${query.topic.getOrElse("")}"}}
-         |            ]
-         |}
+        |"dis_max": {
+        |   "queries": [
+        |                { "match": { "title":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
+        |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
+        |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
+        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
+        |                { "match": { "id":"${query.topic.getOrElse("")}"}}
+        |            ]
+        |}
       """.stripMargin
 
-    val json: String =
-      s"""
-         |{
-         | "from" : 0,
-         | "size" : 10,
-         | "query" : {
-         |   $zeQuery
-         | }
-         |}
+    val json: String = s"""
+        |{
+        | "from" : 0,
+        | "size" : 10,
+        | "query" : {
+        |   $zeQuery
+        | }
+        |}
       """.stripMargin
 
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -488,7 +485,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, WSAuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -498,4 +495,24 @@ object ElasticSearch {
         }
     }
   }
+}
+
+case class ESSchedule(name:String,day:String,from:DateTime,to:DateTime,
+                      room:String,title:String,summary:String,track:Track,talkType:ProposalType,
+                      mainSpeaker:String,secondarySpeaker:Option[String])
+
+
+
+case class ESResult(_score:Double, _type:String,_index:String,_id:String,_source:JsValue)
+case class ESHits(max_score:Option[Double], total:Long,hits:List[ESResult] )
+case class ESSearchResult(took:Int,timed_out:Boolean,hits:ESHits)
+
+object ESSchedule{
+  implicit val esScheduleFormat=Json.format[ESSchedule]
+
+  implicit val esResult= Json.format[ESResult]
+
+  implicit val esHits=Json.format[ESHits]
+
+  implicit  val esSearchResult=Json.format[ESSearchResult]
 }

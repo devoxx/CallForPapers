@@ -158,6 +158,7 @@
                             <td>@Messages(proposal.talkType.id)</td>
                             <td>
                                 <a href="@routes.CFPAdmin.openForReview(proposal.id)" style="border-radius: 15px" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                                <a href="@routes.CFPAdmin.editProposalByAdmin(proposal.id, proposal.mainSpeaker)" style="border-radius: 15px" title="Edit proposal" class="btn btn-primary btn-sm" style="border-radius: 5px">@Messages("admin.btn.edit.proposal")</a>
                             </td>
                         </tr>
                     }

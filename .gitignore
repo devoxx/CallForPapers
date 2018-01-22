@@ -66,6 +66,6 @@ storage/
 
 run.env
 
-public/schedule/
+!public/schedule/
 schedule/node_modules
 schedule/dist

@@ -58,6 +58,8 @@ GET           /cfp/backoffice/digests                                           
 GET           /cfp/backoffice/triggerDailyDigest                                controllers.Backoffice.doDailyDigests()
 GET           /cfp/backoffice/triggerWeeklyDigest                               controllers.Backoffice.doWeeklyDigests()
 
+GET           /cfp/backoffice/setSubmittingProposalAfterCFPClosedTo             controllers.Backoffice.setSubmittingProposalAfterCFPClosedTo(toggleFacility: String)
+GET           /cfp/backoffice/setSchedulingInProgressMessageTo                  controllers.Backoffice.setSchedulingInProgressMessageTo(displayStatus: String)
 
 POST          /cfp/profile/phoneNumber                                          controllers.CallForPaper.updatePhoneNumber()
 POST          /cfp/profile/phoneNumber/confirm                                  controllers.CallForPaper.confirmPhone()
@@ -319,6 +321,7 @@ GET           /api/conferences/:eventCode/speakers/:uuid                        
 GET           /api/conferences/:eventCode/rooms/:room/:day                      controllers.RestAPI.showScheduleForRoom(eventCode: String, room:String, day: String)
 GET           /api/conferences/:eventCode/rooms/                                controllers.RestAPI.showRooms(eventCode:String)
 GET           /api/conferences/:eventCode/topFavedTalks                         controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
+GET           /api/conferences/:eventCode/talks/archived                        controllers.RestAPI.showArchivedTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks/                                controllers.RestAPI.redirectToTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks                                 controllers.RestAPI.showApprovedTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
@@ -362,7 +365,6 @@ DELETE        /schedulling/deletescheduledConfigurations                        
 POST          /schedulling/publish                                              controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 POST          /api/agenda/:proposalId                                           controllers.Favorites.toggleProposalToAgenda(proposalId: String)
-GET           /schedulling/setSchedulingInProgressMessageTo                     controllers.Backoffice.setSchedulingInProgressMessageTo(displayStatus: String)
 GET           /schedulling/newOrUpdateCFPDates                                  controllers.Backoffice.newOrUpdateCFPDates()
 POST          /schedulling/saveCFPDates                                         controllers.Backoffice.saveCFPDates()
 
