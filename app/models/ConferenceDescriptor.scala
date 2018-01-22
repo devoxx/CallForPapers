@@ -3,10 +3,10 @@ package models
 import java.util.Locale
 
 import controllers.Backoffice
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Paths, Files,Path}
 
 import library.Redis
-import org.joda.time.{DateTime, Period}
+import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
 import play.api.libs.json.{Format, Json}
 import play.api.i18n.Messages
@@ -159,21 +159,21 @@ object ConferenceDescriptor {
 
   // TODO Configure here the slot, with the number of slots available, if it gives a free ticket to the speaker, some CSS icons
   object ConferenceProposalConfigurations {
-    val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
+    val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.allSlots.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
-    val DEEP_DIVE = ProposalConfiguration(id = "deep_dive", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.DEEP_DIVE.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-anchor",
+    val DEEP_DIVE = ProposalConfiguration(id = "deep_dive", slotsCount = ConferenceSlots.allSlots.count(_.name.equals(ConferenceProposalTypes.DEEP_DIVE.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-anchor",
       chosablePreferredDay = true)
-    val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
+    val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.allSlots.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
-    val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
+    val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.allSlots.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
-    val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
+    val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.allSlots.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
       chosablePreferredDay = false)
     val OPENING_KEY = ProposalConfiguration(id = "opening_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
     val CLOSING_KEY = ProposalConfiguration(id = "closing_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
-    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.allSlots.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
 
     val ALL = List(CONF, DEEP_DIVE, LAB, QUICK, BOF, OPENING_KEY, CLOSING_KEY, IGNITE)
@@ -297,15 +297,11 @@ object ConferenceDescriptor {
     private val THU_DATE = "2018-05-10T"
     private val FRI_DATE = "2018-05-11T"
 
+    private val MIN_SEC = ":00.000+01:00"
+
     val firstDay = WED_DATE
     val secondDay = THU_DATE
     val thirdDay = FRI_DATE
-
-    def wednesdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="wednesday" ) }
-
-    def thursdaySchedule: List[Slot] = { alldb.filter(x=>x.day=="thursday" ) }
-
-    def fridaySchedule: List[Slot] = { alldb.filter(x=>x.day=="friday" ) }
 
     def alldb: List[Slot]={
       var list: List[Slot] = List.empty[Slot]
@@ -313,10 +309,370 @@ object ConferenceDescriptor {
         case Some(a) => list = a::list
         case None =>
       })
-        list
+      list
     }
 
-    def all: List[Slot] = {
+    // DEEP DIVE
+    val deepDiveSlotWednesday: List[Slot] = {
+
+      val deepDiveWednesdaySlot1 = ConferenceRooms.deepDiveWed.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.DEEP_DIVE.id,
+            WEDNESDAY,
+            new DateTime(WED_DATE + "09:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(WED_DATE + "13:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+
+      val deepDiveWednesdaySlot2 = ConferenceRooms.deepDiveWed.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.DEEP_DIVE.id,
+            WEDNESDAY,
+            new DateTime(WED_DATE + "14:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(WED_DATE + "17:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+
+      deepDiveWednesdaySlot1 ++ deepDiveWednesdaySlot2
+    }
+
+    // HANDS ON LABS
+    val labsSlotWednesday: List[Slot] = {
+
+      val labsWednesdaySlot1 = ConferenceRooms.labsWed.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            WEDNESDAY,
+            new DateTime(WED_DATE + "09:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(WED_DATE + "13:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+
+      val labsWednesdaySlot2 = ConferenceRooms.labsWed.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            WEDNESDAY,
+            new DateTime(WED_DATE + "14:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(WED_DATE + "17:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+
+      labsWednesdaySlot1 ++ labsWednesdaySlot2
+    }
+
+    // BOFS
+
+    val bofSlotThursday: List[Slot] = {
+
+      val bofThursdayEveningSlot = ConferenceRooms.bofThu.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "18:35" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "19:35" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+      bofThursdayEveningSlot
+    }
+
+    // QUICKIES
+
+    val quickiesSlotsThursday: List[Slot] = {
+
+      val quickiesThursdayLunch1 = ConferenceRooms.quickieThu.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "12:55" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "13:10" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+      val quickiesThursdayLunch2 = ConferenceRooms.quickieThu.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "13:15" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "13:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+      quickiesThursdayLunch1 ++ quickiesThursdayLunch2
+    }
+
+    val quickiesSlotsFriday: List[Slot] = {
+
+      val quickiesFridayLunch1 = ConferenceRooms.quickieFri.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "13:25" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "13:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+      val quickiesFridayLunch2 = ConferenceRooms.quickieFri.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "13:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "14:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+      quickiesFridayLunch1 ++ quickiesFridayLunch2
+    }
+
+    // CONFERENCE KEYNOTES
+
+    val keynoteSlotThursday: List[Slot] = {
+
+      val keynoteSlot1 = ConferenceRooms.keynoteRoom.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+
+      val keynoteSlot2 = ConferenceRooms.keynoteRoom.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+
+      val keynoteSlot3 = ConferenceRooms.keynoteRoom.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r3)
+      }
+
+      val keynoteSlot4 = ConferenceRooms.keynoteRoom.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r4)
+      }
+
+      keynoteSlot1 ++ keynoteSlot2 ++ keynoteSlot3 ++ keynoteSlot4
+    }
+
+    val keynoteSlotFriday: List[Slot] = {
+
+      ConferenceRooms.keynoteRoom.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CLOSING_KEY.id, FRIDAY,
+            new DateTime(FRI_DATE + "17:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "18:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+    }
+
+    // CONFERENCE SLOTS
+
+    val conferenceSlotsThursday: List[Slot] = {
+
+      val conferenceThursdaySlot0 = ConferenceRooms.conferenceRooms.map {
+        r0 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "10:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "11:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r0)
+      }
+      val conferenceThursdaySlot1 = ConferenceRooms.conferenceRooms.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "11:55" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "12:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+      val conferenceThursdaySlot2 = ConferenceRooms.conferenceRooms.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "13:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "14:35" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+      val conferenceThursdaySlot3 = ConferenceRooms.conferenceRooms.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "14:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "15:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r3)
+      }
+      val conferenceThursdaySlot4 = ConferenceRooms.conferenceRooms.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "16:10" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "17:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r4)
+      }
+
+      val conferenceThursdaySlot5 = ConferenceRooms.conferenceRooms.map {
+        r5 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "17:15" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:05" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r5)
+      }
+
+      val toReturn = conferenceThursdaySlot0 ++
+        conferenceThursdaySlot1 ++
+        conferenceThursdaySlot2 ++
+        conferenceThursdaySlot3 ++
+        conferenceThursdaySlot4 ++
+        conferenceThursdaySlot5
+
+      toReturn
+
+    }
+    // ROOM4, ROOM5, ROOM8, ROOM9, ROOM10
+    val conferenceSlotsFriday: List[Slot] = {
+
+      val conferenceFridaySlot1 = ConferenceRooms.conferenceRooms.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "09:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+      val conferenceFridaySlot2 = ConferenceRooms.conferenceRooms.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "10:05" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "10:55" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r2)
+      }
+      val conferenceFridaySlot3 = ConferenceRooms.conferenceRooms.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "11:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "12:10" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r3)
+      }
+      val conferenceFridaySlot4 = ConferenceRooms.conferenceRooms.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "12:25" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "13:15" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r4)
+      }
+      val conferenceFridaySlot5 = ConferenceRooms.conferenceRooms.map {
+        r5 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "14:15" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "15:05" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r5)
+      }
+      val conferenceFridaySlot6 = ConferenceRooms.conferenceRooms.map {
+        r6 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "15:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "16:10" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r6)
+      }
+      val conferenceFridaySlot7 = ConferenceRooms.conferenceRooms.map {
+        r7 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "16:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "17:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r7)
+      }
+
+      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++
+      conferenceFridaySlot5 ++ conferenceFridaySlot6 ++ conferenceFridaySlot7
+    }
+
+    // Ignite slots
+    val igniteSlotsThursday: List[Slot] = {
+      ConferenceRooms.igniteThu.flatMap {
+        room => List(
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:25" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room),
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:25" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room),
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:35" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room),
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:35" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room),
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room),
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room),
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
+            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), room)
+        )
+      }
+    }
+
+    // Registration, coffee break, lunch etc
+    val wednesdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registrationAndCoffee, WEDNESDAY,
+        new DateTime(WED_DATE + "08:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(WED_DATE + "09:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone))),
+      SlotBuilder(ConferenceSlotBreaks.coffee, WEDNESDAY,
+        new DateTime(WED_DATE + "11:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(WED_DATE + "11:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone))),
+      SlotBuilder(ConferenceSlotBreaks.lunch, WEDNESDAY,
+        new DateTime(WED_DATE + "13:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(WED_DATE + "14:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone))),
+      SlotBuilder(ConferenceSlotBreaks.coffee, WEDNESDAY,
+        new DateTime(WED_DATE + "15:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(WED_DATE + "16:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+    )
+
+    val thursdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registrationAndCoffee, THURSDAY,
+        new DateTime(THU_DATE + "08:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(THU_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, THURSDAY,
+        new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(THU_DATE + "10:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, THURSDAY,
+        new DateTime(THU_DATE + "12:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(THU_DATE + "13:45" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, THURSDAY,
+        new DateTime(THU_DATE + "15:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(THU_DATE + "16:10" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+      , SlotBuilder(ConferenceSlotBreaks.eveningReception, THURSDAY,
+        new DateTime(THU_DATE + "18:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+    )
+
+    val fridayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registrationAndCoffee, FRIDAY,
+        new DateTime(FRI_DATE + "08:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(FRI_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone))),
+      SlotBuilder(ConferenceSlotBreaks.coffee, FRIDAY,
+        new DateTime(FRI_DATE + "10:55" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(FRI_DATE + "11:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone))),
+      SlotBuilder(ConferenceSlotBreaks.lunch, FRIDAY,
+        new DateTime(FRI_DATE + "13:15" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(FRI_DATE + "14:15" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone))),
+      SlotBuilder(ConferenceSlotBreaks.coffee, FRIDAY,
+        new DateTime(FRI_DATE + "16:10" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+        new DateTime(FRI_DATE + "16:40" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)))
+    )
+
+    // DEVOXX DAYS
+    val wednesdaySchedule: List[Slot] = {
+      wednesdayBreaks ++
+        labsSlotWednesday ++
+        deepDiveSlotWednesday
+    }
+
+    val thursdaySchedule: List[Slot] = {
+      thursdayBreaks ++
+        keynoteSlotThursday ++
+        conferenceSlotsThursday ++
+        quickiesSlotsThursday ++
+        igniteSlotsThursday ++
+        bofSlotThursday
+    }
+
+    val fridaySchedule: List[Slot] = {
+      fridayBreaks ++
+        keynoteSlotFriday ++
+        conferenceSlotsFriday ++
+        quickiesSlotsFriday
+    }
+
+    // COMPLETE DEVOXX
+    def allSlots: List[Slot] = {
       wednesdaySchedule ++ thursdaySchedule ++ fridaySchedule
     }
   }
@@ -385,7 +741,7 @@ object ConferenceDescriptor {
       cfpOpenedOn = DateTime.parse(DEVOXX_CFP_OPENED_ON_DATE),
       cfpClosedOn = DateTime.parse(DEVOXX_CFP_CLOSED_ON_DATE),
       scheduleAnnouncedOn = DateTime.parse(DEVOXX_SCHEDULE_ANNOUNCEMENT_DATE),
-      days=dateRange(fromDay, toDay,new Period().withDays(2))
+      days=dateRange(fromDay, toDay, new Period().withDays(2))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/" + DEVOXX_HASH_TAG,
     hashTag = DEVOXX_HASH_TAG,
@@ -433,14 +789,6 @@ object ConferenceDescriptor {
     , notifyProposalSubmitted = true
     , MAXIMUM_SUMMARY_CHARACTERS // French developers tends to be a bit verbose... we need extra space :-)
   )
-
-  // It has to be a def, not a val, else it is not re-evaluated
-  def verifyopeningcfp : Any = {
-    if (DateTime.now().isBefore(ConferenceDescriptor.current().timing.cfpOpenedOn) || DateTime.now().isAfter(ConferenceDescriptor.current().timing.cfpClosedOn) ){
-      CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , false) } else {
-      CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , true)
-    }
-  }
 
   def isCFPOpen: Boolean = {
     Backoffice.isCFPOpen()
@@ -494,9 +842,7 @@ object ConferenceDescriptor {
   def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 }
 
-case class CfpManager (id: String = "cfp" ,cfpopen: Boolean = false) {
-
-}
+case class CfpManager (id: String = "cfp" ,cfpopen: Boolean = false) {}
 
 object CfpManager {
   implicit val cfpManagerFormat: Format[CfpManager] = Json.format[CfpManager]
@@ -569,13 +915,10 @@ object CfpManager {
         }
       case None =>
     }
-
   }
 
   def testemailTemplate():Any= MailsManager.getEmailMode() match{
-
     case None=> MailsManager.saveEmailMode("disable")
     case Some(a)=>MailsManager.saveEmailMode(a)
   }
-
 }
