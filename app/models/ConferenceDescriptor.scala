@@ -286,11 +286,11 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val conferenceday=Seq(("wednesday","wednesday"),("thursday","thursday"), ("friday","friday"))
-
     private val WEDNESDAY: String = "Wednesday"
     private val THURSDAY: String = "Thursday"
     private val FRIDAY: String = "Friday"
+
+    val conferenceday = Seq((WEDNESDAY, WEDNESDAY),(THURSDAY, THURSDAY),(FRIDAY, FRIDAY))
 
     private val WED_DATE = "2018-05-09T"
     private val THU_DATE = "2018-05-10T"
