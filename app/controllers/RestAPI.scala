@@ -759,14 +759,12 @@ object RestAPI extends Controller {
             slot.proposal.isDefined && slot.break.isEmpty && !slot.proposal.get.talkType.id.equals("trn")
           }.map {
             slot =>
-
-
               Map(
                 "roomId" -> Json.toJson(slot.room.id)
                 , "roomName" -> Json.toJson(slot.room.name)
                 , "roomSetup" -> Json.toJson(slot.room.setup)
                 , "roomCapacity" -> Json.toJson(slot.room.capacity)
-
+                , "roomRecorded" -> Json.toJson(slot.room.recorded)
               )
           }.distinct
           val jsonObject = Json.toJson(
@@ -986,7 +984,6 @@ object RestAPI extends Controller {
 
   def showSlots(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val allSlots = ConferenceDescriptor.ConferenceSlots.allSlots.map {
         slot =>
