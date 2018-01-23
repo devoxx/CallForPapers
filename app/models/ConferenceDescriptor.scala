@@ -229,39 +229,6 @@ object ConferenceDescriptor {
 
   // TODO If you want to use the Devoxx Scheduler, you can describe here the list of rooms, with capacity for seats
   object ConferenceRooms {
-
-    // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
-    // the first column on the HTML Table
-    val GALLERY_HALL = Room("a_gallery_hall", "Gallery Hall", 1180, "special", "")
-
-    val HALL_EXPO = Room("z_hall", "Exhibition floor", 1500, "special", "")
-
-    val AUDIT = Room("aud_room", "Auditorium", 300, "theatre", "")
-
-    val EXEC_CENTRE = Room("exec_centre", "Exec Centre", 120, "classroom", "")
-
-    val ROOM_A = Room("room1", "Room A", 190, "classroom", "")
-    val ROOM_BC = Room("room2", "Room B/C", 120, "classroom", "")
-    val ROOM_DEFG = Room("room3", "Room D/E/F/G", 250, "classroom", "")
-
-    val LAB_ROOM_A = Room("x_lab_room1", "Lab Room A", 50, "classroom", "")
-    val LAB_ROOM_B = Room("x_lab_room2", "Lab Room B", 50, "classroom", "")
-    val LAB_ROOM_C = Room("x_lab_room3", "Lab Room C", 50, "classroom", "")
-    val LAB_ROOM_D = Room("x_lab_room4", "Lab Room D", 50, "classroom", "")
-
-    val keynoteRoom = List(GALLERY_HALL)
-
-    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_BC, ROOM_DEFG, EXEC_CENTRE)
-
-    val deepDiveWed = List(AUDIT, LAB_ROOM_A)
-    val labsWed = List(LAB_ROOM_A, LAB_ROOM_B, LAB_ROOM_C, LAB_ROOM_D)
-
-    val bofThu = List(AUDIT, ROOM_A, ROOM_DEFG, EXEC_CENTRE)
-    val igniteThu = List(ROOM_BC)
-    val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_BC, ROOM_DEFG, EXEC_CENTRE)
-
-    val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_BC, ROOM_DEFG, EXEC_CENTRE)
-
     def allRooms: List[Room] = {
       var list: List[Room] = List.empty[Room]
       Room.allRoom.map(x => x._2 match {
@@ -274,13 +241,14 @@ object ConferenceDescriptor {
 
   // TODO if you want to use the Scheduler, you can configure the breaks
   object ConferenceSlotBreaks {
-    val registrationAndCoffee = SlotBreak("reg", "Registration & Coffee", "Accueil", ConferenceRooms.HALL_EXPO)
-    val breakfast = SlotBreak("dej", "Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.HALL_EXPO)
-    val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", ConferenceRooms.HALL_EXPO)
-    val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.HALL_EXPO)
-    val eveningReception = SlotBreak("reception", "Evening Reception", "Evening Reception", ConferenceRooms.HALL_EXPO)
-    val closingKeynote = SlotBreak("closeKey", "Closing Keynote", "Keynote", ConferenceRooms.AUDIT)
-    val allSlotBreak=List(registrationAndCoffee, breakfast, coffee, lunch, eveningReception, closingKeynote)
+    val registrationAndCoffee = SlotBreak("reg", "Registration & Coffee", "Accueil", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
+    val breakfast = SlotBreak("dej", "Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
+    val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
+    val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
+    val eveningReception = SlotBreak("reception", "Evening Reception", "Evening Reception", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
+    val closingKeynote = SlotBreak("closeKey", "Closing Keynote", "Keynote", ConferenceRooms.allRooms.find( room => room.name == "Auditorium").get)
+    
+    val allSlotBreak = List(registrationAndCoffee, breakfast, coffee, lunch, eveningReception, closingKeynote)
   }
 
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
