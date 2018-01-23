@@ -22,8 +22,8 @@
  */
 
 (function(){
-    var TOP_TALKS_URL = 'https://api-voting.devoxx.com/DV16/top/talks?limit=10';
-    var CATEGORIES_URL = 'https://api-voting.devoxx.com/DV16/categories';
+    var TOP_TALKS_URL = 'https://api-voting.devoxx.com/DV18/top/talks?limit=10';
+    var CATEGORIES_URL = 'https://api-voting.devoxx.com/DV18/categories';
 
     var TopTalks = React.createClass({displayName: "TopTalks",
         getInitialState: function(){
