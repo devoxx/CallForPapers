@@ -280,11 +280,11 @@ object Slot {
   def changeDate(dat: DateTime, day: String): DateTime = {
     var newdate = dat
 
-    if (day.equals("wednesday")) {
+    if (day.equalsIgnoreCase("wednesday")) {
       newdate = dat.withDate(2018, 5, 9)
-    } else if (day.equals("thursday")) {
+    } else if (day.equalsIgnoreCase("thursday")) {
       newdate = dat.withDate(2018, 5, 10)
-    } else if (day.equals("friday")) {
+    } else if (day.equalsIgnoreCase("friday")) {
       newdate = dat.withDate(2018, 5, 11)
     }
     newdate
