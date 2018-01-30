@@ -75,7 +75,9 @@
                                         <p>@Messages("ar.pleaseSelect")</p>
                                         <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
 
-
+                                            @if(proposal.state==ProposalState.APPROVED) {
+                                               <td colspan="2"><button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button></td>
+                                            }
                                             @if(proposal.state==ProposalState.ACCEPTED) {
                                                 <td colspan="1"><button name="dec" value="" class="btn btn-sm btn-success" disabled> Accepted</button></td>
                                             }
@@ -89,12 +91,8 @@
                                                 </td>
                                             }
 
-                                            @if(proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.REPLYLATER) {
-
-                                                <td colspan="1">
-
-                                                    <button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button>
-                                                </td>
+                                            @if(proposal.state==ProposalState.APPROVED) {
+                                                <td colspan="2"><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button> </td>
                                             }
                                             @if(proposal.state==ProposalState.ACCEPTED) {
                                                 <td><small>Warning: this talk has been accepted. Please contact the CFP team before you decline</small><br>
@@ -112,76 +110,7 @@
                                             <input type="hidden" name="cssrf_t" value="@cssrf">
                                             <!-- ne vous amusez pas à passer un id different ici, car je verifie du cote serveur le proprietaire de la soumission ;-) //-->
                                             <input type="hidden" name="proposalId" value="@proposal.id">
-
                                         </form>
-
-                                                @if(proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.REPLYLATER ) {
-
-                                                    <td colspan="2">
-                                                            <!----------->
-                                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#@(proposal.id)1">@Messages("ar.IAccept")</button>
-                                                        <div id="@(proposal.id)1" class="modal fade" role="dialog" >
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                        <h4 class="modal-title"> @Messages("accept.preference.days.ms")</h4>
-                                                                    </div>
-                                                                    <form action="@routes.ApproveOrRefuse.doAcceptTalks()" method="post">
-                                                                        <div class="modal-body">
-                                                                            <div>@Messages("accept.preference.days")</div>
-                                                                            <select name="preferencedays[]"class="form-control" multiple > 
-                                                                                <option selected disabled > ---please select one or more ---</option>
-                                                                            @for(order <- Slot.byType(proposal.talkType).map(x=>(x.day +" from "+x.from.toString("HH:mm") +" to " +x.to.toString("HH:mm"))).distinct) {
-                                                                                <option >@{order}</option>
-                                                                            }
-                                                                            </select>
-                                                                            <input type="hidden" name="proposalId" value="@proposal.id">
-                                                                        </div>
-
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("repy.later.button.close")</button>
-                                                                            <button name="dec" value="accept" type="submit" class="btn btn-primary">@Messages("repy.later.button.save")</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                             <!----------->
-                                               <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#@proposal.id"><i class="icon-warning-sign"></i> @Messages("repy.later.button")</button>
-                                               <div id="@proposal.id" class="modal fade" role="dialog" >
-                                                   <div class="modal-dialog">
-                                                       <div class="modal-content">
-                                                           <div class="modal-header">
-                                                               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                               <h4 class="modal-title"> @Messages("ar.deadline.talks.ms")</h4>
-                                                           </div>
-                                                           <form action="@routes.ApproveOrRefuse.doReplyLaterTalks()" method="post">
-                                                           <div class="modal-body">
-                                                               <p>@Messages("ar.deadline.talks",proposal.title) </p>
-
-                                                               <input type="date"  name="deadline" >
-                                                               <input type="hidden" name="proposalId" value="@proposal.id">
-                                                           </div>
-
-                                                           <div class="modal-footer">
-                                                               <button type="button" class="btn btn-default" data-dismiss="modal"> @Messages("repy.later.button.close")</button>
-                                                               <button name="dec" value="replylater" type="submit" class="btn btn-primary">@Messages("repy.later.button.save")</button>
-                                                           </div>
-                                                           </form>
-                                                       </div>
-                                                   </div>
-                                               </div>
-                                                        @if(proposal.state==ProposalState.REPLYLATER ){
-                                                            <p>@Messages("ar.deadline.replylater.ms")
-                                                            @{proposal.deadline match {
-                                                            case Some(d) =>  d.toString("yyyy/MM/dd")
-                                                            case  None => }}
-                                                            </p>
-
-                                                           }
-                                                   <!-------------></td>
-                                        }
                                         </tr>
                                         </tfoot>
                                         </table>
