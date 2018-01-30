@@ -22,8 +22,8 @@
  */
 
 (function(){
-    var TOP_TALKS_URL = '/api/conferences/DV16/topFavedTalks?limit=10';
-    var CATEGORIES_URL = 'https://api-voting.devoxx.com/DV16/categories';
+    var TOP_TALKS_URL = '/api/conferences/DV18/topFavedTalks?limit=10';
+    var CATEGORIES_URL = 'https://api-voting.devoxx.com/DV18/categories';
 
     var TopTalks = React.createClass({displayName: "Top Faved Talks",
         getInitialState: function(){

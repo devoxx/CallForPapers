@@ -125,18 +125,18 @@ object ScheduleConfiguration {
   def getPublishedScheduleByDay(day: String): List[Slot] = {
 
     def extractSlot(allSlots: List[Slot], day: String) = {
-      val configured = loadSlots().filter(_.day == day)
+      val configured = loadSlots().filter(_.day.equalsIgnoreCase(day))
       val configuredIDs = configured.map(_.id)
       val filtered = allSlots.filterNot(s => configuredIDs.contains(s.id))
       configured ++ filtered
     }
 
     val listOfSlots = day match {
-      case "wednesday" =>
+      case "wednesday" | "Wednesday" =>
         extractSlot(ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
-      case "thursday" =>
+      case "thursday" | "Thursday" =>
         extractSlot(ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
-      case "friday" =>
+      case "friday" | "Friday" =>
         extractSlot(ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
       case other =>
         play.Logger.of("ScheduleConfiguration").warn("Could not match " + other + " in getPublishedScheduleByDay")

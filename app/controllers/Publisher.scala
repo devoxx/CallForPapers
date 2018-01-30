@@ -165,8 +165,6 @@ object Publisher extends Controller {
       }
   }
 
-  private val monday: String = "monday"
-  private val tuesday: String = "tuesday"
   private val wednesday: String = "wednesday"
   private val thursday: String = "thursday"
   private val friday: String = "friday"
@@ -182,19 +180,6 @@ object Publisher extends Controller {
       } else {
         val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
         maybeScheduledConfiguration match {
-          case Some(slotConfig) if day == null =>
-            val updatedConf = slotConfig.copy(slots = slotConfig.slots)
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, wednesday))
-          case Some(slotConfig) if day == monday =>
-            val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == monday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 1))
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, monday))
-          case Some(slotConfig) if day == tuesday =>
-            val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == tuesday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
-            )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, tuesday))
           case Some(slotConfig) if day == wednesday =>
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == wednesday)
