@@ -191,8 +191,8 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal: Proposal =>
           ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
       }
-      Ok(s"Proposal $proposalId Accepted - You might want to Ctrl-click on the refuse link... this speed up the process")
-    //Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+       Ok(s"Proposal ${proposalId} Accepted - You might want to Ctrl-click on the refuse link... this speed up the process")
+      //Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   def notifyRefused(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -203,8 +203,8 @@ object ApproveOrRefuse extends SecureCFPController {
 
           ZapActor.actor ! ProposalRefused(request.webuser.uuid, proposal)
       }
-      Ok(s"Proposal $proposalId Refused - You might want to Ctrl-click on the refuse link... this speed up the process")
-    //Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+        Ok(s"Proposal ${proposalId} Refused - You might want to Ctrl-click on the refuse link... this speed up the process")
+      //Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   def notifyrefusedAll(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -244,7 +244,6 @@ object ApproveOrRefuse extends SecureCFPController {
           Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> "Notified all speakers for Proposal Approved")
 
         })
-
   }
 
   def notifyallAcceptedtoAcceptteTermeAndCondition() = SecuredAction(IsMemberOf("cfp")) {
@@ -262,9 +261,7 @@ object ApproveOrRefuse extends SecureCFPController {
         Redirect(routes.Backoffice.allProposals()).flashing("success" -> " all speakers for Proposal Accepted they have accepted terms and conditions ")
 
       }
-
   }
-
 
   val formApprove = Form(
     "accept.chk" -> checked("accept.term.checked")
@@ -272,7 +269,11 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def showAcceptTerms() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("acceptedTerms.msg"))
+      if (Speaker.needsToAccept(request.webuser.uuid)) {
+        Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove))
+      } else {
+        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("acceptedTerms.msg"))
+      }
   }
 
   def acceptTermsAndConditions() = SecuredAction {
@@ -289,7 +290,7 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def declineTermsAndConditions() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      // Speaker.refuseTerms(request.webuser.uuid)
+      Speaker.refuseTerms(request.webuser.uuid)
       Event.storeEvent(Event("speaker", request.webuser.uuid, "has REFUSED Terms and conditions"))
       Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("refused.termsConditions"))
   }
