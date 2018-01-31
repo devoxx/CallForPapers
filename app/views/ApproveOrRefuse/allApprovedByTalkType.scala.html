@@ -51,7 +51,7 @@
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                             <h4 class="modal-title">@Messages("notify.all.Approved")</h4>
                                         </div>
-                                        <form action="@routes.ApproveOrRefuse.notifyApproveddAll(confType)" method="post">
+                                        <form action="@routes.ApproveOrRefuse.notifyApprovedAll(confType)" method="post">
 
                                             <div class="modal-body">
                                                 <p>@Messages("mail.notify.approved.body") </p>
@@ -117,7 +117,7 @@
                                                             <h4 class="modal-title">@Messages("Custom.email")</h4>
                                                         </div>
 
-                                                        <form action="@routes.ApproveOrRefuse.notifycustomemailapproved(confType, proposal.id)" method="POST">
+                                                        <form action="@routes.ApproveOrRefuse.notifyCustomMailApproved(confType, proposal.id)" method="POST">
 
                                                             @if(MailsManager.getEmailMode().get == "disable") {
 
@@ -176,7 +176,7 @@
                                                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                                     <h4 class="modal-title">@Messages("give.the.explanation")</h4>
                                                                 </div>
-                                                                <form action="@routes.ApproveOrRefuse.notifyafterrefused(confType, proposal.id)" method="post">
+                                                                <form action="@routes.ApproveOrRefuse.notifyAfterRefused(confType, proposal.id)" method="post">
 
                                                                     <textarea class="email" name="email">
                                                                     @views.html.Mails.acceptrefuse.sendProposalApproved(proposal, Some("note fund")).toString()
