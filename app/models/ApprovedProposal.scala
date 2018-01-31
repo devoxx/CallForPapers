@@ -220,7 +220,7 @@ object ApprovedProposal {
       }
       tx.exec()
   }
-  def rejecte(proposal: Proposal) = Redis.pool.withClient {
+  def reject(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
 
       client.sadd("RejectedById:", proposal.id.toString)
