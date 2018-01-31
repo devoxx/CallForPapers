@@ -1015,3 +1015,7 @@ talk.slots.imported=Talk Slot(s) imported
 talk.slots.exported=Talk Slot(s) exported
 break.slots.imported=Break Slot(s) imported
 break.slots.exported=Break Slot(s) exported
+
+en=English
+fr=French
+nl=Dutch
