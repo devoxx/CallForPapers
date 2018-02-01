@@ -199,7 +199,7 @@
                                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                             <h4 class="modal-title"> @Messages("notification.approved.title")</h4>
                                                         </div>
-                                                        <form action="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" method="post">
+                                                        <form action="@routes.ApproveOrRefuse.notifyApproved(confType, proposal.id)" method="post">
                                                             <div class="modal-body">
                                                                 <p>@Messages("notification.approved.body")</p>
                                                                 <input class="datepicker" data-date-format="mm/dd/yyyy" name="deadline">
