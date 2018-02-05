@@ -83,7 +83,7 @@ case class Speaker(uuid: String
       } else {
         cleanL
       }
-  }.getOrElse("fr")
+  }.getOrElse(ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE)
 
   def cleanTwitter: Option[String] = twitter.map {
     tw =>
@@ -241,7 +241,7 @@ object Speaker {
 
   def updatePhone(uuid: String, thePhone: String, maybeLang:Option[Lang]) = {
     for(speaker <- findByUUID(uuid)){
-      val speakerLang = maybeLang.map(_.code).getOrElse("en")
+      val speakerLang = maybeLang.map(_.code).getOrElse(ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE)
       Speaker.update(uuid,speaker.copy(phoneNumber = Option(thePhone), lang=Option(speakerLang)))
     }
   }

@@ -414,7 +414,7 @@ object RestAPI extends Controller {
                   "avatarURL" -> speaker.avatarUrl.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson(url)),
                   "blog" -> speaker.blog.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
                   "company" -> speaker.company.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
-                  "lang" -> speaker.lang.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson("fr")),
+                  "lang" -> speaker.lang.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson(ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE)),
                   "bio" -> Json.toJson(speaker.bio),
                   "bioAsHtml" -> Json.toJson(speaker.bioAsHtml),
                   "twitter" -> speaker.cleanTwitter.map(Json.toJson(_)).getOrElse(JsNull),
