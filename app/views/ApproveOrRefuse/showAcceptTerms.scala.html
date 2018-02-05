@@ -54,26 +54,6 @@ I undertake in each of my presentations to strictly comply with the principles o
 (2) grant this permission and agree to the terms and conditions set forth above on behalf of my Organisation and myself;
 (3) have authority to agree to such terms and conditions on behalf of my Organisation or co-speaker; and
 (4) confirm that no further consents or permissions are required by @Messages("shortName") in order to use the Presentation Materials.
-
-</textarea>
-<h3>Version en Français</h3>
-
-<textarea class="form-control" cols="70" rows="15">
-J'autorise Devoxx Maroc, la société Xhub organisatrice de Devoxx Maroc (et ses contractants), en mon nom et au nom de ma société/organisation, en considération de ma participation comme présentateur à la conférence Devoxx Maroc :
-    - la permission d'utiliser mon nom, mes références biographiques, ma photo, en vue de publication sur le site Internet de la conférence, dans la partie programme
-    - la permission d'enregistrer et de mettre en ligne gratuitement sur le site Parleys.com, ma ou mes présentations, sans que cela ne donne droit à une retribution
-    - la permission de copier, diffuser, utiliser, traduire tout ou partie de ma (mes) présentation(s), ainsi que de mes supports de présentation
-
-Je comprends et j'accepte que ni moi, ni mon employeur, ne peuvent recevoir de compensation pour la cession de ces droits. Devoxx Maroc, représentée par la société Xhub, n'aura aucuns autres droits que ceux explicitement listé ici.
-
-Je m'engage dans chacune de mes présentations à respecter strictement les principes de non-discrimination, les opinions de chacun, la diversité de sexe, de race et de religion, et à ne pas porter atteinte à l'image d'autrui. Je comprends que
-tout manquement aux principes énoncés ci-dessus entrainera mon exclusion de la conférence, sans que cela ne puisse donner lieu à une quelconque compensation.
-
-(1) Je déclare être la personne qui accepte l'invitation des organisateurs de Devoxx Maroc
-(2) Je donne cette permission et j'accepte les "Termes et Conditions" de Devoxx Maroc, au nom de mon organisation et de moi-même
-(3) Je reconnais avoir tout autorité pour accepter ces termes, en mon nom, et au nom de mon organisation ou co-speaker
-(4) Je confirme qu'aucune autre permission n'est nécessaire pour que Devoxx Maroc puisse utiliser mes éléments de présentation.
-
 </textarea>
                             </div>
                             @helper.form(routes.ApproveOrRefuse.acceptTermsAndConditions()) {
@@ -81,8 +61,6 @@ tout manquement aux principes énoncés ci-dessus entrainera mon exclusion de la
                                 <input type="submit" value="Validate" class="btn btn-lg btn-success">
                                 <a href="@routes.ApproveOrRefuse.declineTermsAndConditions()" class="btn btn-lg btn-danger">Decline</a>
                             }
-
-
                         </div>
                     </div>
                 </div>
