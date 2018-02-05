@@ -128,7 +128,7 @@ object TransactionalEmails {
 
           MailerPlugin.send(email)
         } else {
-          MailsManager.getMailByTypeAndLang("Validate your account", "fr") match {
+          MailsManager.getMailByTypeAndLang("Validate your account", ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE) match {
             case Some(mail) =>
 
               val email = Email(

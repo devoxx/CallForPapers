@@ -1387,9 +1387,9 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val web: Webuser = Webuser.apply("", "", "", "", "", "")
       val slots = List[Slot]()
-      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Access Code Speaker", views.html.Mails.sendAccessCode("Speaker.email", "pswd").toString(), "en", "Access Code to CFP"))
-      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Validate your account", views.html.Mails.sendValidateYourEmail("validationLink", "Devoxx UK 2017 CFP").toString(), "en", "Validate your account"))
-      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "We Create Account For You", views.html.Mails.sendAccountCreated("speaker.firstName", "Speaker.email", "pswd").toString(), "en", "We Create Account For You"))
+      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Access Code Speaker", views.html.Mails.sendAccessCode("Speaker.email", "pswd").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "Access Code to CFP"))
+      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Validate your account", views.html.Mails.sendValidateYourEmail("validationLink", "Devoxx UK 2017 CFP").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "Validate your account"))
+      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "We Create Account For You", views.html.Mails.sendAccountCreated("speaker.firstName", "Speaker.email", "pswd").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "We Create Account For You"))
 
       val mailsmanagers = MailsManager.allMails.toList
       Ok(views.html.CFPAdmin.allMailNotification(mailsmanagers))

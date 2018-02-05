@@ -70,7 +70,11 @@
                         </td>
                         @if(ConferenceDescriptor.current().frLangEnabled) {
                             <td>
-                            @speaker.cleanLang
+                            @if(speaker.cleanLang.length() == 2) {
+                                @Messages(speaker.cleanLang)
+                            } else {
+                                @speaker.cleanLang
+                            }
                             </td>
                         }
                         <td>
