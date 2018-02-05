@@ -50,7 +50,7 @@
             }
             <br>
             <span class="label label-primary">@allVotes.map(_._1).count(_.lang == "fr")
-                FR</span> <span class="label label-default">@allVotes.map(_._1).count(_.lang == "en") EN</span>
+                FR</span> <span class="label label-default">@allVotes.map(_._1).count(_.lang == ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE) EN</span>
 
         </div>
 

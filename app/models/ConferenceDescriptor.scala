@@ -306,6 +306,7 @@ object ConferenceDescriptor {
 
   val DEVOXX_EVENT_CODE = "DV18"
   val DEVOXX_HASH_TAG = "#DevoxxUK"
+  val DEVOXX_DEFAULT_LANGUAGE = "en";
   val DEVOXX_VENUE_ADDRESS = "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
   val DEVOXX_FIRST_DAY_IN_FRENCH = "9 mai"
   val DEVOXX_FIRST_DAY_IN_ENGLISH = "May 9th"
