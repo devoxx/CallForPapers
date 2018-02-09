@@ -104,8 +104,8 @@
                         <tbody>
                             @for(track <- ConferenceDescriptor.ConferenceTracksDescription.ALL) {
                                 <tr>
-                                    <td>@Messages(track.i18nTitleProp)</td>
-                                    <td>@Messages(track.i18nDescProp)</td>
+                                    <td>@Html(Messages(track.i18nTitleProp))</td>
+                                    <td>@Html(Messages(track.i18nDescProp))</td>
                                 </tr>
                             }
                         </tbody>
