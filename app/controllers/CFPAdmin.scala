@@ -528,8 +528,7 @@ object CFPAdmin extends SecureCFPController {
             writer.print(",")
 
             proposals.foreach { p =>
-              val proposalUrl = "http://" + ConferenceDescriptor.current().conferenceUrls.cfpHostname +
-                routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)
+              val proposalUrl = "http://" + ConferenceDescriptor.current().conferenceUrls.cfpHostname + routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)
 
               ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
                 writer.print(Messages(p.talkType.id))
