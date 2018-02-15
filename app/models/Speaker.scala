@@ -60,7 +60,6 @@ case class Speaker(uuid: String
 
     def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
-
   }
 
   def cleanShortName: String = {
@@ -146,12 +145,11 @@ case class Speaker(uuid: String
   lazy val asJson: String = {
     Json.stringify(Json.toJson(this))
   }
-
 }
 
 object Speaker {
-  implicit  val read = Json.reads[Speaker]
-  implicit  val write = Json.writes[Speaker]
+  implicit val read = Json.reads[Speaker]
+  implicit val write = Json.writes[Speaker]
   implicit val speakerFormat = Json.format[Speaker]
   implicit val speakerFormatWriter = Json.writes[Speaker]
   implicit val speakerFormatReader = Json.reads[Speaker]
