@@ -133,7 +133,7 @@ class IndexMaster extends ESActor {
   }
 
   def doIndexSpeaker(speaker: Speaker) {
-    play.Logger.of("application.IndexMaster").debug("Do index speaker")
+    play.Logger.of("application.IndexMaster").debug(s"Do index speaker: $speaker")
 
     ElasticSearchActor.reaperActor ! Index(speaker)
 
@@ -142,13 +142,14 @@ class IndexMaster extends ESActor {
 
 
   def doIndexAllSpeakers() {
-    play.Logger.of("application.IndexMaster").debug("Do index speaker")
+    play.Logger.of("application.IndexMaster").debug("Do index all speakers")
 
     val speakers = Speaker.allSpeakers()
 
     val sb = new StringBuilder
     speakers.foreach {
       speaker: Speaker =>
+        play.Logger.of("application.IndexMaster").debug(s"Indexing speaker: ${speaker.cleanName} (uuid: ${speaker.uuid})")
         sb.append("{\"index\":{\"_index\":\"speakers\",\"_type\":\"speaker\",\"_id\":\"" + speaker.uuid + "\"}}")
         sb.append("\n")
         sb.append(Json.toJson(speaker))
