@@ -428,12 +428,17 @@ object CallForPaper extends SecureCFPController {
   def submitProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
+      val cfpIsClosedButAllowFlagIsEnabled = !Backoffice.isCFPOpen() && Backoffice.isSubmittingProposalAfterCFPClosed().contains("Allow")
+      val userIsAuthorisedCFPOrAdmin = Webuser.hasAccessToCFP(uuid) || Webuser.hasAccessToAdmin(uuid)
       val allowSubmittingProposal =
             Backoffice.isCFPOpen() ||
-            (!Backoffice.isCFPOpen() && Backoffice.isSubmittingProposalAfterCFPClosed().contains("Allow")) ||
-            (Webuser.hasAccessToCFP(uuid) || Webuser.hasAccessToAdmin(uuid))
+            cfpIsClosedButAllowFlagIsEnabled ||
+            userIsAuthorisedCFPOrAdmin
 
       if (allowSubmittingProposal) {
+        if (userIsAuthorisedCFPOrAdmin) play.Logger.info(s"${request.webuser.cleanName} (${uuid}) is allowed to change and submit proposals as a CFP/Admin user.")
+        if (cfpIsClosedButAllowFlagIsEnabled) play.Logger.info(s"${request.webuser.cleanName} (${uuid}) is allowed to change and submit proposals as a the facility is available even if CFP is closed.")
+
         val maybeProposal = Proposal.findDraft(uuid, proposalId)
         maybeProposal match {
           case Some(proposal) =>
