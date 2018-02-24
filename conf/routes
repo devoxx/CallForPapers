@@ -168,7 +168,7 @@ GET           /cfpadmin/allSpeakers/acceptedTalks/all                           
 GET           /cfpadmin/allSpeakers/rejectedTalks/all                           controllers.CFPAdmin.allSpeakersWithRejectedTalks()
 GET           /cfpadmin/allSpeakers/acceptedTalks/export                        controllers.CFPAdmin.allSpeakersWithAcceptedTalksForExport()
 GET           /cfpadmin/allSpeakers/invited                                     controllers.InviteController.allInvitations()
-GET           /cfpadmin/cfpstatut                                               controllers.CFPAdmin.managecfp()
+GET           /cfpadmin/cfpstatus                                               controllers.CFPAdmin.managecfp()
 GET           /cfpadmin/setPreferredDay                                         controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
 GET           /cfpadmin/resetPreferredDay                                       controllers.CFPAdmin.resetPreferredDay(proposalId:String)
 GET           /cfpadmin/saveSpeakerAndTalk                                      controllers.CFPAdmin.retour()
@@ -243,7 +243,7 @@ POST          /admin/saveroom                                                   
 GET           /admin/deleteRoom                                                 controllers.CFPAdmin.deleteRoom(roomid:String)
 GET           /admin/updateRoom                                                 controllers.CFPAdmin.updateRoom(roomid :String)
 GET           /admin/cloneRoom                                                  controllers.CFPAdmin.cloneRoom(roomid: String)
-GET           /admin/changeStatus                                               controllers.CFPAdmin.changeEmailConfiguration(statut:String)
+GET           /admin/changeStatus                                               controllers.CFPAdmin.changeEmailConfiguration(status: String)
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)
