@@ -1694,11 +1694,11 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       }
   }
 
-  private def requestorUUID(request: SecuredRequest[AnyContent]): String = {
+  def requestorUUID(request: SecuredRequest[AnyContent]): String = {
     request.webuser.uuid
   }
 
-  private def requestorNameFrom(request: SecuredRequest[AnyContent]): String = {
+  def requestorNameFrom(request: SecuredRequest[AnyContent]): String = {
     val creatorUuid = requestorUUID(request)
     Webuser.findByUUID(creatorUuid).get.cleanName
   }
