@@ -418,10 +418,11 @@ class ZapActor extends Actor {
   def CreateTalkAfterCfp(wb: Webuser): Unit = {
     play.Logger.debug(s"Notify golden ticket ${wb.uuid}")
     Webuser.findByUUID(wb.uuid).map {
-      invitedWebuser: Webuser =>
+      invitedWebuser: Webuser => {
+        play.Logger.info(s"About to send speaker ${invitedWebuser.cleanName} (${invitedWebuser.uuid}) an invite")
         Mails.sendCreateTalkCfpClose(invitedWebuser)
-
-
+        play.Logger.info(s"Speaker ${invitedWebuser.cleanName} (${invitedWebuser.uuid}) has been sent an invite")
+      }
     }.getOrElse {
       play.Logger.error("user not found with uuid " + wb.uuid)
     }
