@@ -2,7 +2,7 @@
 
 Welcome to @conferenceName!
 
-Thanks for joining @conferenceName CFP Web site. To validate your email address, please copy the following link to your browser address bar:
+Thanks for joining the @conferenceName Web site. To validate your email address, please copy the following link to your browser address bar:
 
 @validationLink
 

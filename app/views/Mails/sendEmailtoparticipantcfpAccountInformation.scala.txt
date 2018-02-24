@@ -1,7 +1,7 @@
 @(validationLink:String, conferenceName:String,participant:Webuser)
 
 Welcome to @conferenceName
-Thanks for joining @conferenceName . We created an account for you on the CFP website @validationLink
+Thanks for joining @conferenceName. We created an account for you on the CFP website @validationLink
  ,here are the details to access your account
 Email: @participant.email
   password:@participant.password
