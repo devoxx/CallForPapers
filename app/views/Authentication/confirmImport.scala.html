@@ -38,8 +38,7 @@
             @helper.inputFile(formWebuser("picture"))
 
         @if(SecureCFPController.getCurrentUser(req).isDefined) {
-            @if(Proposal.hasOneApprovedProposal(SecureCFPController.getCurrentUser(req).get.uuid) ||
-                    Proposal.hasOneAcceptedProposal(SecureCFPController.getCurrentUser(req).get.uuid)) {
+            @if(false) {
                 <div class="prettyprint">
                     <h4><b>@Messages("speakerQandA")</b></h4>
 
