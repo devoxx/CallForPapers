@@ -28,7 +28,6 @@ import play.api.mvc._
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Cookie
 
@@ -1387,7 +1386,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val web: Webuser = Webuser.apply("", "", "", "", "", "")
       val slots = List[Slot]()
       MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Access Code Speaker", views.html.Mails.sendAccessCode("Speaker.email", "pswd").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "Access Code to CFP"))
-      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Validate your account", views.html.Mails.sendValidateYourEmail("validationLink", "Devoxx UK 2017 CFP").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "Validate your account"))
+      MailsManager.save(MailsManager.apply(MailsManager.generateId(), "Validate your account", views.html.Mails.sendValidateYourEmail("validationLink", "Devoxx UK 2018 CFP").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "Validate your account"))
       MailsManager.save(MailsManager.apply(MailsManager.generateId(), "We Create Account For You", views.html.Mails.sendAccountCreated("speaker.firstName", "Speaker.email", "pswd").toString(), ConferenceDescriptor.DEVOXX_DEFAULT_LANGUAGE, "We Create Account For You"))
 
       val mailsmanagers = MailsManager.allMails.toList
@@ -1469,10 +1468,12 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
   def saveNewSpeakerByAdmin = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val creatorUuid = requestorUUID(request)
+      val creatorName = requestorNameFrom(request)
+
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
         validForm => {
-
           if (!Webuser.isEmailRegistered(validForm.email)) {
             //Webuser.saveNewWebuserEmailNotValidated(validForm)
             //TransactionalEmails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForSpeaker(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
@@ -1481,12 +1482,13 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
             ZapActor.actor ! DoCreateTalkAfterCfp(validForm)
             Event.storeEvent(Event(Webuser.findByUUID(validForm.uuid).get.email, request.webuser.uuid, "invited speaker [" + Webuser.findByUUID(validForm.uuid).get.cleanName + "]"))
             //TransactionalEmails.sendAccessCode(validForm.email, validForm.password)
-            Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> "Speaker created and invited to create talks")
+            play.Logger.info(s"Creating speaker and invite sent to ${validForm.firstName} ${validForm.lastName} at ${validForm.email}, as it did NOT already exist. Actioned by admin: $creatorName ($creatorUuid).")
+            Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> "Speaker created and invited to create talks")  
           }
           else {
+            play.Logger.error(s"Speaker with entered details ('${validForm.firstName}', '${validForm.lastName}', '${validForm.email}') already exists. Actioned by admin: $creatorName ($creatorUuid).")
             Redirect(routes.CFPAdmin.allWebusers()).flashing("error" -> Messages("speakerExist"))
           }
-
         }
       )
   }
@@ -1685,5 +1687,14 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         case None =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
+  }
+
+  private def requestorUUID(request: SecuredRequest[AnyContent]): String = {
+    request.session.get("uuid").get
+  }
+
+  private def requestorNameFrom(request: SecuredRequest[AnyContent]): String = {
+    val creatorUuid = requestorUUID(request)
+    Webuser.findByUUID(creatorUuid).get.cleanName
   }
 }
