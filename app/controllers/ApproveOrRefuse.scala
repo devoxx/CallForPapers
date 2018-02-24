@@ -46,8 +46,8 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def doApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val approverUuid = approverUUID(request)
-      val approverName = approverNameFrom(request)
+      val approverUuid = CFPAdmin.requestorUUID(request)
+      val approverName = CFPAdmin.requestorNameFrom(request)
 
       Proposal.findById(proposalId).map {
         proposal =>
@@ -63,8 +63,8 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def doRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val approverUuid = approverUUID(request)
-      val approverName = approverNameFrom(request)
+      val approverUuid = CFPAdmin.requestorUUID(request)
+      val approverName = CFPAdmin.requestorNameFrom(request)
 
       Proposal.findById(proposalId).map {
         proposal =>
@@ -80,8 +80,8 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val approverUuid = approverUUID(request)
-      val approverName = approverNameFrom(request)
+      val approverUuid = CFPAdmin.requestorUUID(request)
+      val approverName = CFPAdmin.requestorNameFrom(request)
 
       Proposal.findById(proposalId).map {
         proposal =>
@@ -98,8 +98,8 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def cancelRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val approverUuid = approverUUID(request)
-      val approverName = approverNameFrom(request)
+      val approverUuid = CFPAdmin.requestorUUID(request)
+      val approverName = CFPAdmin.requestorNameFrom(request)
 
       Proposal.findById(proposalId).map {
         proposal =>
@@ -547,8 +547,8 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def doRefuseAndRedirectToMass(proposalId: String, confType: String) = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val approverUuid = approverUUID(request)
-      val approverName = approverNameFrom(request)
+      val approverUuid = CFPAdmin.requestorUUID(request)
+      val approverName = CFPAdmin.requestorNameFrom(request)
 
       Proposal.findById(proposalId).map {
         proposal =>
@@ -560,14 +560,5 @@ object ApproveOrRefuse extends SecureCFPController {
         play.Logger.error(s"Talk with proposal id '$proposalId' not found. actioned by $approverName ($approverUuid).")
         Future.successful(NotFound("Talk not found for this proposalId " + proposalId))
       }
-  }
-
-  private def approverUUID(request: SecuredRequest[AnyContent]): String = {
-    request.session.get("uuid").get
-  }
-
-  private def approverNameFrom(request: SecuredRequest[AnyContent]): String = {
-    val approverUuid = approverUUID(request)
-    Webuser.findByUUID(approverUuid).get.cleanName
   }
 }

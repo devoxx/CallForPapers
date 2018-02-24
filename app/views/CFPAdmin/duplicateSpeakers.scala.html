@@ -62,7 +62,10 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                            <a href="@routes.Backoffice.deleteSpeaker(speaker.uuid)" class="btn btn-sm btn-danger" style="border-radius: 5px"><i class="icon-lock"></i> @Messages("sp.deleteSpeaker")</a>
+                            <form action="@routes.Backoffice.deleteSpeaker(speaker.uuid)" method="POST">
+                                <input type="hidden" name="secu" value="DEL" placeholder="type here DEL" size="9" maxlength="3" hint="Please enter DEL in this input box and click on the button">
+                                <button type="submit" class="btn btn-sm btn-danger" style="border-radius: 5px"><i class="icon-lock"></i> @Messages("sp.deleteSpeaker")</button>
+                            </form>
                         </td>
 
                     </tr>
