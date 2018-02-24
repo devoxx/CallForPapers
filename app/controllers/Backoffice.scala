@@ -141,6 +141,7 @@ object Backoffice extends SecureCFPController {
         Redirect(routes.CFPAdmin.index()).flashing("error" -> s"We cannot delete CFP admin user...")
       } else {
         formSecu.bindFromRequest.fold(invalid => {
+          play.Logger.error(s"Submission errors when actioning Delete speaker (uuid: $speakerUUIDToDelete), actioned by $uuid: ${invalid.errors}")
           Redirect(routes.CFPAdmin.index()).flashing("error" -> "You did not enter DEL... are you drunk?")
         }, _ => {
           Speaker.delete(speakerUUIDToDelete)

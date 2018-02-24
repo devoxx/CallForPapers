@@ -449,7 +449,7 @@
                                   <td class="mcnImageContent" valign="top" style="padding-right: 9px;padding-left: 9px;padding-top: 0;padding-bottom: 0;text-align: center;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
 
 
-                                      <img align="center" alt="" src="http://res.cloudinary.com/ds5x1ya26/image/upload/v1504010262/Logo-Black-Transparent_ehvams.png" width="183" style="max-width: 183px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" class="mcnImage">
+                                      <img align="center" alt="" src="https://cfp.devoxx.co.uk/assets/schedule/assets/imgs/logo.png" width="183" style="max-width: 183px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" class="mcnImage">
 
 
                                   </td>
@@ -479,18 +479,18 @@
 
                                   <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;">
                                       @if(Webuser.hasAccessToCFP(webuser.uuid)){
-<p> Hello @webuser.firstName we have invited you to create a proposal for the Devoxx UK CFP, as
+<p> Hello @webuser.firstName we have invited you to create a proposal for the @Messages("cfp.title"), as
     <br/>you might know the CFP is close, but we have made an exception because
     we aknowledge your capacities and would like to see the proposal that you would submit! <br/>
-    Please follow this link to access your account:<a href="@linkToCFPHome"> Devoxx UK CFP web site</a>
+    Please follow this link to access your account:<a href="@linkToCFPHome">@Messages("cfp.title") web site</a>
     <br/> Your password is: <strong>@webuser.password</strong>
 
    </p>} else {
 
-                                          <p> Hello @webuser.firstName we have invited you to create a proposal for the Devoxx UK CFP , as
+                                          <p> Hello @webuser.firstName we have invited you to create a proposal for the @Messages("cfp.title"), as
                                               <br/>you might know the CFP is close, but we have made an exception because
                                               we aknowledge your capacities and would like to see the proposal that you would submit! <br/>
-                                              Please follow this link to complete and validate your account:<a href="@linkToCFPHome"> Devoxx UK CFP web site</a>
+                                              Please follow this link to complete and validate your account:<a href="@linkToCFPHome">@Messages("cfp.title") web site</a>
                                               <br/> Your password is: <strong>@webuser.password</strong>
 
 
@@ -501,7 +501,7 @@
                                       
 
 
-                                      <p>Team Devoxx UK</p>
+                                      <p>Team @Messages("shortName")</p>
                                   </td>
                                 </tr>
                                 </tbody></table>
@@ -545,7 +545,7 @@
             <table border="0" cellpadding="0" cellspacing="0" id="canspamBar">
               <tr>
                 <td align="center" valign="top" style="color:#606060; font-family:Helvetica. Arial. sans-serif; font-size:11px; line-height:150%; padding-right:20px; padding-bottom:5px; padding-left:20px; text-align:center;">
-                  This email was sent by <a href="https://@ConferenceDescriptor.current().conferenceUrls.cfpHostname">Devoxx UK CFP web site</a>.
+                  This email was sent by <a href="https://@ConferenceDescriptor.current().conferenceUrls.cfpHostname">@Messages("cfp.title") web site</a>.
                   <br />
                   @Messages("shortYearlyName")
                   <br />
