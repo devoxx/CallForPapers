@@ -62,7 +62,7 @@ object SMSController extends SecureCFPController {
             case other => SmsActor.actor ! SendWelcomeAndHelp(validSMS.from)
           }
 
-          Ok("Thanks for your message... give me one minut to find the answer")
+          Ok("Thanks for your message... give me one minute to find the answer")
         }
       )
   }
