@@ -1472,17 +1472,22 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val creatorName = requestorNameFrom(request)
 
       newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
+        invalidForm => {
+          play.Logger.error(s"Attempting to create speaker and send invite failed due to invalid form submission. Actioned by admin: $creatorName ($creatorUuid).")
+          BadRequest(views.html.Authentication.prepareSignup(invalidForm))
+        },
         validForm => {
+          play.Logger.info(s"Attempting to create speaker and send invite to ${validForm.firstName} ${validForm.lastName} at ${validForm.email}. Actioned by admin: $creatorName ($creatorUuid).")
           if (!Webuser.isEmailRegistered(validForm.email)) {
             //Webuser.saveNewWebuserEmailNotValidated(validForm)
             //TransactionalEmails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForSpeaker(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
             Webuser.saveAndValidateWebuser(validForm)
+            play.Logger.info(s"Created speaker ${validForm.firstName} ${validForm.lastName} with email ${validForm.email}, as it did NOT already exist. Actioned by admin: $creatorName ($creatorUuid).")
             //Webuser.activeVip(validForm , true)
             ZapActor.actor ! DoCreateTalkAfterCfp(validForm)
             Event.storeEvent(Event(Webuser.findByUUID(validForm.uuid).get.email, request.webuser.uuid, "invited speaker [" + Webuser.findByUUID(validForm.uuid).get.cleanName + "]"))
             //TransactionalEmails.sendAccessCode(validForm.email, validForm.password)
-            play.Logger.info(s"Creating speaker and invite sent to ${validForm.firstName} ${validForm.lastName} at ${validForm.email}, as it did NOT already exist. Actioned by admin: $creatorName ($creatorUuid).")
+            play.Logger.info(s"Invite sent to speaker ${validForm.firstName} ${validForm.lastName} at ${validForm.email}. Actioned by admin: $creatorName ($creatorUuid).")
             Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> "Speaker created and invited to create talks")  
           }
           else {
@@ -1689,11 +1694,11 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       }
   }
 
-  private def requestorUUID(request: SecuredRequest[AnyContent]): String = {
-    request.session.get("uuid").get
+  def requestorUUID(request: SecuredRequest[AnyContent]): String = {
+    request.webuser.uuid
   }
 
-  private def requestorNameFrom(request: SecuredRequest[AnyContent]): String = {
+  def requestorNameFrom(request: SecuredRequest[AnyContent]): String = {
     val creatorUuid = requestorUUID(request)
     Webuser.findByUUID(creatorUuid).get.cleanName
   }
