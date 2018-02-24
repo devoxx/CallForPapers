@@ -436,8 +436,8 @@ object CallForPaper extends SecureCFPController {
             userIsAuthorisedCFPOrAdmin
 
       if (allowSubmittingProposal) {
-        if (userIsAuthorisedCFPOrAdmin) play.Logger.info(s"${request.webuser.cleanName} (${uuid}) is allowed to change and submit proposals as a CFP/Admin user.")
-        if (cfpIsClosedButAllowFlagIsEnabled) play.Logger.info(s"${request.webuser.cleanName} (${uuid}) is allowed to change and submit proposals as a the facility is available even if CFP is closed.")
+        if (userIsAuthorisedCFPOrAdmin) play.Logger.info(s"${request.webuser.cleanName} ($uuid) is allowed to change and submit proposals as a CFP/Admin user.")
+        if (cfpIsClosedButAllowFlagIsEnabled) play.Logger.info(s"${request.webuser.cleanName} ($uuid) is allowed to change and submit proposals as a the facility is available even if CFP is closed.")
 
         val maybeProposal = Proposal.findDraft(uuid, proposalId)
         maybeProposal match {
@@ -452,6 +452,7 @@ object CallForPaper extends SecureCFPController {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       } else {
+        play.Logger.info(s"${request.webuser.cleanName} ($uuid) was NOT allowed to change and submit proposals.")
         Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("cfp.isClosed.expl"))
       }
   }
