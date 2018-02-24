@@ -476,7 +476,7 @@ object CfpManager {
 
   def checkStatut(id: String = "cfp"): Boolean = Redis.pool.withClient {
     client =>
-      val maybecfp = getCfpStatut(id)
+      val maybecfp = getCfpStatus(id)
       if (maybecfp.exists(_.cfpopen.equals(true))) {
         true
       } else {
@@ -489,7 +489,7 @@ object CfpManager {
       client.exists("CfpManager")
   }
 
-  def getCfpStatut(id: String): Option[CfpManager] = Redis.pool.withClient {
+  def getCfpStatus(id: String): Option[CfpManager] = Redis.pool.withClient {
     client =>
       client.hget("CfpManager", id).map {
         json: String =>
@@ -503,10 +503,10 @@ object CfpManager {
       client.hset("CfpManager", cfpManager.id, json)
   }
 
-  def updateCfpStatut(cfpManager: CfpManager, closeOropen: Boolean) = Redis.pool.withClient {
+  def updateCfpStatus(cfpManager: CfpManager, closeOropen: Boolean) = Redis.pool.withClient {
     client =>
-      val updatCfpStatut = cfpManager.copy(cfpopen = closeOropen)
-      update(updatCfpStatut)
+      val updatCfpStatus = cfpManager.copy(cfpopen = closeOropen)
+      update(updatCfpStatus)
   }
 
   def capgeminiUsername(): String = {

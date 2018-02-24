@@ -128,9 +128,9 @@
                                     @if(SecureCFPController.hasAccessToAdmin(req)) {
                                         <th>Add to/Remove from CFP users</th>
                                     }
-                                    @if(!ConferenceDescriptor.isCFPOpen && speakers.map{w => Speaker.isPropScheduleexist(w.uuid)}) {
-                                        <th>Notify for scheduled talks</th>
-                                    }
+                                    @*@if(!ConferenceDescriptor.isCFPOpen && speakers.map{w => Speaker.isPropScheduleexist(w.uuid)}) {*@
+                                        @*<th>Notify for scheduled talks</th>*@
+                                    @*}*@
                                 </tr>
                             </thead>
                             <tbody>
@@ -156,7 +156,6 @@
                                         N/A
                                     }
                                     </td>
-
                                         @if(!ConferenceDescriptor.isCFPOpen){<td align="center">
                                         <a style="border-radius: 5px ; margin-bottom: 2px"  class="btn btn-sm btn-primary" title="Invite this speaker to create talk" href="@routes.CFPAdmin.sendEmailForTalk(webuser.uuid)">
                                             <i class="icon-envelope"></i></a>
@@ -182,7 +181,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>          
     </div>
 
     <script type="text/javascript">
@@ -194,6 +193,7 @@
                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 "bStateSave": false,
                 "aoColumns": [
+                    {"sType": "string"},
                     {"sType": "string"},
                     {"sType": "string"},
                     {"sType": "string"},

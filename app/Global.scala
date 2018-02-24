@@ -44,6 +44,7 @@ object Global extends GlobalSettings {
     play.Logger.info("Application has been started...")
     val cronUpdateFlag = Play.current.configuration.getBoolean("actor.cronUpdater.active")
     play.Logger.debug(s"actor.cronUpdater.active='${cronUpdateFlag}'")
+    play.Logger.debug(s"CFPClosed:SubmitProposals='${Backoffice.isSubmittingProposalAfterCFPClosed()}'")
 
     CfpManager.testCfpImageBase()
     CfpManager.cfpRedisExist()

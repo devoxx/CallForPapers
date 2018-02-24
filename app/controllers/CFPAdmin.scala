@@ -1166,11 +1166,11 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
 
       if (ConferenceDescriptor.isCFPOpen){
-        CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , false)
+        CfpManager.updateCfpStatus(CfpManager.getCfpStatus("cfp").get , false)
         Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was closed by "+ request.webuser.cleanName+""))
        postNotification("The CFP was closed", "closing","admin","b8114a07156aec70e3cb1de7f1c62d8c2cfd6b2f","speakers")
       }else{
-        CfpManager.updateCfpStatut(CfpManager.getCfpStatut("cfp").get , true)
+        CfpManager.updateCfpStatus(CfpManager.getCfpStatus("cfp").get , true)
         Event.storeEvent(Event(request.webuser.email, request.webuser.uuid, "CFP was opened by "+ request.webuser.cleanName+""))
         postNotification("The CFP was opened", "closing","admin","b8114a07156aec70e3cb1de7f1c62d8c2cfd6b2f","speakers")
       }
