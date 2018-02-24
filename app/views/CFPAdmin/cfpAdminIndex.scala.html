@@ -117,7 +117,7 @@
                     <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" style="border-radius: 15px" class="btn btn-default btn-sm">@Html(Messages(idTrack + ".label"))</a>
                 }
             }
-            - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-default btn-sm" style="border-radius: 15px"><i class="icon-remove"></i>@Messages("cfp.filter.off")</a>
+            - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-default btn-sm" style="border-radius: 15px"><i class="icon-remove"></i> @Messages("cfp.filter.off")</a>
 
             @if(allProposalsForReview.nonEmpty) {
                 <br>
@@ -136,7 +136,7 @@
                     @allProposalsForReview.map { proposal: Proposal =>
                         <tr>
                             <td>
-                                @proposal.title
+                                    @proposal.title
                                 @if(proposal.tags.isDefined) {
                                     <br>
                                     <br>
@@ -144,7 +144,7 @@
                                     }
                             </td>
                             <td>
-                            @Messages(proposal.track.label)
+                            @Html(Messages(proposal.track.label))
                             </td>
                             <td>
                                 @tags.renderGravatar(proposal.mainSpeaker)
