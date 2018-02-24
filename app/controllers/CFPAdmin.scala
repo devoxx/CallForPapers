@@ -1695,7 +1695,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
   }
 
   private def requestorUUID(request: SecuredRequest[AnyContent]): String = {
-    request.session.get("uuid").get
+    request.webuser.uuid
   }
 
   private def requestorNameFrom(request: SecuredRequest[AnyContent]): String = {

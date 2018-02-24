@@ -563,7 +563,7 @@ object ApproveOrRefuse extends SecureCFPController {
   }
 
   private def approverUUID(request: SecuredRequest[AnyContent]): String = {
-    request.session.get("uuid").get
+    request.webuser.uuid
   }
 
   private def approverNameFrom(request: SecuredRequest[AnyContent]): String = {
