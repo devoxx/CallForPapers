@@ -117,7 +117,7 @@
                     <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" style="border-radius: 15px" class="btn btn-default btn-sm">@Html(Messages(idTrack + ".label"))</a>
                 }
             }
-            - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-default btn-sm" style="border-radius: 15px"><i class="icon-remove"></i>@Messages("cfp.filter.off")</a>
+            - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None, removeFilter = true)" class="btn btn-default btn-sm" style="border-radius: 15px" ><i class="icon-remove"></i> @Messages("cfp.filter.off")</a>
 
             @if(allProposalsForReview.nonEmpty) {
                 <br>
@@ -136,7 +136,7 @@
                     @allProposalsForReview.map { proposal: Proposal =>
                         <tr>
                             <td>
-                                @proposal.title
+                                    @proposal.title
                                 @if(proposal.tags.isDefined) {
                                     <br>
                                     <br>
@@ -144,7 +144,7 @@
                                     }
                             </td>
                             <td>
-                            @Messages(proposal.track.label)
+                            @Html(Messages(proposal.track.label))
                             </td>
                             <td>
                                 @tags.renderGravatar(proposal.mainSpeaker)
@@ -176,7 +176,6 @@
 }
 
 <script type="text/javascript">
-
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-36251023-1']);
         _gaq.push(['_setDomainName', 'jqueryscript.net']);
@@ -190,5 +189,4 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(ga, s);
         })();
-
 </script>
