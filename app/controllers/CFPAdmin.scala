@@ -84,7 +84,8 @@ object CFPAdmin extends SecureCFPController {
   def index(page: Int,
             sort: Option[String],
             ascdesc: Option[String],
-            track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+            track: Option[String],
+            removeFilter: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       val sorter = proposalSorter(sort)
@@ -93,7 +94,7 @@ object CFPAdmin extends SecureCFPController {
 
       // Get a default track to filter on and save it in cookie
       var trackValue : String = Track.allIDs.take(1).last
-      val trackCookie = request.cookies.  get("track")
+      val trackCookie = request.cookies.get("track")
 
       if (track.isDefined) {
         trackValue = track.get
@@ -103,17 +104,11 @@ object CFPAdmin extends SecureCFPController {
 
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
-
-      val maybeFilteredProposals = track match {
-        case None => allNotReviewed
-        case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
-      }
-      val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
       val twentyEvents = Event.loadEvents(20, page)
 
       // How can this if/else statement be written more compact in scala? (Stephan)
       if ((trackCookie.isDefined && trackCookie.get.value.equals("all")) ||
-          (track.isDefined && track.get.equals("all"))) {
+        (track.isDefined && track.get.equals("all"))) {
         val allProposalsForReview = sortProposals(allNotReviewed, sorter, orderer)
 
         val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
@@ -121,16 +116,24 @@ object CFPAdmin extends SecureCFPController {
         Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
           .withHeaders("ETag" -> etag)
           .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
-
       } else {
-        val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
+        val maybeFilteredProposals = track match {
+          case None => allNotReviewed
+          case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
+        }
+        
         val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
-
         val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted))
-          .withHeaders("ETag" -> etag)
-          .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+        if (trackValue.nonEmpty && !removeFilter) {
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
+            .withHeaders("ETag" -> etag)
+            .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+        } else {
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted))
+            .withHeaders("ETag" -> etag)
+            .withCookies(Cookie("track", "", Option(2592000))) // Expires in one month
+        }
       }
   }
 

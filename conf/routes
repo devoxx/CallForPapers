@@ -103,7 +103,7 @@ POST          /bug/new                                                          
 GET           /verifyRegId/:regId                                               controllers.CFPAdmin.verifyRegId(regId:String)
 #GET           /ifvisitorHasRegId/:email                                         controllers.CFPAdmin.ifVisitorHasRegId(email :String)
 
-GET           /cfpadmin                                                         controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
+GET           /cfpadmin                                                         controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None, removeFilter:Boolean ?=false)
 GET           /cfpadmin/proposal/:proposalId                                    controllers.CFPAdmin.openForReview(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/history                            controllers.CFPAdmin.history(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/msgToSpeaker                       controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
