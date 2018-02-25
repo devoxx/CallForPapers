@@ -84,7 +84,8 @@ object CFPAdmin extends SecureCFPController {
   def index(page: Int,
             sort: Option[String],
             ascdesc: Option[String],
-            track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+            track: Option[String],
+            removeFilter: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       val sorter = proposalSorter(sort)
@@ -120,18 +121,18 @@ object CFPAdmin extends SecureCFPController {
           case None => allNotReviewed
           case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
         }
-        
+
         val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
         val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-        if (track.isDefined) {
+        if (trackValue.nonEmpty && !removeFilter) {
           Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
             .withHeaders("ETag" -> etag)
             .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
         } else {
           Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted))
             .withHeaders("ETag" -> etag)
-            .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+            .withCookies(Cookie("track", "", Option(2592000))) // Expires in one month
         }
       }
   }
