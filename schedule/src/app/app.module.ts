@@ -42,7 +42,6 @@ var routes: Route[] = [
     SpeakerDetailComponent,
     ScheduleTrainingComponent,
     ScheduleNormalComponent
-
   ],
   imports: [
     BrowserModule,
