@@ -3,7 +3,7 @@
     <div *ngFor="let houre of Houres;let i = index" class="hours">
       <div  class="item" [ngStyle]="{height:houre.height+15+'px'}">
         <span>
-          {{houre.fromTimeMillis | date:'hh':'BST'}}<small>&nbsp;h&nbsp;{{houre.fromTimeMillis | date:'mm':'BST'}}</small>
+          {{houre.fromTimeMillis | date:'H':'BST'}}<small>&nbsp;h&nbsp;{{houre.fromTimeMillis | date:'mm':'BST'}}</small>
         </span>
         <br>
       </div>
@@ -18,8 +18,8 @@
           <div  class="event-center ">
             {{last == true ? jQueryResize() : null}}
            <div class="event-hours ">
-              {{item?.fromTimeMillis | date:'h':'BST'}}<small>h{{item?.fromTimeMillis | date:'mm':'BST'}}</small> -
-              {{item?.toTimeMillis | date:'h':'BST'}}<small>h{{item?.toTimeMillis | date:'mm':'BST'}}</small>
+              {{item?.fromTimeMillis | date:'H':'BST'}}<small>h{{item?.fromTimeMillis | date:'mm':'BST'}}</small> -
+              {{item?.toTimeMillis | date:'H':'BST'}}<small>h{{item?.toTimeMillis | date:'mm':'BST'}}</small>
             </div>
 
                 <div *ngIf="item?.talk" class="event-speakers">
