@@ -53,10 +53,29 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
   getSchedule(): Observable<any> {
     let Request = [];
-    this.rooms.forEach((room, index) => {
+
+    this.rooms.sort(this.sortRoom).forEach((room, index) => {
       Request.push(this.Http.ScheduleByRoomDay(room["roomId"], this.day));
     });
     return Observable.forkJoin(Request);
+  }
+
+  htmlDecode(input: string)
+  {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+  }
+
+  sortRoom(room1, room2) {
+    if (room1.roomName > room2.roomName) {
+      return 1;
+    }
+
+    if (room1.roomName < room2.roomName) {
+        return -1;
+    }
+
+    return 0;
   }
 
   caluleHoursHeight(timeObject: any) {
@@ -95,7 +114,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.Schedule = [];
     this.Schedule.push([]);
     this.FiltreSubscription = this._Helper.trackChange.subscribe((e) => {
@@ -169,9 +187,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
           }
         }
       });
-
-
     }
+
     let items = [];
     schedule.forEach((item) => {
       items.push(item.filter(i => {
@@ -224,7 +241,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.Schedule = this.sortData(this.Schedule.slice());
   }
 
-
   detail(talk: any) {
     if (talk.opacity && talk.opacity != 1) return;
     if (this.placeHolderItem) this.placeHolderItem.destroy();
@@ -234,8 +250,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.placeHolderItem.instance.Detail = talk;
     this.placeHolderItem.instance.Parent = this.detailModal;
     this.modalService.open('content');
-
-
   }
 
   shareOnTwitter(talkId: string,title:string,speakers:any[]) {

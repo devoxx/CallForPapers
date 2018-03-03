@@ -54,6 +54,12 @@ export class ScheduleNormalComponent implements OnInit,OnDestroy {
     this.closeLoading();
   }
 
+  htmlDecode(input: string)
+  {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+  }
+
   ngOnDestroy(): void {
 
   }

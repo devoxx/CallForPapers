@@ -700,7 +700,7 @@ object Authentication extends Controller {
           play.Logger.info("Redirecting to MyDevoxx")
           Redirect(ConferenceDescriptor.myDevoxxURL(),
             Map(
-              "redirect_uri" -> Seq(routes.Authentication.jwtCallback(Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID("Europe/Brussels")).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))).absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
+              "redirect_uri" -> Seq(routes.Authentication.jwtCallback(Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID(ConferenceDescriptor.timeZone)).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))).absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
             ),
             SEE_OTHER
           )
@@ -715,7 +715,7 @@ object Authentication extends Controller {
 
   def jwtCallback(token: String) = Action.async {
     implicit request =>
-      if (token == Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID("Europe/Brussels")).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))) {
+      if (token == Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID(ConferenceDescriptor.timeZone)).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))) {
         request.getQueryString("jwtToken") match {
           case None =>
             Future.successful(Unauthorized("No JWT Token"))

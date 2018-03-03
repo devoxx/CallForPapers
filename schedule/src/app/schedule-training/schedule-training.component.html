@@ -41,14 +41,13 @@
           <div class="left">
             <div class="time"><i class="fa fa-clock-o"></i>
               <span>
-                {{slot.fromTimeMillis | date:'hh' }}<small>&nbsp;h&nbsp;{{slot.fromTimeMillis | date:'mm' }}</small>
-                  - {{slot.toTimeMillis | date:'hh' }}<small>&nbsp;h&nbsp;{{slot.toTimeMillis | date:'mm' }}</small>
-
-
+                {{slot.fromTimeMillis | date:'H':'BST'}}<small>&nbsp;h&nbsp;{{slot.fromTimeMillis | date:'mm':'BST'}}</small>
+                  - {{slot.toTimeMillis | date:'H':'BST'}}<small>&nbsp;h&nbsp;{{slot.toTimeMillis | date:'mm':'BST'}}</small>
             </span>
             </div>
             <div class="stitle space-5"><i class="fa fa-map-marker"></i>
-              {{slot.roomName}}
+
+
             </div>
             <!-- speakers -->
             <div class="stitle"><i class="fa fa-microphone"></i>speakers</div>

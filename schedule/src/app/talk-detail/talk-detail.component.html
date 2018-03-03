@@ -1,15 +1,15 @@
 <div class="content-detail">
 
   <div>
-    <h1>{{Detail?.talk?.title}}</h1>
-    <h3>{{Detail?.talk?.track}}</h3>
+    <h1>{{htmlDecode(Detail?.talk?.title)}}</h1>
+    <h3>{{htmlDecode(Detail?.talk?.track)}}</h3>
     <div class="contenu">
       <div class="detail"> <img  title="{{Detail?.talk?.track}}" height="30px" width="30px" attr.src="{{Imgs[Detail?.talk?.trackId]}}" />{{Detail?.talk?.talkType}}</div>
       <div class="room">
         <span style="float:left;">{{Detail?.roomName}}</span>
         <span style="float:right;">
-              {{Detail?.fromTimeMillis | date:'h'}}<small>h{{Detail?.fromTimeMillis | date:'mm'}}</small> -
-              {{Detail?.toTimeMillis | date:'h'}}<small>h{{Detail?.toTimeMillis | date:'mm'}}</small>
+              {{Detail?.fromTimeMillis | date:'H':'BST'}}<small>h{{Detail?.fromTimeMillis | date:'mm':'BST'}}</small> -
+              {{Detail?.toTimeMillis | date:'H':'BST'}}<small>h{{Detail?.toTimeMillis | date:'mm':'BST'}}</small>
               </span>
         <div class="clearfix"></div>
       </div>
@@ -25,6 +25,4 @@
   <p [innerHTML]="Detail?.talk?.summaryAsHtml">
     Extreme Carpaccio est un coding game dans lequel les participants doivent découper un problème donné et implémenter la solution de façon itérative.
   </p>
-
-
 </div>
