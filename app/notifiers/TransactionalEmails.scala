@@ -66,7 +66,7 @@ object TransactionalEmails {
   }
 
   def sendResetPasswordLink(emailAddress: String, resetUrl: String) = {
-    val timestamp: String = new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm dd/MM")
+    val timestamp: String = new DateTime().toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm dd/MM")
     val subjectEmail: String = Messages("mail.reset_password_link.subject", timestamp, Messages("longName"))
 
     val email = Email(
