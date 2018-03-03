@@ -920,26 +920,22 @@ var ScheduleComponent = (function () {
         this.Imgs = window['config'].tracksImg || {};
         this.BreakImgs = window['config'].breaksImg || {};
     }
-    ScheduleComponent.prototype.sortRooms = function (rooms) {
-        var array = _.union.apply(_, rooms); //[[]] ArrayRooms[[ArraySlots]]
-        array = _.filter(array, function (e) { return e.roomName; });
-        if (array.length) {
-            var rooms_1 = _(array).uniqBy('roomName').map(function (e) {
-                return {
-                    roomName: e.roomName,
-                };
-            }).sortBy('roomName').value();
-        }
-        return rooms;
-    };
     ScheduleComponent.prototype.getSchedule = function () {
         var _this = this;
         var Request = [];
-        this.rooms = this.sortRooms(this.rooms);
-        this.rooms.forEach(function (room, index) {
+        this.rooms.sort(this.sortRoom).forEach(function (room, index) {
             Request.push(_this.Http.ScheduleByRoomDay(room["roomId"], _this.day));
         });
         return __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].forkJoin(Request);
+    };
+    ScheduleComponent.prototype.sortRoom = function (room1, room2) {
+        if (room1.roomName > room2.roomName) {
+            return 1;
+        }
+        if (room1.roomName < room2.roomName) {
+            return -1;
+        }
+        return 0;
     };
     ScheduleComponent.prototype.caluleHoursHeight = function (timeObject) {
         if (timeObject.break) {
