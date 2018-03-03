@@ -32,9 +32,9 @@
                 </ng-container>
                 <ng-container *ngIf="item?.talk" >
             <span  class="event-title dt" >
-              {{item.talk.title}}												</span>
+              {{htmlDecode(item.talk.title)}}												</span>
                   <span class="event-title mb" >
-              {{item.talk.title}}														</span>
+              {{htmlDecode(item.talk.title)}}														</span>
                   <span class="event-title dt" *ngIf="item?.talk?.talkType =='Keynote'">
                 <b>Room : </b>  {{item?.roomName}}
                 <b>Room : </b>  {{item?.roomName}}

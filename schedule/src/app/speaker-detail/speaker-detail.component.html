@@ -11,7 +11,7 @@
     </div>
 
     <div (click)="talkDetail(talk)"  style="cursor: pointer" *ngFor="let talk of Speaker?.acceptedTalks" class="talks">
-      {{talk?.title}}
+      {{htmlDecode(talk?.title)}}
     </div>
   </div>
   <div class="bio" [innerHTML]="Speaker?.bioAsHtml">

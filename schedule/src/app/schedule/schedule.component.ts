@@ -60,6 +60,12 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     return Observable.forkJoin(Request);
   }
 
+  htmlDecode(input: string)
+  {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+  }
+
   sortRoom(room1, room2) {
     if (room1.roomName > room2.roomName) {
       return 1;

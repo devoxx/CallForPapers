@@ -1,8 +1,8 @@
 <div class="content-detail">
 
   <div>
-    <h1>{{Detail?.talk?.title}}</h1>
-    <h3>{{Detail?.talk?.track}}</h3>
+    <h1>{{htmlDecode(Detail?.talk?.title)}}</h1>
+    <h3>{{htmlDecode(Detail?.talk?.track)}}</h3>
     <div class="contenu">
       <div class="detail"> <img  title="{{Detail?.talk?.track}}" height="30px" width="30px" attr.src="{{Imgs[Detail?.talk?.trackId]}}" />{{Detail?.talk?.talkType}}</div>
       <div class="room">
