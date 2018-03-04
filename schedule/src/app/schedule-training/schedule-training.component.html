@@ -41,13 +41,11 @@
           <div class="left">
             <div class="time"><i class="fa fa-clock-o"></i>
               <span>
-                {{slot.fromTimeMillis | date:'H':'BST'}}<small>&nbsp;h&nbsp;{{slot.fromTimeMillis | date:'mm':'BST'}}</small>
-                  - {{slot.toTimeMillis | date:'H':'BST'}}<small>&nbsp;h&nbsp;{{slot.toTimeMillis | date:'mm':'BST'}}</small>
+                {{slot.fromTimeMillis | UTCDate:'hh' }}<small>&nbsp;h&nbsp;{{slot.fromTimeMillis | UTCDate:'mm' }}</small>
+                  - {{slot.toTimeMillis | UTCDate:'hh' }}<small>&nbsp;h&nbsp;{{slot.toTimeMillis | UTCDate:'mm' }}</small>
             </span>
             </div>
             <div class="stitle space-5"><i class="fa fa-map-marker"></i>
-
-
             </div>
             <!-- speakers -->
             <div class="stitle"><i class="fa fa-microphone"></i>speakers</div>
@@ -56,7 +54,6 @@
                   <img (click)="toSpeaker(speaker)" [appLazyImg]="speaker?.link?.href" width="60" height="60" src="http://venusdemo.com/eventiz/demo/wp-content/uploads/2015/12/speaker-1-200x200.jpg" class="attachment-thumbnail size-thumbnail wp-post-image" alt="speaker-1">
                 <span>{{speaker?.name}}</span>
               </div>
-
             </div>
           </div>
           <div class="right">
@@ -67,11 +64,9 @@
               {{slot?.talk.summary}}
             </div>
           </div>
-
           </div>
       </article>
     </div>
-
   </div>
 </div>
 <modal #modal2 id="content">
