@@ -53,7 +53,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
   getSchedule(): Observable<any> {
     const Request = [];
-    this.rooms.forEach((room, index) => {
+    this.rooms.sort(this.sortRooms).forEach((room, index) => {
       Request.push(this.Http.ScheduleByRoomDay(room['roomId'], this.day));
     });
     return Observable.forkJoin(Request);
@@ -65,12 +65,12 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       return doc.documentElement.textContent;
   }
 
-  sortRoom(room1, room2) {
-    if (room1.roomName > room2.roomName) {
+  sortRooms(thisRoom, anotherRoom) {
+    if (thisRoom.roomName > anotherRoom.roomName) {
       return 1;
     }
 
-    if (room1.roomName < room2.roomName) {
+    if (thisRoom.roomName < anotherRoom.roomName) {
         return -1;
     }
 

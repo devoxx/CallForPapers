@@ -974,7 +974,7 @@ var ScheduleComponent = (function () {
         var doc = new DOMParser().parseFromString(input, "text/html");
         return doc.documentElement.textContent;
     };
-    ScheduleComponent.prototype.sortRoom = function (room1, room2) {
+    ScheduleComponent.prototype.sortRooms = function (room1, room2) {
         if (room1.roomName > room2.roomName) {
             return 1;
         }
