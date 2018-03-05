@@ -55,7 +55,7 @@ var routes: Route[] = [
     ComponentRoot
   ],
   entryComponents: [TalkDetailComponent, SpeakerDetailComponent],
-  providers: [HttpService, Helper, ModalService, { provide: LOCALE_ID, useValue: 'ar-MA' }],
+  providers: [HttpService, Helper, ModalService, { provide: LOCALE_ID, useValue: 'en-GB' }],
   bootstrap: [ComponentRoot]
 })
 export class AppModule {

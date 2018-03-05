@@ -207,7 +207,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_19__app_component__["a" /* ComponentRoot */]
         ],
         entryComponents: [__WEBPACK_IMPORTED_MODULE_15__talk_detail_talk_detail_component__["a" /* TalkDetailComponent */], __WEBPACK_IMPORTED_MODULE_16__speaker_detail_speaker_detail_component__["a" /* SpeakerDetailComponent */]],
-        providers: [__WEBPACK_IMPORTED_MODULE_4__service_Http_service__["a" /* HttpService */], __WEBPACK_IMPORTED_MODULE_7__service_Helper_service__["a" /* Helper */], __WEBPACK_IMPORTED_MODULE_13__service_modal_service__["a" /* ModalService */], { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* LOCALE_ID */], useValue: 'ar-MA' }],
+        providers: [__WEBPACK_IMPORTED_MODULE_4__service_Http_service__["a" /* HttpService */], __WEBPACK_IMPORTED_MODULE_7__service_Helper_service__["a" /* Helper */], __WEBPACK_IMPORTED_MODULE_13__service_modal_service__["a" /* ModalService */], { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* LOCALE_ID */], useValue: 'en-GB' }],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_19__app_component__["a" /* ComponentRoot */]]
     })
 ], AppModule);
