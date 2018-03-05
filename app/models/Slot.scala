@@ -344,8 +344,16 @@ object Slot {
 
   def updateSlot(slotID: String, slot: Slot) = Redis.pool.withClient {
     client =>
-      val jsonSlot = Json.stringify(Json.toJson(slot.copy(id = slotID)))
-      client.hset("Slot", slotID, jsonSlot)
+      var f = Slot.changeDate(slot.from, slot.day)
+      var t = Slot.changeDate(slot.to, slot.day)
+      val newSlotID = slot.name + "_" + slot.room.id + "_" + slot.day + "_" + f.getDayOfMonth + "_" + f.getHourOfDay + "h" + f.getMinuteOfHour + "_" + t.getHourOfDay + "h" + t.getMinuteOfHour
+
+      val slotupdate = slot.copy(id = slotID, from = Slot.changeDate(slot.from, slot.day), to = Slot.changeDate(slot.to, slot.day))
+
+      val jsonSlot = Json.stringify(Json.toJson(slotupdate))
+
+      client.hdel("Slot", slotID)
+      client.hset("Slot", newSlotID, jsonSlot)
   }
 
   def generateId(): String = Redis.pool.withClient {
