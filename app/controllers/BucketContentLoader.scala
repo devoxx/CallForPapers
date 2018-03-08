@@ -50,7 +50,7 @@ import scala.util.control.NonFatal
   * Then I store all HTML+CSS in a Bucket (like S3).
   */
 object BucketContentLoader extends AssetsBuilder {
-  private val timeZoneCode = "GMT"
+  private val timeZoneCode = "BST"
 
   //Dateformatter is immutable and threadsafe
   private val df: DateTimeFormatter =

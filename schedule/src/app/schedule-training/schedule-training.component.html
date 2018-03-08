@@ -41,8 +41,8 @@
           <div class="left">
             <div class="time"><i class="fa fa-clock-o"></i>
               <span>
-                {{slot.fromTimeMillis | UTCDate:'HH' }}<small>&nbsp;h&nbsp;{{slot.fromTimeMillis | UTCDate:'mm' }}</small>
-                  - {{slot.toTimeMillis | UTCDate:'HH' }}<small>&nbsp;h&nbsp;{{slot.toTimeMillis | UTCDate:'mm' }}</small>
+                {{slot.fromTimeMillis | UTCDate:'HH':'BST' }}<small>&nbsp;h&nbsp;{{slot.fromTimeMillis | UTCDate:'mm':'BST' }}</small>
+                  - {{slot.toTimeMillis | UTCDate:'HH':'BST' }}<small>&nbsp;h&nbsp;{{slot.toTimeMillis | UTCDate:'mm':'BST' }}</small>
             </span>
             </div>
             <div class="stitle space-5"><i class="fa fa-map-marker"></i>
