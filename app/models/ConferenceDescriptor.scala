@@ -247,7 +247,7 @@ object ConferenceDescriptor {
     val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
     val eveningReception = SlotBreak("reception", "Evening Reception", "Evening Reception", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
     val closingKeynote = SlotBreak("closeKey", "Closing Keynote", "Keynote", ConferenceRooms.allRooms.find( room => room.name == "Auditorium").get)
-    
+
     val allSlotBreak = List(registrationAndCoffee, breakfast, coffee, lunch, eveningReception, closingKeynote)
   }
 
@@ -417,7 +417,11 @@ object ConferenceDescriptor {
 
   // All timezone sensitive methods are using this constant variable.
   // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
-  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/London")
+  def timeZoneGMT: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/London") //TODO: does not work currently
+  def timeZoneCET: String = "Europe/Brussels"
+  def timeZoneUTC: String = "UTC"
+
+  def timeZone: String = timeZoneUTC //TODO: temporary fix, this makes things work again, will check with other devs to see why this was done, and how to do it better
 
   def isGoldenTicketActive: Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
