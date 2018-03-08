@@ -41,12 +41,12 @@
     </div>
     <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
         <div ng-hide="slot.proposal">
-            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm':'BST'}} {{slot.to | date:'H:mm':'BST'}}</span>
+            <span class="label label-default">{{slot.day}} {{slot.from - 3.6e+6 | date:'H:mm':'BST'}} {{slot.to - 3.6e+6 | date:'H:mm':'BST'}}</span>
             <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
         </div>
       <div  ng-hide="showEmpty">
         <div ng-show="slot.proposal" title="{{slot.proposal.state.code}}">
-            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm':'BST'}} {{slot.to | date:'H:mm':'BST'}}</span>
+            <span class="label label-default">{{slot.day}} {{slot.from - 3.6e+6 | date:'H:mm':'BST'}} {{slot.to - 3.6e+6 | date:'H:mm':'BST'}}</span>
                 <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
                 <button class="btn-remove btn-danger" style="border-radius: 5px" ng-click="unallocate(slot.id)"><i class="icon-remove"></i></button>
             <br>
