@@ -166,8 +166,11 @@ object Publisher extends Controller {
   }
 
   private val wednesday: String = "wednesday"
+  private val Wednesday: String = "Wednesday"
   private val thursday: String = "thursday"
+  private val Thursday: String = "Thursday"
   private val friday: String = "friday"
+  private val Friday: String = "Friday"
 
   def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
     implicit request =>
@@ -213,9 +216,9 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
-        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
-        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
+        case d if Set("wed", wednesday, Wednesday, "mercredi").contains(d.toLowerCase()) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
+        case d if Set("thu", thursday, Thursday, "jeudi").contains(d.toLowerCase()) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
+        case d if Set("fri", friday, Friday, "vendredi").contains(d.toLowerCase()) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
         case other => NotFound("Day not found")
       }
   }

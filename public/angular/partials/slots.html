@@ -37,24 +37,28 @@
     <small>Available: {{available}} / {{slots.length}}</small>
     <div class="col-lg-9">
         <input type="search" ng-model="q" placeholder="Filter Slots..."/>
+        <input type="checkbox" name="chShow" ng-model="showEmpty" value="true" checked> Collapse allocated slots
     </div>
     <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
         <div ng-hide="slot.proposal">
-            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
+            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm':'BST'}} {{slot.to | date:'H:mm':'BST'}}</span>
             <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
         </div>
+      <div  ng-hide="showEmpty">
         <div ng-show="slot.proposal" title="{{slot.proposal.state.code}}">
-            <span class="label label-default">{{slot.day}} {{slot.from -28800000 | date:'H:mm'}} {{slot.to -28800000 | date:'H:mm'}}</span>
+            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm':'BST'}} {{slot.to | date:'H:mm':'BST'}}</span>
                 <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
-                <button class="btn-remove btn-danger" style="border-radius: 5px" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> </button>
+                <button class="btn-remove btn-danger" style="border-radius: 5px" ng-click="unallocate(slot.id)"><i class="icon-remove"></i></button>
             <br>
             <span class="proposalTitle">{{slot.proposal.title}}</span>
             <div class="label label-success">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}} </div>
             <span class="label label-warning">{{slot.proposal.track.id}}</span>
+            <span class="label label-{{slot.proposal.lang}}">{{slot.proposal.lang}}</span>
             <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
                 <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
             </div>
         </div>
+      </div>
     </div>
 </div>
 
