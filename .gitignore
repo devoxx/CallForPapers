@@ -49,3 +49,5 @@ Thumbs.db
 !public/schedule/
 schedule/node_modules
 schedule/dist
+
+run-uk.sh
