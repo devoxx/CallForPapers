@@ -242,7 +242,7 @@ class IndexMaster extends ESActor {
 
     ElasticSearch.indexBulk(sb.toString(), indexName)
 
-    play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
+    play.Logger.of("application.IndexMaster").debug("Done indexing all accepted proposals")
   }
 
   // Create an ES index with the agenda

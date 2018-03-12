@@ -829,13 +829,15 @@ object RestAPI extends Controller {
 
     implicit request =>
 
+      play.Logger.of("RestAPI").debug(s"verify account")
+
       val body: AnyContent = request.body
       val data = body.asMultipartFormData
 
-      play.Logger.of("RestAPI").info(s"verify account body: $data")
+      play.Logger.of("RestAPI").debug(s"body: $data")
 
       if (data.nonEmpty) {
-        play.Logger.of("RestAPI").info("data not empty")
+        play.Logger.of("RestAPI").debug("data not empty")
 
         val email = data.get.asFormUrlEncoded("email").mkString("")
         val password = data.get.asFormUrlEncoded("password").mkString("")
@@ -845,14 +847,14 @@ object RestAPI extends Controller {
         if (email.nonEmpty && password.nonEmpty) {
           val maybeWebuser = Webuser.checkPassword(email, password)
           if (maybeWebuser.isDefined) {
-            play.Logger.of("RestAPI").info("User is defined")
+            play.Logger.of("RestAPI").debug("User is defined")
             Ok
           } else {
             BadRequest("invalid credentials")
           }
         } else if (email.nonEmpty && newNetworkType.nonEmpty && newNetworkId.nonEmpty) {
 
-          play.Logger.of("RestAPI").info("User is NOT defined")
+          play.Logger.of("RestAPI").debug("User is NOT defined")
 
           val webuser = Webuser.findByEmail(email)
           if (webuser.isDefined) {
@@ -870,12 +872,12 @@ object RestAPI extends Controller {
             Created(uuid)
           }
         } else {
-          play.Logger.of("RestAPI").info("Email not provided")
+          play.Logger.of("RestAPI").debug("Email not provided")
 
           BadRequest("email not provided")
         }
       } else {
-        play.Logger.of("RestAPI").info("Not a multipart form")
+        play.Logger.of("RestAPI").debug("Not a multipart form")
         BadRequest("Not a multipart form")
       }
   }
@@ -886,6 +888,9 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
   import ExecutionContext.Implicits.global
 
   override protected def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[SimpleResult]): Future[SimpleResult] = {
+
+    play.Logger.of("RestAPI").debug(s"UserAgentActionAndAllowOrigin: $request")
+
     request.headers.get(USER_AGENT).collect {
       case some =>
         block(request).map { result =>
