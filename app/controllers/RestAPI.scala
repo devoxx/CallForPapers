@@ -840,16 +840,26 @@ object RestAPI extends Controller {
         play.Logger.of("application.RestAPI").debug("data not empty")
 
         val email = data.get.asFormUrlEncoded("email").mkString("")
+        play.Logger.of("application.RestAPI").debug(s"email $email")
+
         val password = data.get.asFormUrlEncoded("password").mkString("")
+
         val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
+        play.Logger.of("application.RestAPI").debug(s"networkId $newNetworkId")
+
         val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
+        play.Logger.of("application.RestAPI").debug(s"networkId $newNetworkType")
 
         if (email.nonEmpty && password.nonEmpty) {
+
+          play.Logger.of("application.RestAPI").debug("email and password non Empty")
+
           val maybeWebuser = Webuser.checkPassword(email, password)
           if (maybeWebuser.isDefined) {
             play.Logger.of("application.RestAPI").debug("User is defined")
             Ok
           } else {
+            play.Logger.of("application.RestAPI").debug("invalid credentials")
             BadRequest("invalid credentials")
           }
         } else if (email.nonEmpty && newNetworkType.nonEmpty && newNetworkId.nonEmpty) {
