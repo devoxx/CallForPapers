@@ -820,8 +820,42 @@ object RestAPI extends Controller {
   }
 
   /**
-    * Verify a user account.
-    * This can also create a new user when the email does not exist!
+    * Verify user credentials with password, used by Mobile Gluon app.
+    *
+    * @return
+    */
+  def verifyCredentials() = UserAgentActionAndAllowOrigin {
+
+    implicit request =>
+
+      val body: AnyContent = request.body
+      val data = body.asMultipartFormData
+
+      if (data.nonEmpty) {
+        val email = data.get.asFormUrlEncoded("email").mkString("")
+        val password = data.get.asFormUrlEncoded("password").mkString("")
+
+        play.Logger.of("application.verifyCredentials").debug(s"email: $email")
+
+        if (email.nonEmpty && password.nonEmpty) {
+          val maybeWebuser = Webuser.checkPassword(email, password)
+          if (maybeWebuser.isDefined) {
+            play.Logger.of("application.verifyCredentials").debug("User is defined")
+            Ok(maybeWebuser.get.uuid)
+          } else {
+            play.Logger.of("application.verifyCredentials").debug("invalid credentials")
+            BadRequest("invalid credentials")
+          }
+        } else {
+          BadRequest("email or password not provided")
+        }
+      } else {
+        BadRequest("Not a multipart form")
+      }
+  }
+
+  /**
+    * Verify a user account, used by Mobile Gluon app.
     *
     * @return
     */
@@ -838,9 +872,9 @@ object RestAPI extends Controller {
         val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
         val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
 
-        play.Logger.of("application.RestAPI").debug(s"email: $email")
-        play.Logger.of("application.RestAPI").debug(s"networkId: $newNetworkId")
-        play.Logger.of("application.RestAPI").debug(s"networkType: $newNetworkType")
+        play.Logger.of("application.verifyAccount").debug(s"email: $email")
+        play.Logger.of("application.verifyAccount").debug(s"networkId: $newNetworkId")
+        play.Logger.of("application.verifyAccount").debug(s"networkType: $newNetworkType")
 
         if (email.nonEmpty &&
           newNetworkType.nonEmpty &&
@@ -853,7 +887,7 @@ object RestAPI extends Controller {
             val foundUser: Webuser = webuser.get
             Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
 
-            play.Logger.of("application.RestAPI").debug(s"Updated user social network credentials")
+            play.Logger.of("application.verifyAccount").debug(s"Updated user social network credentials")
             Ok(foundUser.uuid)
 
           } else {
@@ -862,11 +896,11 @@ object RestAPI extends Controller {
             val uuid = Webuser.saveAndValidateWebuser(devoxxian)
             Webuser.addToDevoxxians(uuid)
 
-            play.Logger.of("application.RestAPI").debug(s"User does not exist, created")
+            play.Logger.of("application.verifyAccount").debug(s"User does not exist, created")
             Created(uuid)
           }
         } else {
-          play.Logger.of("application.RestAPI").debug(s"Email not provided")
+          play.Logger.of("application.verifyAccount").debug(s"Email not provided")
           BadRequest("email not provided")
         }
       } else {
