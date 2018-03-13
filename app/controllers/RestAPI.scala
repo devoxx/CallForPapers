@@ -829,42 +829,29 @@ object RestAPI extends Controller {
 
     implicit request =>
 
-      play.Logger.debug("application.RestAPI : verify account (works?)")
-      
       val body: AnyContent = request.body
       val data = body.asMultipartFormData
 
-      play.Logger.of("application.RestAPI").debug(s"body: $data")
-
       if (data.nonEmpty) {
-        play.Logger.of("application.RestAPI").debug("data not empty")
-
         val email = data.get.asFormUrlEncoded("email").mkString("")
-        play.Logger.of("application.RestAPI").debug(s"email $email")
-
         val password = data.get.asFormUrlEncoded("password").mkString("")
-
         val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
-        play.Logger.of("application.RestAPI").debug(s"networkId $newNetworkId")
-
         val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
-        play.Logger.of("application.RestAPI").debug(s"networkId $newNetworkType")
+
+        play.Logger.of("application.RestAPI").debug(s"email: $email")
+        play.Logger.of("application.RestAPI").debug(s"networkId: $newNetworkId")
+        play.Logger.of("application.RestAPI").debug(s"networkType: $newNetworkType")
 
         if (email.nonEmpty && password.nonEmpty) {
-
-          play.Logger.of("application.RestAPI").debug("email and password non Empty")
-
           val maybeWebuser = Webuser.checkPassword(email, password)
           if (maybeWebuser.isDefined) {
-            play.Logger.of("application.RestAPI").debug("User is defined")
+            play.Logger.of("application.RestAPI").debug("ok")
             Ok
           } else {
-            play.Logger.of("application.RestAPI").debug("invalid credentials")
+            play.Logger.of("application.RestAPI").debug("Invalid credentials")
             BadRequest("invalid credentials")
           }
         } else if (email.nonEmpty && newNetworkType.nonEmpty && newNetworkId.nonEmpty) {
-
-          play.Logger.of("application.RestAPI").debug("User is NOT defined")
 
           val webuser = Webuser.findByEmail(email)
           if (webuser.isDefined) {
@@ -872,6 +859,9 @@ object RestAPI extends Controller {
             // Update users social network credentials
             val foundUser: Webuser = webuser.get
             Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+
+            play.Logger.of("application.RestAPI").debug("Update users social creds")
+
             Ok(foundUser.uuid)
 
           } else {
@@ -879,11 +869,12 @@ object RestAPI extends Controller {
             val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
             val uuid = Webuser.saveAndValidateWebuser(devoxxian)
             Webuser.addToDevoxxians(uuid)
+
+            play.Logger.of("application.RestAPI").debug("Created")
             Created(uuid)
           }
         } else {
-          play.Logger.of("application.RestAPI").debug("Email not provided")
-
+          play.Logger.of("application.RestAPI").debug("email not provided")
           BadRequest("email not provided")
         }
       } else {
@@ -898,9 +889,6 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
   import ExecutionContext.Implicits.global
 
   override protected def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[SimpleResult]): Future[SimpleResult] = {
-
-    play.Logger.of("RestAPI").debug(s"UserAgentActionAndAllowOrigin: $request")
-
     request.headers.get(USER_AGENT).collect {
       case some =>
         block(request).map { result =>
