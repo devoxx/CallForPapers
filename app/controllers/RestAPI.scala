@@ -833,8 +833,8 @@ object RestAPI extends Controller {
       val data = body.asMultipartFormData
 
       if (data.nonEmpty) {
+        // Not 100% sure this is how it should be done in Scala/Play (Stephan)
         val email = data.get.asFormUrlEncoded("email").mkString("")
-        val password = data.get.asFormUrlEncoded("password").mkString("")
         val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
         val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
 
@@ -842,16 +842,9 @@ object RestAPI extends Controller {
         play.Logger.of("application.RestAPI").debug(s"networkId: $newNetworkId")
         play.Logger.of("application.RestAPI").debug(s"networkType: $newNetworkType")
 
-        if (email.nonEmpty && password.nonEmpty) {
-          val maybeWebuser = Webuser.checkPassword(email, password)
-          if (maybeWebuser.isDefined) {
-            play.Logger.of("application.RestAPI").debug("ok")
-            Ok
-          } else {
-            play.Logger.of("application.RestAPI").debug("Invalid credentials")
-            BadRequest("invalid credentials")
-          }
-        } else if (email.nonEmpty && newNetworkType.nonEmpty && newNetworkId.nonEmpty) {
+        if (email.nonEmpty &&
+          newNetworkType.nonEmpty &&
+          newNetworkId.nonEmpty) {
 
           val webuser = Webuser.findByEmail(email)
           if (webuser.isDefined) {
@@ -860,8 +853,7 @@ object RestAPI extends Controller {
             val foundUser: Webuser = webuser.get
             Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
 
-            play.Logger.of("application.RestAPI").debug("Update users social creds")
-
+            play.Logger.of("application.RestAPI").debug(s"Updated user social network credentials")
             Ok(foundUser.uuid)
 
           } else {
@@ -870,15 +862,14 @@ object RestAPI extends Controller {
             val uuid = Webuser.saveAndValidateWebuser(devoxxian)
             Webuser.addToDevoxxians(uuid)
 
-            play.Logger.of("application.RestAPI").debug("Created")
+            play.Logger.of("application.RestAPI").debug(s"User does not exist, created")
             Created(uuid)
           }
         } else {
-          play.Logger.of("application.RestAPI").debug("email not provided")
+          play.Logger.of("application.RestAPI").debug(s"Email not provided")
           BadRequest("email not provided")
         }
       } else {
-        play.Logger.of("application.RestAPI").debug("Not a multipart form")
         BadRequest("Not a multipart form")
       }
   }
