@@ -844,13 +844,13 @@ object RestAPI extends Controller {
             Ok(maybeWebuser.get.uuid)
           } else {
             play.Logger.of("application.verifyCredentials").debug("invalid credentials")
-            BadRequest("invalid credentials")
+            BadRequest
           }
         } else {
-          BadRequest("email or password not provided")
+          BadRequest
         }
       } else {
-        BadRequest("Not a multipart form")
+        BadRequest
       }
   }
 
@@ -901,10 +901,10 @@ object RestAPI extends Controller {
           }
         } else {
           play.Logger.of("application.verifyAccount").debug(s"Email not provided")
-          BadRequest("email not provided")
+          BadRequest
         }
       } else {
-        BadRequest("Not a multipart form")
+        BadRequest
       }
   }
 }
