@@ -21,7 +21,7 @@
     <logger name="library.Zedis.client" level="INFO"/>
     <logger name="library.ElasticSearch" level="INFO"/>
     <logger name="application" level="INFO"/>
-    <logger name="application.RestAPI" level="DEBUG"/>
+    <logger name="application.verifyCredentials" level="DEBUG"/>
     <logger name="application.Benchmark" level="DEBUG"/>
     <logger name="application.IndexMaster" level="DEBUG"/>
     <logger name="application.Reaper" level="DEBUG"/>
