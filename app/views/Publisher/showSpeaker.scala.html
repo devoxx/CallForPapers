@@ -1,68 +1,70 @@
-@(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speaker: Speaker, acceptedProposals: Iterable[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @import play.twirl.api.Html
 
-@views.html.Publisher.devoxxUK(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
-<section id="speaker">
-<div class="columns large-12 team-member row fadeInUp animated">
-    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
-    <h1 class="entry-title">
-         @speaker.avatarUrl.map{url=>
-            <img class="speakerRound" src="@url" alt="@speaker.cleanName" title="@speaker.cleanName" onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/anonymous.jpg';"><br>
+@views.html.Publisher.devoxxUK(speaker.cleanName, Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")) {
+  <section id="speaker">
+    <div class="columns large-12 team-member row fadeInUp animated">
+      <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>
+        - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
+      <h1 class="entry-title">
+        @speaker.avatarUrl.map { url =>
+          <img class="speakerRound" src="@url" alt="@speaker.cleanName" title="@speaker.cleanName" onerror="this.src = 'https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/anonymous.jpg';"> <br>
         }
-        @speaker.cleanTwitter.map{tw=>
-        <a href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
+        @speaker.cleanTwitter.map { tw =>
+          <a href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
         }
         @speaker.cleanName
-        @speaker.twitter.map{_=>
-            <img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
+        @speaker.twitter.map { _ =>
+          <img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
         }
-    </h1>
-    @if(speaker.company.nonEmpty) {
+      </h1>
+
+      @if(speaker.company.nonEmpty) {
         @speaker.company.map { cp =>
-            <h4>From @cp</h4>
+          <h4>From @cp</h4>
         }
-    }
-    <div class="speakerbio">
-    @Html(speaker.bioAsHtml)
+      }
+
+      <div class="speakerbio">
+        @Html(speaker.bioAsHtml)
+      </div>
+
+      @speaker.blog.map { blog =>
+        @if(blog.toLowerCase.startsWith("http://") || blog.toLowerCase.startsWith("https://")) {
+          <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+        } else {
+          <p>Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
+        }
+      }
     </div>
 
-    @speaker.blog.map{blog=>
-            @if(blog.toLowerCase.startsWith("http://") || blog.toLowerCase.startsWith("https://"))  {
-                <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
-            } else{
-                <p>Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
-            }
-    }
-</div>
+    <div class="clearfix"></div>
 
-<div class="clearfix"></div>
-
-@if(acceptedProposals.nonEmpty){
-    @acceptedProposals.map {  proposal=>
+    @if(acceptedProposals.nonEmpty) {
+      @acceptedProposals.map { proposal =>
         <div class="divider"></div>
         <div class="columns large-12 team-member row">
-              @tags.publisher.renderIconForTrack(proposal.track) @Html(Messages(proposal.track.label))
-              <h4 class="speakerTitle"><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h4>
-              <p><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)"> @Messages(proposal.talkType.id)</a></p>
-              @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
-                @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
-                     @tags.publisher.renderSpeaker(uuid,renderPhoto = true)
-                }
-              }
-              @Html(proposal.summaryAsHtml)
-
+          @tags.publisher.renderIconForTrack(proposal.track) @Html(Messages(proposal.track.label))
+        <h4 class="speakerTitle"><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h4>
+        <p><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)"> @Messages(proposal.talkType.id)</a></p>
+          @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)) {
+            @proposal.allSpeakerUUIDs.filterNot(_ == speaker.uuid).map { uuid =>
+              @tags.publisher.renderSpeaker(uuid, renderPhoto = true)
+            }
+          }
+          @Html(proposal.summaryAsHtml)
         </div>
 
         <div class="clearfix"></div>
+      }
     }
-}
 
-@if(speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion) {
-    <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
+    @if(speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion) {
+      <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
 
-    @Html(speaker.questionAndAnswersAsHtml)
-}
+      @Html(speaker.questionAndAnswersAsHtml)
+    }
 
-</section>
+  </section>
 }

@@ -989,21 +989,21 @@ object Proposal {
     implicit client =>
       client.keys(s"Proposals:ByAuthor:$speakerUUID").nonEmpty &&
         client.keys(s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty &&
-        client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
+        client.sinter(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneApprovedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.keys(s"Proposals:ByAuthor:$speakerUUID").nonEmpty &&
         client.keys(s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty &&
-        client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty
+        client.sinter(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.APPROVED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.keys(s"Proposals:ByAuthor:$speakerUUID").nonEmpty &&
         client.keys(s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty &&
-        client.sunion(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
+        client.sinter(s"Proposals:ByAuthor:$speakerUUID", s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
   def hasOnlyRejectedProposals(speakerUUID: String): Boolean = Redis.pool.withClient {
