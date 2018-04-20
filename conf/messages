@@ -622,6 +622,8 @@ sw.mainEvents=Main events and conferences
 sw.lunch=Lunch
 sw.coffee.break=Coffee break
 sw.coffee=Coffee break
+sw.session.break=Session break
+sw.session=Session break
 sw.reg=Registration
 sw.endOfDay=End of day, exhibition floor closing
 sw.cocktail=Meet and Greet party until 10:30pm in the main exhibition hall
@@ -824,6 +826,7 @@ speaker.ar2=here
 speaker.ar3=to review and to validate Terms and Conditions.
 
 tagRenderRow-coffee=Coffee
+tagRenderRow-session.break=Session Break
 tagRenderRow-lunch=Lunch
 tagRenderRow-dej=Breakfast
 tagRenderRow-reg=Registration, welcome and Breakfast

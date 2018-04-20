@@ -246,9 +246,10 @@ object ConferenceDescriptor {
     val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
     val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
     val eveningReception = SlotBreak("reception", "Evening Reception", "Evening Reception", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
+    val sessionBreak = SlotBreak("session.break", "Session Break", "Session pause", ConferenceRooms.allRooms.find( room => room.name == "Exhibition floor").get)
     val closingKeynote = SlotBreak("closeKey", "Closing Keynote", "Keynote", ConferenceRooms.allRooms.find( room => room.name == "Auditorium").get)
 
-    val allSlotBreak = List(registrationAndCoffee, breakfast, coffee, lunch, eveningReception, closingKeynote)
+    val allSlotBreak = List(registrationAndCoffee, breakfast, coffee, lunch, sessionBreak, eveningReception, closingKeynote)
   }
 
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
