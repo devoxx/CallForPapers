@@ -1491,7 +1491,7 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
             Event.storeEvent(Event(Webuser.findByUUID(validForm.uuid).get.email, request.webuser.uuid, "invited speaker [" + Webuser.findByUUID(validForm.uuid).get.cleanName + "]"))
             //TransactionalEmails.sendAccessCode(validForm.email, validForm.password)
             play.Logger.info(s"Invite sent to speaker ${validForm.firstName} ${validForm.lastName} at ${validForm.email}. Actioned by admin: $creatorName ($creatorUuid).")
-            Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> "Speaker created and invited to create talks")  
+            Redirect(routes.CFPAdmin.allWebusers()).flashing("success" -> "Speaker created and invited to create talks")
           }
           else {
             play.Logger.error(s"Speaker with entered details ('${validForm.firstName}', '${validForm.lastName}', '${validForm.email}') already exists. Actioned by admin: $creatorName ($creatorUuid).")
@@ -1526,13 +1526,16 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
           action match {
             case "update" =>
               Slot.updateSlot(validForm.id, validForm)
-              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully updated")
+              play.Logger.of("application.CFPAdmin").debug(s"Slot was successfully updated. Slot id ${validForm.id}. Slot details: $validForm")
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> s"Slot was successfully updated. Slot id ${validForm.id}")
             case "clone" =>
               Slot.saveSlot(validForm)
-              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully cloned and saved")
+              play.Logger.of("application.CFPAdmin").debug(s"Slot was successfully cloned and saved. Slot id ${validForm.id}. Slot details: $validForm")
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> s"Slot was successfully cloned and saved. Slot id ${validForm.id}")
             case "create" | _ =>
               Slot.saveSlot(validForm)
-              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "Slot was successfully saved")
+              play.Logger.of("application.CFPAdmin").debug(s"Slot was successfully saved. No slot details as newly created.")
+              Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> s"Slot was successfully saved.")
           }
         }
       )
@@ -1541,20 +1544,28 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
   def updateslot(slotid: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Slot.findSlotByUUID(slotid) match {
-        case Some(a) =>
+        case Some(slot) =>
           val allslot = Slot.allSlot
-          Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1.fill(a), allslot, "update"))
-        case None => Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> " slot not found")
+          play.Logger.of("application.CFPAdmin").debug(s"The slot was successfully updated. Slot id $slotid. Slot details: $slot")
+          Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1.fill(slot), allslot, "update"))
+        case None => {
+          play.Logger.of("application.CFPAdmin").error(s"Slot does not exist. Slot id $slotid")
+          Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> s"Slot does not exist. Slot id $slotid")
+        }
       }
   }
 
   def cloneSlot(slotid: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Slot.findSlotByUUID(slotid) match {
-        case Some(a) =>
+        case Some(slot) =>
           val allslot = Slot.allSlot
-          Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1.fill(a), allslot, "clone"))
-        case None => Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> " slot not found")
+          play.Logger.of("application.CFPAdmin").debug(s"The slot was successfully cloned. Slot id $slotid. Slot details: $slot")
+          Ok(views.html.CFPAdmin.manageSlot(Slot.SlotForm1.fill(slot), allslot, "clone"))
+        case None => {
+          play.Logger.of("application.CFPAdmin").error(s"Slot does not exist. Slot id $slotid")
+          Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> s"Slot does not exist. Slot id $slotid")
+        }
       }
   }
 
@@ -1563,10 +1574,13 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       Slot.findSlotByUUID(slotid) match {
-        case Some(a) =>
+        case Some(slot) =>
           Slot.deleteSlot(slotid)
-          Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> "the slot was  successfully deleted")
-        case None => Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> " slot does not exist")
+          play.Logger.of("application.CFPAdmin").debug(s"The slot was successfully deleted. Slot id $slotid. Slot details: $slot")
+          Redirect(routes.CFPAdmin.manageSlots()).flashing("success" -> s"The slot was successfully deleted. Slot id $slotid")
+        case None =>
+          play.Logger.of("application.CFPAdmin").error(s"Slot does not exist. Slot id $slotid")
+          Redirect(routes.CFPAdmin.manageSlots()).flashing("error" -> s"Slot does not exist. Slot id $slotid")
       }
   }
 
@@ -1589,13 +1603,14 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
         validForm => {
           if (action == "update") {
             Room.updateRoom(validForm.id, validForm)
-            Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> "Room was successfully updated")
+            play.Logger.of("application.CFPAdmin").debug(s"Room was successfully updated. Room id ${validForm.id}. Room details: $validForm")
+            Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> s"Room was successfully updated. Room id ${validForm.id}")
           }
           else {
             Room.saveRoom(validForm)
-            Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> "Room was successfully saved")
+            play.Logger.of("application.CFPAdmin").debug(s"Room was successfully saved. No room details as newly created")
+            Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> s"Room was successfully saved.")
           }
-
         }
       )
   }
@@ -1603,20 +1618,26 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
   def cloneRoom(roomid: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Room.findRoomByUUID(roomid) match {
-        case Some(a) =>
+        case Some(room) =>
           val allrooms = Room.allRoom
-          Ok(views.html.CFPAdmin.manageRoom(Room.RoomForm.fill(a), allrooms, "clone"))
-        case None => Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> " room not found")
+          play.Logger.of("application.CFPAdmin").debug(s"Room was successfully cloned and saved. Room id $roomid. Room details: $room")
+          Ok(views.html.CFPAdmin.manageRoom(Room.RoomForm.fill(room), allrooms, "clone"))
+        case None =>
+          play.Logger.of("application.CFPAdmin").error(s"Room does not exist. Room id $roomid")
+          Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> s"Room does not exist. Room id $roomid")
       }
   }
 
   def updateRoom(roomid: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Room.findRoomByUUID(roomid) match {
-        case Some(a) =>
+        case Some(room) =>
           val allroom = Room.allRoom
-          Ok(views.html.CFPAdmin.manageRoom(Room.RoomForm.fill(a), allroom, "update"))
-        case None => Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> " room not found")
+          play.Logger.of("application.CFPAdmin").debug(s"Room was successfully updated. Room id $roomid. Room details: $room")
+          Ok(views.html.CFPAdmin.manageRoom(Room.RoomForm.fill(room), allroom, "update"))
+        case None =>
+          play.Logger.of("application.CFPAdmin").error(s"Room does not exist. Room id $roomid")
+          Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> s"Room does not exist. Room id $roomid")
       }
   }
 
@@ -1625,10 +1646,13 @@ implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       Room.findRoomByUUID(roomid) match {
-        case Some(a) =>
+        case Some(room) =>
           Room.deleteRoom(roomid)
-          Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> "the room was  successfully deleted")
-        case None => Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> " room does not exist")
+          play.Logger.of("application.CFPAdmin").debug(s"The room was successfully deleted. Room id $roomid. Room details: $room")
+          Redirect(routes.CFPAdmin.manageRoom()).flashing("success" -> s"The room was successfully deleted. Room id $roomid")
+        case None =>
+          play.Logger.of("application.CFPAdmin").error(s"Room does not exist. Room id $roomid")
+          Redirect(routes.CFPAdmin.manageRoom()).flashing("error" -> s"Room does not exist. Room id $roomid")
       }
   }
 
