@@ -3,9 +3,10 @@ package models
 import java.util.Locale
 
 import controllers.Backoffice
-import java.nio.file.{Paths, Files,Path}
+import java.nio.file.{Files, Path, Paths}
 
 import library.Redis
+import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
 import play.api.libs.json.{Format, Json}
@@ -440,6 +441,7 @@ object ConferenceDescriptor {
   def notifyProposalSubmitted = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
 
   def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
+  def gluonInboundAuthorization(): String = Play.current.configuration.getString("gluon.inbound.token").getOrElse(RandomStringUtils.random(16))
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 
