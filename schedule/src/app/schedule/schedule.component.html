@@ -52,10 +52,9 @@
             <img title="{{item?.talk?.track}}" height="30px" width="30px" attr.src="{{Imgs[item?.talk?.trackId]}}"/>
             </span>
             <div class="info">
-              <a title="Save to google calendar" target="_blank" attr.href="{{'http://www.google.com/calendar/event?action=TEMPLATE&text='+item?.talk?.talkType+
-                '&dates='+(item?.fromTimeMillis | UTCDate:'YYYYMMDD':'BST')+'T'+(item?.fromTimeMillis | UTCDate:'HHmmss':'BST')+
-                'Z/'+(item?.toTimeMillis | UTCDate:'YYYYMMDD':'BST')+'T'+(item?.toTimeMillis | UTCDate:'HHmmss':'BST')+'Z&details='+item?.talk?.title+'&location='+item?.roomName+'&trp=false&sprop=&sprop=name:'}}
-"><i class="fa fa-calendar google" aria-hidden="true"></i></a>
+              <!--
+              <a title="Save to google calendar" target="_blank" attr.href="{{'http://www.google.com/calendar/event?action=TEMPLATE&text='+item?.talk?.talkType+'&dates='+(item?.fromTimeMillis | UTCDate:'YYYYMMDD':'BST')+'T'+(item?.fromTimeMillis | UTCDate:'HHmmss':'BST')+'Z/'+(item?.toTimeMillis | UTCDate:'YYYYMMDD':'BST')+'T'+(item?.toTimeMillis | UTCDate:'HHmmss':'BST')+'Z&details='+item?.talk?.title+'&location='+item?.roomName+'&trp=false&sprop=&sprop=name:'}}"><i class="fa fa-calendar google" aria-hidden="true"></i></a>
+              -->
               <!-- <i class="fa fa-star" aria-hidden="true"></i>-->
               <a (click)="shareOnTwitter(item?.talk?.id,item?.talk?.title,item?.talk?.speakers)"
                  title="Share on twitter">
