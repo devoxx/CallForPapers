@@ -1234,40 +1234,52 @@ object RestAPI extends Controller {
   def verifyAccount() = UserAgentActionAndAllowOrigin {
 
     implicit request =>
-
-      val body: AnyContent = request.body
-      val data = body.asMultipartFormData
-
-      if (data.nonEmpty) {
-        // Not 100% sure this is how it should be done in Scala/Play (Stephan)
-        val email = data.get.asFormUrlEncoded("email").mkString("")
-        val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
-        val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
-
-        if (email.nonEmpty &&
-          newNetworkType.nonEmpty &&
-          newNetworkId.nonEmpty) {
-
-          val webuser = Webuser.findByEmail(email)
-          if (webuser.isDefined) {
-
-            // Update users social network credentials
-            val foundUser: Webuser = webuser.get
-            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
-            Ok(foundUser.uuid)
-
-          } else {
-            // User does not exist, lets create
-            val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-            val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-            Webuser.addToSpeaker(uuid)
-            Created(uuid)
-          }
-        } else {
-          BadRequest("email not provided")
-        }
+      if (request.headers.get("X-Gluon").isEmpty) {
+        PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
       } else {
-        BadRequest("Not a multipart form")
+        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
+          Unauthorized("Invalid Gluon Authorization code")
+        } else {
+          val body: AnyContent = request.body
+          val data = body.asMultipartFormData
+
+          play.Logger.debug("Before if (data.nonEmpty)")
+          if (data.nonEmpty) {
+            // Not 100% sure this is how it should be done in Scala/Play (Stephan)
+            val email = data.get.asFormUrlEncoded("email").mkString("")
+            val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
+            val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
+
+            play.Logger.debug("Before if (data.nonEmpty)")
+            if (email.nonEmpty &&
+              newNetworkType.nonEmpty &&
+              newNetworkId.nonEmpty) {
+              play.Logger.debug("email.nonEmpty, newNetworkType.nonEmpty, newNetworkId.nonEmpty")
+              val webuser = Webuser.findByEmail(email)
+              if (webuser.isDefined) {
+                play.Logger.debug("Update users social network credentials")
+                // Update users social network credentials
+                val foundUser: Webuser = webuser.get
+                Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+                Ok(foundUser.uuid)
+
+              } else {
+                play.Logger.debug("User does not exist")
+                // User does not exist, lets create
+                val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+                val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+                Webuser.addToSpeaker(uuid)
+                Created(uuid)
+              }
+            } else {
+              play.Logger.debug("email not provided bad request")
+              BadRequest("email not provided")
+            }
+          } else {
+            play.Logger.debug("Not a multipart form bad request")
+            BadRequest("Not a multipart form")
+          }
+        }
       }
   }
 }
