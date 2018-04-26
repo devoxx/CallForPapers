@@ -1226,6 +1226,42 @@ object RestAPI extends Controller {
   }
 
   /**
+    * Verify a user account
+    * Verify user credentials with password, used by Mobile Gluon app.
+    * This can also create a new user when the email does not exist!
+    *
+    * @return
+    */
+  def verifyCredentials() = UserAgentActionAndAllowOrigin {
+
+    implicit request =>
+      val body: AnyContent = request.body
+      val data = body.asMultipartFormData
+
+      if (data.nonEmpty) {
+        val email = data.get.asFormUrlEncoded("email").mkString("")
+        val password = data.get.asFormUrlEncoded("password").mkString("")
+
+        play.Logger.of("application.verifyCredentials").debug(s"email: $email")
+
+        if (email.nonEmpty && password.nonEmpty) {
+          val maybeWebuser = Webuser.checkPassword(email, password)
+          if (maybeWebuser.isDefined) {
+            play.Logger.of("application.verifyCredentials").debug("User is defined")
+            Ok(maybeWebuser.get.uuid)
+          } else {
+            play.Logger.of("application.verifyCredentials").debug("invalid credentials")
+            BadRequest("invalid credentials")
+          }
+        } else {
+          BadRequest("email or password not provided")
+        }
+      } else {
+        BadRequest("Not a multipart form")
+      }
+  }
+
+  /**
     * Verify a user account.
     * This can also create a new user when the email does not exist!
     *
