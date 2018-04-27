@@ -69,6 +69,9 @@ elasticsearch-context {
   }
 }
 
+# Disable SNI so that Java does not catch SSL related warnings and throw exceptions, causing unrecognized_name error
+jsse.enableSNIExtension=false
+
 play {
   akka {
     event-handlers = ["akka.event.Logging$DefaultLogger", "akka.event.slf4j.Slf4jEventHandler"]
@@ -100,6 +103,7 @@ cfp.isOpen=${CFP_IS_OPEN}
 akka.jvm-exit-on-fatal-error=false
 
 # For AngularJS schedule application
+cfp.activateFavorites= true
 # If the post is too small you won't be able to save your schedule updates
 parsers.MultipartFormData.maxLength=10240K
 parsers.json.maxLength=1M
@@ -159,5 +163,6 @@ capgemini.username=${CAPGEMINI_USERNAME}
 capgemini.password=${CAPGEMINI_PASSWORD}
 
 gluon.authorization=${GLUON_AUTHORIZATION}
+gluon.inbound.token=${GLUON_INBOUND_TOKEN}
 gluon.username=${GLUON_USERNAME}
 gluon.password=${GLUON_PASSWORD}
