@@ -52,7 +52,7 @@ object Webuser {
   implicit val webuserWrites: Writes[Webuser] = Json.writes[Webuser]
 
   val Internal = Webuser("internal", ConferenceDescriptor.current().fromEmail, "CFP", "Program Committee", RandomStringUtils.random(64), "visitor")
-  
+
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
     DigestUtils.md5Hex(cleanEmail)
@@ -100,16 +100,16 @@ object Webuser {
   }
 
   def createDevoxxian(email: String,
-                      networkType: String,
-                      networkId: String): Webuser = {
+                      networkType: Option[String],
+                      networkId: Option[String]): Webuser = {
     Webuser(generateUUID(email),
       email,
       "Devoxx",
       "CFP",
       RandomStringUtils.randomAlphabetic(7),
       "devoxxian",
-      Some(networkId),
-      Some(networkType))
+      networkId,
+      networkType)
   }
 
   def getName(uuid: String): String = {

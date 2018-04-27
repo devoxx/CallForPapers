@@ -26,7 +26,8 @@ package controllers
 import models.Speaker._
 import models._
 import models.Webuser
-import notifiers._
+import play.api.data.Form
+import play.api.data.Forms._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsObject, JsValue, Json, Writes}
@@ -1198,77 +1199,17 @@ object RestAPI extends Controller {
     * Verify a user account.
     * This can also create a new user when the email does not exist!
     *
-    * @param newNetworkType the social network type (FACEBOOK, TWITTER, ...)
-    * @param newNetworkId   the network account id
-    * @param email          the user id
     * @return
     */
-  def verifyAccount(newNetworkType: String,
-                    newNetworkId: String,
-                    email: String) = UserAgentActionAndAllowOrigin {
+  val verifyAccountForm: Form[(String, Option[String], Option[String])] = Form(
+    tuple(
+      "email" -> email,
+      "networkId" -> optional(text),
+      "networkType" -> optional(text)
+    )
+  )
 
-    implicit request =>
-      val webuser = Webuser.findByEmail(email)
-      if (webuser.isDefined) {
-
-        // Update users social network credentials
-        val foundUser: Webuser = webuser.get
-        Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
-        Ok(foundUser.uuid)
-
-      } else {
-        // User does not exist, lets create
-        val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-        val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-        Webuser.addToSpeaker(uuid)
-        Created(uuid)
-      }
-  }
-
-  /**
-    * Verify a user account
-    * Verify user credentials with password, used by Mobile Gluon app.
-    * This can also create a new user when the email does not exist!
-    *
-    * @return
-    */
-  def verifyCredentials() = UserAgentActionAndAllowOrigin {
-
-    implicit request =>
-      val body: AnyContent = request.body
-      val data = body.asMultipartFormData
-
-      if (data.nonEmpty) {
-        val email = data.get.asFormUrlEncoded("email").mkString("")
-        val password = data.get.asFormUrlEncoded("password").mkString("")
-
-        play.Logger.of("application.verifyCredentials").debug(s"email: $email")
-
-        if (email.nonEmpty && password.nonEmpty) {
-          val maybeWebuser = Webuser.checkPassword(email, password)
-          if (maybeWebuser.isDefined) {
-            play.Logger.of("application.verifyCredentials").debug("User is defined")
-            Ok(maybeWebuser.get.uuid)
-          } else {
-            play.Logger.of("application.verifyCredentials").debug("invalid credentials")
-            BadRequest("invalid credentials")
-          }
-        } else {
-          BadRequest("email or password not provided")
-        }
-      } else {
-        BadRequest("Not a multipart form")
-      }
-  }
-
-  /**
-    * Verify a user account.
-    * This can also create a new user when the email does not exist!
-    *
-    * @return
-    */
-  def verifyAccount() = UserAgentActionAndAllowOrigin {
-
+  def verifyAccount(): Action[AnyContent] = UserAgentActionAndAllowOrigin {
     implicit request =>
       if (request.headers.get("X-Gluon").isEmpty) {
         PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
@@ -1276,45 +1217,67 @@ object RestAPI extends Controller {
         if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
           Unauthorized("Invalid Gluon Authorization code")
         } else {
-          val body: AnyContent = request.body
-          val data = body.asMultipartFormData
+          verifyAccountForm.bindFromRequest().fold(
+            invalidForm => {
+              BadRequest(invalidForm.errorsAsJson).as(JSON)
+            },
+            validTuple => {
+              val email = validTuple._1
+              val newNetworkType = validTuple._2
+              val newNetworkId = validTuple._3
+              Webuser.findByEmail(email) match {
+                case Some(foundUser) =>
+                  // Update users social network credentials
+                  Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
+                  Ok(foundUser.uuid)
 
-          play.Logger.debug("Before if (data.nonEmpty)")
-          if (data.nonEmpty) {
-            // Not 100% sure this is how it should be done in Scala/Play (Stephan)
-            val email = data.get.asFormUrlEncoded("email").mkString("")
-            val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
-            val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
-
-            play.Logger.debug("Before if (data.nonEmpty)")
-            if (email.nonEmpty &&
-              newNetworkType.nonEmpty &&
-              newNetworkId.nonEmpty) {
-              play.Logger.debug("email.nonEmpty, newNetworkType.nonEmpty, newNetworkId.nonEmpty")
-              val webuser = Webuser.findByEmail(email)
-              if (webuser.isDefined) {
-                play.Logger.debug("Update users social network credentials")
-                // Update users social network credentials
-                val foundUser: Webuser = webuser.get
-                Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
-                Ok(foundUser.uuid)
-
-              } else {
-                play.Logger.debug("User does not exist")
-                // User does not exist, lets create
-                val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-                val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-                Webuser.addToSpeaker(uuid)
-                Created(uuid)
+                case None =>
+                  // User does not exist, lets create
+                  val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+                  val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+                  Webuser.addToDevoxxians(uuid)
+                  Created(uuid)
               }
-            } else {
-              play.Logger.debug("email not provided bad request")
-              BadRequest("email not provided")
             }
-          } else {
-            play.Logger.debug("Not a multipart form bad request")
-            BadRequest("Not a multipart form")
-          }
+          )
+        }
+      }
+  }
+
+  /**
+    * Verify user credentials with password, used by Mobile Gluon app.
+    *
+    * @return
+    */
+  val verifyCredentialsForm = Form(
+    tuple(
+      "email" -> email,
+      "password" -> text
+    )
+  )
+
+  def verifyCredentials() = UserAgentActionAndAllowOrigin {
+    implicit request =>
+      if (request.headers.get("X-Gluon").isEmpty) {
+        PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
+      } else {
+        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
+          Unauthorized("Invalid Gluon Authorization code")
+        } else {
+          verifyAccountForm.bindFromRequest().fold(
+            invalidForm => {
+              BadRequest(invalidForm.errorsAsJson).as(JSON)
+            }, validTuple => {
+              val email = validTuple._1
+              val password = validTuple._2.getOrElse("")
+              Webuser.checkPassword(email, password) match {
+                case Some(foundUser) =>
+                  Ok(foundUser.uuid)
+                case None =>
+                  NotFound("Webuser not found or invalid password.")
+              }
+            }
+          )
         }
       }
   }
