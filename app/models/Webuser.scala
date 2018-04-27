@@ -280,6 +280,7 @@ object Webuser {
   }
 
   def hasAccessToCFP(uuid: String): Boolean = isMember(uuid, "cfp")
+
   def hasAccessToAdmin(uuid: String): Boolean = isMember(uuid, "admin")
 
   def hasAccessToGoldenTicket(uuid: String): Boolean = isMember(uuid, "gticket")
@@ -289,6 +290,11 @@ object Webuser {
   def addToCFPAdmin(uuid: String) = Redis.pool.withClient {
     client =>
       client.sadd("Webuser:cfp", uuid)
+  }
+
+  def addToDevoxxians(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.sadd("Webuser:devoxxian", uuid)
   }
 
   def addToSpeaker(uuid: String) = Redis.pool.withClient {
