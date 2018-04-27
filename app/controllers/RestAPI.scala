@@ -1209,6 +1209,7 @@ object RestAPI extends Controller {
 
   def verifyAccount(): Action[AnyContent] = UserAgentActionAndAllowOrigin {
     implicit request =>
+
       play.Logger.debug(s"X-Gluon code expected at the server: '${ConferenceDescriptor.gluonInboundAuthorization()}'")
       play.Logger.debug(s"X-Gluon code sent to server by client: '${request.headers.get("X-Gluon").get}'")
 
