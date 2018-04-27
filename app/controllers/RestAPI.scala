@@ -1209,30 +1209,40 @@ object RestAPI extends Controller {
 
   def verifyAccount(): Action[AnyContent] = UserAgentActionAndAllowOrigin {
     implicit request =>
+      play.Logger.debug(s"X-Gluon code expected at the server: '${ConferenceDescriptor.gluonInboundAuthorization()}'")
+      play.Logger.debug(s"X-Gluon code sent to server by client: '${request.headers.get("X-Gluon").get}'")
+
       if (request.headers.get("X-Gluon").isEmpty) {
         PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
       } else {
         if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
+          play.Logger.debug("Invalid Gluon Authorization code")
           Unauthorized("Invalid Gluon Authorization code")
         } else {
           verifyAccountForm.bindFromRequest().fold(
             invalidForm => {
+              play.Logger.debug(s"Gluon Authorization: Bad request, error ${invalidForm.errorsAsJson}")
               BadRequest(invalidForm.errorsAsJson).as(JSON)
             },
             validTuple => {
               val email = validTuple._1
               val newNetworkType = validTuple._2
               val newNetworkId = validTuple._3
+
+              play.Logger.debug(s"Username sent to server by client: '$email', network type: '$newNetworkType', network id: '$newNetworkId'")
+
               Webuser.findByEmail(email) match {
                 case Some(foundUser) =>
                   // Update users social network credentials
                   Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
+                  play.Logger.debug(s"User sign-on: update users social network credentials, uuid: $foundUser.uuid")
                   Ok(foundUser.uuid)
 
                 case None =>
                   // User does not exist, lets create
                   val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
                   val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+                  play.Logger.debug(s"User sign-on: user does not exist, lets create, uuid: $uuid")
                   Webuser.addToDevoxxians(uuid)
                   Created(uuid)
               }
@@ -1258,14 +1268,17 @@ object RestAPI extends Controller {
     implicit request =>
       play.Logger.debug(s"X-Gluon code expected at the server: '${ConferenceDescriptor.gluonInboundAuthorization()}'")
       play.Logger.debug(s"X-Gluon code sent to server by client: '${request.headers.get("X-Gluon").get}'")
+
       if (request.headers.get("X-Gluon").isEmpty) {
         PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
       } else {
         if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
+          play.Logger.debug("Invalid Gluon Authorization code")
           Unauthorized("Invalid Gluon Authorization code")
         } else {
           verifyAccountForm.bindFromRequest().fold(
             invalidForm => {
+              play.Logger.debug(s"Gluon Authorization: Bad request, error ${invalidForm.errorsAsJson}")
               BadRequest(invalidForm.errorsAsJson).as(JSON)
             }, validTuple => {
               val email = validTuple._1
@@ -1278,6 +1291,7 @@ object RestAPI extends Controller {
               }
               Webuser.checkPassword(email, password) match {
                 case Some(foundUser) =>
+                  play.Logger.debug(s"User sign on: found user. uuid: $foundUser.uuid")
                   Ok(foundUser.uuid)
                 case None =>
                   NotFound("Webuser not found or invalid password.")
