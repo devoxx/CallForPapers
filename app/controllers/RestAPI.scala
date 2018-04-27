@@ -1293,8 +1293,6 @@ object RestAPI extends Controller {
               Webuser.checkPassword(email, password) match {
                 case Some(foundUser) =>
                   play.Logger.debug(s"User sign on: found user. uuid: $foundUser.uuid")
-              Webuser.checkPassword(email, password) match {
-                case Some(foundUser) =>
                   Ok(foundUser.uuid)
                 case None =>
                   NotFound("Webuser not found or invalid password.")
