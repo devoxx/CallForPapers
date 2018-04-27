@@ -1209,6 +1209,7 @@ object RestAPI extends Controller {
 
   def verifyAccount(): Action[AnyContent] = UserAgentActionAndAllowOrigin {
     implicit request =>
+
       play.Logger.debug(s"X-Gluon code expected at the server: '${ConferenceDescriptor.gluonInboundAuthorization()}'")
       play.Logger.debug(s"X-Gluon code sent to server by client: '${request.headers.get("X-Gluon").get}'")
 
@@ -1292,6 +1293,8 @@ object RestAPI extends Controller {
               Webuser.checkPassword(email, password) match {
                 case Some(foundUser) =>
                   play.Logger.debug(s"User sign on: found user. uuid: $foundUser.uuid")
+              Webuser.checkPassword(email, password) match {
+                case Some(foundUser) =>
                   Ok(foundUser.uuid)
                 case None =>
                   NotFound("Webuser not found or invalid password.")
