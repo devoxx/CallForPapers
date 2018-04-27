@@ -1256,6 +1256,8 @@ object RestAPI extends Controller {
 
   def verifyCredentials() = UserAgentActionAndAllowOrigin {
     implicit request =>
+      play.Logger.debug(s"X-Gluon code expected at the server: '${ConferenceDescriptor.gluonInboundAuthorization()}'")
+      play.Logger.debug(s"X-Gluon code sent to server by client: '${request.headers.get("X-Gluon").get}'")
       if (request.headers.get("X-Gluon").isEmpty) {
         PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
       } else {
@@ -1268,6 +1270,12 @@ object RestAPI extends Controller {
             }, validTuple => {
               val email = validTuple._1
               val password = validTuple._2.getOrElse("")
+              play.Logger.debug(s"Username sent to server by client: '${email}'")
+              if (password.isEmpty) {
+                play.Logger.debug("Password sent to server by client was empty")
+              } else {
+                play.Logger.debug("Non-empty password was sent to server by client")
+              }
               Webuser.checkPassword(email, password) match {
                 case Some(foundUser) =>
                   Ok(foundUser.uuid)
