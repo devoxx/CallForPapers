@@ -49,7 +49,7 @@ export class RoomsComponent implements OnInit {
 
   setNextPreviousOpacity() {
     var Total = this.AllRooms.length - this.next;
-    this.OpacityNext = (Total <= this.maxItems)
+    this.OpacityNext = (Total <= this.maxItems);
     this.OpacityPrevious = (this.next === 0);
   }
 
@@ -67,7 +67,7 @@ export class RoomsComponent implements OnInit {
       this.setNextPreviousOpacity();
       this.emitChangeRooms();
       this.responsive(window.innerWidth);
-    })
+    });
     Observable.fromEvent(window, 'resize').debounceTime(300).subscribe(($event) => {
       var windowWidth = $event['target'].innerWidth;
       this.responsive(windowWidth);
