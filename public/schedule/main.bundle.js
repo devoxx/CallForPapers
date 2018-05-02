@@ -588,20 +588,39 @@ var RoomsComponent = (function () {
         this.next = 0;
         this.OpacityNext = false;
         this.OpacityPrevious = false;
+        this.sortRooms = function (thisRoom, anotherRoom) {
+            var orderedRooms = {
+                "Gallery Hall": 1,
+                "Auditorium": 2,
+                "Room A": 3,
+                "Room B/C": 4,
+                "Room D/E/F/G": 5,
+                "Exec Centre": 6
+            };
+            var thisRoomOrderIndex = orderedRooms[thisRoom.roomName];
+            var anotherRoomOrderIndex = orderedRooms[anotherRoom.roomName];
+            return thisRoomOrderIndex - anotherRoomOrderIndex;
+        };
     }
+    RoomsComponent.prototype.Previous = function () {
+        if (this.next > 0) {
+            this.next--;
+            this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
+            console.log(this.AllRooms);
+            console.log(this.next, this.maxItems, this.next);
+            console.log(this.Rooms);
+            this.emitChangeRooms();
+        }
+        this.setNextPreviousOpacity();
+    };
     RoomsComponent.prototype.Next = function () {
         var Total = this.AllRooms.length - this.next;
         if (Total > this.maxItems) {
             this.next++;
             this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
-            this.emitChangeRooms();
-        }
-        this.setNextPreviousOpacity();
-    };
-    RoomsComponent.prototype.Previous = function () {
-        if (this.next > 0) {
-            this.next--;
-            this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
+            console.log(this.AllRooms);
+            console.log(this.next, this.maxItems, this.next);
+            console.log(this.Rooms);
             this.emitChangeRooms();
         }
         this.setNextPreviousOpacity();
@@ -620,6 +639,7 @@ var RoomsComponent = (function () {
             return _this._Http.Rooms(e.day);
         }).subscribe(function (json) {
             _this.AllRooms = json;
+            _this.AllRooms.sort(_this.sortRooms);
             _this.reduceRoom(_this.AllRooms);
             _this.setNextPreviousOpacity();
             _this.emitChangeRooms();
@@ -975,13 +995,17 @@ var ScheduleComponent = (function () {
         return doc.documentElement.textContent;
     };
     ScheduleComponent.prototype.sortRooms = function (thisRoom, anotherRoom) {
-        if (thisRoom.roomName > anotherRoom.roomName) {
-            return 1;
-        }
-        if (thisRoom.roomName < anotherRoom.roomName) {
-            return -1;
-        }
-        return 0;
+        var orderedRooms = {
+            "Gallery Hall": 1,
+            "Auditorium": 2,
+            "Room A": 3,
+            "Room B/C": 4,
+            "Room D/E/F/G": 5,
+            "Exec Centre": 6
+        };
+        var thisRoomOrderIndex = orderedRooms[thisRoom.roomName];
+        var anotherRoomOrderIndex = orderedRooms[anotherRoom.roomName];
+        return thisRoomOrderIndex - anotherRoomOrderIndex;
     };
     ScheduleComponent.prototype.caluleHoursHeight = function (timeObject) {
         if (timeObject.break) {

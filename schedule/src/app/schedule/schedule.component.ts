@@ -66,15 +66,19 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   }
 
   sortRooms(thisRoom, anotherRoom) {
-    if (thisRoom.roomName > anotherRoom.roomName) {
-      return 1;
-    }
+    const orderedRooms = {
+      "Gallery Hall": 1,
+      "Auditorium": 2,
+      "Room A": 3,
+      "Room B/C": 4,
+      "Room D/E/F/G": 5,
+      "Exec Centre": 6
+    };
 
-    if (thisRoom.roomName < anotherRoom.roomName) {
-        return -1;
-    }
+    const thisRoomOrderIndex = orderedRooms[thisRoom.roomName];
+    const anotherRoomOrderIndex = orderedRooms[anotherRoom.roomName];
 
-    return 0;
+    return thisRoomOrderIndex - anotherRoomOrderIndex
   }
 
   caluleHoursHeight(timeObject: any) {
