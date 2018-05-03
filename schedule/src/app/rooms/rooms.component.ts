@@ -28,17 +28,6 @@ export class RoomsComponent implements OnInit {
               private _Helper: Helper) {
   }
 
-  public Next() {
-    var Total = this.AllRooms.length - this.next;
-    if (Total > this.maxItems) {
-      this.next++;
-      this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
-      this.emitChangeRooms();
-    }
-    this.setNextPreviousOpacity()
-
-  }
-
   public Previous() {
     if (this.next > 0) {
       this.next--;
@@ -48,9 +37,19 @@ export class RoomsComponent implements OnInit {
     this.setNextPreviousOpacity()
   }
 
+  public Next() {
+    var Total = this.AllRooms.length - this.next;
+    if (Total > this.maxItems) {
+      this.next++;
+      this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
+      this.emitChangeRooms();
+    }
+    this.setNextPreviousOpacity()
+  }
+
   setNextPreviousOpacity() {
     var Total = this.AllRooms.length - this.next;
-    this.OpacityNext = (Total <= this.maxItems)
+    this.OpacityNext = (Total <= this.maxItems);
     this.OpacityPrevious = (this.next === 0);
   }
 
@@ -63,16 +62,32 @@ export class RoomsComponent implements OnInit {
      return this._Http.Rooms(e.day);
     }).subscribe((json: any) => {
       this.AllRooms = json;
+      this.AllRooms.sort(this.sortRooms);
       this.reduceRoom(this.AllRooms);
       this.setNextPreviousOpacity();
       this.emitChangeRooms();
       this.responsive(window.innerWidth);
-    })
+    });
     Observable.fromEvent(window, 'resize').debounceTime(300).subscribe(($event) => {
       var windowWidth = $event['target'].innerWidth;
       this.responsive(windowWidth);
     })
   }
+
+  sortRooms = function (thisRoom, anotherRoom) {
+    const orderedRooms = {
+      "Gallery Hall": 1,
+      "Auditorium": 2,
+      "Room A": 3,
+      "Room B/C": 4,
+      "Room D/E/F/G": 5,
+      "Exec Centre": 6
+    };
+
+    const thisRoomOrderIndex = orderedRooms[thisRoom.roomName];
+    const anotherRoomOrderIndex = orderedRooms[anotherRoom.roomName];
+    return thisRoomOrderIndex - anotherRoomOrderIndex;
+  };
 
   responsive(windowWidth: number) {
     if (windowWidth <= 600) this.maxItems = 1;
