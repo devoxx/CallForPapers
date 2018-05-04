@@ -27,7 +27,7 @@ module.exports = "\na {\n  transition-duration:0.5s;\n  -moz-transition-duration
 /***/ "./src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<header id=\"header\" class=\"nav-stacked affix\" data-spy=\"affix\" data-offset-top=\"15\">\n  <!-- Navigation -->\n  <nav id=\"navigation_bar\" class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <div class=\"logo\">\n            <a href=\"./index.html\"><img [src]=\"logoImg\" alt=\"image\" /></a>\n        </div> <!-- /Logo -->\n        <button (click)=\"slide()\" id=\"menu_slide\" data-target=\"#navigation\" aria-expanded=\"false\" data-toggle=\"collapse\" class=\"navbar-toggle collapsed\" type=\"button\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n      </div>\n      <div class=\"follow_us\">\n        <ul>\n          <li><a title=\"facebook\" target=\"_blank\" href=\"https://www.facebook.com/DevoxxUK\"><i class=\"fa fa-facebook \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"twitter\" target=\"_blank\" href=\"https://twitter.com/DevoxxUK\"><i class=\"fa fa-twitter \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"youtube\" target=\"_blank\" href=\"https://www.youtube.com/channel/UCCBVCTuk6uJrN3iFV_3vurg\"><i class=\"fa fa-youtube\" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"flickr\" target=\"_blank\" href=\"https://www.flickr.com/photos/125714253@N02/albums\"><i class=\"fa fa-flickr\" aria-hidden=\"true\"></i></a></li>\n        </ul>\n      </div>\n\n      <div #navigation class=\"collapse navbar-collapse\" id=\"navigation\">\n        <ul class=\"nav navbar-nav\">\n          <li><a href=\"https://cfp.devoxx.co.uk/2018/index.html\" class=\"js-target-scroll\">Home</a></li>\n          <li><a [routerLinkActive]=\"['selected']\" [routerLink]=\"['']\" class=\"js-target-scroll\">Schedule</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- Navigation end -->\n\n</header>\n<div style=\"margin-top: 100px;\" class=\"container-fluid\">\n  <router-outlet></router-outlet>\n</div>\n<div #arrowTop   class=\"arrow-top\">\n  <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i>\n</div>\n\n"
+module.exports = "<header id=\"header\" class=\"nav-stacked affix\" data-spy=\"affix\" data-offset-top=\"15\">\n  <!-- Navigation -->\n  <nav id=\"navigation_bar\" class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <div class=\"logo\">\n            <a href=\"http://www.devoxx.co.uk\"><img [src]=\"logoImg\" alt=\"image\" /></a>\n        </div> <!-- /Logo -->\n        <button (click)=\"slide()\" id=\"menu_slide\" data-target=\"#navigation\" aria-expanded=\"false\" data-toggle=\"collapse\" class=\"navbar-toggle collapsed\" type=\"button\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n      </div>\n      <div class=\"follow_us\">\n        <ul>\n          <li><a title=\"facebook\" target=\"_blank\" href=\"https://www.facebook.com/DevoxxUK\"><i class=\"fa fa-facebook \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"twitter\" target=\"_blank\" href=\"https://twitter.com/DevoxxUK\"><i class=\"fa fa-twitter \" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"youtube\" target=\"_blank\" href=\"https://www.youtube.com/channel/UCCBVCTuk6uJrN3iFV_3vurg\"><i class=\"fa fa-youtube\" aria-hidden=\"true\"></i></a></li>\n          <li><a title=\"flickr\" target=\"_blank\" href=\"https://www.flickr.com/photos/125714253@N02/albums\"><i class=\"fa fa-flickr\" aria-hidden=\"true\"></i></a></li>\n        </ul>\n      </div>\n\n      <div #navigation class=\"collapse navbar-collapse\" id=\"navigation\">\n        <ul class=\"nav navbar-nav\">\n          <li><a href=\"https://cfp.devoxx.co.uk/2018/index.html\" class=\"js-target-scroll\">Home</a></li>\n          <li><a [routerLinkActive]=\"['selected']\" [routerLink]=\"['']\" class=\"js-target-scroll\">Schedule</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n  <!-- Navigation end -->\n\n</header>\n<div style=\"margin-top: 100px;\" class=\"container-fluid\">\n  <router-outlet></router-outlet>\n</div>\n<div #arrowTop   class=\"arrow-top\">\n  <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i>\n</div>\n\n"
 
 /***/ }),
 
@@ -606,9 +606,6 @@ var RoomsComponent = (function () {
         if (this.next > 0) {
             this.next--;
             this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
-            console.log(this.AllRooms);
-            console.log(this.next, this.maxItems, this.next);
-            console.log(this.Rooms);
             this.emitChangeRooms();
         }
         this.setNextPreviousOpacity();
@@ -618,9 +615,6 @@ var RoomsComponent = (function () {
         if (Total > this.maxItems) {
             this.next++;
             this.Rooms = this.AllRooms.slice(this.next, this.maxItems + this.next);
-            console.log(this.AllRooms);
-            console.log(this.next, this.maxItems, this.next);
-            console.log(this.Rooms);
             this.emitChangeRooms();
         }
         this.setNextPreviousOpacity();
