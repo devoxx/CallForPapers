@@ -49,11 +49,11 @@
                             <h4 style="padding-top:10px;">@slot.map(_.room.name)</h4>
                         </td>
                         <td style="text-align: right">
-                            @slot.get.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("EEEE")
+                            @slot.get.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("EEEE")
                             from
-                            @slot.get.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
+                            @slot.get.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("HH:mm")
                             till
-                            @slot.get.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
+                            @slot.get.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("HH:mm")
                         </td>
                     </tr>
                 }

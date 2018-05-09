@@ -16,7 +16,7 @@
                 <span class="track"> @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
 
                 @if(showEndTime){
-                    <span class="endTime"> @zeSlot.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm") - @zeSlot.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")</span>
+                    <span class="endTime"> @zeSlot.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("HH:mm") - @zeSlot.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("HH:mm")</span>
                 }
 
             </td>
