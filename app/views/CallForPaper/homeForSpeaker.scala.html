@@ -369,33 +369,48 @@
                         <tr>
                             <th>@Messages("table.pres.title")</th>
                             <th>@Messages("table.pres.rating")</th>
-                            <th>@Messages("table.pres.comment")</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @ratings.map { case (prop: Proposal, ratingReview: RatingReview) =>
-                    <tr>
-                        <td>
-                            @StringUtils.abbreviate(prop.title, 50)</td>
-                        <td>
-                            <b>@ratingReview.averageScore </ b><br>
-                            @ratingReview.total votes<br>
-                            <br>
-                            @for(rating <- ratingReview.rates) {
-                                @if(rating._2 > 0) {
-                                    @rating._2 * @rating._1 stars
-                                    <br>
-                                    }
-                            }
-                        </td>
-                        <td>
-                            <ul>
-                            @ratingReview.feedback.map { entry =>
-                                <li><b>@entry._2:</b> @entry._3</li>
-                            }
-                            </ul>
-                        </td>
-                    </tr>
+                    @ratings.map { case (prop, eachRating) =>
+                        <tr>
+                            <td>
+                                @StringUtils.abbreviate(prop.title, 50)
+                            </td>
+                            <td>
+                                @for(rating <- eachRating) {
+                                <table class="table table-bordered table-striped">
+                                  <tbody>
+                                    <tr>
+                                    <thead>
+                                      <tr>
+                                        <td>Aspect</td>
+                                        <td>Rating</td>
+                                        <td>Review comment</td>
+                                      </tr>
+                                    </thead>
+                                      @for(ratingDetail <- rating.details) {
+                                        <tr>
+                                          <td>
+                                            @ratingDetail.aspect
+                                          </td>
+                                          <td>
+                                            @ratingDetail.rating
+                                          </td>
+                                          <td>
+                                            @ratingDetail.review
+                                          </td>
+                                        </tr>
+                                      }
+                                      <hr/>
+                                      <b>@rating.sum</b> votes in total with an average rating of <b>@rating.average</b> votes, which are comprised of  9
+                                      <hr/>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                }
+                            </td>
+                        </tr>
                     }
                     </tbody>
                 </table>
