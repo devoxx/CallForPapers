@@ -184,7 +184,7 @@
                     <div class="panel-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary" style="border-radius: 5px">@Messages("btn.showVotes")</a>
                         @Event.loadEventsForObjRef(proposal.id).find(_.msg.contains("draft to submitted")).map { event =>
-                            @Messages("cfpAdmin.showWhenCreated", event.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("EEE dd/MM HH:mm")).getOrElse("???"))
+                            @Messages("cfpAdmin.showWhenCreated", event.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("EEE dd/MM HH:mm")).getOrElse("???"))
                         }
                         <br/>
                         <br/>
