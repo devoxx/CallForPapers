@@ -423,7 +423,7 @@ object ConferenceDescriptor {
   def timeZoneCET: String = "Europe/Brussels"
   def timeZoneUTC: String = "UTC"
 
-  def timeZone: String = timeZoneGMT //TODO: temporary fix, this makes things work again, will check with other devs to see why this was done, and how to do it better
+  def timeZone: String = timeZoneUTC //TODO: temporary fix, this makes things work again, will check with other devs to see why this was done, and how to do it better
 
   def isGoldenTicketActive: Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
