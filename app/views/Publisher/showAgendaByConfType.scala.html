@@ -56,10 +56,10 @@
                         <!--
                         time = @time
                         localdatetime = @time.toLocalDateTime
-                        to = @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("h:mm")
+                        to = @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm")
                         -->
-                        @time.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("h:mm") -
-                        @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZoneUTC)).toString("h:mm a")
+                        @time.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm") -
+                        @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm a")
                     </th>
 
                     @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
