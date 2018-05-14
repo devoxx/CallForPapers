@@ -38,30 +38,30 @@
                 <!-- ******************************************************************* //-->
             <tr>
                 <td rowspan="8"  class="scheduleHeader scheduleRight">What's On?</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("opening_key", "wednesday", "Keynotes Schedule")</td>
                 <td class="scheduleRow"></td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("opening_key", "thursday", "Keynotes Schedule")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("closing_key", "friday", "Keynotes Schedule")</td>
             </tr>
             <tr>
-                <td class="scheduleRow"></td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("conf", "wednesday", "Conference Schedule")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("conf", "thursday", "Conference Schedule")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("conf", "friday", "Conference Schedule")</td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("deep_dive", "wednesday", "Deep Dive Schedule")</td>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow"></td>
             </tr>
             <!-- ******************************************************************* //-->
             <tr>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow"></td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
+            </tr>
+                <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("deep_dive", "wednesday", "Deep Dive Schedule")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("deep_dive", "thursday", "Deep Dive Schedule")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("deep_dive", "friday", "Deep Dive Schedule")</td>
             </tr>
             <!-- ******************************************************************* //-->
             <tr>
-                <td class="scheduleRow"></td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "wednesday", "Quickies Schedule")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "thursday", "Quickies Schedule")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "friday", "Quickies Schedule")</td>
             </tr>
@@ -70,12 +70,6 @@
                 <td class="scheduleRow">@tags.publisher.renderShowDay("bof", "thursday", "BOFs Schedule")</td>
                 <td class="scheduleRow"></td>
                 <td class="scheduleRow"></td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow"></td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("ignite", "thursday", "Ignite Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
             </tr>
                 <!-- ******************************************************************* //-->
             <tr>
@@ -103,23 +97,23 @@
 <p>15 minute sessions held during the lunch breaks, there give the chance to present a quickfire view, explanation or delve into a particular subject.</p>
 </div>
 
-<div class="large-3 columns">
+<!--div class="large-3 columns">
 <h3>Ignite Sessions</h3>
 <p>These are 5 minute sessions held on Thursday evening, with 20 slides auto-forwarding every 15 seconds. Not for the faint-hearted, there sessions are meant to “ignite” the audience on a subject, whereby awareness, thought, and action are generated on the subjects presented.</p>
-</div>
+</div-->
 
 <div class="large-3 columns">
 <h3>Hands-on Labs</h3>
-<p>Practical hands-on sessions of 2 hours with maximum of 40 people per room. Attendees will need to prepare their machines for Labs in advance so that sessions get underway promptly.</p>
+<p>Practical hands-on sessions of 2 or 3 hours with maximum of 30 people per room. Attendees will need to prepare their machines for Labs in advance so that sessions get underway promptly.</p>
 </div>
 
 <div class="large-3 columns">
 <h3>Deep Dive Sessions</h3>
-<p>These are intensive 3 hour sessions where an expert delves much more extensively into a subject than is possible during regular conference sessions. Deep Dives give attendees the chance to rapidly immerse themselves into a subject matter with an in-depth examination of a topic or technology.</p>
+<p>These are intensive 2 or 3 hour sessions where an expert delves much more extensively into a subject than is possible during regular conference sessions. Deep Dives give attendees the chance to rapidly immerse themselves into a subject matter with an in-depth examination of a topic or technology.</p>
 </div>
 
 <div class="large-3 columns">
 <h3>Conference Sessions</h3>
-<p>Conference talks are 50 minutes in duration and run throughout Thursday & Friday.</p>
+<p>Conference talks are 50 minutes in duration and run throughout Wednesday, Thursday & Friday.</p>
 </div>
 }
