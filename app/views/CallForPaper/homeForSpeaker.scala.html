@@ -2,9 +2,8 @@
         webuser: Webuser,
         myProposals: List[Proposal],
         totalArchived: Int,
-        ratings: Map[Proposal, List[Rating]],
+        ratings: List[(Proposal, RatingReview)],
         needsToAcceptTermAndCondition: Boolean)(implicit flash: Flash, lang: Lang, req: RequestHeader)
-
 @import org.apache.commons.lang3.StringUtils
 @import play.twirl.api.Html
 @import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,7 +26,6 @@
         margin: 5px 5px; /* Making sure to keep some distance from all side */
     }</style>
     <div class="row">
-
         <div class="col-md-4">
             <h3><i class="icon-magic"></i> @Messages("your.profile")</h3>
 
@@ -45,8 +43,8 @@
                                     title="This is you"
                                     onerror="this.src = 'https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                                     <div class="media-body">
-                                        <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
-                                            Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
+                                        <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">Gravatar.com</a>
+                                            @Html(Messages("profile.gravatar2")) @speaker.email. </small>
                                     </div>
                                 </div>
                             } else {
@@ -326,14 +324,15 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th><span class="badge">
+                            <th>
+                              <span class="badge">
                                 @if(myProposals.size <= 1) {
                                     @Messages("total.draft.sing", myProposals.size)
                                 }
                                 @if(myProposals.size > 1) {
                                     @Messages("total.draft", myProposals.size)
                                 }
-                            </span>
+                              </span>
                                 @if(totalArchived > 1) {
                                     <span class="badge">@Messages("total.archived", totalArchived)</span>
                                 }
@@ -369,48 +368,32 @@
                         <tr>
                             <th>@Messages("table.pres.title")</th>
                             <th>@Messages("table.pres.rating")</th>
+                            <th>@Messages("table.pres.comment")</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @ratings.map { case (prop, eachRating) =>
-                        <tr>
-                            <td>
-                                @StringUtils.abbreviate(prop.title, 50)
-                            </td>
-                            <td>
-                                @for(rating <- eachRating) {
-                                <table class="table table-bordered table-striped">
-                                  <tbody>
-                                    <tr>
-                                    <thead>
-                                      <tr>
-                                        <td>Aspect</td>
-                                        <td>Rating</td>
-                                        <td>Review comment</td>
-                                      </tr>
-                                    </thead>
-                                      @for(ratingDetail <- rating.details) {
-                                        <tr>
-                                          <td>
-                                            @ratingDetail.aspect
-                                          </td>
-                                          <td>
-                                            @ratingDetail.rating
-                                          </td>
-                                          <td>
-                                            @ratingDetail.review
-                                          </td>
-                                        </tr>
-                                      }
-                                      <hr/>
-                                      <b>@rating.sum</b> votes in total with an average rating of <b>@rating.average</b> votes, which are comprised of  9
-                                      <hr/>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                }
-                            </td>
-                        </tr>
+                    @ratings.map { case (prop: Proposal, ratingReview: RatingReview) =>
+                    <tr>
+                        <td>
+                            @StringUtils.abbreviate(prop.title, 50)</td>
+                        <td>
+                            <b>@ratingReview.averageScore</b><br>
+                            @ratingReview.total votes<br><br>
+                            @for(rating <- ratingReview.rates) {
+                                @if(rating._2 > 0) {
+                                    @rating._2 * @rating._1 stars
+                                    <br>
+                                    }
+                            }
+                        </td>
+                        <td>
+                            <ul>
+                            @ratingReview.feedback.map { entry =>
+                                <li><b>@entry._2:</b> @entry._3</li>
+                            }
+                            </ul>
+                        </td>
+                    </tr>
                     }
                     </tbody>
                 </table>
