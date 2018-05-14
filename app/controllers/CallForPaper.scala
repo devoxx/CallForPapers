@@ -75,12 +75,13 @@ object CallForPaper extends SecureCFPController {
             case other =>
               val allProposals = Proposal.allMyProposals(uuid)
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-              val ratings = if (hasAccepted || hasApproved) {
-                Rating.allRatingsForTalks(allProposals)
-              } else {
-                Map.empty[Proposal, List[Rating]]
-              }
-              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
+              val ratings = Rating.allRatingReviewsForTalks(allProposals)
+              Ok(views.html.CallForPaper.homeForSpeaker(speaker,
+                                                        request.webuser,
+                                                        allProposals,
+                                                        totalArchived,
+                                                        ratings,
+                                                        needsToAcceptTermAndCondition))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
