@@ -696,7 +696,7 @@ object ConferenceDescriptor {
   val DEVOXX_FIRST_DAY_IN_ENGLISH = "June 20th"
   val DEVOXX_DAY_RANGE_IN_FRENCH = "mer 9 au 11 Mai 2018"
   val DEVOXX_DAY_RANGE_IN_ENGLISH = "from 20th to 22nd of June, 2018"
-  val DEVOXX_CONF_SITE_URL = "https://www.devoxx.pl/"
+  val DEVOXX_CONF_SITE_URL = "http://www.devoxx.pl/"
   val DEVOXX_INFO_SITE_URL = DEVOXX_CONF_SITE_URL + "/faq"
   val DEVOXX_SPONSORS_SITE_URL = DEVOXX_CONF_SITE_URL + "/sponsors"
   val DEVOXX_TICKETS_SITE_URL = "http://reg.devoxx.pl"
