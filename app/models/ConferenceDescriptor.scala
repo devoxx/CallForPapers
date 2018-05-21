@@ -270,8 +270,8 @@ object ConferenceDescriptor {
     private val FRIDAY: String = "friday"
 
     private val WED_DATE = "2018-06-20T"
-    private val THU_DATE = "2018-07-21T"
-    private val FRI_DATE = "2018-08-22T"
+    private val THU_DATE = "2018-06-21T"
+    private val FRI_DATE = "2018-06-22T"
 
     private val MIN_SEC = ":00.000+02:00"
 
