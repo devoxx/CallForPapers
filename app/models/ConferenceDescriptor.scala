@@ -431,9 +431,9 @@ object ConferenceDescriptor {
 
       ConferenceRooms.keynoteRoom.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.CLOSING_KEY.id, FRIDAY,
-            new DateTime(THU_DATE + "15:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
-            new DateTime(THU_DATE + "16:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+          SlotBuilder(ConferenceProposalTypes.CLOSING_KEY.id, THURSDAY,
+            new DateTime(FRI_DATE + "15:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(FRI_DATE + "16:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
       }
     }
 
