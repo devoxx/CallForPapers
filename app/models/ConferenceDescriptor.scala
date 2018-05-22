@@ -239,6 +239,7 @@ object ConferenceDescriptor {
     val keynoteRoom = List(ROOM_1)
 
     val conferenceRooms = List(ROOM_1, ROOM_2, ROOM_3, ROOM_4, ROOM_5)
+    val conferenceRooms2 = List(ROOM_1, ROOM_2, ROOM_3)
     val labRooms = List(LAB_ROOM_A, LAB_ROOM_B)
 
     val bofRooms = List(ROOM_4, ROOM_5)
@@ -426,6 +427,16 @@ object ConferenceDescriptor {
       }
     }
 
+    val keynoteSlotFriday: List[Slot] = {
+
+      ConferenceRooms.keynoteRoom.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CLOSING_KEY.id, FRIDAY,
+            new DateTime(THU_DATE + "15:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE + "16:50" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
+      }
+    }
+
     // CONFERENCE SLOTS
 
     val conferenceSlotsWednesday: List[Slot] = {
@@ -465,7 +476,13 @@ object ConferenceDescriptor {
             new DateTime(WED_DATE+"17:40"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
             new DateTime(WED_DATE+"18:30"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r6)
       }
-      conferenceWednesdaySlot1 ++ conferenceWednesdaySlot2 ++ conferenceWednesdaySlot3 ++ conferenceWednesdaySlot4 ++ conferenceWednesdaySlot5 ++ conferenceWednesdaySlot6
+      val conferenceWednesdaySlot7 = ConferenceRooms.conferenceRooms2.map {
+        r6 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, WEDNESDAY,
+            new DateTime(WED_DATE+"19:00"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(WED_DATE+"20:00"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r7)
+      }
+      conferenceWednesdaySlot1 ++ conferenceWednesdaySlot2 ++ conferenceWednesdaySlot3 ++ conferenceWednesdaySlot4 ++ conferenceWednesdaySlot5 ++ conferenceWednesdaySlot6 ++ conferenceWednesdaySlot7
     }
 
     val conferenceSlotsThursday: List[Slot] = {
@@ -671,7 +688,7 @@ object ConferenceDescriptor {
     }
 
     val fridaySchedule: List[Slot] = {
-      fridayBreaks ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labFridayFriday
+      fridayBreaks ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labFridayFriday ++ keynoteSlotFriday
     }
 
     // COMPLETE DEVOXX
