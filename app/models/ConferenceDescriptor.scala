@@ -559,13 +559,7 @@ object ConferenceDescriptor {
             new DateTime(FRI_DATE+"14:30"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
             new DateTime(FRI_DATE+"15:20"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r5)
       }
-      val conferenceFridaySlot6 = ConferenceRooms.conferenceRooms.map {
-        r6 =>
-          SlotBuilder(ConferenceProposalTypes.CONF.id, FRIDAY,
-            new DateTime(FRI_DATE+"15:50"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
-            new DateTime(FRI_DATE+"16:40"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r6)
-      }
-      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5 ++ conferenceFridaySlot6
+      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5
     }
 
 
