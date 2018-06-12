@@ -256,8 +256,8 @@ object ConferenceDescriptor {
     val shortBreak = SlotBreak("short", "Short Coffee Break", "Pause café", ConferenceRooms.HALL_EXPO)
     val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.HALL_EXPO)
     val snack = SlotBreak("snack", "Snack Break", "Pause déjeuner", ConferenceRooms.HALL_EXPO)
-    val eveningReception = SlotBreak("reception", "Evening Reception", "Evening Reception", ConferenceRooms.HALL_EXPO)
-    val eveningReception2 = SlotBreak("reception", "Evening Reception", "Evening Reception", ConferenceRooms.HALL_EXPO)
+    val eveningReception = SlotBreak("reception", "Evening Reception sponsored by Collibra", "Evening Reception", ConferenceRooms.HALL_EXPO)
+    val eveningReception2 = SlotBreak("reception", "Evening Reception sponsored by Collibra", "Evening Reception", ConferenceRooms.HALL_EXPO)
     val openingKeynote = SlotBreak("openKey", "Opening Keynote", "Keynote", ConferenceRooms.ROOM_1)
     val closingKeynote = SlotBreak("closeKey", "Closing Keynote", "Keynote", ConferenceRooms.ROOM_1)
   }
