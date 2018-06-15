@@ -241,7 +241,7 @@ object ConferenceDescriptor {
     val conferenceRooms = List(ROOM_1, ROOM_2, ROOM_3, ROOM_4, ROOM_5)
     val labRooms = List(LAB_ROOM_A, LAB_ROOM_B)
 
-    val bofRooms = List(ROOM_3, ROOM_4)
+    val bofRooms = List(ROOM_3, ROOM_4, ROOM_5)
     val igniteRooms = List(ROOM_1)
     val quickieRooms = List(ROOM_2, ROOM_3, ROOM_4)
 
