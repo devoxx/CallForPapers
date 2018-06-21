@@ -239,6 +239,7 @@ object ConferenceDescriptor {
     val keynoteRoom = List(ROOM_1)
 
     val conferenceRooms = List(ROOM_1, ROOM_2, ROOM_3, ROOM_4, ROOM_5)
+    val confBackup = List(ROOM_3)
     val labRooms = List(LAB_ROOM_A, LAB_ROOM_B)
 
     val bofRooms = List(ROOM_3, ROOM_4, ROOM_5)
@@ -518,7 +519,16 @@ object ConferenceDescriptor {
             new DateTime(THU_DATE+"18:10"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r6)
       }
 
-      conferenceThursdaySlot1 ++ conferenceThursdaySlot2 ++ conferenceThursdaySlot3 ++ conferenceThursdaySlot4 ++ conferenceThursdaySlot5 ++ conferenceThursdaySlot6
+      val conferenceThursdaySlot7 = ConferenceRooms.confBackup.map {
+        r7 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, THURSDAY,
+            new DateTime(THU_DATE+"15:50"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
+            new DateTime(THU_DATE+"16:40"+MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r7)
+      }
+
+
+
+      conferenceThursdaySlot1 ++ conferenceThursdaySlot2 ++ conferenceThursdaySlot3 ++ conferenceThursdaySlot4 ++ conferenceThursdaySlot5 ++ conferenceThursdaySlot6 ++ conferenceThursdaySlot7
     }
 
     val conferenceSlotsFriday: List[Slot] = {
