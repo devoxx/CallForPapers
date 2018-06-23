@@ -43,6 +43,7 @@ case class RatingDetail(aspect: String = "default", rating: Int, review: Option[
 case class RatingReview(total: Int = 0, rates: IndexedSeq[(Int, Int)], feedback: List[(Int, String, String)] = List.empty, averageScore: Double)
 
 case class Rating(talkId: String, user: String, conference: String, timestamp: Long, details: List[RatingDetail]) {
+
   def id(): String = {
     StringUtils.trimToEmpty((talkId + user + conference).toLowerCase()).hashCode.toString
   }

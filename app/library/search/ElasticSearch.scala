@@ -71,6 +71,7 @@ object ElasticSearch {
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
       .withAuth(username, password,BASIC)
       .post(json)
+
     futureResponse.map {
       response =>
         response.status match {
